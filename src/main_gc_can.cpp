@@ -128,8 +128,8 @@ void ExcInhWeightProcessor(CARLsim* sim, int n_num, float i_gc, char gc_pd, char
 			new_weight = 0.0f;
 		}
 	}
-	//sim->setWeight(conn_groups,n_num,n_num,new_weight,true);
-	//sim->setWeight(conn_groups2,n_num,n_num,new_weight,true);
+	sim->setWeight(conn_groups,n_num,n_num,new_weight,true);
+	sim->setWeight(conn_groups2,n_num,n_num,new_weight,true);
 }
 
 // custom ConnectionGenerator
@@ -194,9 +194,9 @@ int main() {
 	sim.setConductances(true); // COBA mode; setConductances = true
 
 	// create an instance of MyConnection class and pass it to CARLsim::connect
-    MyConnection* myConn = new MyConnection;
+    /*MyConnection* myConn = new MyConnection;
     sim.connect(gexc, ginh, myConn, SYN_PLASTIC);
-    sim.connect(ginh, gexc, myConn, SYN_PLASTIC);
+    sim.connect(ginh, gexc, myConn, SYN_PLASTIC);*/
 
 	// ---------------- SETUP STATE -------------------
 	// build the network
@@ -214,6 +214,17 @@ int main() {
 	PoissonRate in(grid_ext.N);
 	in.setRates(15.0f);
 	sim.setSpikeRate(gext,&in);
+
+    for (int i; i < 100; i++) {
+    	if (i != 0 && i != 1 && i != 10 && i != 11) {
+    		sim.setWeight(1,i,i,0.001f,true);
+    		sim.setWeight(2,i,i,0.001f,true);
+    	}
+    	else {
+    		sim.setWeight(1,i,i,0.01f,true);
+    		sim.setWeight(2,i,i,0.01f,true);
+    	}
+    }
 
 	// ---------------- RUN STATE -------------------
 	SMext->startRecording();
@@ -262,8 +273,7 @@ int main() {
 				sim.setWeight(0,30,30,0.1f,true);
 				sim.setWeight(0,31,31,0.1f,true);
 				printf("movement change activated");
-			}			
-			sim.setWeight(1,0,0,0.05f,true);	
+			}	
 		}
 	}
 	SMext->stopRecording();
