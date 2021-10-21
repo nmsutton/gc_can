@@ -58,8 +58,78 @@
 
 using namespace std;
 
-void InterneuronWeightProcessor(CARLsim* sim, int ni, int nj, float i_ext) {
-	sim->setWeight(0,0,0,0.05f,true);
+void ExtExcWeightProcessor(CARLsim* sim, int n_num, float i_ext, char ext_pd, char pd[], std::vector<std::vector<float>> etec_weights) {
+	/*
+		n_num = neuron number
+		i_ext = external input
+		ext_pd = external input preferred direction
+		pd[] = grid cells' preferred directions
+	*/
+	int conn_groups = 0; // ext -> exc
+
+	if (pd[n_num] == ext_pd) {
+		printf("pd match: %c\n", pd[n_num]);
+	}
+
+	float new_weight = etec_weights[n_num][n_num];
+	if (pd[n_num] == ext_pd) {
+		// matching pd found
+		// TODO: add scale based on speed coded in external input
+		new_weight = new_weight * 1.5f;
+
+		if (new_weight > 0.2f) {
+			// set max weight
+			new_weight = 0.2f;
+		}
+	}
+	else {
+		// let non-matching pd return back to usual weight if no external
+		// signal with matching pd is found.
+		// TODO: check that this ext->ect connection can lower weights in a
+		// biologically realistic way. 
+		// Typically a neural connection can only be excitatory or inhibitory
+		// but possibly that only refers to firing and not synapse strengths.
+		new_weight = new_weight * 0.5f;
+
+		if (new_weight < 0.0f) {
+			// set min weight
+			new_weight = 0.0f;
+		}		
+	}
+	sim->setWeight(conn_groups,n_num,n_num,new_weight,true);
+}
+
+void ExcInhWeightProcessor(CARLsim* sim, int n_num, float i_gc, char gc_pd, char pd[], std::vector<std::vector<float>> ecin_weights) {
+	/*
+		n_num = neuron number
+		i_ext = external input
+		ext_pd = external input preferred direction
+		pd[] = grid cells' preferred directions
+	*/
+
+	int conn_groups = 1; // exc -> inh
+	int conn_groups2 = 2; // inh -> exc
+
+	float new_weight = ecin_weights[n_num][n_num];
+	if (pd[n_num] == gc_pd) {
+		// matching pd found
+		new_weight = new_weight * 0.6f;
+
+		if (new_weight > 0.2f) {
+			// set max weight
+			new_weight = 0.2f;
+		}
+	}
+	else {
+		new_weight = new_weight * 1.5f;
+
+		if (new_weight < 0.0f) {
+			// set min weight
+			new_weight = 0.0f;
+		}
+	}
+	//sim->setWeight(conn_groups,n_num,n_num,new_weight,true);
+	//sim->setWeight(conn_groups2,n_num,n_num,new_weight,true);
 }
 
 // custom ConnectionGenerator
@@ -102,6 +172,10 @@ int main() {
 	int spk_time;
 	int spk_tot = 0;
 	bool man_move_det = false;
+	char pd [100] = { 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u' }; 
+	std::vector<std::vector<float>> etec_weights;
+	std::vector<std::vector<float>> ecin_weights;
+	float int_w;
 
 	// configure the network
 	Grid3D grid_ext(10,10,1); // external input
@@ -112,10 +186,10 @@ int main() {
 	int ginh=sim.createGroup("gc_inh", grid_inh, INHIBITORY_NEURON);
 	sim.setNeuronParameters(gexc, 0.02f, 0.2f, -65.0f, 8.0f); // RS
 	sim.setNeuronParameters(ginh, 0.1f, 0.2f, -65.0f, 2.0f); // FS
-	sim.connect(gext, gexc, "one-to-one", 0.05f, 1.0f);
-	float int_w = 0.01f;
-	sim.connect(gexc, ginh, "full", RangeWeight(int_w), 1.0f);
-	sim.connect(ginh, gexc, "full", RangeWeight(int_w), 1.0f);
+	sim.connect(gext, gexc, "one-to-one", 0.05f, 1.0f); // using one-to-one for faster testing than full conn
+	int_w = 0.1f;
+	sim.connect(gexc, ginh, "one-to-one", RangeWeight(int_w), 1.0f);
+	sim.connect(ginh, gexc, "one-to-one", RangeWeight(int_w), 1.0f);
 
 	sim.setConductances(true); // COBA mode; setConductances = true
 
@@ -131,10 +205,10 @@ int main() {
 
 	SpikeMonitor* SMext = sim.setSpikeMonitor(gext, "DEFAULT");
 	SpikeMonitor* SMexc = sim.setSpikeMonitor(gexc, "DEFAULT");
-	//SpikeMonitor* SMexcind = sim.setSpikeMonitor(gexc, "DEFAULT");
 	SpikeMonitor* SMinh = sim.setSpikeMonitor(ginh, "DEFAULT");
-	ConnectionMonitor* CMei = sim.setConnectionMonitor(ginh, gexc, "DEFAULT");
 	ConnectionMonitor* CMetec = sim.setConnectionMonitor(gext, gexc, "DEFAULT");
+	ConnectionMonitor* CMecin = sim.setConnectionMonitor(gexc, ginh, "DEFAULT");
+	ConnectionMonitor* CMinec = sim.setConnectionMonitor(ginh, gexc, "DEFAULT");	
 
 	//setup some baseline input
 	PoissonRate in(grid_ext.N);
@@ -144,10 +218,7 @@ int main() {
 	// ---------------- RUN STATE -------------------
 	SMext->startRecording();
 	SMexc->startRecording();
-	//SMexcind->startRecording();
 	SMinh->startRecording();
-
-	//SMexcind->setMode(AER);
 
 	for (int t=0; t<10000; t++) {	
 		// run for 1 ms, don't generate run stats
@@ -177,7 +248,10 @@ int main() {
 			}
 			printf("total spikes in 1s: %d\n", nur_spk1_1[10].size());							
 			printf("total spikes in 500ms window: %d\n", spk_tot);	
-			InterneuronWeightProcessor(&sim, 0, 0, 0);
+			etec_weights = CMetec->takeSnapshot();	
+			ExtExcWeightProcessor(&sim, 11, 0, 'u', pd, etec_weights);
+			ecin_weights = CMecin->takeSnapshot();	
+			ExcInhWeightProcessor(&sim, 11, 0, 'u', pd, etec_weights);
 			if (man_move_det == true && spk_tot > 4) {
 				sim.setWeight(0,0,0,0.05f,true);
 				sim.setWeight(0,1,1,0.05f,true);
@@ -188,23 +262,12 @@ int main() {
 				sim.setWeight(0,30,30,0.1f,true);
 				sim.setWeight(0,31,31,0.1f,true);
 				printf("movement change activated");
-			}				
+			}			
+			sim.setWeight(1,0,0,0.05f,true);	
 		}
-		/*if (t == 5000) {
-			SMext->stopRecording();
-			SMexc->stopRecording();
-			SMinh->stopRecording();
-			SMext->print(false);
-			SMexc->print(false);
-			SMinh->print(false);
-			SMext->startRecording();
-			SMexc->startRecording();
-			SMinh->startRecording();
-		}*/
 	}
 	SMext->stopRecording();
 	SMexc->stopRecording();
-	//SMexcind->stopRecording();
 	SMinh->stopRecording();
 
 	int nur_spk0 = SMexc->getNeuronNumSpikes(0);
@@ -232,9 +295,15 @@ int main() {
 	SMexc->print(false);
 	SMinh->print(false);
 
-	CMetec->printSparse();
-	//CMee->printSparse();
-	//CMei->printSparse();
+	//CMetec->printSparse();
+	//CMecin->printSparse();
+	//CMinec->printSparse();
+
+	etec_weights = CMetec->takeSnapshot();
+	printf("etec_weights[11][11] = %f\n", etec_weights[11][11]);
+
+	ecin_weights = CMecin->takeSnapshot();
+	printf("ecin_weights[11][11] = %f\n", ecin_weights[11][11]);
 	
 	return 0;
 }
