@@ -99,21 +99,21 @@ void ExtExcWeightProcessor(CARLsim* sim, int n_num, float i_ext, char ext_pd, ch
 	sim->setWeight(conn_groups,n_num,n_num,new_weight,true);
 }
 
-void ExcInhWeightProcessor(CARLsim* sim, int n_num, float i_gc, char gc_pd, char pd[], std::vector<std::vector<float>> ecin_weights) {
+void ExcInhWeightProcessor(CARLsim* sim, int n_num, float gc_spk, char gc_pd, char pd[], 
+		std::vector<std::vector<float>> ecin_weights, int spk_tot) {
 	/*
 		n_num = neuron number
-		i_ext = external input
-		ext_pd = external input preferred direction
 		pd[] = grid cells' preferred directions
 	*/
 
 	int conn_groups = 1; // exc -> inh
 	int conn_groups2 = 2; // inh -> exc
+	int spk_thresh = 3;
 
 	float new_weight = ecin_weights[n_num][n_num];
-	if (pd[n_num] == gc_pd) {
+	if (gc_spk > spk_thresh) {
 		// matching pd found
-		new_weight = new_weight * 0.6f;
+		new_weight = new_weight * 0.8f * (gc_spk - spk_thresh);
 
 		if (new_weight > 0.2f) {
 			// set max weight
@@ -121,7 +121,7 @@ void ExcInhWeightProcessor(CARLsim* sim, int n_num, float i_gc, char gc_pd, char
 		}
 	}
 	else {
-		new_weight = new_weight * 1.5f;
+		new_weight = new_weight * 1.2f * (gc_spk - spk_thresh);
 
 		if (new_weight < 0.0f) {
 			// set min weight
@@ -132,30 +132,20 @@ void ExcInhWeightProcessor(CARLsim* sim, int n_num, float i_gc, char gc_pd, char
 	sim->setWeight(conn_groups2,n_num,n_num,new_weight,true);
 }
 
-// custom ConnectionGenerator
-class MyConnection : public ConnectionGenerator {
-public:
-    MyConnection() {}
-    ~MyConnection() {}
- 
-    void connect(CARLsim* sim, int srcGrp, int i, int destGrp, int j, float& weight, float& maxWt,
-            float& delay, bool& connected) {
-
-        connected = true;
-        float wt = 0.001f;
-        float wt2 = 0.01f;
-        delay = 1;
-
-        if (j == 0 || j == 1 || j == 10 || j == 11) {
-        	weight = wt;
-        	maxWt = wt;
-    	}
-    	else {
-        	weight = wt2;
-        	maxWt = wt2;
-    	}
-    }
-};
+void MotorControl(int *loc, char move) {
+	if (move == 'r') {
+		loc[0] = loc[0] + 1;
+	}
+	else if (move == 'l') {
+		loc[0] = loc[0] - 1;
+	}	
+	else if (move == 'u') {
+		loc[1] = loc[1] + 1;
+	}
+	else if (move == 'd') {
+		loc[1] = loc[1] - 1;
+	}
+}
 
 int main() {
 	// keep track of execution time
@@ -165,7 +155,7 @@ int main() {
 	// create a network on GPU
 	int numGPUs = 1;
 	int randSeed = 42;
-	CARLsim sim("gc can", CPU_MODE, USER, numGPUs, randSeed);
+	CARLsim sim("gc can", GPU_MODE, USER, numGPUs, randSeed);
 	vector<vector<int>> nur_spk1_1;
 	int n_num;
 	int s_num;
@@ -176,6 +166,11 @@ int main() {
 	std::vector<std::vector<float>> etec_weights;
 	std::vector<std::vector<float>> ecin_weights;
 	float int_w;
+	int loc[2] = {0, 0}; // x, y location
+	int slow_rate;
+	int speed_control;
+	int move_time;
+	bool move_active;
 
 	// configure the network
 	Grid3D grid_ext(10,10,1); // external input
@@ -192,11 +187,6 @@ int main() {
 	sim.connect(ginh, gexc, "one-to-one", RangeWeight(int_w), 1.0f);
 
 	sim.setConductances(true); // COBA mode; setConductances = true
-
-	// create an instance of MyConnection class and pass it to CARLsim::connect
-    /*MyConnection* myConn = new MyConnection;
-    sim.connect(gexc, ginh, myConn, SYN_PLASTIC);
-    sim.connect(ginh, gexc, myConn, SYN_PLASTIC);*/
 
 	// ---------------- SETUP STATE -------------------
 	// build the network
@@ -235,6 +225,71 @@ int main() {
 		// run for 1 ms, don't generate run stats
 		sim.runNetwork(0,1,false);
 
+		// animal movements
+		// speed control limits pace of movements
+		slow_rate = 4; // rate movement is slowed
+		speed_control = t % slow_rate;
+		move_time = 0;
+		move_active = false;
+		if (speed_control == move_time) {
+			move_active = true;
+		}
+
+		// configure movement
+		if (t < 200 && move_active) {
+			MotorControl(loc, 'r');
+		}
+		else if (t < 600 && move_active) {
+			MotorControl(loc, 'u');
+		}
+		else if (t < 1800 && move_active) {
+			MotorControl(loc, 'r');
+		}
+		else if (t < 2600 && move_active) {
+			MotorControl(loc, 'u');
+		}
+		else if (t < 3400 && move_active) {
+			MotorControl(loc, 'l');
+		}
+		else if (t < 4200 && move_active) {
+			MotorControl(loc, 'd');
+		}
+		else if (t < 5000 && move_active) {
+			MotorControl(loc, 'r');
+		}
+		else if (t < 5800 && move_active) {
+			MotorControl(loc, 'u');
+		}
+		else if (t < 6600 && move_active) {
+			MotorControl(loc, 'l');
+		}		
+		else if (t < 7400 && move_active) {
+			MotorControl(loc, 'r');
+		}
+		else if (t < 7800 && move_active) {
+			MotorControl(loc, 'u');
+		}
+		else if (t < 8200 && move_active) {
+			MotorControl(loc, 'r');
+		}
+		else if (t < 9000 && move_active) {
+			MotorControl(loc, 'd');
+		}
+		else if (t >= 9000 && t < 9400 && move_active) {
+			MotorControl(loc, 'r');
+		}
+		else if (t >= 9400 && t < 10000 && move_active) {
+			MotorControl(loc, 'u');
+		}		
+
+		//if (t % 1000 == 0) {
+			printf("\ntime %d location x:%d, y:%d", t, loc[0], loc[1]);
+		//}
+		
+		if (t == 9999) {
+			printf("\n\n");
+		}
+
 		if (t == 0) {
 			sim.setWeight(0,0,0,0.1f,true);
 			sim.setWeight(0,1,1,0.1f,true);
@@ -242,6 +297,8 @@ int main() {
 			sim.setWeight(0,11,11,0.1f,true);
 		}
 		if (t == 1000) {
+			// count spikes
+			int nrn_counted = 11;
 			SMexc->stopRecording();
 			nur_spk1_1 = SMexc->getSpikeVector2D();
 			SMexc->startRecording();
@@ -249,7 +306,7 @@ int main() {
 			for (int i; i < n_num; i++) {
 				s_num = nur_spk1_1[i].size();
 				for (int j; j < s_num; j++) {
-					if (i == 10) {
+					if (i == nrn_counted) {
 						spk_time = nur_spk1_1[i][j];
 						if (spk_time >= 500 && spk_time <= 1000) {
 							spk_tot += 1;
@@ -257,12 +314,12 @@ int main() {
 					}
 				}
 			}
-			printf("total spikes in 1s: %d\n", nur_spk1_1[10].size());							
+			printf("total spikes in 1s: %d\n", nur_spk1_1[nrn_counted].size());							
 			printf("total spikes in 500ms window: %d\n", spk_tot);	
 			etec_weights = CMetec->takeSnapshot();	
 			ExtExcWeightProcessor(&sim, 11, 0, 'u', pd, etec_weights);
 			ecin_weights = CMecin->takeSnapshot();	
-			ExcInhWeightProcessor(&sim, 11, 0, 'u', pd, etec_weights);
+			ExcInhWeightProcessor(&sim, 11, 0, 'u', pd, ecin_weights, spk_tot);
 			if (man_move_det == true && spk_tot > 4) {
 				sim.setWeight(0,0,0,0.05f,true);
 				sim.setWeight(0,1,1,0.05f,true);
