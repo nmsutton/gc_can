@@ -58,21 +58,40 @@
 
 using namespace std;
 
-void ExtExcWeightProcessor(CARLsim* sim, int n_num, float i_ext, char ext_pd, char pd[], std::vector<std::vector<float>> etec_weights) {
+struct EEWP
+{
+	int x, y;
+	int max_x = 10;
+	int max_y = 10;
+	float i_ext;
+	char ext_pd;
+	char *pd;
+	std::vector<std::vector<float>> etec_weights;
+};
+
+struct EIWP
+{
+	int x, y, spk_tot;
+	int max_x = 10;
+	int max_y = 10;
+	float gc_spk;
+	char gc_pd;
+	char *pd; 
+	std::vector<std::vector<float>> ecin_weights;
+};
+
+void ExtExcWeightProcessor(CARLsim* sim, EEWP eewp) {
 	/*
 		n_num = neuron number
 		i_ext = external input
 		ext_pd = external input preferred direction
 		pd[] = grid cells' preferred directions
 	*/
+	int n_num = (eewp.y * eewp.max_x) + eewp.x; // neuron number in 10x10 matrix. hardcoded for convenience but can make dynamic later
 	int conn_groups = 0; // ext -> exc
 
-	if (pd[n_num] == ext_pd) {
-		printf("pd match: %c\n", pd[n_num]);
-	}
-
-	float new_weight = etec_weights[n_num][n_num];
-	if (pd[n_num] == ext_pd) {
+	float new_weight = eewp.etec_weights[n_num][n_num];
+	if (eewp.pd[n_num] == eewp.ext_pd) {
 		// matching pd found
 		// TODO: add scale based on speed coded in external input
 		new_weight = new_weight * 1.5f;
@@ -99,21 +118,21 @@ void ExtExcWeightProcessor(CARLsim* sim, int n_num, float i_ext, char ext_pd, ch
 	sim->setWeight(conn_groups,n_num,n_num,new_weight,true);
 }
 
-void ExcInhWeightProcessor(CARLsim* sim, int n_num, float gc_spk, char gc_pd, char pd[], 
-		std::vector<std::vector<float>> ecin_weights, int spk_tot) {
+void ExcInhWeightProcessor(CARLsim* sim, EIWP eiwp) {
 	/*
 		n_num = neuron number
 		pd[] = grid cells' preferred directions
 	*/
+	int n_num = (eiwp.y * eiwp.max_x) + eiwp.x;
 
 	int conn_groups = 1; // exc -> inh
 	int conn_groups2 = 2; // inh -> exc
 	int spk_thresh = 3;
 
-	float new_weight = ecin_weights[n_num][n_num];
-	if (gc_spk > spk_thresh) {
+	float new_weight = eiwp.ecin_weights[n_num][n_num];
+	if (eiwp.gc_spk > spk_thresh) {
 		// matching pd found
-		new_weight = new_weight * 0.8f * (gc_spk - spk_thresh);
+		new_weight = new_weight * 0.8f * (eiwp.gc_spk - spk_thresh);
 
 		if (new_weight > 0.2f) {
 			// set max weight
@@ -121,7 +140,7 @@ void ExcInhWeightProcessor(CARLsim* sim, int n_num, float gc_spk, char gc_pd, ch
 		}
 	}
 	else {
-		new_weight = new_weight * 1.2f * (gc_spk - spk_thresh);
+		new_weight = new_weight * 1.2f * (eiwp.gc_spk - spk_thresh);
 
 		if (new_weight < 0.0f) {
 			// set min weight
@@ -133,6 +152,8 @@ void ExcInhWeightProcessor(CARLsim* sim, int n_num, float gc_spk, char gc_pd, ch
 }
 
 void MotorControl(int *loc, char move) {
+	// control animal movement
+
 	if (move == 'r') {
 		loc[0] = loc[0] + 1;
 	}
@@ -162,7 +183,7 @@ int main() {
 	int spk_time;
 	int spk_tot = 0;
 	bool man_move_det = false;
-	char pd [100] = { 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u' }; 
+	char pd[100] = { 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u' }; 
 	std::vector<std::vector<float>> etec_weights;
 	std::vector<std::vector<float>> ecin_weights;
 	float int_w;
@@ -171,6 +192,8 @@ int main() {
 	int speed_control;
 	int move_time;
 	bool move_active;
+	struct EEWP eewp;
+	struct EIWP eiwp;
 
 	// configure the network
 	Grid3D grid_ext(10,10,1); // external input
@@ -205,6 +228,7 @@ int main() {
 	in.setRates(15.0f);
 	sim.setSpikeRate(gext,&in);
 
+	// initial weights
     for (int i; i < 100; i++) {
     	if (i != 0 && i != 1 && i != 10 && i != 11) {
     		sim.setWeight(1,i,i,0.001f,true);
@@ -282,10 +306,10 @@ int main() {
 			MotorControl(loc, 'u');
 		}		
 
-		//if (t % 1000 == 0) {
+		// print locations
+		if (t % 1000 == 0) {
 			printf("\ntime %d location x:%d, y:%d", t, loc[0], loc[1]);
-		//}
-		
+		}		
 		if (t == 9999) {
 			printf("\n\n");
 		}
@@ -316,10 +340,28 @@ int main() {
 			}
 			printf("total spikes in 1s: %d\n", nur_spk1_1[nrn_counted].size());							
 			printf("total spikes in 500ms window: %d\n", spk_tot);	
+
+			// store synapse values
 			etec_weights = CMetec->takeSnapshot();	
-			ExtExcWeightProcessor(&sim, 11, 0, 'u', pd, etec_weights);
+			eewp.x = 1;
+			eewp.y = 1;
+			eewp.i_ext = 0;
+			eewp.ext_pd = 'u';
+			eewp.pd = pd;
+			eewp.etec_weights = etec_weights;
+			ExtExcWeightProcessor(&sim, eewp);
+
 			ecin_weights = CMecin->takeSnapshot();	
-			ExcInhWeightProcessor(&sim, 11, 0, 'u', pd, ecin_weights, spk_tot);
+			eiwp.x = 1;
+			eiwp.y = 1;
+			eiwp.gc_spk = 0;
+			eiwp.gc_pd = 'u';
+			eiwp.pd = pd; 
+			eiwp.ecin_weights = ecin_weights;
+			eiwp.spk_tot = spk_tot;
+			ExcInhWeightProcessor(&sim, eiwp);
+
+			// manual movement example
 			if (man_move_det == true && spk_tot > 4) {
 				sim.setWeight(0,0,0,0.05f,true);
 				sim.setWeight(0,1,1,0.05f,true);
