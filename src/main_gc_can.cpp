@@ -55,6 +55,9 @@
 
 #include <vector>
 #include <spike_monitor.h>
+#include <math.h> // for sqrt() and other functions
+
+#define PI 3.14159265
 
 using namespace std;
 
@@ -78,7 +81,31 @@ struct EIWP
 	char gc_pd;
 	char *pd; 
 	std::vector<std::vector<float>> ecin_weights;
+	int conn_groups = 1; // exc -> inh
+	int conn_groups2 = 2; // inh -> exc
+	int spk_thresh = 3;
+	group_size = 9;
 };
+
+double GetAngle(char gc_pd) {	
+	double angle;
+	double PI_in_deg = 180;
+
+	if (gc_pd == 'l') {
+		angle = ((0 * PI) / PI_in_deg);
+	}
+	else if (gc_pd == 'd') {
+		angle = ((90 * PI) / PI_in_deg);
+	}
+	else if (gc_pd == 'r') {
+		angle = ((180 * PI) / PI_in_deg);
+	}
+	else if (gc_pd == 'u') {
+		angle = ((270 * PI) / PI_in_deg);
+	}
+
+	return angle;
+}
 
 void ExtExcWeightProcessor(CARLsim* sim, EEWP eewp) {
 	/*
@@ -118,21 +145,38 @@ void ExtExcWeightProcessor(CARLsim* sim, EEWP eewp) {
 	sim->setWeight(conn_groups,n_num,n_num,new_weight,true);
 }
 
-void ExcInhWeightProcessor(CARLsim* sim, EIWP eiwp) {
+void ExcInhWeightProcessor(CARLsim* sim, EIWP e) {
 	/*
 		n_num = neuron number
 		pd[] = grid cells' preferred directions
 	*/
-	int n_num = (eiwp.y * eiwp.max_x) + eiwp.x;
+	int n_num = (e.y * e.max_x) + e.x;
+	int i_x, i_y; // i_x i_y are interneuron coord.
+	double x_offset, y_offset; // offsets are from pd.
+	int g_max_x = 3; // bump group max x neurons
+	double angle;
 
-	int conn_groups = 1; // exc -> inh
-	int conn_groups2 = 2; // inh -> exc
-	int spk_thresh = 3;
+	angle = GetAngle(e.gc_pd);
 
-	float new_weight = eiwp.ecin_weights[n_num][n_num];
-	if (eiwp.gc_spk > spk_thresh) {
+	//if (e.gc_spk > e.spk_thresh) {
+	for (int i; i < e.group_size; i++) {
+		// spike threshold reached and neuron with direction preference activated
+		// TODO: threshold probably not needed because all neurons within bump region
+		// could just respond to external input. The speed value could be in place of 
+		// a threshold because it alters the output in accordance with the speed value's
+		// scale.
+		i_x = i % g_max_x; // modulo used to find i_x
+		i_y = i / g_max_x; // division used to find i_y
+		x_offset = cos(angle);
+		y_offset = sin(angle);
+
+		double dist = sqrt(pow((e.x - i_x - x_offset),2)+pow((e.y - i_y - y_offset),2));
+	}
+
+	float new_weight = e.ecin_weights[n_num][n_num];
+	if (e.gc_spk > spk_thresh) {
 		// matching pd found
-		new_weight = new_weight * 0.8f * (eiwp.gc_spk - spk_thresh);
+		new_weight = new_weight * 0.8f * (e.gc_spk - spk_thresh);
 
 		if (new_weight > 0.2f) {
 			// set max weight
@@ -140,7 +184,7 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP eiwp) {
 		}
 	}
 	else {
-		new_weight = new_weight * 1.2f * (eiwp.gc_spk - spk_thresh);
+		new_weight = new_weight * 1.2f * (e.gc_spk - spk_thresh);
 
 		if (new_weight < 0.0f) {
 			// set min weight
