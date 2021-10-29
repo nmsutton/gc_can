@@ -84,7 +84,7 @@ struct EIWP
 	int conn_groups = 1; // exc -> inh
 	int conn_groups2 = 2; // inh -> exc
 	int spk_thresh = 3;
-	group_size = 9;
+	int group_size = 9;
 };
 
 double GetAngle(char gc_pd) {	
@@ -105,6 +105,42 @@ double GetAngle(char gc_pd) {
 	}
 
 	return angle;
+}
+
+void SetIndices(int i, int *i_o, int i_size, char axis, int max_i) {
+	// calculate interneuron indices in a twisted torus shape.
+	// this provides indices limited to the region bump activity occurs.
+
+	if (axis == 'x') {
+		i_o[0] = i - 1;
+		i_o[1] = i;
+		i_o[2] = i + 1;
+		i_o[3] = i - 1;
+		i_o[4] = i;
+		i_o[5] = i + 1;
+		i_o[6] = i - 1;
+		i_o[7] = i;
+		i_o[8] = i + 1;				
+	}
+	if (axis == 'y') {
+		i_o[0] = i;
+		i_o[1] = i;
+		i_o[2] = i;
+		i_o[3] = i + 1;
+		i_o[4] = i + 1;
+		i_o[5] = i + 1;
+		i_o[6] = i + 2;
+		i_o[7] = i + 2;
+		i_o[8] = i + 2;				
+	}
+	for (int i2 = 0; i2 < 9; i2++) {
+		if (i_o[i2] < 0) {
+			i_o[i2] = i_o[i2] + max_i;
+		}
+		else if (i_o[i2] >= max_i) {
+			i_o[i2] = i_o[i2] - max_i;	
+		}
+	}
 }
 
 void ExtExcWeightProcessor(CARLsim* sim, EEWP eewp) {
@@ -151,32 +187,48 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e) {
 		pd[] = grid cells' preferred directions
 	*/
 	int n_num = (e.y * e.max_x) + e.x;
-	int i_x, i_y; // i_x i_y are interneuron coord.
+	int disp_i;
 	double x_offset, y_offset; // offsets are from pd.
 	int g_max_x = 3; // bump group max x neurons
-	double angle;
+	int g_max_y = 3; // bump group max y neurons
+	double angle, w, sigma, max_syn_wt, dist, exc_surr_dist;
+	int i_x[g_max_x*g_max_y];
+	int i_y[g_max_x*g_max_y];
 
 	angle = GetAngle(e.gc_pd);
+	SetIndices(e.x, i_x, (g_max_x*g_max_y), 'x', e.max_x);
+	SetIndices(e.y, i_y, (g_max_x*g_max_y), 'y', e.max_y);
 
 	//if (e.gc_spk > e.spk_thresh) {
-	for (int i; i < e.group_size; i++) {
+	for (int i = 0; i < e.group_size; i++) {
 		// spike threshold reached and neuron with direction preference activated
 		// TODO: threshold probably not needed because all neurons within bump region
 		// could just respond to external input. The speed value could be in place of 
 		// a threshold because it alters the output in accordance with the speed value's
 		// scale.
-		i_x = i % g_max_x; // modulo used to find i_x
-		i_y = i / g_max_x; // division used to find i_y
+		
 		x_offset = cos(angle);
 		y_offset = sin(angle);
+		exc_surr_dist = 9; // distance of the excitatory surround from the position of presynaptic neuron (solanka, 2015)
+		sigma = 0.05; //0.0834; // width of the Gaussian profile value from (solanka, 2015)
+		max_syn_wt = 1; //5; // maximum synaptic weight value from (solanka, 2015)
 
-		double dist = sqrt(pow((e.x - i_x - x_offset),2)+pow((e.y - i_y - y_offset),2));
+		dist = sqrt(pow((e.x - i_x[i] - x_offset),2)+pow((e.y - i_y[i] - y_offset),2));
+
+		w = max_syn_wt * exp((-1*pow((dist - exc_surr_dist),2))/(2*pow(sigma,2))); // weight calc with Gaussian function
+
+		disp_i = 1;
+		if (i == disp_i) {
+			printf("\na: %f sqrt(pow((%d - %d - %f),2)+pow((%d - %d - %f),2))",angle,e.x,i_x[i],x_offset,e.y,i_y[i],y_offset);
+			printf("\n%f * exp((-1*pow(%f,2))/(2*pow(%f,2)))",max_syn_wt,dist,sigma);
+			printf("\ndisp_i: %d i: %d w: %f dist: %f e.x: %d", disp_i, i, w, dist, e.x);
+		}
 	}
 
 	float new_weight = e.ecin_weights[n_num][n_num];
-	if (e.gc_spk > spk_thresh) {
+	if (e.gc_spk > e.spk_thresh) {
 		// matching pd found
-		new_weight = new_weight * 0.8f * (e.gc_spk - spk_thresh);
+		new_weight = new_weight * 0.8f * (e.gc_spk - e.spk_thresh);
 
 		if (new_weight > 0.2f) {
 			// set max weight
@@ -184,15 +236,15 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e) {
 		}
 	}
 	else {
-		new_weight = new_weight * 1.2f * (e.gc_spk - spk_thresh);
+		new_weight = new_weight * 1.2f * (e.gc_spk - e.spk_thresh);
 
 		if (new_weight < 0.0f) {
 			// set min weight
 			new_weight = 0.0f;
 		}
 	}
-	sim->setWeight(conn_groups,n_num,n_num,new_weight,true);
-	sim->setWeight(conn_groups2,n_num,n_num,new_weight,true);
+	sim->setWeight(e.conn_groups,n_num,n_num,new_weight,true);
+	sim->setWeight(e.conn_groups2,n_num,n_num,new_weight,true);
 }
 
 void MotorControl(int *loc, char move) {
@@ -221,6 +273,7 @@ int main() {
 	int numGPUs = 1;
 	int randSeed = 42;
 	CARLsim sim("gc can", GPU_MODE, USER, numGPUs, randSeed);
+	int sim_time = 3000;
 	vector<vector<int>> nur_spk1_1;
 	int n_num;
 	int s_num;
@@ -289,7 +342,7 @@ int main() {
 	SMexc->startRecording();
 	SMinh->startRecording();
 
-	for (int t=0; t<10000; t++) {	
+	for (int t=0; t<sim_time; t++) {	
 		// run for 1 ms, don't generate run stats
 		sim.runNetwork(0,1,false);
 
@@ -354,7 +407,7 @@ int main() {
 		if (t % 1000 == 0) {
 			printf("\ntime %d location x:%d, y:%d", t, loc[0], loc[1]);
 		}		
-		if (t == 9999) {
+		if (t == (sim_time - 1)) {
 			printf("\n\n");
 		}
 
@@ -382,28 +435,32 @@ int main() {
 					}
 				}
 			}
-			printf("total spikes in 1s: %d\n", nur_spk1_1[nrn_counted].size());							
+			printf("\ntotal spikes in 1s: %d\n", nur_spk1_1[nrn_counted].size());							
 			printf("total spikes in 500ms window: %d\n", spk_tot);	
 
-			// store synapse values
-			etec_weights = CMetec->takeSnapshot();	
-			eewp.x = 1;
-			eewp.y = 1;
-			eewp.i_ext = 0;
-			eewp.ext_pd = 'u';
-			eewp.pd = pd;
-			eewp.etec_weights = etec_weights;
-			ExtExcWeightProcessor(&sim, eewp);
+			for (int i = 0; i < (eewp.max_x * eewp.max_y); i++) {
+				// store synapse values
+				// iterate trough all grid cells
+				etec_weights = CMetec->takeSnapshot();	
+				eewp.x = i % eewp.max_x;
+				eewp.y = i / eewp.max_x;
+				eewp.i_ext = 0;
+				eewp.ext_pd = 'u';
+				eewp.pd = pd;
+				eewp.etec_weights = etec_weights;
+				ExtExcWeightProcessor(&sim, eewp);
 
-			ecin_weights = CMecin->takeSnapshot();	
-			eiwp.x = 1;
-			eiwp.y = 1;
-			eiwp.gc_spk = 0;
-			eiwp.gc_pd = 'u';
-			eiwp.pd = pd; 
-			eiwp.ecin_weights = ecin_weights;
-			eiwp.spk_tot = spk_tot;
-			ExcInhWeightProcessor(&sim, eiwp);
+				ecin_weights = CMecin->takeSnapshot();	
+				eiwp.x = i % eewp.max_x;
+				eiwp.y = i / eewp.max_x;
+				printf("\nii:%d x: %d y: %d eiwp.x: %d", i, eiwp.x, eiwp.y, eiwp.x);
+				eiwp.gc_spk = 0;
+				eiwp.gc_pd = 'u';
+				eiwp.pd = pd; 
+				eiwp.ecin_weights = ecin_weights;
+				eiwp.spk_tot = spk_tot;
+				ExcInhWeightProcessor(&sim, eiwp);
+			}
 
 			// manual movement example
 			if (man_move_det == true && spk_tot > 4) {
