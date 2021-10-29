@@ -107,33 +107,53 @@ double GetAngle(char gc_pd) {
 	return angle;
 }
 
-void SetIndices(int i, int *i_o, int i_size, char axis, int max_i) {
+void SetIndices(int i, int *i_o, int i_size, char axis, int max_i, int *d_i) {
 	// calculate interneuron indices in a twisted torus shape.
 	// this provides indices limited to the region bump activity occurs.
+	// d_i = index distance on x- or y-axis. E.g., distance between neurons as represented
+	// by indices.
 
 	if (axis == 'x') {
 		i_o[0] = i - 1;
+		d_i[0] = -1;
 		i_o[1] = i;
+		d_i[1] = 0;
 		i_o[2] = i + 1;
+		d_i[2] = 1;
 		i_o[3] = i - 1;
+		d_i[3] = -1;
 		i_o[4] = i;
+		d_i[4] = 0;
 		i_o[5] = i + 1;
+		d_i[5] = 1;
 		i_o[6] = i - 1;
+		d_i[6] = -1;
 		i_o[7] = i;
+		d_i[7] = 0;
 		i_o[8] = i + 1;				
+		d_i[8] = 1;
 	}
 	if (axis == 'y') {
-		i_o[0] = i;
-		i_o[1] = i;
-		i_o[2] = i;
-		i_o[3] = i + 1;
-		i_o[4] = i + 1;
-		i_o[5] = i + 1;
-		i_o[6] = i + 2;
-		i_o[7] = i + 2;
-		i_o[8] = i + 2;				
+		i_o[0] = i - 1;
+		d_i[0] = -1;
+		i_o[1] = i - 1;
+		d_i[1] = -1;
+		i_o[2] = i - 1;
+		d_i[2] = -1;
+		i_o[3] = i;
+		d_i[3] = 0;
+		i_o[4] = i;
+		d_i[4] = 0;
+		i_o[5] = i;
+		d_i[5] = 0;
+		i_o[6] = i + 1;
+		d_i[6] = 1;
+		i_o[7] = i + 1;
+		d_i[7] = 1;
+		i_o[8] = i + 1;				
+		d_i[8] = 1;
 	}
-	for (int i2 = 0; i2 < 9; i2++) {
+	for (int i2 = 0; i2 < i_size; i2++) {
 		if (i_o[i2] < 0) {
 			i_o[i2] = i_o[i2] + max_i;
 		}
@@ -191,38 +211,48 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e) {
 	double x_offset, y_offset; // offsets are from pd.
 	int g_max_x = 3; // bump group max x neurons
 	int g_max_y = 3; // bump group max y neurons
-	double angle, w, sigma, max_syn_wt, dist, exc_surr_dist;
-	int i_x[g_max_x*g_max_y];
-	int i_y[g_max_x*g_max_y];
+	double angle, sigma, max_syn_wt, exc_surr_dist, zero_div;
+	double dist = 0, w = 0;
+	int i_x[g_max_x*g_max_y]; // interneuron index x
+	int i_y[g_max_x*g_max_y]; // interneuron index y
+	int d_x[g_max_x*g_max_y]; // neuron distance on x-axis
+	int d_y[g_max_x*g_max_y];	
 
 	angle = GetAngle(e.gc_pd);
-	SetIndices(e.x, i_x, (g_max_x*g_max_y), 'x', e.max_x);
-	SetIndices(e.y, i_y, (g_max_x*g_max_y), 'y', e.max_y);
+	SetIndices(e.x, i_x, (g_max_x*g_max_y), 'x', e.max_x, d_x);
+	SetIndices(e.y, i_y, (g_max_x*g_max_y), 'y', e.max_y, d_y);
 
 	//if (e.gc_spk > e.spk_thresh) {
 	for (int i = 0; i < e.group_size; i++) {
-		// spike threshold reached and neuron with direction preference activated
-		// TODO: threshold probably not needed because all neurons within bump region
-		// could just respond to external input. The speed value could be in place of 
-		// a threshold because it alters the output in accordance with the speed value's
-		// scale.
+		// TODO: consider adding speed external input variable to adjust weight
 		
-		x_offset = cos(angle);
-		y_offset = sin(angle);
-		exc_surr_dist = 9; // distance of the excitatory surround from the position of presynaptic neuron (solanka, 2015)
-		sigma = 0.05; //0.0834; // width of the Gaussian profile value from (solanka, 2015)
+		x_offset = 0.0; //cos(angle);
+		y_offset = 0.0; //sin(angle);
+		//exc_surr_dist = 9; // distance of the excitatory surround from the position of presynaptic neuron (solanka, 2015)
+		sigma = 0.7; //0.0834; // width of the Gaussian profile value from (solanka, 2015)
 		max_syn_wt = 1; //5; // maximum synaptic weight value from (solanka, 2015)
+		zero_div = 0.000001; // avoid issue with division by 0
 
-		dist = sqrt(pow((e.x - i_x[i] - x_offset),2)+pow((e.y - i_y[i] - y_offset),2));
+		dist = sqrt(pow((d_x[i] - x_offset),2)+pow((d_y[i] - y_offset + zero_div),2));
+		/*
+		printf("\ny_offset: %f, d_x[i]: %f, d_y[i]: $f",y_offset,d_x[i],d_y[i]);
+		printf("\nix: %d iy: %d w: %f d: %f sqrt(pow((%f - %f),2)+pow((%f - %f),2))",i_x[i],i_y[i],w,dist,d_x[i],x_offset,d_y[i],y_offset);
+		printf("\nix: %d iy: %d w: %f d: %f sqrt(pow((%f),2)+pow((%f),2))",i_x[i],i_y[i],w,dist,x_offset,y_offset);
+		printf("\n%f",y_offset);
+		*/
 
 		w = max_syn_wt * exp((-1*pow((dist - exc_surr_dist),2))/(2*pow(sigma,2))); // weight calc with Gaussian function
+		printf("\n%d %f",d_y[i],y_offset);
+		printf("\n%d %d",d_y[i],i);
+		printf("\n%f",y_offset);
 
-		disp_i = 1;
+		/*disp_i = 5;
 		if (i == disp_i) {
 			printf("\na: %f sqrt(pow((%d - %d - %f),2)+pow((%d - %d - %f),2))",angle,e.x,i_x[i],x_offset,e.y,i_y[i],y_offset);
 			printf("\n%f * exp((-1*pow(%f,2))/(2*pow(%f,2)))",max_syn_wt,dist,sigma);
-			printf("\ndisp_i: %d i: %d w: %f dist: %f e.x: %d", disp_i, i, w, dist, e.x);
-		}
+			printf("\ndisp_i: %d i: %d w: %f dist: %f e.x: %d, e.y: %d", disp_i, i, w, dist, e.x, e.y);
+		}*/
+		printf("\nix: %d iy: %d w: %f d: %f sqrt(pow((%d - %f),2)+pow((%d - %f),2))\n_",i_x[i],i_y[i],w,dist,d_x[i],x_offset,d_y[i],y_offset);
 	}
 
 	float new_weight = e.ecin_weights[n_num][n_num];
