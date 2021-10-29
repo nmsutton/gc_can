@@ -228,31 +228,24 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e) {
 		
 		x_offset = 0.0; //cos(angle);
 		y_offset = 0.0; //sin(angle);
-		//exc_surr_dist = 9; // distance of the excitatory surround from the position of presynaptic neuron (solanka, 2015)
+		exc_surr_dist = 0;//9; // distance of the excitatory surround from the position of presynaptic neuron (solanka, 2015)
 		sigma = 0.7; //0.0834; // width of the Gaussian profile value from (solanka, 2015)
 		max_syn_wt = 1; //5; // maximum synaptic weight value from (solanka, 2015)
 		zero_div = 0.000001; // avoid issue with division by 0
 
 		dist = sqrt(pow((d_x[i] - x_offset),2)+pow((d_y[i] - y_offset + zero_div),2));
-		/*
-		printf("\ny_offset: %f, d_x[i]: %f, d_y[i]: $f",y_offset,d_x[i],d_y[i]);
-		printf("\nix: %d iy: %d w: %f d: %f sqrt(pow((%f - %f),2)+pow((%f - %f),2))",i_x[i],i_y[i],w,dist,d_x[i],x_offset,d_y[i],y_offset);
-		printf("\nix: %d iy: %d w: %f d: %f sqrt(pow((%f),2)+pow((%f),2))",i_x[i],i_y[i],w,dist,x_offset,y_offset);
-		printf("\n%f",y_offset);
-		*/
 
 		w = max_syn_wt * exp((-1*pow((dist - exc_surr_dist),2))/(2*pow(sigma,2))); // weight calc with Gaussian function
-		printf("\n%d %f",d_y[i],y_offset);
-		printf("\n%d %d",d_y[i],i);
-		printf("\n%f",y_offset);
-
+		
 		/*disp_i = 5;
 		if (i == disp_i) {
 			printf("\na: %f sqrt(pow((%d - %d - %f),2)+pow((%d - %d - %f),2))",angle,e.x,i_x[i],x_offset,e.y,i_y[i],y_offset);
 			printf("\n%f * exp((-1*pow(%f,2))/(2*pow(%f,2)))",max_syn_wt,dist,sigma);
 			printf("\ndisp_i: %d i: %d w: %f dist: %f e.x: %d, e.y: %d", disp_i, i, w, dist, e.x, e.y);
 		}*/
-		printf("\nix: %d iy: %d w: %f d: %f sqrt(pow((%d - %f),2)+pow((%d - %f),2))\n_",i_x[i],i_y[i],w,dist,d_x[i],x_offset,d_y[i],y_offset);
+		//printf("\nix: %d iy: %d w: %f d: %f sqrt(pow((%d - %f),2)+pow((%d - %f),2))",i_x[i],i_y[i],w,dist,d_x[i],x_offset,d_y[i],y_offset);
+		printf("\nix: %d iy: %d d: %f w: %f exp((-1*pow(%f,2))/(2*pow(%f,2)))",i_x[i],i_y[i],dist,w,dist,sigma);
+		//printf("\n%f %f",(-1*pow((dist - exc_surr_dist),2)),(2*pow(sigma,2)));
 	}
 
 	float new_weight = e.ecin_weights[n_num][n_num];
