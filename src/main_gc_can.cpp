@@ -84,7 +84,7 @@ struct EIWP
 	int conn_groups = 1; // exc -> inh
 	int conn_groups2 = 2; // inh -> exc
 	int spk_thresh = 3;
-	int group_size = 9;
+	int group_size = 25;
 };
 
 double GetAngle(char gc_pd) {	
@@ -107,51 +107,26 @@ double GetAngle(char gc_pd) {
 	return angle;
 }
 
-void SetIndices(int i, int *i_o, int i_size, char axis, int max_i, int *d_i) {
+void SetIndices(int i, int *i_o, int g_max_x, int g_max_y, char axis, int max_i, int *d_i, double offset) {
 	// calculate interneuron indices in a twisted torus shape.
 	// this provides indices limited to the region bump activity occurs.
 	// d_i = index distance on x- or y-axis. E.g., distance between neurons as represented
 	// by indices.
+	int i_size = g_max_x * g_max_y;
+	int siox = g_max_x / 2; // starting index offset for x
+	int sioy = g_max_y / 2; // starting index offset for y
 
 	if (axis == 'x') {
-		i_o[0] = i - 1;
-		d_i[0] = -1;
-		i_o[1] = i;
-		d_i[1] = 0;
-		i_o[2] = i + 1;
-		d_i[2] = 1;
-		i_o[3] = i - 1;
-		d_i[3] = -1;
-		i_o[4] = i;
-		d_i[4] = 0;
-		i_o[5] = i + 1;
-		d_i[5] = 1;
-		i_o[6] = i - 1;
-		d_i[6] = -1;
-		i_o[7] = i;
-		d_i[7] = 0;
-		i_o[8] = i + 1;				
-		d_i[8] = 1;
+		for (int xi = 0; xi < i_size; xi++) {
+			i_o[xi] = (i - siox) + (xi % g_max_x);
+			d_i[xi] = (-1 * siox) + (xi % g_max_x);
+		}
 	}
 	if (axis == 'y') {
-		i_o[0] = i - 1;
-		d_i[0] = -1;
-		i_o[1] = i - 1;
-		d_i[1] = -1;
-		i_o[2] = i - 1;
-		d_i[2] = -1;
-		i_o[3] = i;
-		d_i[3] = 0;
-		i_o[4] = i;
-		d_i[4] = 0;
-		i_o[5] = i;
-		d_i[5] = 0;
-		i_o[6] = i + 1;
-		d_i[6] = 1;
-		i_o[7] = i + 1;
-		d_i[7] = 1;
-		i_o[8] = i + 1;				
-		d_i[8] = 1;
+		for (int xi = 0; xi < i_size; xi++) {
+			i_o[xi] = (i - sioy) + (xi / g_max_x);
+			d_i[xi] = (-1 * sioy) + (xi / g_max_x);
+		}
 	}
 	for (int i2 = 0; i2 < i_size; i2++) {
 		if (i_o[i2] < 0) {
@@ -205,12 +180,16 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e) {
 	/*
 		n_num = neuron number
 		pd[] = grid cells' preferred directions
+
+		This code has the equivalent of the distance formula d = sqrt((e_x - i_x - o_x)^2+(e_y - i_y - o_y)^2)
+		where e_x = GC x, i_x = IN x, o_x = offset bias x. However, it is coded in a way here that reduces
+		the number of calculations needed for the limited bump activity area to save computational time.
+		The original formula can be cited as being applied nonetheless.
 	*/
-	int n_num = (e.y * e.max_x) + e.x;
-	int disp_i;
+	int n_num, disp_i;
 	double x_offset, y_offset; // offsets are from pd.
-	int g_max_x = 3; // bump group max x neurons
-	int g_max_y = 3; // bump group max y neurons
+	int g_max_x = 5; // bump group max x neurons
+	int g_max_y = 5; // bump group max y neurons
 	double angle, sigma, max_syn_wt, exc_surr_dist, zero_div;
 	double dist = 0, w = 0;
 	int i_x[g_max_x*g_max_y]; // interneuron index x
@@ -218,22 +197,21 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e) {
 	int d_x[g_max_x*g_max_y]; // neuron distance on x-axis
 	int d_y[g_max_x*g_max_y];	
 
-	angle = GetAngle(e.gc_pd);
-	SetIndices(e.x, i_x, (g_max_x*g_max_y), 'x', e.max_x, d_x);
-	SetIndices(e.y, i_y, (g_max_x*g_max_y), 'y', e.max_y, d_y);
+	angle = GetAngle(e.gc_pd);		
+	x_offset = cos(angle);
+	y_offset = sin(angle);
+	SetIndices(e.x, i_x, g_max_x, g_max_y, 'x', e.max_x, d_x, x_offset);
+	SetIndices(e.y, i_y, g_max_x, g_max_y, 'y', e.max_y, d_y, y_offset);
 
-	//if (e.gc_spk > e.spk_thresh) {
 	for (int i = 0; i < e.group_size; i++) {
 		// TODO: consider adding speed external input variable to adjust weight
-		
-		x_offset = 0.0; //cos(angle);
-		y_offset = 0.0; //sin(angle);
+
 		exc_surr_dist = 0;//9; // distance of the excitatory surround from the position of presynaptic neuron (solanka, 2015)
 		sigma = 0.7; //0.0834; // width of the Gaussian profile value from (solanka, 2015)
 		max_syn_wt = 1; //5; // maximum synaptic weight value from (solanka, 2015)
 		zero_div = 0.000001; // avoid issue with division by 0
 
-		dist = sqrt(pow((d_x[i] - x_offset),2)+pow((d_y[i] - y_offset + zero_div),2));
+		dist = sqrt(pow((d_x[i]),2)+pow((d_y[i] + zero_div),2));
 
 		w = max_syn_wt * exp((-1*pow((dist - exc_surr_dist),2))/(2*pow(sigma,2))); // weight calc with Gaussian function
 		
@@ -244,30 +222,20 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e) {
 			printf("\ndisp_i: %d i: %d w: %f dist: %f e.x: %d, e.y: %d", disp_i, i, w, dist, e.x, e.y);
 		}*/
 		//printf("\nix: %d iy: %d w: %f d: %f sqrt(pow((%d - %f),2)+pow((%d - %f),2))",i_x[i],i_y[i],w,dist,d_x[i],x_offset,d_y[i],y_offset);
-		printf("\nix: %d iy: %d d: %f w: %f exp((-1*pow(%f,2))/(2*pow(%f,2)))",i_x[i],i_y[i],dist,w,dist,sigma);
+		//printf("\nix: %d iy: %d d: %f w: %f exp((-1*pow(%f,2))/(2*pow(%f,2)))",i_x[i],i_y[i],dist,w,dist,sigma);
 		//printf("\n%f %f",(-1*pow((dist - exc_surr_dist),2)),(2*pow(sigma,2)));
-	}
 
-	float new_weight = e.ecin_weights[n_num][n_num];
-	if (e.gc_spk > e.spk_thresh) {
-		// matching pd found
-		new_weight = new_weight * 0.8f * (e.gc_spk - e.spk_thresh);
-
-		if (new_weight > 0.2f) {
-			// set max weight
-			new_weight = 0.2f;
-		}
+		/*
+			Instead of calculating weights for many neurons, only neurons in the limited surrounding area of 
+			an activity bump are computed to save computational time. Which neurons have weight changes are
+			specified by n_num.
+		*/
+		printf("\ni_x[i]: %d i_y[i]: %d",i_x[i],i_y[i]);
+		n_num = (i_y[i] * e.max_x) + i_x[i];
+		
+		//sim->setWeight(e.conn_groups,n_num,n_num,new_weight,true);
+		//sim->setWeight(e.conn_groups2,n_num,n_num,new_weight,true);
 	}
-	else {
-		new_weight = new_weight * 1.2f * (e.gc_spk - e.spk_thresh);
-
-		if (new_weight < 0.0f) {
-			// set min weight
-			new_weight = 0.0f;
-		}
-	}
-	sim->setWeight(e.conn_groups,n_num,n_num,new_weight,true);
-	sim->setWeight(e.conn_groups2,n_num,n_num,new_weight,true);
 }
 
 void MotorControl(int *loc, char move) {
@@ -478,7 +446,7 @@ int main() {
 				eiwp.y = i / eewp.max_x;
 				printf("\nii:%d x: %d y: %d eiwp.x: %d", i, eiwp.x, eiwp.y, eiwp.x);
 				eiwp.gc_spk = 0;
-				eiwp.gc_pd = 'u';
+				eiwp.gc_pd = pd[i]; //'u';
 				eiwp.pd = pd; 
 				eiwp.ecin_weights = ecin_weights;
 				eiwp.spk_tot = spk_tot;
