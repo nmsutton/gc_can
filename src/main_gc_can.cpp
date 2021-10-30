@@ -269,8 +269,8 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk) {
 		max_syn_wt = 1; //5; // maximum synaptic weight value from (solanka, 2015)
 		speed_factor = spk_tot[e_num] * 0.167; // factor representing speed perception by firing rate
 		zero_div = 0.000001; // avoid issue with division by 0
-		t_x = 0;//SetTarget(i_x[i], e.max_x, x_offset);
-		t_y = 0;//SetTarget(i_y[i], e.max_y, y_offset);
+		t_x = SetTarget(i_x[i], e.max_x, x_offset);
+		t_y = SetTarget(i_y[i], e.max_y, y_offset);
 		/*
 		for (int z = 0; z < 25; z++) {
 			printf("\ntest2 i_y[%d]: %d t_y: %d",z,i_y[z],t_y);
@@ -320,6 +320,35 @@ void MotorControl(int *loc, char move) {
 	else if (move == 'd') {
 		loc[1] = loc[1] - 1;
 	}
+}
+
+void BumpInit(CARLsim* sim) {
+	/*
+		Initialize activity bump
+		Sets interneuron weights to initial value to create an activity bump centered at neuron
+		x: 1, y: 1.
+	*/
+
+	double rate = 1;
+
+	sim->setWeight(1,0,0,rate*0.05,true);
+	sim->setWeight(2,0,0,rate*0.05,true);
+	sim->setWeight(1,1,1,rate*0.025,true);
+	sim->setWeight(2,1,1,rate*0.025,true);
+	sim->setWeight(1,2,2,rate*0.05,true);
+	sim->setWeight(2,2,2,rate*0.05,true);
+	sim->setWeight(1,10,10,rate*0.025,true);
+	sim->setWeight(2,10,10,rate*0.025,true);
+	sim->setWeight(1,11,11,rate*0.0125,true);
+	sim->setWeight(2,11,11,rate*0.0125,true);
+	sim->setWeight(1,12,12,rate*0.025,true);
+	sim->setWeight(2,12,12,rate*0.025,true);
+	sim->setWeight(1,20,20,rate*0.05,true);
+	sim->setWeight(2,20,20,rate*0.05,true);
+	sim->setWeight(1,21,21,rate*0.025,true);
+	sim->setWeight(2,21,21,rate*0.025,true);
+	sim->setWeight(1,22,22,rate*0.05,true);
+	sim->setWeight(2,22,22,rate*0.05,true);
 }
 
 void MoveCommand(CARLsim* sim, int x, int y, double speed) {
@@ -476,11 +505,9 @@ int main() {
 		}
 
 		if (t == 0) {
-			sim.setWeight(0,0,0,0.1f,true);
-			sim.setWeight(0,1,1,0.1f,true);
-			sim.setWeight(0,10,10,0.1f,true);
-			//sim.setWeight(0,11,11,0.2f,true);
-			MoveCommand(&sim,11,11,0.3);
+			BumpInit(&sim); // set activity bump initialization
+
+			MoveCommand(&sim,11,11,0.3); // send movement signal
 		}
 		if (t == 1000) {
 			// store firing in vector
