@@ -115,6 +115,7 @@ void SetIndices(int i, int *i_o, int g_max_x, int g_max_y, char axis, int max_i,
 	int i_size = g_max_x * g_max_y;
 	int siox = g_max_x / 2; // starting index offset for x
 	int sioy = g_max_y / 2; // starting index offset for y
+	int tmp_i; // temporary i
 
 	if (axis == 'x') {
 		for (int xi = 0; xi < i_size; xi++) {
@@ -123,18 +124,22 @@ void SetIndices(int i, int *i_o, int g_max_x, int g_max_y, char axis, int max_i,
 		}
 	}
 	if (axis == 'y') {
-		for (int xi = 0; xi < i_size; xi++) {
-			i_o[xi] = (i - sioy) + (xi / g_max_x);
-			d_i[xi] = (-1 * sioy) + (xi / g_max_x);
+		for (int yi = 0; yi < i_size; yi++) {
+			i_o[yi] = (i - sioy) + (yi / g_max_x);
+			//printf("\ni: %d (%d - %d) + (%d / %d) = %d",i,i,sioy,yi,g_max_x,(i_o[yi]));
+			d_i[yi] = (-1 * sioy) + (yi / g_max_x);
 		}
 	}
 	for (int i2 = 0; i2 < i_size; i2++) {
-		if (i_o[i2] < 0) {
-			i_o[i2] = i_o[i2] + max_i;
+		tmp_i = i_o[i2]; // avoids pointer arithmetic issue
+
+		if (tmp_i < 0) {
+			i_o[i2] = tmp_i + max_i;
 		}
 		else if (i_o[i2] >= max_i) {
-			i_o[i2] = i_o[i2] - max_i;	
+			i_o[i2] = tmp_i - max_i;	
 		}
+		//printf("\ni: %d axis: %c i_o[i2]: %d",i,axis,i_o[i2]);
 	}
 }
 
@@ -143,16 +148,17 @@ int SetTarget(int i, int max_i, int offset) {
 		Set target neuron index
 	*/
 
-	i = i - offset;
+	int i2 = i - offset;
 
-	if (i < 0) {
-		i = i + max_i;
+	if (i2 < 0) {
+		i2 = i2 + max_i;
 	}
-	else if (i >= max_i) {
-		i = i - max_i;	
+	else if (i2 >= max_i) {
+		i2 = i2 - max_i;	
 	}
+	//printf("\ni: %d t_i: %d",i,i2);
 
-	return i;
+	return i2;
 }
 
 void ExtExcWeightProcessor(CARLsim* sim, EEWP eewp) {
@@ -214,8 +220,8 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk) {
 	int d_x[g_max_x*g_max_y]; // neuron distance on x-axis
 	int d_y[g_max_x*g_max_y];	
 	int t_y, t_x, nrn_size, s_num, spk_time, tot; // t_y, t_x: target y and x
-	int spk_tot[g_max_x*g_max_y]; // spike total in window
-	for (int i = 0; i < (g_max_x*g_max_y); i++) {
+	int spk_tot[e.max_x*e.max_y]; // spike total in window
+	for (int i = 0; i < (e.max_x*e.max_y); i++) {
 		spk_tot[i] = 0; // initialize as 0
 	}
 	double speed_factor;
@@ -225,6 +231,11 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk) {
 	y_offset = sin(angle);
 	SetIndices(e.x, i_x, g_max_x, g_max_y, 'x', e.max_x, d_x, x_offset);
 	SetIndices(e.y, i_y, g_max_x, g_max_y, 'y', e.max_y, d_y, y_offset);
+	/*
+	for (int z = 0; z < 25; z++) {
+		printf("\ntest i_y[%d]: %d",z,i_y[z]);
+	}
+	*/
 
 	// count spikes
 	int nrn_counted = 11;
@@ -239,12 +250,15 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk) {
 			}
 		}
 		spk_tot[i] = tot;
-		/*if (tot > 5) {
-			printf("\nneuron %d had %d spikes",i,tot);
-		}*/
+		//if (tot > 5) {
+		//	printf("\nneuron %d had %d spikes",i,tot);
+		//}
 	}
 	printf("\ntotal spikes in 1s: %d\n", nrn_spk[nrn_counted].size());
 	printf("total spikes in 500ms window: %d\n", spk_tot[nrn_counted]);
+	/*for (int z = 0; z < 25; z++) {
+		printf("\ntest i_y[%d]: %d",z,i_y[z]);
+	}*/
 
 	for (int i = 0; i < e.group_size; i++) {
 		// TODO: consider adding speed external input variable to adjust weight
@@ -253,12 +267,15 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk) {
 		exc_surr_dist = 0;//9; // distance of the excitatory surround from the position of presynaptic neuron (solanka, 2015)
 		sigma = 0.7; //0.0834; // width of the Gaussian profile value from (solanka, 2015)
 		max_syn_wt = 1; //5; // maximum synaptic weight value from (solanka, 2015)
-		speed_factor = spk_tot[e_num] * (1/6); // factor representing speed perception by firing rate
+		speed_factor = spk_tot[e_num] * 0.167; // factor representing speed perception by firing rate
 		zero_div = 0.000001; // avoid issue with division by 0
-		t_x = SetTarget(i_x[i], e.max_x, x_offset);
-		t_y = SetTarget(i_y[i], e.max_y, y_offset);
-		//i_x[i] + x_offset;
-		//t_y = i_y[i] + y_offset;
+		t_x = 0;//SetTarget(i_x[i], e.max_x, x_offset);
+		t_y = 0;//SetTarget(i_y[i], e.max_y, y_offset);
+		/*
+		for (int z = 0; z < 25; z++) {
+			printf("\ntest2 i_y[%d]: %d t_y: %d",z,i_y[z],t_y);
+		}
+		*/
 
 		dist = sqrt(pow((d_x[i]),2)+pow((d_y[i] + zero_div),2));
 
@@ -280,7 +297,7 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk) {
 			specified by i_num.
 		*/
 		//printf("\ni_x[i]: %d i_y[i]: %d",i_x[i],i_y[i]);
-		//printf("\ni: %d t_x: %d t_y: %d xo: %f yo: %f d: %f w: %f",i,t_x,t_y,x_offset,y_offset,dist,w);
+		printf("\ni: %d t_x: %d t_y: %d xo: %f yo: %f d: %f w: %f",i,t_x,t_y,x_offset,y_offset,dist,w);
 		i_num = (i_y[i] * e.max_x) + i_x[i];
 		
 		//sim->setWeight(e.conn_groups,n_num,n_num,new_weight,true);
