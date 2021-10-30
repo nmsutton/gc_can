@@ -138,6 +138,23 @@ void SetIndices(int i, int *i_o, int g_max_x, int g_max_y, char axis, int max_i,
 	}
 }
 
+int SetTarget(int i, int max_i, int offset) {
+	/*
+		Set target neuron index
+	*/
+
+	i = i - offset;
+
+	if (i < 0) {
+		i = i + max_i;
+	}
+	else if (i >= max_i) {
+		i = i - max_i;	
+	}
+
+	return i;
+}
+
 void ExtExcWeightProcessor(CARLsim* sim, EEWP eewp) {
 	/*
 		n_num = neuron number
@@ -196,6 +213,8 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e) {
 	int i_y[g_max_x*g_max_y]; // interneuron index y
 	int d_x[g_max_x*g_max_y]; // neuron distance on x-axis
 	int d_y[g_max_x*g_max_y];	
+	int t_y; // target y
+	int t_x; // target x
 
 	angle = GetAngle(e.gc_pd);		
 	x_offset = cos(angle);
@@ -210,6 +229,10 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e) {
 		sigma = 0.7; //0.0834; // width of the Gaussian profile value from (solanka, 2015)
 		max_syn_wt = 1; //5; // maximum synaptic weight value from (solanka, 2015)
 		zero_div = 0.000001; // avoid issue with division by 0
+		t_x = SetTarget(i_x[i], e.max_x, x_offset);
+		t_y = SetTarget(i_y[i], e.max_y, y_offset);
+		//i_x[i] + x_offset;
+		//t_y = i_y[i] + y_offset;
 
 		dist = sqrt(pow((d_x[i]),2)+pow((d_y[i] + zero_div),2));
 
@@ -230,7 +253,8 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e) {
 			an activity bump are computed to save computational time. Which neurons have weight changes are
 			specified by n_num.
 		*/
-		printf("\ni_x[i]: %d i_y[i]: %d",i_x[i],i_y[i]);
+		//printf("\ni_x[i]: %d i_y[i]: %d",i_x[i],i_y[i]);
+		printf("\ni: %d t_x: %d t_y: %d xo: %f yo: %f",i,t_x,t_y,x_offset,y_offset);
 		n_num = (i_y[i] * e.max_x) + i_x[i];
 		
 		//sim->setWeight(e.conn_groups,n_num,n_num,new_weight,true);
