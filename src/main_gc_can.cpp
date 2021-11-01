@@ -199,6 +199,30 @@ void ExtExcWeightProcessor(CARLsim* sim, EEWP eewp) {
 	sim->setWeight(conn_groups,n_num,n_num,new_weight,true);
 }
 
+void PrintWeightsAndFiring(EIWP e, int *spk_tot) {
+	int x_p = 5;
+	int y_p = 5;
+	int max_x = 10;
+	int n = 0;
+
+	printf("\n\nexc->inh weights at time %d",e.t);
+	for (int i = (y_p - 1); i >= 0; i--) {
+		printf("\n");
+		for (int j = 0; j < x_p; j++) {
+			n = (i * max_x) + j;
+			printf("[%f]\t",e.ecin_weights[n][n]);	
+		}
+	}
+	printf("\nGC firing");
+	for (int i = (y_p - 1); i >= 0; i--) {
+		printf("\n");
+		for (int j = 0; j < x_p; j++) {
+			n = (i * max_x) + j;
+			printf("[%d]\t",spk_tot[n]);	
+		}
+	}
+}
+
 void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk) {
 	/*
 		n_num = neuron number
@@ -227,7 +251,7 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk) {
 	double speed_factor;
 	bool print_on = false; // neurons to print to screen
 	if ((e.x==1&&e.y==1) || (e.x==1&&e.y==2)) {
-		print_on = true;
+		//print_on = true;
 	}
 
 	// compute pd angle and set indices accordingly
@@ -264,7 +288,7 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk) {
 		e_num = (e.y * e.max_x) + e.x; // exc neuron number
 		exc_surr_dist = 0; //9; // distance of the excitatory surround from the position of presynaptic neuron (solanka, 2015)
 		sigma = 0.7; //0.0834; // width of the Gaussian profile value from (solanka, 2015)
-		max_syn_wt = 1; //5; // maximum synaptic weight value from (solanka, 2015)
+		max_syn_wt = 0.1; //1; //5; // maximum synaptic weight value from (solanka, 2015)
 		speed_factor = spk_tot[e_num] * 0.167; // factor representing speed perception by firing rate
 		zero_div = 0.000001; // avoid issue with division by 0
 		t_x = SetTarget(i_x[i], e.max_x, x_offset);
@@ -274,7 +298,9 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk) {
 
 		w = speed_factor * exp((-1*pow((dist - exc_surr_dist),2))/(2*pow(sigma,2))); // weight calc with Gaussian function
 		if (e.x == 1 && e.y == 1) {
-			printf("\nweight: %f %f * exp((-1*pow((%f - %f),2))/(2*pow(%f,2)))",w,speed_factor,dist,exc_surr_dist,sigma);
+			if (print_on) {
+				printf("\nweight: %f %f * exp((-1*pow((%f - %f),2))/(2*pow(%f,2)))",w,speed_factor,dist,exc_surr_dist,sigma);
+			}
 		}
 		// adjustments for interneuron weights rather than weight formula's original exc->exc connections
 		w = (1 / w); // flipped scale for less inh. instead of more exc.
@@ -292,21 +318,14 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk) {
 
 		if (e.x == 1 && e.y == 1) {
 			sim->setWeight(e.conn_groups,i_num,i_num,w,true);
-			printf("\nset weight: %f for %d",w,i_num);
+			if (print_on) {
+				printf("\nset weight: %f for %d",w,i_num);
+			}
 			sim->setWeight(e.conn_groups2,i_num,i_num,w,true);
 		}
 	}
-	if (print_on) {
-		printf("\n\nexc->inh weights");
-		printf("\n[%f] [%f] [%f]",e.ecin_weights[30][30],e.ecin_weights[31][31],e.ecin_weights[32][32]);
-		printf("\n[%f] [%f] [%f]",e.ecin_weights[20][20],e.ecin_weights[21][21],e.ecin_weights[22][22]);
-		printf("\n[%f] [%f] [%f]",e.ecin_weights[10][10],e.ecin_weights[11][11],e.ecin_weights[12][12]);
-		printf("\n[%f] [%f] [%f]",e.ecin_weights[0][0],e.ecin_weights[1][1],e.ecin_weights[2][2]);
-		printf("\nGC firing");
-		printf("\n[%d] [%d] [%d]",spk_tot[30],spk_tot[31],spk_tot[32]);
-		printf("\n[%d] [%d] [%d]",spk_tot[20],spk_tot[21],spk_tot[22]);
-		printf("\n[%d] [%d] [%d]",spk_tot[10],spk_tot[11],spk_tot[12]);
-		printf("\n[%d] [%d] [%d]\n",spk_tot[0],spk_tot[1],spk_tot[2]);
+	if ((e.x==1&&e.y==2)) { //(print_on) {
+		PrintWeightsAndFiring(e, spk_tot);
 	}
 }
 
@@ -334,7 +353,7 @@ void BumpInit(CARLsim* sim) {
 		x: 1, y: 1.
 	*/
 
-	double rate = 0.1;
+	double rate = 1;
 
 	sim->setWeight(1,0,0,rate*0.05,true);
 	sim->setWeight(2,0,0,rate*0.05,true);
@@ -342,18 +361,30 @@ void BumpInit(CARLsim* sim) {
 	sim->setWeight(2,1,1,rate*0.025,true);
 	sim->setWeight(1,2,2,rate*0.05,true);
 	sim->setWeight(2,2,2,rate*0.05,true);
+	/*sim->setWeight(1,3,3,rate*0.5,true);
+	sim->setWeight(2,3,3,rate*0.5,true);*/
 	sim->setWeight(1,10,10,rate*0.025,true);
 	sim->setWeight(2,10,10,rate*0.025,true);
 	sim->setWeight(1,11,11,rate*0.0125,true);
 	sim->setWeight(2,11,11,rate*0.0125,true);
 	sim->setWeight(1,12,12,rate*0.025,true);
 	sim->setWeight(2,12,12,rate*0.025,true);
+	/*sim->setWeight(1,13,13,rate*0.2,true);
+	sim->setWeight(2,13,13,rate*0.2,true);	*/
 	sim->setWeight(1,20,20,rate*0.05,true);
 	sim->setWeight(2,20,20,rate*0.05,true);
 	sim->setWeight(1,21,21,rate*0.025,true);
 	sim->setWeight(2,21,21,rate*0.025,true);
 	sim->setWeight(1,22,22,rate*0.05,true);
 	sim->setWeight(2,22,22,rate*0.05,true);
+	/*sim->setWeight(1,23,23,rate*0.2,true);
+	sim->setWeight(2,23,23,rate*0.2,true);	
+	sim->setWeight(1,30,30,rate*0.5,true);
+	sim->setWeight(2,30,30,rate*0.5,true);
+	sim->setWeight(1,31,31,rate*0.2,true);
+	sim->setWeight(2,31,31,rate*0.2,true);		
+	sim->setWeight(1,32,32,rate*0.5,true);
+	sim->setWeight(2,32,32,rate*0.5,true);*/
 }
 
 void MoveCommand(CARLsim* sim, int x, int y, double speed) {
@@ -401,7 +432,7 @@ int main() {
 	int ginh=sim.createGroup("gc_inh", grid_inh, INHIBITORY_NEURON);
 	sim.setNeuronParameters(gexc, 0.02f, 0.2f, -65.0f, 8.0f); // RS
 	sim.setNeuronParameters(ginh, 0.1f, 0.2f, -65.0f, 2.0f); // FS
-	sim.connect(gext, gexc, "one-to-one", 0.05f, 1.0f); // using one-to-one for faster testing than full conn
+	sim.connect(gext, gexc, "one-to-one", 0.08f, 1.0f); // using one-to-one for faster testing than full conn
 	int_w = 0.1f;
 	sim.connect(gexc, ginh, "one-to-one", RangeWeight(int_w), 1.0f);
 	sim.connect(ginh, gexc, "one-to-one", RangeWeight(int_w), 1.0f);
@@ -535,10 +566,10 @@ int main() {
 
 			ecin_weights = CMecin->takeSnapshot();	
 			eiwp.ecin_weights = ecin_weights;
-			printf("\necin_weights[11][11]: %f",ecin_weights[11][11]);
+			printf("\n\necin_weights[11][11]: %f",ecin_weights[11][11]);
 
 			if (t == 1000) {
-				MoveCommand(&sim,11,11,0.05);
+				MoveCommand(&sim,11,11,0.08);
 				MoveCommand(&sim,21,21,0.3);
 			}
 		}
