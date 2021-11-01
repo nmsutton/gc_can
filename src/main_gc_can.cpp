@@ -225,20 +225,19 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk) {
 		spk_tot[i] = 0; // initialize as 0
 	}
 	double speed_factor;
+	bool print_on = false; // neurons to print to screen
+	if ((e.x==1&&e.y==1) || (e.x==1&&e.y==2)) {
+		print_on = true;
+	}
 
+	// compute pd angle and set indices accordingly
 	angle = GetAngle(e.gc_pd);		
 	x_offset = cos(angle);
 	y_offset = sin(angle);
 	SetIndices(e.x, i_x, g_max_x, g_max_y, 'x', e.max_x, d_x, x_offset);
 	SetIndices(e.y, i_y, g_max_x, g_max_y, 'y', e.max_y, d_y, y_offset);
-	/*
-	for (int z = 0; z < 25; z++) {
-		printf("\ntest i_y[%d]: %d",z,i_y[z]);
-	}
-	*/
 
 	// count spikes
-	int nrn_counted = 11;
 	nrn_size = nrn_spk.size();
 	for (int i = 0; i < nrn_size; i++) {
 		tot = 0;
@@ -250,15 +249,14 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk) {
 			}
 		}
 		spk_tot[i] = tot;
-		//if (tot > 5) {
-		//	printf("\nneuron %d had %d spikes",i,tot);
-		//}
 	}
-	printf("\ntotal spikes in 1s: %d\n", nrn_spk[nrn_counted].size());
-	printf("total spikes in 500ms window: %d\n", spk_tot[nrn_counted]);
-	/*for (int z = 0; z < 25; z++) {
-		printf("\ntest i_y[%d]: %d",z,i_y[z]);
-	}*/
+
+	// print to screen
+	if (print_on) {
+		int nrn_counted = (e.y * e.max_x) + e.x;
+		printf("\nx %d y %d total spikes in 1s: %d",e.y,e.x,nrn_spk[nrn_counted].size());
+		printf("\nx %d y %d total spikes in 500ms window: %d\n",e.y,e.x,spk_tot[nrn_counted]);
+	}
 
 	for (int i = 0; i < e.group_size; i++) {
 		// TODO: consider adding speed external input variable to adjust weight
@@ -271,37 +269,27 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk) {
 		zero_div = 0.000001; // avoid issue with division by 0
 		t_x = SetTarget(i_x[i], e.max_x, x_offset);
 		t_y = SetTarget(i_y[i], e.max_y, y_offset);
-		/*
-		for (int z = 0; z < 25; z++) {
-			printf("\ntest2 i_y[%d]: %d t_y: %d",z,i_y[z],t_y);
-		}
-		*/
 
 		dist = sqrt(pow((d_x[i]),2)+pow((d_y[i] + zero_div),2));
 
-		w = speed_factor * max_syn_wt * exp((-1*pow((dist - exc_surr_dist),2))/(2*pow(sigma,2))); // weight calc with Gaussian function
-		
-		/*disp_i = 5;
-		if (i == disp_i) {
-			printf("\na: %f sqrt(pow((%d - %d - %f),2)+pow((%d - %d - %f),2))",angle,e.x,i_x[i],x_offset,e.y,i_y[i],y_offset);
-			printf("\n%f * exp((-1*pow(%f,2))/(2*pow(%f,2)))",max_syn_wt,dist,sigma);
-			printf("\ndisp_i: %d i: %d w: %f dist: %f e.x: %d, e.y: %d", disp_i, i, w, dist, e.x, e.y);
-		}*/
-		//printf("\nix: %d iy: %d w: %f d: %f sqrt(pow((%d - %f),2)+pow((%d - %f),2))",i_x[i],i_y[i],w,dist,d_x[i],x_offset,d_y[i],y_offset);
-		//printf("\nix: %d iy: %d d: %f w: %f exp((-1*pow(%f,2))/(2*pow(%f,2)))",i_x[i],i_y[i],dist,w,dist,sigma);
-		//printf("\n%f %f",(-1*pow((dist - exc_surr_dist),2)),(2*pow(sigma,2)));
+		w = speed_factor * exp((-1*pow((dist - exc_surr_dist),2))/(2*pow(sigma,2))); // weight calc with Gaussian function
 
-		/*
-			Instead of calculating weights for many neurons, only neurons in the limited surrounding area of 
-			an activity bump are computed to save computational time. Which neurons have weight changes are
-			specified by i_num.
-		*/
-		//printf("\ni_x[i]: %d i_y[i]: %d",i_x[i],i_y[i]);
-		printf("\ni: %d t_x: %d t_y: %d xo: %f yo: %f d: %f w: %f",i,t_x,t_y,x_offset,y_offset,dist,w);
-		i_num = (i_y[i] * e.max_x) + i_x[i];
+		// adjustments for interneuron weights rather than weight formula's original exc->exc connections
+		w = (1 / w); // flipped scale for less inh. instead of more exc.
+		w = pow((w * 0.0025),0.54); // scaling factor for intended synapse weights. this is just for testing
+		if (w > max_syn_wt) {
+			w = max_syn_wt; // set max weight
+		}
+
+		i_num = (t_y * e.max_x) + t_x;		
+
+		if (print_on) {
+			//printf("\ni_x[i]: %d i_y[i]: %d",i_x[i],i_y[i]);
+			printf("\ni: %d t_x: %d t_y: %d xo: %f yo: %f d: %f w: %f sw: %f in: %d",i,t_x,t_y,x_offset,y_offset,dist,w,e.ecin_weights[e_num][e_num],i_num);
+		}
 		
-		//sim->setWeight(e.conn_groups,n_num,n_num,new_weight,true);
-		//sim->setWeight(e.conn_groups2,n_num,n_num,new_weight,true);
+		sim->setWeight(e.conn_groups,i_num,i_num,w,true);
+		sim->setWeight(e.conn_groups2,i_num,i_num,w,true);
 	}
 }
 
@@ -379,11 +367,13 @@ int main() {
 	int speed_control;
 	int move_time;
 	bool move_active;
-	struct EEWP eewp;
+	//struct EEWP eewp;
 	struct EIWP eiwp;
 	vector<vector<int>> nrn_spk;
 	vector<vector<int>> * nrn_spk_ptr;
 	nrn_spk_ptr = &nrn_spk;
+
+	eiwp.pd = pd; 
 
 	// configure the network
 	Grid3D grid_ext(10,10,1); // external input
@@ -497,46 +487,36 @@ int main() {
 		}		
 
 		// print locations
-		if (t % 1000 == 0) {
+		/*if (t % 1000 == 0) {
 			printf("\ntime %d location x:%d, y:%d", t, loc[0], loc[1]);
-		}		
+		}
 		if (t == (sim_time - 1)) {
 			printf("\n\n");
-		}
+		}*/
 
 		if (t == 0) {
 			BumpInit(&sim); // set activity bump initialization
 
 			MoveCommand(&sim,11,11,0.3); // send movement signal
 		}
-		if (t == 1000) {
+		if (t == 1000 || t == 2000) {
 			// store firing in vector
 			SMexc->stopRecording();
 			nrn_spk = SMexc->getSpikeVector2D();
 			SMexc->startRecording();
 
-			for (int i = 0; i < (eewp.max_x * eewp.max_y); i++) {
-				// store synapse values
-				// iterate trough all grid cells
-				/*etec_weights = CMetec->takeSnapshot();	
-				eewp.x = i % eewp.max_x;
-				eewp.y = i / eewp.max_x;
-				eewp.i_ext = 0;
-				eewp.ext_pd = 'u';
-				eewp.pd = pd;
-				eewp.etec_weights = etec_weights;*/
-				//ExtExcWeightProcessor(&sim, eewp); // potentially this function is not needed and I can review if it is later
-
+			for (int i = 0; i < (eiwp.max_x * eiwp.max_y); i++) {
 				ecin_weights = CMecin->takeSnapshot();	
-				eiwp.x = i % eewp.max_x;
-				eiwp.y = i / eewp.max_x;
-				printf("\nii:%d x: %d y: %d eiwp.x: %d", i, eiwp.x, eiwp.y, eiwp.x);
-				eiwp.gc_spk = 0;
-				eiwp.gc_pd = pd[i]; //'u';
-				eiwp.pd = pd; 
-				eiwp.ecin_weights = ecin_weights;
-				eiwp.spk_tot = spk_tot;
+				eiwp.ecin_weights = ecin_weights;				
+				eiwp.x = i % eiwp.max_x;
+				eiwp.y = i / eiwp.max_x;
+				if ((eiwp.x==1&&eiwp.y==1) || (eiwp.x==1&&eiwp.y==2)) {printf("\n\nt: %d ii:%d x: %d y: %d eiwp.x: %d",t, i, eiwp.x, eiwp.y, eiwp.x);}
+				eiwp.gc_pd = pd[i];
 				ExcInhWeightProcessor(&sim, eiwp, nrn_spk);
+			}
+
+			if (t == 1000) {
+				MoveCommand(&sim,21,21,0.3);
 			}
 		}
 	}
@@ -544,7 +524,7 @@ int main() {
 	SMexc->stopRecording();
 	SMinh->stopRecording();
 
-	int nur_spk0 = SMexc->getNeuronNumSpikes(0);
+	/*int nur_spk0 = SMexc->getNeuronNumSpikes(0);
 	int nur_spk1 = SMexc->getNeuronNumSpikes(1);
 	int nur_spk10 = SMexc->getNeuronNumSpikes(10);
 	int nur_spk11 = SMexc->getNeuronNumSpikes(11);
@@ -559,12 +539,13 @@ int main() {
 	printf("neuron 20 spikes = %d\n", nur_spk20);
 	printf("neuron 21 spikes = %d\n", nur_spk21);
 	printf("neuron 30 spikes = %d\n", nur_spk30);
-	printf("neuron 31 spikes = %d\n", nur_spk31);
+	printf("neuron 31 spikes = %d\n", nur_spk31);*/
 
 	//vector<vector<int>> nrn_spk = SMexc->getSpikeVector2D();
 	//printf("neuron 0 spikes = %d\n", nrn_spk[1].size());
 
 	// print firing stats (but not the exact spike times)
+	printf("\n\n");
 	SMext->print(false);
 	SMexc->print(false);
 	SMinh->print(false);
