@@ -296,6 +296,18 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk) {
 			sim->setWeight(e.conn_groups2,i_num,i_num,w,true);
 		}
 	}
+	if (print_on) {
+		printf("\n\nexc->inh weights");
+		printf("\n[%f] [%f] [%f]",e.ecin_weights[30][30],e.ecin_weights[31][31],e.ecin_weights[32][32]);
+		printf("\n[%f] [%f] [%f]",e.ecin_weights[20][20],e.ecin_weights[21][21],e.ecin_weights[22][22]);
+		printf("\n[%f] [%f] [%f]",e.ecin_weights[10][10],e.ecin_weights[11][11],e.ecin_weights[12][12]);
+		printf("\n[%f] [%f] [%f]",e.ecin_weights[0][0],e.ecin_weights[1][1],e.ecin_weights[2][2]);
+		printf("\nGC firing");
+		printf("\n[%d] [%d] [%d]",spk_tot[30],spk_tot[31],spk_tot[32]);
+		printf("\n[%d] [%d] [%d]",spk_tot[20],spk_tot[21],spk_tot[22]);
+		printf("\n[%d] [%d] [%d]",spk_tot[10],spk_tot[11],spk_tot[12]);
+		printf("\n[%d] [%d] [%d]\n",spk_tot[0],spk_tot[1],spk_tot[2]);
+	}
 }
 
 void MotorControl(int *loc, char move) {
@@ -526,6 +538,7 @@ int main() {
 			printf("\necin_weights[11][11]: %f",ecin_weights[11][11]);
 
 			if (t == 1000) {
+				MoveCommand(&sim,11,11,0.05);
 				MoveCommand(&sim,21,21,0.3);
 			}
 		}
