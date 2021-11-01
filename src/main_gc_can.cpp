@@ -74,7 +74,7 @@ struct EEWP
 
 struct EIWP
 {
-	int x, y, spk_tot;
+	int x, y, t, spk_tot;
 	int max_x = 10;
 	int max_y = 10;
 	float gc_spk;
@@ -244,7 +244,7 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk) {
 		s_num = nrn_spk[i].size();
 		for (int j = 0; j < s_num; j++) {
 			spk_time = nrn_spk[i][j];
-			if (spk_time >= 500 && spk_time <= 1000) {
+			if (spk_time >= (e.t - 500) && spk_time <= e.t) {
 				tot += 1;
 			}
 		}
@@ -254,15 +254,15 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk) {
 	// print to screen
 	if (print_on) {
 		int nrn_counted = (e.y * e.max_x) + e.x;
-		printf("\nx %d y %d total spikes in 1s: %d",e.y,e.x,nrn_spk[nrn_counted].size());
-		printf("\nx %d y %d total spikes in 500ms window: %d\n",e.y,e.x,spk_tot[nrn_counted]);
+		printf("\nx %d y %d total spikes in 1s: %d",e.x,e.y,nrn_spk[nrn_counted].size());
+		printf("\nx %d y %d total spikes in 500ms window: %d\n",e.x,e.y,spk_tot[nrn_counted]);
 	}
 
 	for (int i = 0; i < e.group_size; i++) {
 		// TODO: consider adding speed external input variable to adjust weight
 
 		e_num = (e.y * e.max_x) + e.x; // exc neuron number
-		exc_surr_dist = 0;//9; // distance of the excitatory surround from the position of presynaptic neuron (solanka, 2015)
+		exc_surr_dist = 0; //9; // distance of the excitatory surround from the position of presynaptic neuron (solanka, 2015)
 		sigma = 0.7; //0.0834; // width of the Gaussian profile value from (solanka, 2015)
 		max_syn_wt = 1; //5; // maximum synaptic weight value from (solanka, 2015)
 		speed_factor = spk_tot[e_num] * 0.167; // factor representing speed perception by firing rate
@@ -273,10 +273,12 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk) {
 		dist = sqrt(pow((d_x[i]),2)+pow((d_y[i] + zero_div),2));
 
 		w = speed_factor * exp((-1*pow((dist - exc_surr_dist),2))/(2*pow(sigma,2))); // weight calc with Gaussian function
-
+		if (e.x == 1 && e.y == 1) {
+			printf("\nweight: %f %f * exp((-1*pow((%f - %f),2))/(2*pow(%f,2)))",w,speed_factor,dist,exc_surr_dist,sigma);
+		}
 		// adjustments for interneuron weights rather than weight formula's original exc->exc connections
 		w = (1 / w); // flipped scale for less inh. instead of more exc.
-		w = pow((w * 0.0025),0.54); // scaling factor for intended synapse weights. this is just for testing
+		w = pow((w * 0.0025),0.75); // scaling factor for intended synapse weights. this is just for testing
 		if (w > max_syn_wt) {
 			w = max_syn_wt; // set max weight
 		}
@@ -287,9 +289,12 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk) {
 			//printf("\ni_x[i]: %d i_y[i]: %d",i_x[i],i_y[i]);
 			printf("\ni: %d t_x: %d t_y: %d xo: %f yo: %f d: %f w: %f sw: %f in: %d",i,t_x,t_y,x_offset,y_offset,dist,w,e.ecin_weights[e_num][e_num],i_num);
 		}
-		
-		sim->setWeight(e.conn_groups,i_num,i_num,w,true);
-		sim->setWeight(e.conn_groups2,i_num,i_num,w,true);
+
+		if (e.x == 1 && e.y == 1) {
+			sim->setWeight(e.conn_groups,i_num,i_num,w,true);
+			printf("\nset weight: %f for %d",w,i_num);
+			sim->setWeight(e.conn_groups2,i_num,i_num,w,true);
+		}
 	}
 }
 
@@ -317,7 +322,7 @@ void BumpInit(CARLsim* sim) {
 		x: 1, y: 1.
 	*/
 
-	double rate = 1;
+	double rate = 0.1;
 
 	sim->setWeight(1,0,0,rate*0.05,true);
 	sim->setWeight(2,0,0,rate*0.05,true);
@@ -504,16 +509,21 @@ int main() {
 			SMexc->stopRecording();
 			nrn_spk = SMexc->getSpikeVector2D();
 			SMexc->startRecording();
+			ecin_weights = CMecin->takeSnapshot();	
+			eiwp.ecin_weights = ecin_weights;				
 
-			for (int i = 0; i < (eiwp.max_x * eiwp.max_y); i++) {
-				ecin_weights = CMecin->takeSnapshot();	
-				eiwp.ecin_weights = ecin_weights;				
+			for (int i = 0; i < (eiwp.max_x * eiwp.max_y); i++) {			
 				eiwp.x = i % eiwp.max_x;
 				eiwp.y = i / eiwp.max_x;
+				eiwp.t = t;
 				if ((eiwp.x==1&&eiwp.y==1) || (eiwp.x==1&&eiwp.y==2)) {printf("\n\nt: %d ii:%d x: %d y: %d eiwp.x: %d",t, i, eiwp.x, eiwp.y, eiwp.x);}
 				eiwp.gc_pd = pd[i];
 				ExcInhWeightProcessor(&sim, eiwp, nrn_spk);
 			}
+
+			ecin_weights = CMecin->takeSnapshot();	
+			eiwp.ecin_weights = ecin_weights;
+			printf("\necin_weights[11][11]: %f",ecin_weights[11][11]);
 
 			if (t == 1000) {
 				MoveCommand(&sim,21,21,0.3);
