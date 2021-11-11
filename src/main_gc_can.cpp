@@ -523,18 +523,16 @@ void MovePath(CARLsim* sim, MOVE* m, EIWP* e, int* move_action) {
 	if (speed_control == move_time) {
 		move_active = true;
 	}
+	vector<int> move_times;
 
 	// configure movement
-	if (t < 1000 && move_active) {
-		//MotorControl(m->loc, 'u');
-	}
-	else if (t < 1400 && move_active) {
+	move_times.push_back(1000);
+	move_times.push_back(4000);
+
+	if (t >= 1000 && t < 1400 && move_active) {
 		MotorControl(m->loc, 'u');
 	}
-	else if (t < 4000 && move_active) {
-		//MotorControl(m->loc, 'r');
-	}
-	else if (t < 4400 && move_active) {
+	if (t >= 4000 && t < 4400 && move_active) {
 		MotorControl(m->loc, 'r');
 	}
 
@@ -551,16 +549,19 @@ void MovePath(CARLsim* sim, MOVE* m, EIWP* e, int* move_action) {
 	y = m->loc[1] / 100;
 	n_num = (y * e->max_x) + x;
 
-	if (t % 1000 == 0) {
-		if (t == 1000 || t == 4000) {
-			move_action[0] = n_num;
-			move_action[1] = t;
+	//if (t % 1000 == 0) {
+		for (int i = 0; i < move_times.size(); i++) {
+			if (t == move_times[i]) {
+				// set movement parameters
+				move_action[0] = n_num;
+				move_action[1] = t;				
+			}
+			if (t == move_times[i] || t == move_times[i] + 1000) {
+				// perform movement commands
+				MoveCommand(sim,move_action,m->move_weight,e,m);
+			}
 		}
-
-		if (t == 1000 || t == 4000 || t == 2000 || t == 5000) {
-			MoveCommand(sim,move_action,m->move_weight,e,m);
-		}
-	}
+	//}
 }
 
 int main() {
