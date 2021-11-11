@@ -5,7 +5,7 @@
 [INFO carlsim/kernel/src/snn_manager.cpp:2105] ***************************** Configuring Network ********************************
 [INFO carlsim/kernel/src/snn_manager.cpp:2107] Starting CARLsim simulation "gc can" in USER mode
 [INFO carlsim/kernel/src/snn_manager.cpp:2108] Random number seed: 42
-[DEBUG carlsim/kernel/src/snn_manager.cpp:2114] Current local time and date: Thu Nov 11 14:58:41 2021
+[DEBUG carlsim/kernel/src/snn_manager.cpp:2114] Current local time and date: Thu Nov 11 17:46:19 2021
 
 [DEBUG carlsim/kernel/src/snn_manager.cpp:166] CONNECT SETUP: connId=0, mulFast=1.000000, mulSlow=1.000000
 [DEBUG carlsim/kernel/src/snn_manager.cpp:166] CONNECT SETUP: connId=1, mulFast=1.000000, mulSlow=1.000000
@@ -104,8 +104,8 @@
 [INFO carlsim/kernel/src/snn_manager.cpp:5623] *****************      Initializing GPU 0 Runtime      *************************
 [INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3616] GPU Memory Management: (Total 24265.812 MB)
 [INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3617] Data			Size		Total Used	Total Available
-[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3619] Init:			24265.812 MB	2262.062 MB	22003.750 MB
-[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3632] Random Gen:		6.000 MB	2268.062 MB	21997.750 MB
+[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3619] Init:			24265.812 MB	2147.750 MB	22118.062 MB
+[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3632] Random Gen:		6.000 MB	2153.750 MB	22112.062 MB
 [DEBUG carlsim/kernel/src/gpu_module/snn_gpu_module.cu:288] Grp Size = 100, Total Buffer Cnt = 1, Buffer Cnt = 1
 [DEBUG carlsim/kernel/src/gpu_module/snn_gpu_module.cu:288] Grp Size = 100, Total Buffer Cnt = 2, Buffer Cnt = 1
 [DEBUG carlsim/kernel/src/gpu_module/snn_gpu_module.cu:288] Grp Size = 100, Total Buffer Cnt = 3, Buffer Cnt = 1
@@ -116,12 +116,12 @@
 [DEBUG carlsim/kernel/src/gpu_module/snn_gpu_module.cu:319] 1. Start=100, size=100 grpId=1:gc_inh (SpikeMonId=-1) (GroupMonId=-1)
 [DEBUG carlsim/kernel/src/gpu_module/snn_gpu_module.cu:319] 2. Start=200, size=100 grpId=2:ext_input (SpikeMonId=-1) (GroupMonId=-1)
 [DEBUG carlsim/kernel/src/gpu_module/snn_gpu_module.cu:327] GPU loadBufferSize = 128, GPU loadBufferCount = 3
-[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3645] Static Load:		0.000 MB	2268.062 MB	21997.750 MB
-[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3654] Conn Info:		0.000 MB	2268.062 MB	21997.750 MB
-[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3660] Syn State:		0.000 MB	2268.062 MB	21997.750 MB
-[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3677] Neuron State:		0.000 MB	2268.062 MB	21997.750 MB
-[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3684] Group State:		0.000 MB	2268.062 MB	21997.750 MB
-[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3694] Auxiliary Data:		0.000 MB	2268.062 MB	21997.750 MB
+[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3645] Static Load:		0.000 MB	2153.750 MB	22112.062 MB
+[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3654] Conn Info:		0.000 MB	2153.750 MB	22112.062 MB
+[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3660] Syn State:		0.000 MB	2153.750 MB	22112.062 MB
+[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3677] Neuron State:		0.000 MB	2153.750 MB	22112.062 MB
+[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3684] Group State:		0.000 MB	2153.750 MB	22112.062 MB
+[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3694] Auxiliary Data:		0.000 MB	2153.750 MB	22112.062 MB
 
 
 [DEBUG carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3710] Transfering group settings to GPU:
@@ -7179,7 +7179,7 @@
 [INFO carlsim/kernel/src/snn_manager.cpp:6734] Simulation Mode:	COBA
 [INFO carlsim/kernel/src/snn_manager.cpp:6735] Random Seed:		42
 [INFO carlsim/kernel/src/snn_manager.cpp:6736] Timing:			Model Simulation Time = 7 sec
-[INFO carlsim/kernel/src/snn_manager.cpp:6737] 			Actual Execution Time = 1.51 sec
+[INFO carlsim/kernel/src/snn_manager.cpp:6737] 			Actual Execution Time = 1.62 sec
 [INFO carlsim/kernel/src/snn_manager.cpp:6739] Average Firing Rate:	2+ms delay = 0.000 Hz
 [INFO carlsim/kernel/src/snn_manager.cpp:6741] 			1ms delay = 12.633 Hz
 [INFO carlsim/kernel/src/snn_manager.cpp:6742] 			Overall = 12.633 Hz

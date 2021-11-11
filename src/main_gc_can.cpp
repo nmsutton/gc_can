@@ -97,9 +97,9 @@ struct MOVE
 {
 		// animal movement parameters
 
-		int slow_rate = 4; // rate movement is slowed
+		int slow_rate = 4; // rate movement is slowed. value 4 creates 25 movement units in 100 msec
 		int move_time = 500; // milliseconds movement activity firing occurs		
-		int loc[2] = {0, 0}; // x, y location
+		int loc[2] = {150, 150}; // x, y location
 		double move_weight = 0.3; // synaptic weight used to signal movement command
 		double default_weight = 0.08; // synaptic weight used for default background noise
 };
@@ -493,20 +493,24 @@ void BumpInit(CARLsim* sim) {
 	sim->setWeight(2,22,22,rate*f3,true);
 }
 
-void MoveCommand(CARLsim* sim, int x, int y, double speed, EIWP* e, MOVE* m, int move_start) {
+void MoveCommand(CARLsim* sim, int* move_action, double speed, EIWP* e, MOVE* m) {
 	/*
 		Update weights with the effects of movement
 	*/
 
+	int n_num = move_action[0];
+	int move_start = move_action[1];	
+
 	if ((e->t >= move_start) && (e->t <= (move_start + m->move_time))) {
-		sim->setWeight(0,x,y,speed,true);
+		sim->setWeight(0,n_num,n_num,speed,true);
+		cout << "\nmovement command sent t: " << e->t << " nrn: " << n_num << " weight: " << speed;
 	}
 	else {
-		sim->setWeight(0,x,y,m->default_weight,true);
+		sim->setWeight(0,n_num,n_num,m->default_weight,true);
 	}
 }
 
-void MovePath(CARLsim* sim, MOVE* m, EIWP* e) {
+void MovePath(CARLsim* sim, MOVE* m, EIWP* e, int* move_action) {
 	/*
 		Movement path
 	*/
@@ -521,69 +525,22 @@ void MovePath(CARLsim* sim, MOVE* m, EIWP* e) {
 	}
 
 	// configure movement
-	/*if (t == 1000) {
-		MoveCommand(sim,11,11,m->move_weight); // send movement signal
+	if (t < 1000 && move_active) {
+		//MotorControl(m->loc, 'u');
 	}
-	if (t == 2000) {
-		MoveCommand(sim,11,11,m->default_weight);
-	}
-	if (t == 4000) {
-		MoveCommand(sim,21,21,m->move_weight);
-	}
-	if (t == 5000) {
-		MoveCommand(sim,21,21,m->default_weight);
-	}*/
-
-	if (t < 200 && move_active) {
-		MotorControl(m->loc, 'r');
-	}
-	else if (t < 600 && move_active) {
+	else if (t < 1400 && move_active) {
 		MotorControl(m->loc, 'u');
 	}
-	else if (t < 1800 && move_active) {
+	else if (t < 4000 && move_active) {
+		//MotorControl(m->loc, 'r');
+	}
+	else if (t < 4400 && move_active) {
 		MotorControl(m->loc, 'r');
 	}
-	else if (t < 2600 && move_active) {
-		MotorControl(m->loc, 'u');
-	}
-	else if (t < 3400 && move_active) {
-		MotorControl(m->loc, 'l');
-	}
-	else if (t < 4200 && move_active) {
-		MotorControl(m->loc, 'd');
-	}
-	else if (t < 5000 && move_active) {
-		MotorControl(m->loc, 'r');
-	}
-	else if (t < 5800 && move_active) {
-		MotorControl(m->loc, 'u');
-	}
-	else if (t < 6600 && move_active) {
-		MotorControl(m->loc, 'l');
-	}		
-	else if (t < 7400 && move_active) {
-		MotorControl(m->loc, 'r');
-	}
-	else if (t < 7800 && move_active) {
-		MotorControl(m->loc, 'u');
-	}
-	else if (t < 8200 && move_active) {
-		MotorControl(m->loc, 'r');
-	}
-	else if (t < 9000 && move_active) {
-		MotorControl(m->loc, 'd');
-	}
-	else if (t >= 9000 && t < 9400 && move_active) {
-		MotorControl(m->loc, 'r');
-	}
-	else if (t >= 9400 && t < 10000 && move_active) {
-		MotorControl(m->loc, 'u');
-	}		
 
 	// print locations
 	if (t % 1000 == 0) {
-		//printf("\ntime %d location x:%d, y:%d", t, m->loc[0], m->loc[1]);
-		printf("\ntime %d location x:%d, y:%d", t, m->loc[0] / 100, m->loc[1] / 100);
+		printf("\ntime %d loc x:%d, y:%d nrn x:%d y:%d", t, m->loc[0], m->loc[1], m->loc[0] / 100, m->loc[1] / 100);
 	}
 	if (t == (e->sim_time - 1)) {
 		printf("\n\n");
@@ -595,10 +552,14 @@ void MovePath(CARLsim* sim, MOVE* m, EIWP* e) {
 	n_num = (y * e->max_x) + x;
 
 	if (t % 1000 == 0) {
-		//MoveCommand(sim,n_num,n_num,m->move_weight,e,m,1000);
-		//MoveCommand(sim,n_num,n_num,m->move_weight,e,m,4000);
-		MoveCommand(sim,11,11,m->move_weight,e,m,1000);
-		MoveCommand(sim,21,21,m->move_weight,e,m,4000);
+		if (t == 1000 || t == 4000) {
+			move_action[0] = n_num;
+			move_action[1] = t;
+		}
+
+		if (t == 1000 || t == 4000 || t == 2000 || t == 5000) {
+			MoveCommand(sim,move_action,m->move_weight,e,m);
+		}
 	}
 }
 
@@ -627,6 +588,7 @@ int main() {
 	double temp_intogc_wts[x_cnt*y_cnt]; // temp matrix for IN weights
 	eiwp.pd = pd; 
 	eiwp.sim_time = sim_time;
+	int move_action[] = {0,0}; // {n,t} stores the n (neuron number) and t (time) of a movement command
 
 	// configure the network
 	Grid3D grid_ext(10,10,1); // external input
@@ -677,66 +639,67 @@ int main() {
 			BumpInit(&sim); 
 		}
 
-		// create movement path
-		MovePath(&sim, &move, &eiwp);		
-
-		if (t == 1000 || t == 2000 || t == 3000 || t == 4000 || t == 5000 || t == 6000 || t == 7000) {
+		if (t % 1000 == 0) {
 			// store firing in vector
 			SMexc->stopRecording();
 			nrn_spk = SMexc->getSpikeVector2D();
 			SMexc->startRecording();
 			ecin_weights = CMecin->takeSnapshot();	
-			eiwp.ecin_weights = ecin_weights;		
+			eiwp.ecin_weights = ecin_weights;	
+		}	
 
-			if (t == 1000 || t == 3000 || t == 4000 || t == 6000 || t == 7000) {
-				// display activity
+		if (t == 1000 || t == 3000 || t == 4000 || t == 6000 || t == 7000) {
+			// display activity
 
-				/*--------Print Weights and Firing--------*/
-				int nrn_size, tot, s_num, spk_time;
-				int spk_tot[10*10];
-				eiwp.t = t;
+			/*--------Print Weights and Firing--------*/
+			int nrn_size, tot, s_num, spk_time;
+			int spk_tot[10*10];
+			eiwp.t = t;
 
-				// count spikes
-				nrn_size = nrn_spk.size();
-				for (int i = 0; i < nrn_size; i++) {
-					tot = 0;
-					s_num = nrn_spk[i].size();
-					for (int j = 0; j < s_num; j++) {
-						spk_time = nrn_spk[i][j];
-						if (spk_time >= (t - 500) && spk_time <= t) {
-							tot += 1;
-						}
+			// count spikes
+			nrn_size = nrn_spk.size();
+			for (int i = 0; i < nrn_size; i++) {
+				tot = 0;
+				s_num = nrn_spk[i].size();
+				for (int j = 0; j < s_num; j++) {
+					spk_time = nrn_spk[i][j];
+					if (spk_time >= (t - 500) && spk_time <= t) {
+						tot += 1;
 					}
-					spk_tot[i] = tot;
 				}
-
-				//PrintWeightsAndFiring(eiwp, spk_tot);
-				/*----------------------------------------*/
-			}		
-
-			if (t == 2000 || t == 5000) {
-				// process movement
-
-				// clear temp matrices
-				for (int i = 0; i < (eiwp.max_x * eiwp.max_y); i++) {
-					temp_gctoin_wts[i] = 0.0;
-					temp_intogc_wts[i] = 0.0;
-				}
-
-				for (int i = 0; i < (eiwp.max_x * eiwp.max_y); i++) {			
-					eiwp.x = i % eiwp.max_x;
-					eiwp.y = i / eiwp.max_x;
-					eiwp.t = t;
-					//if ((eiwp.x==1&&eiwp.y==1) || (eiwp.x==1&&eiwp.y==2)) {printf("\n\nt: %d ii:%d x: %d y: %d eiwp.x: %d",t, i, eiwp.x, eiwp.y, eiwp.x);}
-					eiwp.gc_pd = pd[i];
-					ExcInhWeightProcessor(&sim, eiwp, nrn_spk, temp_gctoin_wts, temp_intogc_wts);
-				}		
-
-				TransformWeights(temp_gctoin_wts, temp_intogc_wts, eiwp);	
-
-				StoreWeights(&sim, temp_gctoin_wts, temp_intogc_wts, eiwp);
+				spk_tot[i] = tot;
 			}
 
+			//PrintWeightsAndFiring(eiwp, spk_tot);
+			/*----------------------------------------*/
+		}		
+
+		if (t == 2000 || t == 5000) {
+			// process movement
+
+			// clear temp matrices
+			for (int i = 0; i < (eiwp.max_x * eiwp.max_y); i++) {
+				temp_gctoin_wts[i] = 0.0;
+				temp_intogc_wts[i] = 0.0;
+			}
+
+			for (int i = 0; i < (eiwp.max_x * eiwp.max_y); i++) {			
+				eiwp.x = i % eiwp.max_x;
+				eiwp.y = i / eiwp.max_x;
+				//if ((eiwp.x==1&&eiwp.y==1) || (eiwp.x==1&&eiwp.y==2)) {printf("\n\nt: %d ii:%d x: %d y: %d eiwp.x: %d",t, i, eiwp.x, eiwp.y, eiwp.x);}
+				eiwp.gc_pd = pd[i];
+				ExcInhWeightProcessor(&sim, eiwp, nrn_spk, temp_gctoin_wts, temp_intogc_wts);
+			}		
+
+			TransformWeights(temp_gctoin_wts, temp_intogc_wts, eiwp);	
+
+			StoreWeights(&sim, temp_gctoin_wts, temp_intogc_wts, eiwp);
+		}
+
+		// create movement path
+		MovePath(&sim, &move, &eiwp, move_action);				
+
+		if (t % 1000 == 0 && t != 0) {
 			//PrintTempWeights(temp_gctoin_wts, temp_intogc_wts, t);	
 
 			/*--------Print Weights and Firing--------*/
@@ -764,6 +727,7 @@ int main() {
 			printf("\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _");
 		}
 	}
+
 	SMext->stopRecording();
 	SMexc->stopRecording();
 	SMinh->stopRecording();
