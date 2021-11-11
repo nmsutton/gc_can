@@ -98,7 +98,10 @@ struct MOVE
 		// animal movement parameters
 
 		int slow_rate = 4; // rate movement is slowed
+		int move_time = 500; // milliseconds movement activity firing occurs		
 		int loc[2] = {0, 0}; // x, y location
+		double move_weight = 0.3; // synaptic weight used to signal movement command
+		double default_weight = 0.08; // synaptic weight used for default background noise
 };
 
 string to_string(double x)
@@ -490,11 +493,20 @@ void BumpInit(CARLsim* sim) {
 	sim->setWeight(2,22,22,rate*f3,true);
 }
 
-void MoveCommand(CARLsim* sim, int x, int y, double speed) {
-	sim->setWeight(0,x,y,speed,true);
+void MoveCommand(CARLsim* sim, int x, int y, double speed, EIWP* e, MOVE* m, int move_start) {
+	/*
+		Update weights with the effects of movement
+	*/
+
+	if ((e->t >= move_start) && (e->t <= (move_start + m->move_time))) {
+		sim->setWeight(0,x,y,speed,true);
+	}
+	else {
+		sim->setWeight(0,x,y,m->default_weight,true);
+	}
 }
 
-void MovePath(MOVE* m, EIWP* e) {
+void MovePath(CARLsim* sim, MOVE* m, EIWP* e) {
 	/*
 		Movement path
 	*/
@@ -502,12 +514,26 @@ void MovePath(MOVE* m, EIWP* e) {
 	int t = e->t;
 	int speed_control = t % m->slow_rate;
 	int move_time = 0;
+	int n_num, x, y;
 	bool move_active = false;
 	if (speed_control == move_time) {
 		move_active = true;
 	}
 
 	// configure movement
+	/*if (t == 1000) {
+		MoveCommand(sim,11,11,m->move_weight); // send movement signal
+	}
+	if (t == 2000) {
+		MoveCommand(sim,11,11,m->default_weight);
+	}
+	if (t == 4000) {
+		MoveCommand(sim,21,21,m->move_weight);
+	}
+	if (t == 5000) {
+		MoveCommand(sim,21,21,m->default_weight);
+	}*/
+
 	if (t < 200 && move_active) {
 		MotorControl(m->loc, 'r');
 	}
@@ -556,10 +582,23 @@ void MovePath(MOVE* m, EIWP* e) {
 
 	// print locations
 	if (t % 1000 == 0) {
-		printf("\ntime %d location x:%d, y:%d", t, m->loc[0], m->loc[1]);
+		//printf("\ntime %d location x:%d, y:%d", t, m->loc[0], m->loc[1]);
+		printf("\ntime %d location x:%d, y:%d", t, m->loc[0] / 100, m->loc[1] / 100);
 	}
 	if (t == (e->sim_time - 1)) {
 		printf("\n\n");
+	}
+
+	// process movement
+	x = m->loc[0] / 100;
+	y = m->loc[1] / 100;
+	n_num = (y * e->max_x) + x;
+
+	if (t % 1000 == 0) {
+		//MoveCommand(sim,n_num,n_num,m->move_weight,e,m,1000);
+		//MoveCommand(sim,n_num,n_num,m->move_weight,e,m,4000);
+		MoveCommand(sim,11,11,m->move_weight,e,m,1000);
+		MoveCommand(sim,21,21,m->move_weight,e,m,4000);
 	}
 }
 
@@ -573,7 +612,6 @@ int main() {
 	int randSeed = 42;
 	CARLsim sim("gc can", GPU_MODE, USER, numGPUs, randSeed);
 	int sim_time = 7001;
-	double move_weight = 0.3; // synaptic weight used to signal movement command
 	int n_num;
 	bool man_move_det = false;
 	static const int x_cnt = 10; // number of cells on x-axis
@@ -629,15 +667,19 @@ int main() {
 	SMinh->startRecording();
 
 	for (int t=0; t<sim_time; t++) {	
+		eiwp.t = t;
+
 		// run for 1 ms, don't generate run stats
 		sim.runNetwork(0,1,false);
 
-		eiwp.t = t;
-		MovePath(&move, &eiwp);
-
+		// set activity bump initialization
 		if (t == 0) {
-			BumpInit(&sim); // set activity bump initialization
+			BumpInit(&sim); 
 		}
+
+		// create movement path
+		MovePath(&sim, &move, &eiwp);		
+
 		if (t == 1000 || t == 2000 || t == 3000 || t == 4000 || t == 5000 || t == 6000 || t == 7000) {
 			// store firing in vector
 			SMexc->stopRecording();
@@ -645,20 +687,6 @@ int main() {
 			SMexc->startRecording();
 			ecin_weights = CMecin->takeSnapshot();	
 			eiwp.ecin_weights = ecin_weights;		
-
-
-			if (t == 1000) {
-				MoveCommand(&sim,11,11,move_weight); // send movement signal
-			}
-			if (t == 2000) {
-				MoveCommand(&sim,11,11,0.08);
-			}
-			if (t == 4000) {
-				MoveCommand(&sim,21,21,move_weight);
-			}
-			if (t == 5000) {
-				MoveCommand(&sim,21,21,0.08);
-			}
 
 			if (t == 1000 || t == 3000 || t == 4000 || t == 6000 || t == 7000) {
 				// display activity
@@ -730,7 +758,7 @@ int main() {
 				spk_tot[i] = tot;
 			}
 
-			//PrintWeightsAndFiring(eiwp, spk_tot);				
+			PrintWeightsAndFiring(eiwp, spk_tot);				
 			/*----------------------------------------*/
 
 			printf("\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _");
