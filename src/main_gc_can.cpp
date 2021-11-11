@@ -227,9 +227,15 @@ void TransformWeights(double* temp_gctoin_wts, double* temp_intogc_wts, EIWP e) 
 
 	for (int i = 0; i < layer_size; i++) {
 		w = temp_gctoin_wts[i];
+
+		//w = w * 0.12777;
+		//w = w * (1/60);
 		w = (1 / w); // flipped scale for less inh. instead of more exc.
-		w = pow((w * 0.3),4); // pow((w * 0.1),2); // scaling factor for intended synapse weights. this is just for testing
-		
+		//w = pow((w * 0.3),4); // pow((w * 0.1),2); // scaling factor for intended synapse weights. this is just for testing
+		w = pow((w * 15.5),60);
+		//w = pow((w * 0.3),12);
+		//w = w * .1;
+
 		if (w > max_syn_wt) {
 			w = max_syn_wt; // set max weight
 		}
@@ -270,7 +276,7 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 	double x_offset, y_offset; // offsets are from pd.
 	int g_max_x = 5; // bump group max x neurons
 	int g_max_y = 5; // bump group max y neurons
-	double angle, sigma, max_syn_wt, exc_surr_dist, zero_div;
+	double angle, sigma, max_syn_wt, exc_surr_dist, zero_div, y_axis_shf;
 	double dist = 0, w = 0;
 	int i_x[g_max_x*g_max_y]; // interneuron index x
 	int i_y[g_max_x*g_max_y]; // interneuron index y
@@ -330,7 +336,7 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 		t_y = SetTarget((e.y + d_y[i]), e.max_y, y_offset);		
 		t_num = (t_y * e.max_x) + t_x; // target neuron number
 		select_tnum = false;
-		tnum_print = 11;
+		tnum_print = 21;
 		if (t_num == tnum_print) {
 			select_tnum = true;
 		}
@@ -354,9 +360,10 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 			// online plotting: https://www.desmos.com/calculator
 		*/
 
+		
 		//w = (1 / (PI * pow(sigma,2))) * (1 - (0.5 * (dist / pow(sigma,2)))) * (exp(-1 * (dist / (2 * pow(sigma,2)))));
-		double y_axis_shf = 2.7;
-		sigma = 0.8;
+		//y_axis_shf = 2.7;
+		//sigma = 0.8;
 		//w = y_axis_shf + speed_factor * ((2 / sqrt(3*sigma*pow(PI,.25))) * (1-pow((dist/sigma),2)) * exp(-1*(pow(dist,2)/(2*pow(sigma,2)))));
 		//w = y_axis_shf + speed_factor * ((2 / sqrt(3*sigma*pow(PI,.25))) * (1-pow((dist/sigma),2)) * exp(-1*(pow(dist,2)/(5*pow(sigma,2)))));
 		double s1 = 0.5;
@@ -364,6 +371,7 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 		double s3 = 0.3;
 		y_axis_shf = 0.6;
 		w = y_axis_shf + speed_factor * ((2 / sqrt(3*s1*pow(PI,.25))) * (1-pow(((dist*.3)/s2),2)) * exp(-1*(pow((dist*.3),2)/(2*pow(s3,2)))));
+		
 
 		//i_num = (t_y * e.max_x) + t_x;		
 
@@ -678,12 +686,12 @@ int main() {
 					ExcInhWeightProcessor(&sim, eiwp, nrn_spk, temp_gctoin_wts, temp_intogc_wts);
 				}		
 
-				//TransformWeights(temp_gctoin_wts, temp_intogc_wts, eiwp);	
+				TransformWeights(temp_gctoin_wts, temp_intogc_wts, eiwp);	
 
-				//StoreWeights(&sim, temp_gctoin_wts, temp_intogc_wts, eiwp);
+				StoreWeights(&sim, temp_gctoin_wts, temp_intogc_wts, eiwp);
 			}
 
-			PrintTempWeights(temp_gctoin_wts, temp_intogc_wts, t);	
+			//PrintTempWeights(temp_gctoin_wts, temp_intogc_wts, t);	
 
 			/*--------Print Weights and Firing--------*/
 			int nrn_size, tot, s_num, spk_time;
