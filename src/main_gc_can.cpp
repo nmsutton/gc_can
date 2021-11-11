@@ -90,6 +90,15 @@ struct EIWP
 	int spk_thresh = 3;
 	int group_size = 25;
 	double base_w;
+	int sim_time;
+};
+
+struct MOVE
+{
+		// animal movement parameters
+
+		int slow_rate = 4; // rate movement is slowed
+		int loc[2] = {0, 0}; // x, y location
 };
 
 string to_string(double x)
@@ -231,16 +240,23 @@ void TransformWeights(double* temp_gctoin_wts, double* temp_intogc_wts, EIWP e) 
 		//w = w * 0.12777;
 		//w = w * (1/60);
 		w = (1 / w); // flipped scale for less inh. instead of more exc.
+		
+		/*
+			In practice I found, pow((w * t1), t2), t1 is min weight with steep curve increase. t2 is the steepness.
+			E.g., for original weights ranging from 18 to 15.5, t1 = 15.5 will cause big increase close to ~16 and
+			t2 = 50 creates a very high curve steepness.
+		*/
+
 		//w = pow((w * 0.3),4); // pow((w * 0.1),2); // scaling factor for intended synapse weights. this is just for testing
-		w = pow((w * 15.5),60);
+		w = pow((w * 15.5),60); 
 		//w = pow((w * 0.3),12);
+
 		//w = w * .1;
 
 		if (w > max_syn_wt) {
 			w = max_syn_wt; // set max weight
 		}
 		
-		//w = w * (1 / (double) e.group_size); // scale influence by number of neurons in local area affected
 		temp_gctoin_wts[i] = w;
 	}
 }
@@ -396,7 +412,7 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 				calc = calc + " + " + to_string((long double) w);
 			}
 		}
-		if (select_tnum) {
+		if (select_tnum && false) {
 			printf("\nweight: %f %f * exp((-1*pow((%f - %f),2))/(2*pow(%f,2))) = %f",w,speed_factor,dist,exc_surr_dist,sigma,w);
 			cout << " | x " << e.x << " y " << e.y << " w " << w << " d " << dist;
 			//cout << " + " << w;
@@ -478,6 +494,75 @@ void MoveCommand(CARLsim* sim, int x, int y, double speed) {
 	sim->setWeight(0,x,y,speed,true);
 }
 
+void MovePath(MOVE* m, EIWP* e) {
+	/*
+		Movement path
+	*/
+
+	int t = e->t;
+	int speed_control = t % m->slow_rate;
+	int move_time = 0;
+	bool move_active = false;
+	if (speed_control == move_time) {
+		move_active = true;
+	}
+
+	// configure movement
+	if (t < 200 && move_active) {
+		MotorControl(m->loc, 'r');
+	}
+	else if (t < 600 && move_active) {
+		MotorControl(m->loc, 'u');
+	}
+	else if (t < 1800 && move_active) {
+		MotorControl(m->loc, 'r');
+	}
+	else if (t < 2600 && move_active) {
+		MotorControl(m->loc, 'u');
+	}
+	else if (t < 3400 && move_active) {
+		MotorControl(m->loc, 'l');
+	}
+	else if (t < 4200 && move_active) {
+		MotorControl(m->loc, 'd');
+	}
+	else if (t < 5000 && move_active) {
+		MotorControl(m->loc, 'r');
+	}
+	else if (t < 5800 && move_active) {
+		MotorControl(m->loc, 'u');
+	}
+	else if (t < 6600 && move_active) {
+		MotorControl(m->loc, 'l');
+	}		
+	else if (t < 7400 && move_active) {
+		MotorControl(m->loc, 'r');
+	}
+	else if (t < 7800 && move_active) {
+		MotorControl(m->loc, 'u');
+	}
+	else if (t < 8200 && move_active) {
+		MotorControl(m->loc, 'r');
+	}
+	else if (t < 9000 && move_active) {
+		MotorControl(m->loc, 'd');
+	}
+	else if (t >= 9000 && t < 9400 && move_active) {
+		MotorControl(m->loc, 'r');
+	}
+	else if (t >= 9400 && t < 10000 && move_active) {
+		MotorControl(m->loc, 'u');
+	}		
+
+	// print locations
+	if (t % 1000 == 0) {
+		printf("\ntime %d location x:%d, y:%d", t, m->loc[0], m->loc[1]);
+	}
+	if (t == (e->sim_time - 1)) {
+		printf("\n\n");
+	}
+}
+
 int main() {
 	// keep track of execution time
 	Stopwatch watch;
@@ -498,16 +583,12 @@ int main() {
 	std::vector<std::vector<float>> ecin_weights;
 	vector<vector<int>> nrn_spk;
 	double base_w;
-	int loc[2] = {0, 0}; // x, y location
-	int slow_rate;
-	int speed_control;
-	int move_time;
-	bool move_active;
+	struct MOVE move;
 	struct EIWP eiwp;
 	double temp_gctoin_wts[x_cnt*y_cnt]; // temp matrix for GC weights
 	double temp_intogc_wts[x_cnt*y_cnt]; // temp matrix for IN weights
-
 	eiwp.pd = pd; 
+	eiwp.sim_time = sim_time;
 
 	// configure the network
 	Grid3D grid_ext(10,10,1); // external input
@@ -523,7 +604,6 @@ int main() {
 	sim.connect(gexc, ginh, "one-to-one", RangeWeight(base_w), 1.0f);
 	sim.connect(ginh, gexc, "one-to-one", RangeWeight(base_w), 1.0f);
 	eiwp.base_w = base_w;
-
 	sim.setConductances(true); // COBA mode; setConductances = true
 
 	// ---------------- SETUP STATE -------------------
@@ -552,70 +632,8 @@ int main() {
 		// run for 1 ms, don't generate run stats
 		sim.runNetwork(0,1,false);
 
-		// animal movements
-		// speed control limits pace of movements
-		slow_rate = 4; // rate movement is slowed
-		speed_control = t % slow_rate;
-		move_time = 0;
-		move_active = false;
-		if (speed_control == move_time) {
-			move_active = true;
-		}
-
-		// configure movement
-		if (t < 200 && move_active) {
-			MotorControl(loc, 'r');
-		}
-		else if (t < 600 && move_active) {
-			MotorControl(loc, 'u');
-		}
-		else if (t < 1800 && move_active) {
-			MotorControl(loc, 'r');
-		}
-		else if (t < 2600 && move_active) {
-			MotorControl(loc, 'u');
-		}
-		else if (t < 3400 && move_active) {
-			MotorControl(loc, 'l');
-		}
-		else if (t < 4200 && move_active) {
-			MotorControl(loc, 'd');
-		}
-		else if (t < 5000 && move_active) {
-			MotorControl(loc, 'r');
-		}
-		else if (t < 5800 && move_active) {
-			MotorControl(loc, 'u');
-		}
-		else if (t < 6600 && move_active) {
-			MotorControl(loc, 'l');
-		}		
-		else if (t < 7400 && move_active) {
-			MotorControl(loc, 'r');
-		}
-		else if (t < 7800 && move_active) {
-			MotorControl(loc, 'u');
-		}
-		else if (t < 8200 && move_active) {
-			MotorControl(loc, 'r');
-		}
-		else if (t < 9000 && move_active) {
-			MotorControl(loc, 'd');
-		}
-		else if (t >= 9000 && t < 9400 && move_active) {
-			MotorControl(loc, 'r');
-		}
-		else if (t >= 9400 && t < 10000 && move_active) {
-			MotorControl(loc, 'u');
-		}		
-
-		// print locations
-		/*if (t % 1000 == 0) {
-			printf("\ntime %d location x:%d, y:%d", t, loc[0], loc[1]);
-		}
-		if (t == (sim_time - 1)) {
-			printf("\n\n");
-		}*/
+		eiwp.t = t;
+		MovePath(&move, &eiwp);
 
 		if (t == 0) {
 			BumpInit(&sim); // set activity bump initialization
@@ -712,7 +730,7 @@ int main() {
 				spk_tot[i] = tot;
 			}
 
-			PrintWeightsAndFiring(eiwp, spk_tot);				
+			//PrintWeightsAndFiring(eiwp, spk_tot);				
 			/*----------------------------------------*/
 
 			printf("\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _");
