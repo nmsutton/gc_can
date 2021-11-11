@@ -89,6 +89,7 @@ struct EIWP
 	int conn_groups2 = 2; // inh -> exc
 	int spk_thresh = 3;
 	int group_size = 25;
+	double base_w;
 };
 
 string to_string(double x)
@@ -216,9 +217,13 @@ void PrintTempWeights(double* temp_gctoin_wts, double* temp_intogc_wts, int t) {
 }
 
 void TransformWeights(double* temp_gctoin_wts, double* temp_intogc_wts, EIWP e) {
+	/* 
+		adjustments for interneuron weights rather than weight formula's original exc->exc connections
+	*/
+
 	int layer_size = e.max_x*e.max_y;
 	double w;
-	double max_syn_wt = 0.3; //1; //5; // maximum synaptic weight value from (solanka, 2015)
+	double max_syn_wt = e.base_w; //1; //5; // maximum synaptic weight value from (solanka, 2015)
 
 	for (int i = 0; i < layer_size; i++) {
 		w = temp_gctoin_wts[i];
@@ -231,6 +236,22 @@ void TransformWeights(double* temp_gctoin_wts, double* temp_intogc_wts, EIWP e) 
 		
 		//w = w * (1 / (double) e.group_size); // scale influence by number of neurons in local area affected
 		temp_gctoin_wts[i] = w;
+	}
+}
+
+void StoreWeights(CARLsim* sim, double* temp_gctoin_wts, double* temp_intogc_wts, EIWP e) {
+	/*
+		transfer weights from temp matrix to synapse values
+	*/
+	int n_num;
+
+	for (int y = 0; y < e.max_y; y++) {
+		for (int x = 0; x < e.max_x; x++) {
+			n_num = (y * e.max_x) + x;
+
+			sim->setWeight(1,n_num,n_num,temp_gctoin_wts[n_num],true);
+			sim->setWeight(2,n_num,n_num,temp_gctoin_wts[n_num],true);
+		}
 	}
 }
 
@@ -250,7 +271,7 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 	int g_max_x = 5; // bump group max x neurons
 	int g_max_y = 5; // bump group max y neurons
 	double angle, sigma, max_syn_wt, exc_surr_dist, zero_div;
-	double dist = 0, w = 0, w_temp = 0;
+	double dist = 0, w = 0;
 	int i_x[g_max_x*g_max_y]; // interneuron index x
 	int i_y[g_max_x*g_max_y]; // interneuron index y
 	int d_x[g_max_x*g_max_y]; // neuron distance on x-axis
@@ -309,13 +330,12 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 		t_y = SetTarget((e.y + d_y[i]), e.max_y, y_offset);		
 		t_num = (t_y * e.max_x) + t_x; // target neuron number
 		select_tnum = false;
-		tnum_print = 21;
+		tnum_print = 11;
 		if (t_num == tnum_print) {
 			select_tnum = true;
 		}
 		exc_surr_dist = 0; //9; // distance of the excitatory surround from the position of presynaptic neuron (solanka, 2015)
 		sigma = 0.5;//0.7; //0.0834; // width of the Gaussian profile value from (solanka, 2015)
-		max_syn_wt = 0.3; //1; //5; // maximum synaptic weight value from (solanka, 2015)
 		speed_factor = spk_tot[e_num] * 0.167; // factor representing speed perception by firing rate
 		zero_div = 0.000001; // avoid issue with division by 0
 
@@ -327,26 +347,24 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 				printf("\nweight: %f %f * exp((-1*pow((%f - %f),2))/(2*pow(%f,2)))",w,speed_factor,dist,exc_surr_dist,sigma);
 			}
 		}
-		// adjustments for interneuron weights rather than weight formula's original exc->exc connections
-		w_temp = w;
-		//w = (1 / w); // flipped scale for less inh. instead of more exc.
+
 		/*
-		w = pow((w * 0.3),4); // pow((w * 0.1),2); // scaling factor for intended synapse weights. this is just for testing
-		
-		//max_syn_wt = (1 / max_syn_wt);
-		if (w > max_syn_wt) {
-			//w = max_syn_wt; // set max weight
-			if (dist < 2) {
-				// pseudo mexican hat for testing
-				w = max_syn_wt; // set max weight
-			}
-			else {
-				w = max_syn_wt*1; // set max weight	
-			}
-		}
+			// mexican hat
+			// from https://en.wikipedia.org/wiki/Ricker_wavelet
+			// online plotting: https://www.desmos.com/calculator
 		*/
-		//w = w * (1 / (double) e.group_size); // scale influence by number of neurons in local area affected
-		
+
+		//w = (1 / (PI * pow(sigma,2))) * (1 - (0.5 * (dist / pow(sigma,2)))) * (exp(-1 * (dist / (2 * pow(sigma,2)))));
+		double y_axis_shf = 2.7;
+		sigma = 0.8;
+		//w = y_axis_shf + speed_factor * ((2 / sqrt(3*sigma*pow(PI,.25))) * (1-pow((dist/sigma),2)) * exp(-1*(pow(dist,2)/(2*pow(sigma,2)))));
+		//w = y_axis_shf + speed_factor * ((2 / sqrt(3*sigma*pow(PI,.25))) * (1-pow((dist/sigma),2)) * exp(-1*(pow(dist,2)/(5*pow(sigma,2)))));
+		double s1 = 0.5;
+		double s2 = 0.5;
+		double s3 = 0.3;
+		y_axis_shf = 0.6;
+		w = y_axis_shf + speed_factor * ((2 / sqrt(3*s1*pow(PI,.25))) * (1-pow(((dist*.3)/s2),2)) * exp(-1*(pow((dist*.3),2)/(2*pow(s3,2)))));
+
 		//i_num = (t_y * e.max_x) + t_x;		
 
 		if (print_on) {
@@ -355,7 +373,7 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 		if (select_tnum) {//select_xy) {
 			if (false) {
 				//printf("\ni: %d x: %d y: %d t_num: %d xo: %f yo: %f d: %f w: %f",i,e.x,e.y,t_num,x_offset,y_offset,dist,w);
-				printf("\ni: %d x: %d y: %d dx: %d dy: %d tx: %d ty: %d tn: %d d: %f w: %f 1: %f 2: %f 3: >%f 4: %f st: %d",i,e.x,e.y,d_x[i],d_y[i],t_x,t_y,t_num,dist,w,(1 / w_temp),pow(((1 / w_temp) * 0.1),2),max_syn_wt,pow(((1 / w_temp) * 0.1),2) * (1 / (double) e.group_size),spk_tot[e_num]);
+				printf("\ni: %d x: %d y: %d dx: %d dy: %d tx: %d ty: %d tn: %d d: %f w: %f 1: %f 2: %f 3: >%f 4: %f st: %d",i,e.x,e.y,d_x[i],d_y[i],t_x,t_y,t_num,dist,w,(1 / w),pow(((1 / w) * 0.1),2),max_syn_wt,pow(((1 / w) * 0.1),2) * (1 / (double) e.group_size),spk_tot[e_num]);
 			}
 		}
 
@@ -371,7 +389,7 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 			}
 		}
 		if (select_tnum) {
-			printf("\nweight: %f %f * exp((-1*pow((%f - %f),2))/(2*pow(%f,2))) = %f",w,speed_factor,dist,exc_surr_dist,sigma,w_temp);
+			printf("\nweight: %f %f * exp((-1*pow((%f - %f),2))/(2*pow(%f,2))) = %f",w,speed_factor,dist,exc_surr_dist,sigma,w);
 			cout << " | x " << e.x << " y " << e.y << " w " << w << " d " << dist;
 			//cout << " + " << w;
 		}
@@ -424,25 +442,28 @@ void BumpInit(CARLsim* sim) {
 	*/
 
 	double rate = .25;
+	double f1 = .0003;
+	double f2 = .4;
+	double f3 = .8;
 
-	sim->setWeight(1,0,0,rate*0.05,true);
-	sim->setWeight(2,0,0,rate*0.05,true);
-	sim->setWeight(1,1,1,rate*0.025,true);
-	sim->setWeight(2,1,1,rate*0.025,true);
-	sim->setWeight(1,2,2,rate*0.05,true);
-	sim->setWeight(2,2,2,rate*0.05,true);
-	sim->setWeight(1,10,10,rate*0.025,true);
-	sim->setWeight(2,10,10,rate*0.025,true);
-	sim->setWeight(1,11,11,rate*0.0125,true);
-	sim->setWeight(2,11,11,rate*0.0125,true);
-	sim->setWeight(1,12,12,rate*0.025,true);
-	sim->setWeight(2,12,12,rate*0.025,true);
-	sim->setWeight(1,20,20,rate*0.05,true);
-	sim->setWeight(2,20,20,rate*0.05,true);
-	sim->setWeight(1,21,21,rate*0.025,true);
-	sim->setWeight(2,21,21,rate*0.025,true);
-	sim->setWeight(1,22,22,rate*0.05,true);
-	sim->setWeight(2,22,22,rate*0.05,true);
+	sim->setWeight(1,11,11,rate*f1,true);
+	sim->setWeight(2,11,11,rate*f1,true);
+	sim->setWeight(1,1,1,rate*f2,true);
+	sim->setWeight(2,1,1,rate*f2,true);
+	sim->setWeight(1,10,10,rate*f2,true);
+	sim->setWeight(2,10,10,rate*f2,true);
+	sim->setWeight(1,12,12,rate*f2,true);
+	sim->setWeight(2,12,12,rate*f2,true);		
+	sim->setWeight(1,21,21,rate*f2,true);
+	sim->setWeight(2,21,21,rate*f2,true);
+	sim->setWeight(1,0,0,rate*f3,true);
+	sim->setWeight(2,0,0,rate*f3,true);
+	sim->setWeight(1,2,2,rate*f3,true);
+	sim->setWeight(2,2,2,rate*f3,true);
+	sim->setWeight(1,20,20,rate*f3,true);
+	sim->setWeight(2,20,20,rate*f3,true);
+	sim->setWeight(1,22,22,rate*f3,true);
+	sim->setWeight(2,22,22,rate*f3,true);
 }
 
 void MoveCommand(CARLsim* sim, int x, int y, double speed) {
@@ -468,7 +489,7 @@ int main() {
 	std::vector<std::vector<float>> etec_weights;
 	std::vector<std::vector<float>> ecin_weights;
 	vector<vector<int>> nrn_spk;
-	float int_w;
+	double base_w;
 	int loc[2] = {0, 0}; // x, y location
 	int slow_rate;
 	int speed_control;
@@ -490,9 +511,10 @@ int main() {
 	sim.setNeuronParameters(gexc, 0.02f, 0.2f, -65.0f, 8.0f); // RS
 	sim.setNeuronParameters(ginh, 0.1f, 0.2f, -65.0f, 2.0f); // FS
 	sim.connect(gext, gexc, "one-to-one", 0.08f, 1.0f); // using one-to-one for faster testing than full conn
-	int_w = 0.3f;
-	sim.connect(gexc, ginh, "one-to-one", RangeWeight(int_w), 1.0f);
-	sim.connect(ginh, gexc, "one-to-one", RangeWeight(int_w), 1.0f);
+	base_w = 0.5f; // baseline weight for random background noise
+	sim.connect(gexc, ginh, "one-to-one", RangeWeight(base_w), 1.0f);
+	sim.connect(ginh, gexc, "one-to-one", RangeWeight(base_w), 1.0f);
+	eiwp.base_w = base_w;
 
 	sim.setConductances(true); // COBA mode; setConductances = true
 
@@ -512,12 +534,6 @@ int main() {
 	PoissonRate in(grid_ext.N);
 	in.setRates(30.0f); //in.setRates(15.0f);
 	sim.setSpikeRate(gext,&in);
-
-	// initial weights
-    /*for (int i; i < 100; i++) {    	
-		sim.setWeight(1,i,i,0.01f,true);
-		sim.setWeight(2,i,i,0.01f,true);
-    }*/
 
 	// ---------------- RUN STATE -------------------
 	SMext->startRecording();
@@ -611,16 +627,17 @@ int main() {
 			if (t == 2000) {
 				MoveCommand(&sim,11,11,0.08);
 			}
-			if (t == 5000) {
+			if (t == 4000) {
 				MoveCommand(&sim,21,21,move_weight);
 			}
-			if (t == 6000) {
+			if (t == 5000) {
 				MoveCommand(&sim,21,21,0.08);
 			}
 
-			if (t == 1000 || t == 4000 || t == 6000 || t == 7000) {
+			if (t == 1000 || t == 3000 || t == 4000 || t == 6000 || t == 7000) {
 				// display activity
 
+				/*--------Print Weights and Firing--------*/
 				int nrn_size, tot, s_num, spk_time;
 				int spk_tot[10*10];
 				eiwp.t = t;
@@ -640,9 +657,10 @@ int main() {
 				}
 
 				//PrintWeightsAndFiring(eiwp, spk_tot);
+				/*----------------------------------------*/
 			}		
 
-			if (t == 2000 || t == 3000 || t == 5000) {
+			if (t == 2000 || t == 5000) {
 				// process movement
 
 				// clear temp matrices
@@ -660,11 +678,14 @@ int main() {
 					ExcInhWeightProcessor(&sim, eiwp, nrn_spk, temp_gctoin_wts, temp_intogc_wts);
 				}		
 
-				TransformWeights(temp_gctoin_wts, temp_intogc_wts, eiwp);				
+				//TransformWeights(temp_gctoin_wts, temp_intogc_wts, eiwp);	
+
+				//StoreWeights(&sim, temp_gctoin_wts, temp_intogc_wts, eiwp);
 			}
 
 			PrintTempWeights(temp_gctoin_wts, temp_intogc_wts, t);	
 
+			/*--------Print Weights and Firing--------*/
 			int nrn_size, tot, s_num, spk_time;
 			int spk_tot[10*10];
 			eiwp.t = t;
@@ -684,6 +705,7 @@ int main() {
 			}
 
 			PrintWeightsAndFiring(eiwp, spk_tot);				
+			/*----------------------------------------*/
 
 			printf("\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _");
 		}
