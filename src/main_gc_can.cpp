@@ -499,7 +499,8 @@ void MoveCommand(CARLsim* sim, int* move_action, double speed, EIWP* e, MOVE* m)
 	*/
 
 	int n_num = move_action[0];
-	int move_start = move_action[1];	
+	int move_start = move_action[1];
+	char move_pd = e->pd[n_num];
 
 	if ((e->t >= move_start) && (e->t <= (move_start + m->move_time))) {
 		sim->setWeight(0,n_num,n_num,speed,true);
@@ -508,6 +509,19 @@ void MoveCommand(CARLsim* sim, int* move_action, double speed, EIWP* e, MOVE* m)
 	else {
 		sim->setWeight(0,n_num,n_num,m->default_weight,true);
 	}
+
+	/*for (int i = 0; i < 100; i++) {
+		if (pd[i] == move_pd) {
+			//sim->setWeight(0,n_num,n_num,speed,true);
+				if ((e->t >= move_start) && (e->t <= (move_start + m->move_time))) {
+					sim->setWeight(0,n_num,n_num,speed,true);
+					cout << "\nmovement command sent t: " << e->t << " nrn: " << n_num << " weight: " << speed;
+				}
+				else {
+					sim->setWeight(0,n_num,n_num,m->default_weight,true);
+				}
+		}
+	}*/
 }
 
 void MovePath(CARLsim* sim, MOVE* m, EIWP* e, int* move_action) {
@@ -518,23 +532,43 @@ void MovePath(CARLsim* sim, MOVE* m, EIWP* e, int* move_action) {
 	int t = e->t;
 	int speed_control = t % m->slow_rate;
 	int move_time = 0;
-	int n_num, x, y;
+	int n_num, x, y, t_move;
+	vector<int> move_times;	
 	bool move_active = false;
 	if (speed_control == move_time) {
 		move_active = true;
 	}
-	vector<int> move_times;
 
-	// configure movement
-	move_times.push_back(1000);
-	move_times.push_back(4000);
-
-	if (t >= 1000 && t < 1400 && move_active) {
+	// configure movements
+	/*
+		how to add a movement:
+		1. add entry under set movements
+		2. add entry under times to process
+	*/
+	/*------------------------------------*/
+	// 1. set movements
+	t_move = 1000;
+	if (t >= t_move && t < (t_move+400) && move_active) {
 		MotorControl(m->loc, 'u');
 	}
-	if (t >= 4000 && t < 4400 && move_active) {
+	t_move = 4000;
+	if (t >= t_move && t < (t_move+400) && move_active) {
 		MotorControl(m->loc, 'r');
 	}
+	/*t_move = 6000;
+	if (t >= t_move && t < (t_move+400) && move_active) {
+		MotorControl(m->loc, 'r');
+	}
+	t_move = 6400;
+	if (t >= t_move && t < (t_move+400) && move_active) {
+		MotorControl(m->loc, 'u');
+	}*/	
+
+	// 2. times to process movement weights
+	move_times.push_back(1000);
+	move_times.push_back(4000);
+	move_times.push_back(7000);
+	/*------------------------------------*/
 
 	// print locations
 	if (t % 1000 == 0) {
@@ -573,7 +607,7 @@ int main() {
 	int numGPUs = 1;
 	int randSeed = 42;
 	CARLsim sim("gc can", GPU_MODE, USER, numGPUs, randSeed);
-	int sim_time = 7001;
+	int sim_time = 10001;//7001;
 	int n_num;
 	bool man_move_det = false;
 	static const int x_cnt = 10; // number of cells on x-axis
@@ -649,10 +683,10 @@ int main() {
 			eiwp.ecin_weights = ecin_weights;	
 		}	
 
-		if (t == 1000 || t == 3000 || t == 4000 || t == 6000 || t == 7000) {
+/*		if (t == 1000 || t == 3000 || t == 4000 || t == 6000 || t == 7000) {
 			// display activity
 
-			/*--------Print Weights and Firing--------*/
+			//--------Print Weights and Firing--------//
 			int nrn_size, tot, s_num, spk_time;
 			int spk_tot[10*10];
 			eiwp.t = t;
@@ -672,10 +706,10 @@ int main() {
 			}
 
 			//PrintWeightsAndFiring(eiwp, spk_tot);
-			/*----------------------------------------*/
-		}		
+			//----------------------------------------//
+		}		*/
 
-		if (t == 2000 || t == 5000) {
+		if (t == 2000 || t == 5000 || t == 8000) {
 			// process movement
 
 			// clear temp matrices
