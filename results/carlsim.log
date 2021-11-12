@@ -5,7 +5,7 @@
 [INFO carlsim/kernel/src/snn_manager.cpp:2105] ***************************** Configuring Network ********************************
 [INFO carlsim/kernel/src/snn_manager.cpp:2107] Starting CARLsim simulation "gc can" in USER mode
 [INFO carlsim/kernel/src/snn_manager.cpp:2108] Random number seed: 42
-[DEBUG carlsim/kernel/src/snn_manager.cpp:2114] Current local time and date: Thu Nov 11 20:21:30 2021
+[DEBUG carlsim/kernel/src/snn_manager.cpp:2114] Current local time and date: Thu Nov 11 21:37:18 2021
 
 [DEBUG carlsim/kernel/src/snn_manager.cpp:166] CONNECT SETUP: connId=0, mulFast=1.000000, mulSlow=1.000000
 [DEBUG carlsim/kernel/src/snn_manager.cpp:166] CONNECT SETUP: connId=1, mulFast=1.000000, mulSlow=1.000000
@@ -104,8 +104,8 @@
 [INFO carlsim/kernel/src/snn_manager.cpp:5623] *****************      Initializing GPU 0 Runtime      *************************
 [INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3616] GPU Memory Management: (Total 24265.812 MB)
 [INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3617] Data			Size		Total Used	Total Available
-[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3619] Init:			24265.812 MB	2252.688 MB	22013.125 MB
-[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3632] Random Gen:		6.000 MB	2258.688 MB	22007.125 MB
+[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3619] Init:			24265.812 MB	2225.625 MB	22040.188 MB
+[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3632] Random Gen:		6.000 MB	2231.625 MB	22034.188 MB
 [DEBUG carlsim/kernel/src/gpu_module/snn_gpu_module.cu:288] Grp Size = 100, Total Buffer Cnt = 1, Buffer Cnt = 1
 [DEBUG carlsim/kernel/src/gpu_module/snn_gpu_module.cu:288] Grp Size = 100, Total Buffer Cnt = 2, Buffer Cnt = 1
 [DEBUG carlsim/kernel/src/gpu_module/snn_gpu_module.cu:288] Grp Size = 100, Total Buffer Cnt = 3, Buffer Cnt = 1
@@ -116,12 +116,12 @@
 [DEBUG carlsim/kernel/src/gpu_module/snn_gpu_module.cu:319] 1. Start=100, size=100 grpId=1:gc_inh (SpikeMonId=-1) (GroupMonId=-1)
 [DEBUG carlsim/kernel/src/gpu_module/snn_gpu_module.cu:319] 2. Start=200, size=100 grpId=2:ext_input (SpikeMonId=-1) (GroupMonId=-1)
 [DEBUG carlsim/kernel/src/gpu_module/snn_gpu_module.cu:327] GPU loadBufferSize = 128, GPU loadBufferCount = 3
-[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3645] Static Load:		0.000 MB	2258.688 MB	22007.125 MB
-[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3654] Conn Info:		0.000 MB	2258.688 MB	22007.125 MB
-[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3660] Syn State:		0.000 MB	2258.688 MB	22007.125 MB
-[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3677] Neuron State:		0.000 MB	2258.688 MB	22007.125 MB
-[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3684] Group State:		0.000 MB	2258.688 MB	22007.125 MB
-[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3694] Auxiliary Data:		0.000 MB	2258.688 MB	22007.125 MB
+[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3645] Static Load:		0.000 MB	2231.625 MB	22034.188 MB
+[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3654] Conn Info:		0.000 MB	2231.625 MB	22034.188 MB
+[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3660] Syn State:		0.000 MB	2231.625 MB	22034.188 MB
+[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3677] Neuron State:		0.000 MB	2231.625 MB	22034.188 MB
+[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3684] Group State:		0.000 MB	2231.625 MB	22034.188 MB
+[INFO carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3694] Auxiliary Data:		0.000 MB	2231.625 MB	22034.188 MB
 
 
 [DEBUG carlsim/kernel/src/gpu_module/snn_gpu_module.cu:3710] Transfering group settings to GPU:
@@ -1166,6 +1166,30 @@
 [DEBUG carlsim/kernel/src/snn_manager.cpp:798] runNetwork: runDur=1ms, printRunSummary=n
 [DEBUG carlsim/kernel/src/snn_manager.cpp:798] runNetwork: runDur=1ms, printRunSummary=n
 [DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,11,11,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,13,13,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,15,15,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,17,17,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,19,19,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,31,31,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,33,33,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,35,35,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,37,37,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,39,39,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,51,51,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,53,53,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,55,55,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,57,57,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,59,59,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,71,71,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,73,73,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,75,75,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,77,77,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,79,79,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,91,91,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,93,93,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,95,95,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,97,97,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,99,99,0.300000,true): updated weight ranges to [0.000000,0.300000]
 [DEBUG carlsim/kernel/src/snn_manager.cpp:798] runNetwork: runDur=1ms, printRunSummary=n
 [DEBUG carlsim/kernel/src/snn_manager.cpp:798] runNetwork: runDur=1ms, printRunSummary=n
 [DEBUG carlsim/kernel/src/snn_manager.cpp:798] runNetwork: runDur=1ms, printRunSummary=n
@@ -4166,7 +4190,31 @@
 [DEBUG carlsim/kernel/src/snn_manager.cpp:798] runNetwork: runDur=1ms, printRunSummary=n
 [DEBUG carlsim/kernel/src/snn_manager.cpp:798] runNetwork: runDur=1ms, printRunSummary=n
 [DEBUG carlsim/kernel/src/snn_manager.cpp:798] runNetwork: runDur=1ms, printRunSummary=n
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,1,1,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,3,3,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,5,5,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,7,7,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,9,9,0.300000,true): updated weight ranges to [0.000000,0.300000]
 [DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,21,21,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,23,23,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,25,25,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,27,27,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,29,29,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,41,41,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,43,43,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,45,45,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,47,47,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,49,49,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,61,61,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,63,63,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,65,65,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,67,67,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,69,69,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,81,81,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,83,83,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,85,85,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,87,87,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,89,89,0.300000,true): updated weight ranges to [0.000000,0.300000]
 [DEBUG carlsim/kernel/src/snn_manager.cpp:798] runNetwork: runDur=1ms, printRunSummary=n
 [DEBUG carlsim/kernel/src/snn_manager.cpp:798] runNetwork: runDur=1ms, printRunSummary=n
 [DEBUG carlsim/kernel/src/snn_manager.cpp:798] runNetwork: runDur=1ms, printRunSummary=n
@@ -7167,7 +7215,31 @@
 [DEBUG carlsim/kernel/src/snn_manager.cpp:798] runNetwork: runDur=1ms, printRunSummary=n
 [DEBUG carlsim/kernel/src/snn_manager.cpp:798] runNetwork: runDur=1ms, printRunSummary=n
 [DEBUG carlsim/kernel/src/snn_manager.cpp:798] runNetwork: runDur=1ms, printRunSummary=n
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,0,0,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,2,2,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,4,4,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,6,6,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,8,8,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,20,20,0.300000,true): updated weight ranges to [0.000000,0.300000]
 [DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,22,22,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,24,24,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,26,26,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,28,28,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,40,40,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,42,42,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,44,44,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,46,46,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,48,48,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,60,60,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,62,62,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,64,64,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,66,66,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,68,68,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,80,80,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,82,82,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,84,84,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,86,86,0.300000,true): updated weight ranges to [0.000000,0.300000]
+[DEBUG carlsim/kernel/src/snn_manager.cpp:1315] setWeight(0,88,88,0.300000,true): updated weight ranges to [0.000000,0.300000]
 [DEBUG carlsim/kernel/src/snn_manager.cpp:798] runNetwork: runDur=1ms, printRunSummary=n
 [DEBUG carlsim/kernel/src/snn_manager.cpp:798] runNetwork: runDur=1ms, printRunSummary=n
 [DEBUG carlsim/kernel/src/snn_manager.cpp:798] runNetwork: runDur=1ms, printRunSummary=n
@@ -10170,7 +10242,7 @@
 [DEBUG carlsim/kernel/src/snn_manager.cpp:798] runNetwork: runDur=1ms, printRunSummary=n
 [INFO carlsim/monitor/spike_monitor_core.cpp:271] (t=10.001s) SpikeMonitor for group ext_input(0) has 29938 spikes in 10001 ms (29.94 +/- 1.55 Hz)
 [INFO carlsim/monitor/spike_monitor_core.cpp:271] (t=10.001s) SpikeMonitor for group gc_exc(1) has 0 spikes in 0 ms (0.00 +/- 0.00 Hz)
-[INFO carlsim/monitor/spike_monitor_core.cpp:271] (t=10.001s) SpikeMonitor for group gc_inh(2) has 5338 spikes in 10001 ms (5.34 +/- 1.35 Hz)
+[INFO carlsim/monitor/spike_monitor_core.cpp:271] (t=10.001s) SpikeMonitor for group gc_inh(2) has 4566 spikes in 10001 ms (4.57 +/- 1.57 Hz)
 [INFO carlsim/kernel/src/snn_manager.cpp:6727] 
 
 [INFO carlsim/kernel/src/snn_manager.cpp:6728] ********************    Simulation Summary      ***************************
@@ -10180,15 +10252,15 @@
 [INFO carlsim/kernel/src/snn_manager.cpp:6734] Simulation Mode:	COBA
 [INFO carlsim/kernel/src/snn_manager.cpp:6735] Random Seed:		42
 [INFO carlsim/kernel/src/snn_manager.cpp:6736] Timing:			Model Simulation Time = 10 sec
-[INFO carlsim/kernel/src/snn_manager.cpp:6737] 			Actual Execution Time = 2.31 sec
+[INFO carlsim/kernel/src/snn_manager.cpp:6737] 			Actual Execution Time = 2.34 sec
 [INFO carlsim/kernel/src/snn_manager.cpp:6739] Average Firing Rate:	2+ms delay = 0.000 Hz
-[INFO carlsim/kernel/src/snn_manager.cpp:6741] 			1ms delay = 12.654 Hz
-[INFO carlsim/kernel/src/snn_manager.cpp:6742] 			Overall = 12.654 Hz
+[INFO carlsim/kernel/src/snn_manager.cpp:6741] 			1ms delay = 13.070 Hz
+[INFO carlsim/kernel/src/snn_manager.cpp:6742] 			Overall = 13.070 Hz
 [INFO carlsim/kernel/src/snn_manager.cpp:6743] Overall Spike Count Transferred:
 [INFO carlsim/kernel/src/snn_manager.cpp:6744] 			2+ms delay = 0
 [INFO carlsim/kernel/src/snn_manager.cpp:6745] 			1ms delay = 0
 [INFO carlsim/kernel/src/snn_manager.cpp:6746] Overall Spike Count:	2+ms delay = 0
-[INFO carlsim/kernel/src/snn_manager.cpp:6747] 			1ms delay = 37961
-[INFO carlsim/kernel/src/snn_manager.cpp:6748] 			Total = 37961
+[INFO carlsim/kernel/src/snn_manager.cpp:6747] 			1ms delay = 39210
+[INFO carlsim/kernel/src/snn_manager.cpp:6748] 			Total = 39210
 [INFO carlsim/kernel/src/snn_manager.cpp:6749] *********************************************************************************
 

@@ -102,6 +102,8 @@ struct MOVE
 		int loc[2] = {150, 150}; // x, y location
 		double move_weight = 0.3; // synaptic weight used to signal movement command
 		double default_weight = 0.08; // synaptic weight used for default background noise
+		vector<int> move_times = {1000,4000,7000}; // move times: stores the times of movement commands from ext input
+		vector<char> move_direct = {'u','r','d'}; // move direction: sequence of directions to use as ext input pd
 };
 
 string to_string(double x)
@@ -493,38 +495,58 @@ void BumpInit(CARLsim* sim) {
 	sim->setWeight(2,22,22,rate*f3,true);
 }
 
-void MoveCommand(CARLsim* sim, int* move_action, double speed, EIWP* e, MOVE* m) {
+void MoveCommand(CARLsim* sim, double speed, EIWP* e, MOVE* m) {
 	/*
 		Update weights with the effects of movement
 	*/
+	int m_start; // move start time
+	char m_direct; // move direction
 
-	int n_num = move_action[0];
-	int move_start = move_action[1];
-	char move_pd = e->pd[n_num];
+	/*int n_num = m->move_action[0];
+	int move_start = m->move_action[1];
+	char move_pd = e->pd[n_num];*/
 
-	if ((e->t >= move_start) && (e->t <= (move_start + m->move_time))) {
+	/*if ((e->t >= move_start) && (e->t <= (move_start + m->move_time))) {
 		sim->setWeight(0,n_num,n_num,speed,true);
 		cout << "\nmovement command sent t: " << e->t << " nrn: " << n_num << " weight: " << speed;
 	}
 	else {
 		sim->setWeight(0,n_num,n_num,m->default_weight,true);
+	}*/
+
+	// match time with direction
+	for (int i = 0; i < m->move_times.size(); i++) {
+		if (e->t == m->move_times[i]) {
+			m_start = m->move_times[i];
+			m_direct = m->move_direct[i];
+		}
 	}
 
-	/*for (int i = 0; i < 100; i++) {
-		if (pd[i] == move_pd) {
-			//sim->setWeight(0,n_num,n_num,speed,true);
-				if ((e->t >= move_start) && (e->t <= (move_start + m->move_time))) {
-					sim->setWeight(0,n_num,n_num,speed,true);
-					cout << "\nmovement command sent t: " << e->t << " nrn: " << n_num << " weight: " << speed;
-				}
-				else {
-					sim->setWeight(0,n_num,n_num,m->default_weight,true);
-				}
+	// apply weight to matching pd neurons
+	for (int i = 0; i < 100; i++) {
+		if (e->pd[i] == m_direct) {
+			if ((e->t >= m_start) && (e->t <= (m_start + m->move_time))) {
+				sim->setWeight(0,i,i,speed,true);
+				//printf("\next input applied t:%d n:%d d:%c",e->t,i,m_direct);
+			}
 		}
-	}*/
+	}
+
+	// reset to default ext input after certain time period
+	for (int i = 0; i < m->move_times.size(); i++) {
+		if (e->t == (m->move_times[i] + 1000)) {
+			for (int j = 0; j < 100; j++) {
+				m_direct = m->move_direct[i];
+				if (e->pd[j] == m_direct) {
+					sim->setWeight(0,j,j,m->default_weight,true);
+					//printf("\next input reset t:%d n:%d d:%c",e->t,i,m_direct);
+				}				
+			}
+		}
+	}
 }
 
-void MovePath(CARLsim* sim, MOVE* m, EIWP* e, int* move_action) {
+void MovePath(CARLsim* sim, MOVE* m, EIWP* e) {
 	/*
 		Movement path
 	*/
@@ -533,7 +555,6 @@ void MovePath(CARLsim* sim, MOVE* m, EIWP* e, int* move_action) {
 	int speed_control = t % m->slow_rate;
 	int move_time = 0;
 	int n_num, x, y, t_move;
-	vector<int> move_times;	
 	bool move_active = false;
 	if (speed_control == move_time) {
 		move_active = true;
@@ -565,9 +586,9 @@ void MovePath(CARLsim* sim, MOVE* m, EIWP* e, int* move_action) {
 	}*/	
 
 	// 2. times to process movement weights
-	move_times.push_back(1000);
+	/*move_times.push_back(1000);
 	move_times.push_back(4000);
-	move_times.push_back(7000);
+	move_times.push_back(7000);*/
 	/*------------------------------------*/
 
 	// print locations
@@ -579,23 +600,16 @@ void MovePath(CARLsim* sim, MOVE* m, EIWP* e, int* move_action) {
 	}
 
 	// process movement
-	x = m->loc[0] / 100;
+	/*x = m->loc[0] / 100;
 	y = m->loc[1] / 100;
-	n_num = (y * e->max_x) + x;
+	n_num = (y * e->max_x) + x;*/
 
-	//if (t % 1000 == 0) {
-		for (int i = 0; i < move_times.size(); i++) {
-			if (t == move_times[i]) {
-				// set movement parameters
-				move_action[0] = n_num;
-				move_action[1] = t;				
-			}
-			if (t == move_times[i] || t == move_times[i] + 1000) {
-				// perform movement commands
-				MoveCommand(sim,move_action,m->move_weight,e,m);
-			}
+	for (int i = 0; i < m->move_times.size(); i++) {
+		if (t == m->move_times[i] || t == m->move_times[i] + 1000) {
+			// perform movement commands
+			MoveCommand(sim,m->move_weight,e,m);
 		}
-	//}
+	}
 }
 
 int main() {
@@ -623,7 +637,6 @@ int main() {
 	double temp_intogc_wts[x_cnt*y_cnt]; // temp matrix for IN weights
 	eiwp.pd = pd; 
 	eiwp.sim_time = sim_time;
-	int move_action[] = {0,0}; // {n,t} stores the n (neuron number) and t (time) of a movement command
 
 	// configure the network
 	Grid3D grid_ext(10,10,1); // external input
@@ -732,7 +745,7 @@ int main() {
 		}
 
 		// create movement path
-		MovePath(&sim, &move, &eiwp, move_action);				
+		MovePath(&sim, &move, &eiwp);				
 
 		if (t % 1000 == 0 && t != 0) {
 			//PrintTempWeights(temp_gctoin_wts, temp_intogc_wts, t);	
