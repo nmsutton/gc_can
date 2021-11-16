@@ -237,13 +237,11 @@ void TransformWeights(double* temp_gctoin_wts, double* temp_intogc_wts, EIWP e) 
 
 	int layer_size = e.max_x*e.max_y;
 	double w;
-	double max_syn_wt = e.base_w; //1; //5; // maximum synaptic weight value from (solanka, 2015)
+	double max_syn_wt = 0.8; //e.base_w; //1; //5; // maximum synaptic weight value from (solanka, 2015)
 
 	for (int i = 0; i < layer_size; i++) {
 		w = temp_gctoin_wts[i];
 
-		//w = w * 0.12777;
-		//w = w * (1/60);
 		w = (1 / w); // flipped scale for less inh. instead of more exc.
 		
 		/*
@@ -251,12 +249,8 @@ void TransformWeights(double* temp_gctoin_wts, double* temp_intogc_wts, EIWP e) 
 			E.g., for original weights ranging from 18 to 15.5, t1 = 15.5 will cause big increase close to ~16 and
 			t2 = 50 creates a very high curve steepness.
 		*/
-
-		//w = pow((w * 0.3),4); // pow((w * 0.1),2); // scaling factor for intended synapse weights. this is just for testing
-		w = pow((w * 15.5),60); 
-		//w = pow((w * 0.3),12);
-
-		//w = w * .1;
+		w = pow((w * 15.5),60); // scaling factor for intended synapse weights. this is just for testing
+		//w = pow((w * 0.3),4); // pow((w * 0.1),2); 
 
 		if (w > max_syn_wt) {
 			w = max_syn_wt; // set max weight
@@ -363,7 +357,7 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 		}
 		exc_surr_dist = 0; //9; // distance of the excitatory surround from the position of presynaptic neuron (solanka, 2015)
 		sigma = 0.5;//0.7; //0.0834; // width of the Gaussian profile value from (solanka, 2015)
-		speed_factor = spk_tot[e_num] * 0.167; // factor representing speed perception by firing rate
+		speed_factor = spk_tot[e_num] * 0.0835;//0.167; // factor representing speed perception by firing rate
 		zero_div = 0.000001; // avoid issue with division by 0
 
 		dist = sqrt(pow((d_x[i]),2)+pow((d_y[i] + zero_div),2));
@@ -390,9 +384,13 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 		double s1 = 0.5;
 		double s2 = 0.5;
 		double s3 = 0.3;
-		y_axis_shf = 0.6;
-		w = y_axis_shf + speed_factor * ((2 / sqrt(3*s1*pow(PI,.25))) * (1-pow(((dist*.3)/s2),2)) * exp(-1*(pow((dist*.3),2)/(2*pow(s3,2)))));
-		
+		double scale_fac = 0.3;
+		double scale_fac2 = 8; //12; // 2;
+		double scale_fac3 = 0.5; // 1;
+		y_axis_shf = 0.65; //0.6;
+		speed_factor = speed_factor * 2;//1.34;
+		w = y_axis_shf + ((2 / sqrt(3*s1*pow(PI,.25))) * (scale_fac3-pow(((dist*scale_fac)/s2),2)) * (speed_factor * (exp(-1*(scale_fac*pow(dist,2))/(scale_fac2*pow(s3,2))))));
+		//w = w + 0.000001 // avoid 0.0 as weight
 
 		//i_num = (t_y * e.max_x) + t_x;		
 
@@ -668,7 +666,7 @@ int main() {
 
 	//setup some baseline input
 	PoissonRate in(grid_ext.N);
-	in.setRates(30.0f); //in.setRates(15.0f);
+	in.setRates(60.0f); //in.setRates(30.0f); //in.setRates(15.0f);
 	sim.setSpikeRate(gext,&in);
 
 	// ---------------- RUN STATE -------------------
