@@ -1,2 +1,2 @@
 % add path to Offline Analysis Toolbox
-addpath('../../../tools/offline_analysis_toolbox')
+addpath('/comp_neuro/Software/CARLsim6/tools/offline_analysis_toolbox')

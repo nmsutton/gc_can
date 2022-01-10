@@ -103,7 +103,7 @@ struct MOVE
 		double move_weight = 0.3; // synaptic weight used to signal movement command
 		double default_weight = 0.08; // synaptic weight used for default background noise
 		vector<int> move_times = {1000,4000,7000}; // move times: stores the times of movement commands from ext input
-		vector<char> move_direct = {'u','r','d'}; // move direction: sequence of directions to use as ext input pd
+		vector<char> move_direct = {'u','r','r'}; // move direction: sequence of directions to use as ext input pd
 };
 
 string to_string(double x)
@@ -244,12 +244,13 @@ void TransformWeights(double* temp_gctoin_wts, double* temp_intogc_wts, EIWP e) 
 
 		w = (1 / w); // flipped scale for less inh. instead of more exc.
 		
-		/*
-			In practice I found, pow((w * t1), t2), t1 is min weight with steep curve increase. t2 is the steepness.
-			E.g., for original weights ranging from 18 to 15.5, t1 = 15.5 will cause big increase close to ~16 and
-			t2 = 50 creates a very high curve steepness.
-		*/
+		//
+		//	In practice I found, pow((w * t1), t2), t1 is min weight with steep curve increase. t2 is the steepness.
+		//	E.g., for original weights ranging from 18 to 15.5, t1 = 15.5 will cause big increase close to ~16 and
+		//	t2 = 50 creates a very high curve steepness.
+		//
 		w = pow((w * 15.5),60); // scaling factor for intended synapse weights. this is just for testing
+		//w = pow((w * 15.5),45);
 		//w = pow((w * 0.3),4); // pow((w * 0.1),2); 
 
 		if (w > max_syn_wt) {
@@ -381,15 +382,19 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 		//sigma = 0.8;
 		//w = y_axis_shf + speed_factor * ((2 / sqrt(3*sigma*pow(PI,.25))) * (1-pow((dist/sigma),2)) * exp(-1*(pow(dist,2)/(2*pow(sigma,2)))));
 		//w = y_axis_shf + speed_factor * ((2 / sqrt(3*sigma*pow(PI,.25))) * (1-pow((dist/sigma),2)) * exp(-1*(pow(dist,2)/(5*pow(sigma,2)))));
+		y_axis_shf = 0.655; //0.6;
+
 		double s1 = 0.5;
-		double s2 = 0.5;
-		double s3 = 0.3;
+
 		double scale_fac = 0.3;
-		double scale_fac2 = 8; //12; // 2;
-		double scale_fac3 = 0.5; // 1;
-		y_axis_shf = 0.65; //0.6;
+		double scale_fac2 = 0.5; // 1;
+		double s2 = 0.5;
+
+		double scale_fac3 = 8; //12; // 2;
+		double s3 = 0.3;				
 		speed_factor = speed_factor * 2;//1.34;
-		w = y_axis_shf + ((2 / sqrt(3*s1*pow(PI,.25))) * (scale_fac3-pow(((dist*scale_fac)/s2),2)) * (speed_factor * (exp(-1*(scale_fac*pow(dist,2))/(scale_fac2*pow(s3,2))))));
+
+		w = y_axis_shf + ((2 / sqrt(3*s1*pow(PI,.25))) * (scale_fac2-pow(((dist*scale_fac)/s2),2)) * (speed_factor * (exp(-1*(scale_fac*pow(dist,2))/(scale_fac3*pow(s3,2))))));
 		//w = w + 0.000001 // avoid 0.0 as weight
 
 		//i_num = (t_y * e.max_x) + t_x;		
@@ -415,7 +420,7 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 				calc = calc + " + " + to_string((long double) w);
 			}
 		}
-		if (select_tnum && false) {
+		if (select_tnum) {
 			printf("\nweight: %f %f * exp((-1*pow((%f - %f),2))/(2*pow(%f,2))) = %f",w,speed_factor,dist,exc_surr_dist,sigma,w);
 			cout << " | x " << e.x << " y " << e.y << " w " << w << " d " << dist;
 			//cout << " + " << w;
@@ -687,38 +692,12 @@ int main() {
 
 		if (t % 1000 == 0) {
 			// store firing in vector
-			SMexc->stopRecording();
+			/*SMexc->stopRecording();
 			nrn_spk = SMexc->getSpikeVector2D();
-			SMexc->startRecording();
+			SMexc->startRecording();*/
 			ecin_weights = CMecin->takeSnapshot();	
 			eiwp.ecin_weights = ecin_weights;	
 		}	
-
-/*		if (t == 1000 || t == 3000 || t == 4000 || t == 6000 || t == 7000) {
-			// display activity
-
-			//--------Print Weights and Firing--------//
-			int nrn_size, tot, s_num, spk_time;
-			int spk_tot[10*10];
-			eiwp.t = t;
-
-			// count spikes
-			nrn_size = nrn_spk.size();
-			for (int i = 0; i < nrn_size; i++) {
-				tot = 0;
-				s_num = nrn_spk[i].size();
-				for (int j = 0; j < s_num; j++) {
-					spk_time = nrn_spk[i][j];
-					if (spk_time >= (t - 500) && spk_time <= t) {
-						tot += 1;
-					}
-				}
-				spk_tot[i] = tot;
-			}
-
-			//PrintWeightsAndFiring(eiwp, spk_tot);
-			//----------------------------------------//
-		}		*/
 
 		if (t == 2000 || t == 5000 || t == 8000) {
 			// process movement
