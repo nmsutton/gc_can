@@ -50,6 +50,7 @@
 * code added by Nate Sutton
 * references:
 * http://www.cplusplus.com/forum/general/34780/
+* https://en.wikipedia.org/wiki/Gompertz_function
 */
 
 // include CARLsim user interface
@@ -68,43 +69,21 @@
 #include <sstream>
 #include <iostream>
 
-#define PI 3.14159265
+using namespace std;
+
+#include <vector>
+#include <math.h> // for sqrt() and other functions
+
+#include "general_funct.cpp"
+/*
+#include "move_path.cpp"
+#include "boundary_cells.cpp"
+#include "place_cells.cpp"
+*/
 
 using namespace std;
 
 string to_string(double x);
-
-struct EIWP
-{
-	// exc -> inh synaptic weight relevant parameters
-
-	int x, y, t, spk_tot;
-	int max_x = 10;
-	int max_y = 10;
-	float gc_spk;
-	char gc_pd;
-	char *pd; 
-	std::vector<std::vector<float>> ecin_weights;
-	int conn_groups = 1; // exc -> inh
-	int conn_groups2 = 2; // inh -> exc
-	int spk_thresh = 3;
-	int group_size = 25;
-	double base_w;
-	int sim_time;
-};
-
-struct MOVE
-{
-		// animal movement parameters
-
-		int slow_rate = 4; // rate movement is slowed. value 4 creates 25 movement units in 100 msec
-		int move_time = 500; // milliseconds movement activity firing occurs		
-		int loc[2] = {150, 150}; // x, y location
-		double move_weight = 0.3; // synaptic weight used to signal movement command
-		double default_weight = 0.08; // synaptic weight used for default background noise
-		vector<int> move_times = {1000,4000,7000}; // move times: stores the times of movement commands from ext input
-		vector<char> move_direct = {'u','r','r'}; // move direction: sequence of directions to use as ext input pd
-};
 
 string to_string(double x)
 {
@@ -189,7 +168,7 @@ int SetTarget(int i, int max_i, int offset) {
 	return i2;
 }
 
-void PrintWeightsAndFiring(EIWP e, int *spk_tot) {
+/*void PrintWeightsAndFiring(EIWP e, int *spk_tot) {
 	int x_p = 5;
 	int y_p = 5;
 	int max_x = 10;
@@ -211,7 +190,7 @@ void PrintWeightsAndFiring(EIWP e, int *spk_tot) {
 			printf("[%d]\t",spk_tot[n]);	
 		}
 	}
-}
+}*/
 
 void PrintTempWeights(double* temp_gctoin_wts, double* temp_intogc_wts, int t) {
 	int n_num;
@@ -324,7 +303,7 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 	SetIndices(e.y, i_y, g_max_x, g_max_y, 'y', e.max_y, d_y, y_offset);
 
 	// count spikes
-	nrn_size = nrn_spk.size();
+	/*nrn_size = nrn_spk.size();
 	for (int i = 0; i < nrn_size; i++) {
 		tot = 0;
 		s_num = nrn_spk[i].size();
@@ -335,7 +314,7 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 			}
 		}
 		spk_tot[i] = tot;
-	}
+	}*/
 
 	// print to screen
 	if (print_on) {
@@ -616,6 +595,7 @@ void MovePath(CARLsim* sim, MOVE* m, EIWP* e) {
 }
 
 int main() {
+	struct P p;	
 	// keep track of execution time
 	Stopwatch watch;
 
@@ -627,24 +607,22 @@ int main() {
 	int sim_time = 10001;//7001;
 	int n_num;
 	bool man_move_det = false;
-	static const int x_cnt = 10; // number of cells on x-axis
-	static const int y_cnt = 10; // number of cells on y-axis
-	char pd[x_cnt*y_cnt] = { 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u' }; 
+	char pd[p.x_size*p.y_size] = { 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u' }; 
+	vector<vector<int>> nrn_spk; // for total firing recording
 	std::vector<std::vector<float>> etec_weights;
 	std::vector<std::vector<float>> ecin_weights;
-	vector<vector<int>> nrn_spk;
 	double base_w;
 	struct MOVE move;
 	struct EIWP eiwp;
-	double temp_gctoin_wts[x_cnt*y_cnt]; // temp matrix for GC weights
-	double temp_intogc_wts[x_cnt*y_cnt]; // temp matrix for IN weights
+	double temp_gctoin_wts[p.x_size*p.y_size]; // temp matrix for GC weights
+	double temp_intogc_wts[p.x_size*p.y_size]; // temp matrix for IN weights
 	eiwp.pd = pd; 
 	eiwp.sim_time = sim_time;
 
 	// configure the network
-	Grid3D grid_ext(10,10,1); // external input
-	Grid3D grid_exc(10,10,1); // GCs
-	Grid3D grid_inh(10,10,1); // interneurons
+	Grid3D grid_ext(p.x_size,p.y_size,1); // external input
+	Grid3D grid_exc(p.x_size,p.y_size,1); // GCs
+	Grid3D grid_inh(p.x_size,p.y_size,1); // interneurons
 	int gext=sim.createSpikeGeneratorGroup("ext_input", grid_ext, EXCITATORY_NEURON);
 	int gexc=sim.createGroup("gc_exc", grid_exc, EXCITATORY_NEURON);
 	int ginh=sim.createGroup("gc_inh", grid_inh, INHIBITORY_NEURON);
@@ -679,6 +657,8 @@ int main() {
 	SMexc->startRecording();
 	SMinh->startRecording();
 
+	SMexc->setPersistentData(true); // keep prior firing when recording is stopped and restarted
+
 	for (int t=0; t<sim_time; t++) {	
 		eiwp.t = t;
 
@@ -692,9 +672,10 @@ int main() {
 
 		if (t % 1000 == 0) {
 			// store firing in vector
-			/*SMexc->stopRecording();
+			SMexc->stopRecording();
 			nrn_spk = SMexc->getSpikeVector2D();
-			SMexc->startRecording();*/
+			SMexc->startRecording();
+			// store weights in vector
 			ecin_weights = CMecin->takeSnapshot();	
 			eiwp.ecin_weights = ecin_weights;	
 		}	
@@ -728,7 +709,7 @@ int main() {
 			//PrintTempWeights(temp_gctoin_wts, temp_intogc_wts, t);	
 
 			/*--------Print Weights and Firing--------*/
-			int nrn_size, tot, s_num, spk_time;
+			/*int nrn_size, tot, s_num, spk_time;
 			int spk_tot[10*10];
 			eiwp.t = t;
 
@@ -746,7 +727,7 @@ int main() {
 				spk_tot[i] = tot;
 			}
 
-			PrintWeightsAndFiring(eiwp, spk_tot);				
+			PrintWeightsAndFiring(eiwp, spk_tot);			*/	
 			/*----------------------------------------*/
 
 			printf("\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _");

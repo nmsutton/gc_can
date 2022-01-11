@@ -17,8 +17,8 @@ spk_data = SpikeReader('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_projec
 time=9; % time steps, use (end frame - 1) = time
 t=[0:0.1:(time*.1)];
 bin_size = 1; % size of firing bin in ms
-x_size = 10; % size of network on x-axis
-y_size = 10; % size of network on y-axis
+x_size = 20; % size of network on x-axis
+y_size = 20; % size of network on y-axis
 spk_window = spk_data.readSpikes(bin_size);
 % Set up the movie structure. Preallocate recalledMovie, which will be an array of structures. First get a cell array with all the frames.
 hFigure = figure;

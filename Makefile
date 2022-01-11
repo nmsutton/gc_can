@@ -83,10 +83,12 @@ distclean_files := $(clean_files) results/* *.dot *.dat *.csv *.log
 default: $(proj_target)
 
 
-$(proj_target): $(main_src_file) $(inc_files) $(obj_cpp) $(obj_cu)
+#$(proj_target): $(main_src_file) $(inc_files) $(obj_cpp) $(obj_cu)
+$(proj_target): $(main_src_file)
 	$(eval CARLSIM5_FLG += -Wno-deprecated-gpu-targets)
 	$(eval CARLSIM5_LIB += -lcurand)
-	$(NVCC) $(CARLSIM5_FLG) $(obj_cpp) $(obj_cu) $< -o $(proj_target) $(CARLSIM5_LIB)
+	$(NVCC) $(CARLSIM5_FLG) $< -o $(proj_target) $(CARLSIM5_LIB)
+#	$(NVCC) $(CARLSIM5_FLG) $(obj_cpp) $(obj_cu) $< -o $(proj_target) $(CARLSIM5_LIB)
 
 nocuda: $(main_src_file) $(inc_files) $(obj_cpp)
 	$(eval CARLSIM5_FLG += -D__NO_CUDA__)
