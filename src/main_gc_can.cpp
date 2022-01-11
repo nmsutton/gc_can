@@ -256,7 +256,7 @@ void StoreWeights(CARLsim* sim, double* temp_gctoin_wts, double* temp_intogc_wts
 	}
 }
 
-void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk, 
+void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> nrn_spk, 
 	double* temp_gctoin_wts, double* temp_intogc_wts) {
 	/*
 		n_num = neuron number
@@ -283,7 +283,7 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 		spk_tot[i] = 0; // initialize as 0
 	}
 	double speed_factor;
-	bool print_on = false; // neurons to print to screen
+	bool print_on = true; // neurons to print to screen
 	if ((e.x==1&&e.y==1) || (e.x==1&&e.y==2)) {
 		//print_on = true;
 	}
@@ -303,7 +303,7 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 	SetIndices(e.y, i_y, g_max_x, g_max_y, 'y', e.max_y, d_y, y_offset);
 
 	// count spikes
-	/*nrn_size = nrn_spk.size();
+	nrn_size = nrn_spk.size();
 	for (int i = 0; i < nrn_size; i++) {
 		tot = 0;
 		s_num = nrn_spk[i].size();
@@ -313,8 +313,13 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 				tot += 1;
 			}
 		}
-		spk_tot[i] = tot;
-	}*/
+		if (i < (e.max_x*e.max_y)) {
+			spk_tot[i] = tot;
+		}
+		if (e.t < 3000) {
+			//printf("%f\n",nrn_size);
+		}
+	}
 
 	// print to screen
 	if (print_on) {
@@ -400,8 +405,8 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> &nrn_spk,
 			}
 		}
 		if (select_tnum) {
-			printf("\nweight: %f %f * exp((-1*pow((%f - %f),2))/(2*pow(%f,2))) = %f",w,speed_factor,dist,exc_surr_dist,sigma,w);
-			cout << " | x " << e.x << " y " << e.y << " w " << w << " d " << dist;
+			//printf("\nweight: %f %f * exp((-1*pow((%f - %f),2))/(2*pow(%f,2))) = %f",w,speed_factor,dist,exc_surr_dist,sigma,w);
+			//cout << " | x " << e.x << " y " << e.y << " w " << w << " d " << dist;
 			//cout << " + " << w;
 		}
 		if (select_tnum && e.x == 0) {
