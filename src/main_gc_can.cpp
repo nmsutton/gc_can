@@ -283,7 +283,7 @@ void ExcInhWeightProcessor(CARLsim* sim, EIWP e, vector<vector<int>> nrn_spk,
 		spk_tot[i] = 0; // initialize as 0
 	}
 	double speed_factor;
-	bool print_on = true; // neurons to print to screen
+	bool print_on = false; // neurons to print to screen
 	if ((e.x==1&&e.y==1) || (e.x==1&&e.y==2)) {
 		//print_on = true;
 	}
@@ -482,6 +482,77 @@ void BumpInit(CARLsim* sim) {
 	sim->setWeight(2,22,22,rate*f3,true);
 }
 
+void init_firing(CARLsim* sim, P *p) {
+	// initialize firing
+
+	int i;
+	int init_x = p->bump_init_x;
+	int init_y = p->bump_init_y;
+	int bump_d = p->bump_dist;
+	double mex_hat, d, new_firing;
+	double firing_bumps[p->layer_size];
+	for (int i = 0; i < p->layer_size; i++) {
+		firing_bumps[i] = 0.0;
+	}
+	int bump_pos[p->num_bumps][2] = {{init_x,init_y},{(init_x+(bump_d/2)),(init_y+bump_d)},{(init_x+bump_d),init_y},{(init_x+(bump_d+(bump_d/2))),(init_y+bump_d)}};
+	p->y_inter = p->y_inter_init; // y intercept
+	p->s_1 = p->s_1_init; // sigma_1. Note: specific value used for equalibrium of weights over time.
+	p->s_2 = p->s_2_init;
+	p->s_3 = p->s_3_init;
+	p->s_4 = p->s_4_init;
+	p->s_5 = p->s_5_init;
+	p->m = p->m_init;
+	p->m2 = p->m_init2;
+	p->m3 = p->m_init3;
+	p->m4 = p->m_init4;
+	p->a = p->a_init;
+	p->scale = p->scale_init;
+
+	// find weights for the starting bumps
+	for (int y = 0; y < p->y_size; y++) {
+		for (int x = 0; x < p->x_size; x++) {
+			for (int b = 0; b < p->num_bumps; b++) {
+				i = (y * p->x_size) + x;
+
+				d = get_distance(x, y, bump_pos[b][0], bump_pos[b][1], 'n', p);
+
+				if (d < p->dist_thresh) {
+					mex_hat = get_mex_hat(d, p);
+
+					new_firing = mex_hat - ((1/pow(p->dist_thresh,1.75))*8);
+
+					firing_bumps[i] = firing_bumps[i] + new_firing;		
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < p->layer_size; i++) {
+		firing_bumps[i] = firing_bumps[i] * -1; // invert values
+		if (firing_bumps[i] < 0.0) {			
+			firing_bumps[i] = 0.0; // no neg values rectifier
+		}
+		if (p->init_bumps) {
+			//gc_firing[i] = firing_bumps[i];
+			sim->setWeight(2,i,i,firing_bumps[i],true);
+		}
+	}
+
+	// set parameters to non-initial values
+	p->y_inter = p->y_inter_syn;
+	p->s_1 = p->s_1_syn;
+	p->s_2 = p->s_2_syn;
+	p->s_3 = p->s_3_syn;
+	p->s_4 = p->s_4_syn;
+	p->s_5 = p->s_5_syn;
+	p->m = p->m_syn;
+	p->m2 = p->m_syn2;
+	p->m3 = p->m_syn3;
+	p->m4 = p->m_syn4;
+	p->a = p->a_syn;
+	p->scale = p->scale_syn;
+}
+
 void MoveCommand(CARLsim* sim, double speed, EIWP* e, MOVE* m) {
 	/*
 		Update weights with the effects of movement
@@ -672,7 +743,8 @@ int main() {
 
 		// set activity bump initialization
 		if (t == 0) {
-			BumpInit(&sim); 
+			//BumpInit(&sim); 
+			init_firing(&sim, &p);
 		}
 
 		if (t % 1000 == 0) {

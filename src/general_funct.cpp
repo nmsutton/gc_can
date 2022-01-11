@@ -42,9 +42,9 @@ struct P {
 	static const int bump_init_x = 1.0; // initial bump x
 	static const int bump_init_y = 1.0; // initial bump y
 	static const int bump_dist = 7.0; // inter-bump distance
-	int bumps_x = 2; // number of bumps on x axis
-	int bumps_y = 2; // number of bumps on y axis
-	int num_bumps = bumps_x * bumps_y; // number of initial bumps
+	static const int bumps_x = 2; // number of bumps on x axis
+	static const int bumps_y = 2; // number of bumps on y axis
+	static const int num_bumps = bumps_x * bumps_y; // number of initial bumps
 	double pos[2] = {1,1}; // starting position
 	char last_dir; // last direction command
 	static const int x_size = 20;//26;
