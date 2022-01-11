@@ -12,38 +12,33 @@
 clear all;
 clc;
 initOAT;
-time=9; % time steps, use (end frame - 1) = time
-NM = NetworkMonitor('../results/sim_gc can.dat');
 SpikeReader('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/results/spk_gc_exc.dat', false, 'silent');
-a = SpikeReader('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/results/spk_gc_exc.dat', false, 'silent');
+spk_data = SpikeReader('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/results/spk_gc_exc.dat', false, 'silent');
+time=9; % time steps, use (end frame - 1) = time
+t=[0:0.1:(time*.1)];
 bin_size = 1; % size of firing bin in ms
-b = a.readSpikes(bin_size);
 x_size = 10; % size of network on x-axis
 y_size = 10; % size of network on y-axis
-%c = reshape(b(t,:),[x_size,y_size])'; % square matrix of firing at a given time step
-t=[0:0.1:(time*.1)];
+spk_window = spk_data.readSpikes(bin_size);
+% Set up the movie structure. Preallocate recalledMovie, which will be an array of structures. First get a cell array with all the frames.
 hFigure = figure;
 numberOfFrames = length(t);
-% Set up the movie structure. Preallocate recalledMovie, which will be an array of structures. First get a cell array with all the frames.
 allTheFrames = cell(numberOfFrames,1);
-vidHeight = 337;%342;
-vidWidth = 442;%434;
+vidHeight = 337;
+vidWidth = 442;
 allTheFrames(:) = {zeros(vidHeight, vidWidth, 3, 'uint8')};
 % Next get a cell array with all the colormaps.
 allTheColorMaps = cell(numberOfFrames,1);
 allTheColorMaps(:) = {zeros(256, 3)};
 % Now combine these to make the array of structures.
-myMovie = struct('cdata', allTheFrames, 'colormap', allTheColorMaps);
+myMovie = struct('cdata', allTheFrames, 'colormap', allTheColorMaps); 
 set(gcf, 'nextplot', 'replacechildren'); 
-% Need to change from the default renderer to zbuffer to get it to work right.
-% openGL doesn't work and Painters is way too slow.
+% Need to change from the default renderer to zbuffer to get it to work right. openGL doesn't work and Painters is way too slow.
 set(gcf, 'renderer', 'zbuffer');
-caxis manual;          % allow subsequent plots to use the same color limits
+caxis manual; % allow subsequent plots to use the same color limits
 
 for frameIndex = 1 : numberOfFrames
-  %filename = strcat('../output/firing_t',int2str(frameIndex),'.csv');
-  %[imgfile,delimiterOut]=importdata(filename);
-  imgfile = reshape(b(frameIndex,:),[x_size,y_size])';
+  imgfile = reshape(spk_window(frameIndex,:),[x_size,y_size])';
   cla reset;
   imagesc(imgfile);
   axis('tight')
