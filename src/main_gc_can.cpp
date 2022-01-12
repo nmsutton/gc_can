@@ -650,7 +650,7 @@ void MovePath(CARLsim* sim, MOVE* m, EIWP* e) {
 	/*------------------------------------*/
 
 	// print locations
-	if (t % 1000 == 0) {
+	if (t % 100 == 0) {
 		printf("\ntime %d loc x:%d, y:%d nrn x:%d y:%d", t, m->loc[0], m->loc[1], m->loc[0] / 100, m->loc[1] / 100);
 	}
 	/*if (t == (e->sim_time - 1)) {
@@ -745,8 +745,8 @@ void set_pos(P *p, char direction) {
 		p->pos[1] = (p->y_size - 1);
 	}
 
-	if (p->print_move == true && (direction == 'u' || direction == 'd' || direction == 'l' || direction == 'r')) {
-		cout << " move: " << direction;
+	if (p->print_move == true && direction != 'n') {
+		cout << " move: " << direction << " " << p->pos[0] << " " << p->pos[1] << " t: " << p->t;
 	}
 
 	p->last_dir=direction;
@@ -884,7 +884,6 @@ int main() {
 	int numGPUs = 1;
 	int randSeed = 42;
 	CARLsim sim("gc can", GPU_MODE, USER, numGPUs, randSeed);
-	int sim_time = 1001;//10001;
 	int n_num;
 	bool man_move_det = false;
 	char pd[p.x_size*p.y_size] = { 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u' }; 
@@ -896,7 +895,6 @@ int main() {
 	double temp_gctoin_wts[p.x_size*p.y_size]; // temp matrix for GC weights
 	double temp_intogc_wts[p.x_size*p.y_size]; // temp matrix for IN weights
 	eiwp.pd = pd; 
-	eiwp.sim_time = sim_time;
 
 	// configure the network
 	Grid3D grid_ext(p.x_size,p.y_size,1); // external input
@@ -942,75 +940,28 @@ int main() {
 	// set activity bump initialization
 	init_firing(&sim, &p);
 
-	for (int t=0; t<sim_time; t++) {	
+	for (int t=0; t<p.sim_time; t++) {	
 		eiwp.t = t;
 		p.t = t; // redundent time variable. TODO: consolidate with eiwp.
 
 		// run for 1 ms, don't generate run stats
 		sim.runNetwork(0,1,false);
 
-		// store firing in vector
-		SMexc->stopRecording();
-		p.nrn_spk = SMexc->getSpikeVector2D();
-		SMexc->startRecording();
-		// store weights in vector
-		ecin_weights = CMecin->takeSnapshot();	
-		eiwp.ecin_weights = ecin_weights;	
-
-		if (t % p.move_window) {
-			// process movement
-
-			// clear temp matrices
-			for (int i = 0; i < (eiwp.max_x * eiwp.max_y); i++) {
-				temp_gctoin_wts[i] = 0.0;
-				temp_intogc_wts[i] = 0.0;
-			}
-
-			/*for (int i = 0; i < (eiwp.max_x * eiwp.max_y); i++) {			
-				eiwp.x = i % eiwp.max_x;
-				eiwp.y = i / eiwp.max_x;
-				//if ((eiwp.x==1&&eiwp.y==1) || (eiwp.x==1&&eiwp.y==2)) {printf("\n\nt: %d ii:%d x: %d y: %d eiwp.x: %d",t, i, eiwp.x, eiwp.y, eiwp.x);}
-				eiwp.gc_pd = pd[i];
-				ExcInhWeightProcessor(&sim, eiwp, nrn_spk, temp_gctoin_wts, temp_intogc_wts);
-			}		
-
-			TransformWeights(temp_gctoin_wts, temp_intogc_wts, eiwp);	
-
-			StoreWeights(&sim, temp_gctoin_wts, temp_intogc_wts, eiwp);*/
+		// process movement
+		if (t % p.move_window == 0) {
+			// store firing in vector
+			SMexc->stopRecording();
+			p.nrn_spk = SMexc->getSpikeVector2D();
+			SMexc->startRecording();
+			// store weights in vector
+			ecin_weights = CMecin->takeSnapshot();	
+			eiwp.ecin_weights = ecin_weights;	
 
 			move_path_bound_test(&sim, eiwp, &p);
 		}
 
-		// create movement path
-		MovePath(&sim, &move, &eiwp);				
-
-		if (t % 1000 == 0 && t != 0) {
-			//PrintTempWeights(temp_gctoin_wts, temp_intogc_wts, t);	
-
-			/*--------Print Weights and Firing--------*/
-			/*int nrn_size, tot, s_num, spk_time;
-			int gc_firing[10*10];
-			eiwp.t = t;
-
-			// count spikes
-			nrn_size = nrn_spk.size();
-			for (int i = 0; i < nrn_size; i++) {
-				tot = 0;
-				s_num = nrn_spk[i].size();
-				for (int j = 0; j < s_num; j++) {
-					spk_time = nrn_spk[i][j];
-					if (spk_time >= (t - 500) && spk_time <= t) {
-						tot += 1;
-					}
-				}
-				gc_firing[i] = tot;
-			}
-
-			PrintWeightsAndFiring(eiwp, gc_firing);			
-
-			printf("\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _");*/
-			/*----------------------------------------*/
-		}
+		//if (p.print_time && t % 100 == 0) {printf("t: %dms loc x:%d y:%d\n",t,p.pos[0],p.pos[1]);}
+		if (p.print_time && t % 100 == 0) {printf("t: %dms\n",t);}
 	}
 
 	SMext->stopRecording();

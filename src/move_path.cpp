@@ -48,7 +48,7 @@ void create_move(char dir, CARLsim* sim, EIWP e, P* p) {
 	if (p->start_t == -1) {
 		p->start_t = e.t;
 	}
-	if (e.t < (p->start_t + round(1/p->speed)) && p->speed_adjustable == true) {
+	if (e.t < (p->start_t + round(1/(p->speed*p->move_window))) && p->speed_adjustable == true) {
 		EISignal('n', sim, p);
 	}
 	else {
@@ -66,7 +66,7 @@ void run_path(char *moves, double *speeds, int *speed_times, int num_moves, int 
 
 	if (p->mi < num_moves) {
 		for (int i = 0; i < num_speeds; i++) {
-			if (e.t == speed_times[i]) {
+			if (e.t == speed_times[i]*p->move_window) {
 				p->speed = speeds[i];
 			}
 		}
@@ -74,9 +74,8 @@ void run_path(char *moves, double *speeds, int *speed_times, int num_moves, int 
 		create_move(moves[p->mi], sim, e, p);
 	}
 	else {
-		if (e.t % 50 == 0) {
+		if (e.t % (50*p->move_window) == 0) {
 			p->speed = rand_speed(p);
-			//printf("speed: %f nm: %d\n",p->speed,num_moves);
 		}
 		create_move(rand_move(), sim, e, p);
 	}

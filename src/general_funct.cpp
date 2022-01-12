@@ -21,7 +21,6 @@ struct EIWP
 	int spk_thresh = 3;
 	int group_size = 25;
 	double base_w;
-	int sim_time;
 };
 
 struct MOVE
@@ -56,8 +55,9 @@ struct P {
 	int t = 0; // time
 	vector<vector<int>> nrn_spk; // for total firing recording
 
-	double run_time = 1000; // sim run time
-	bool print_move = 0; // print each move's direction
+	// common parameters that can vary per each run
+	double sim_time = 1000; // sim run time
+	bool print_move = 1; // print each move's direction
 	bool print_time = 1; // print time after processing
 	bool init_bumps = 1; // inital bumps present
 	bool base_input = 1; // baseline external signal input
@@ -68,7 +68,7 @@ struct P {
 	bool pc_active = 0; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 
 	// noise parameters
-	bool noise_active = 1; // activate noise
+	bool noise_active = 0; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
 	double noise_scale = 0.01; // scale to desired size for firing
 
