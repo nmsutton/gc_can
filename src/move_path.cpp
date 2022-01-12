@@ -39,7 +39,7 @@ double rand_speed(P *p) {
 	return (double) rand_val * scale;
 }
 
-void EISignal(char direction, CARLsim* sim, P* p);
+void EISignal(char direction, CARLsim* sim, P* p, EIWP e);
 
 void create_move(char dir, CARLsim* sim, EIWP e, P* p) {
 	/*
@@ -49,10 +49,10 @@ void create_move(char dir, CARLsim* sim, EIWP e, P* p) {
 		p->start_t = e.t;
 	}
 	if (e.t < (p->start_t + round(1/(p->speed*p->move_window))) && p->speed_adjustable == true) {
-		EISignal('n', sim, p);
+		EISignal('n', sim, p, e);
 	}
 	else {
-		EISignal(dir, sim, p);
+		EISignal(dir, sim, p, e);
 		p->start_t = -1;
 		p->mi = p->mi + 1;
 		//printf("%d\n",p->mi);

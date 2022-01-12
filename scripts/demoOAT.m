@@ -5,7 +5,6 @@ initOAT;
 
 % init NetworkMonitor
 NM = NetworkMonitor('../results/sim_gc can.dat');
-% NM = NetworkMonitor('../results/spk_gc_exc.dat');
 
 % plot network activity
 disp('NetworkMonitor.plot')

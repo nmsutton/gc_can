@@ -14,7 +14,7 @@ clc;
 initOAT;
 SpikeReader('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/results/spk_gc_exc.dat', false, 'silent');
 spk_data = SpikeReader('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/results/spk_gc_exc.dat', false, 'silent');
-time=98; % time steps, use (end frame - 1) = time
+time=250; % time steps, use (end frame - 1) = time
 t=[0:0.1:(time*.1)];
 bin_size = 10; % size of firing bin in ms
 x_size = 20; % size of network on x-axis
@@ -48,7 +48,7 @@ for frameIndex = 1 : numberOfFrames
   caxis([0 5.5])
   cb = colorbar;
   set(cb, 'ylim', [0 5.5]); % set colorbar range
-  caption = sprintf('Grid cell firing amounts, t = %.0f ms', frameIndex);
+  caption = sprintf('Grid cell firing amounts, t = %.0f ms', (frameIndex*10));
   title(caption, 'FontSize', 15);
   thisFrame = getframe(gcf);
   myMovie(frameIndex) = thisFrame;
