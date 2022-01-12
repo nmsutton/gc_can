@@ -1,3 +1,4 @@
 archive/
-results/*
+results/*.dat
+results/*.log
 scripts/firing.avi

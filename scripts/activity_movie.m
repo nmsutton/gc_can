@@ -14,9 +14,9 @@ clc;
 initOAT;
 SpikeReader('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/results/spk_gc_exc.dat', false, 'silent');
 spk_data = SpikeReader('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/results/spk_gc_exc.dat', false, 'silent');
-time=9; % time steps, use (end frame - 1) = time
+time=98; % time steps, use (end frame - 1) = time
 t=[0:0.1:(time*.1)];
-bin_size = 1000; % size of firing bin in ms
+bin_size = 10; % size of firing bin in ms
 x_size = 20; % size of network on x-axis
 y_size = 20; % size of network on y-axis
 spk_window = spk_data.readSpikes(bin_size);

@@ -50,8 +50,12 @@ struct P {
 	static const int x_size = 20;//26;
 	static const int y_size = 20;//26;
 	static const int layer_size = x_size * y_size;
+	int move_window = 10; // number of miliseconds before each movement command
 	int start_t = -1; // beginning time of move command
 	int mi = 0; // move list index
+	int t = 0; // time
+	vector<vector<int>> nrn_spk; // for total firing recording
+
 	double run_time = 1000; // sim run time
 	bool print_move = 0; // print each move's direction
 	bool print_time = 1; // print time after processing
