@@ -2,3 +2,4 @@ archive/
 results/*.dat
 results/*.log
 scripts/firing.avi
+output/

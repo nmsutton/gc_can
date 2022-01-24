@@ -45,7 +45,7 @@ struct P {
 	static const int bumps_x = 2; // number of bumps on x axis
 	static const int bumps_y = 2; // number of bumps on y axis
 	static const int num_bumps = bumps_x * bumps_y; // number of initial bumps
-	double pos[2] = {1,1}; // starting position
+	double pos[2] = {1,1}; // starting position; {x,y}
 	char last_dir; // last direction command
 	static const int x_size = 20;//26;
 	static const int y_size = 20;//26;
@@ -55,11 +55,15 @@ struct P {
 	int mi = 0; // move list index
 	int t = 0; // time
 	vector<vector<int>> nrn_spk; // for total firing recording
+	double gc_firing[x_size*y_size]; // gc spike amount
 
 	// common parameters that can vary per each run
-	double sim_time = 2600; // sim run time in ms
+	double sim_time = 500; // sim run time in ms
 	bool print_move = 0; // print each move's direction
 	bool print_time = 1; // print time after processing
+	bool print_in_weights = 1;
+	bool print_ext_weights = 0;
+	bool print_gc_firing = 1;
 	bool init_bumps = 1; // inital bumps present
 	bool base_input = 1; // baseline external signal input
 	bool gc_to_gc = 1; // grid cell to grid cell signaling
@@ -69,7 +73,7 @@ struct P {
 	bool pc_active = 0; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 
 	// noise parameters
-	bool noise_active = 1; // activate noise
+	bool noise_active = 0; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
 	double noise_scale = 0.005; // scale to desired size for firing
 
@@ -134,6 +138,11 @@ struct P {
 	double bc_y = 0.05;//0.25;
 	double bc_a = 0.25;
 	double bc_sig = 1.0;
+
+	// neuron vs location parameters
+	int selected_neuron = 10;
+	double firing_positions[x_size*y_size]; // locations of firing of a neuron
+
 };
 
 double get_mex_hat(double d, P *p) {

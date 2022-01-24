@@ -69,9 +69,12 @@
 #include <sstream>
 #include <iostream>
 
+// for file out
+#include <fstream>
+
 using namespace std;
 
-#include <vector>
+//#include <vector>
 #include <math.h> // for sqrt() and other functions
 
 #include "general_funct.cpp"
@@ -93,6 +96,13 @@ string to_string(double x)
 }
 
 string to_string(int x)
+{
+  ostringstream ss;
+  ss << x;
+  return ss.str();
+}
+
+string int_to_string(int x)
 {
   ostringstream ss;
   ss << x;
@@ -151,36 +161,42 @@ void SetIndices(int i, int *i_o, int g_max_x, int g_max_y, char axis, int max_i,
 	}
 }
 
-void PrintWeightsAndFiring(P *p, double *gc_firing, EIWP e) {
-	int x_p = 10;
-	int y_p = 10;
+void PrintWeightsAndFiring(P *p, double *in_firing, EIWP e) {
+	int x_p = 20;
+	int y_p = 20;
 	int max_x = p->x_size;
 	int n = 0;
 
-	/*printf("\n\nec->in weights at time %d",e.t);
-	for (int i = (y_p - 1); i >= 0; i--) {
-		printf("\n");
-		for (int j = 0; j < x_p; j++) {
-			n = (i * max_x) + j;
-			printf("[%f]\t",e.ecin_weights[n][n]);	
-		}
-	}*/
-	printf("\n\next->ec weights at time %d",e.t);
-	for (int i = (y_p - 1); i >= 0; i--) {
-		printf("\n");
-		for (int j = 0; j < x_p; j++) {
-			n = (i * max_x) + j;
-			printf("[%f]\t",e.etec_weights[n][n]);	
+	if (p->print_in_weights) {
+		printf("\n\nec->in weights at time %d",e.t);
+		for (int i = (y_p - 1); i >= 0; i--) {
+			printf("\n");
+			for (int j = 0; j < x_p; j++) {
+				n = (i * max_x) + j;
+				printf("[%.1f]\t",e.ecin_weights[n][n]);	
+			}
 		}
 	}
-	/*printf("\nGC firing t:%d",p->t);
-	for (int i = (y_p - 1); i >= 0; i--) {
-		printf("\n");
-		for (int j = 0; j < x_p; j++) {
-			n = (i * max_x) + j;
-			printf("[%f]\t",gc_firing[n]);	
+	if (p->print_ext_weights) {
+		printf("\n\next->ec weights at time %d",e.t);
+		for (int i = (y_p - 1); i >= 0; i--) {
+			printf("\n");
+			for (int j = 0; j < x_p; j++) {
+				n = (i * max_x) + j;
+				printf("[%.1f]\t",e.etec_weights[n][n]);	
+			}
 		}
-	}*/
+	}
+	if (p->print_gc_firing) {
+		printf("\nGC firing t:%d",p->t);
+		for (int i = (y_p - 1); i >= 0; i--) {
+			printf("\n");
+			for (int j = 0; j < x_p; j++) {
+				n = (i * max_x) + j;
+				printf("[%.0f]\t",p->gc_firing[n]);	
+			}
+		}
+	}
 }
 
 void PrintTempWeights(double* temp_gctoin_wts, double* temp_intogc_wts, int t) {
@@ -200,7 +216,7 @@ void PrintTempWeights(double* temp_gctoin_wts, double* temp_intogc_wts, int t) {
 	}
 }
 
-void StoreWeights(CARLsim *sim, double *gc_firing, P *p) {
+void StoreWeights(CARLsim *sim, double *in_firing, P *p) {
 	/*
 		transfer weights from temp matrix to synapse values
 	*/
@@ -210,10 +226,10 @@ void StoreWeights(CARLsim *sim, double *gc_firing, P *p) {
 		for (int x = 0; x < p->x_size; x++) {
 			i = (y * p->x_size) + x;
 
-			sim->setWeight(1,i,i,gc_firing[i],true);
-			sim->setWeight(2,i,i,gc_firing[i],true);
-			//sim->setWeight(1,i,i,gc_firing[i],false);
-			//sim->setWeight(2,i,i,gc_firing[i],false);
+			sim->setWeight(1,i,i,in_firing[i],true);
+			sim->setWeight(2,i,i,in_firing[i],true);
+			//sim->setWeight(1,i,i,in_firing[i],false);
+			//sim->setWeight(2,i,i,in_firing[i],false);
 		}
 	}
 }
@@ -269,7 +285,7 @@ void init_firing(CARLsim* sim, P *p) {
 			firing_bumps[i] = 0.0; // no neg values rectifier
 		}
 		if (p->init_bumps) {
-			//gc_firing[i] = firing_bumps[i];
+			//in_firing[i] = firing_bumps[i];
 			sim->setWeight(2,i,i,firing_bumps[i],true);
 			//sim->setWeight(2,i,i,firing_bumps[i],false);
 		}
@@ -383,6 +399,29 @@ double get_noise(P *p) {
 	return rand_val;
 }
 
+void count_gc_firing(P* p) {
+	int nrn_size, s_num, spk_time, tot;
+	for (int i = 0; i < (p->x_size*p->y_size); i++) {
+		p->gc_firing[i] = 0.0; // initialize as 0
+	}
+
+	// count gc spikes
+	nrn_size = p->nrn_spk.size();
+	for (int i = 0; i < nrn_size; i++) {
+		tot = 0;
+		s_num = p->nrn_spk[i].size();
+		for (int j = 0; j < s_num; j++) {
+			spk_time = p->nrn_spk[i][j];
+			if (spk_time >= (p->t - p->move_window) && spk_time <= p->t) {
+				tot += 1;
+			}
+		}
+		if (p->gc_to_gc && i < (p->x_size*p->y_size)) {
+			p->gc_firing[i] = tot;
+		}
+	}
+}
+
 void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 	/*
 		Process signaling between gc exc and inh neurons.
@@ -396,26 +435,12 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 		new_firing_group[i] = 0.00001;
 	}
 	int nrn_size, s_num, spk_time, tot; // t_y, t_x: target y and x
-	double gc_firing[p->x_size*p->y_size]; // gc spike amount
+	double in_firing[p->x_size*p->y_size]; // gc spike amount
 	for (int i = 0; i < (p->x_size*p->y_size); i++) {
-		gc_firing[i] = 0.0; // initialize as 0
+		in_firing[i] = 0.0; // initialize as 0
 	}
 
-	// count spikes
-	nrn_size = p->nrn_spk.size();
-	for (int i = 0; i < nrn_size; i++) {
-		tot = 0;
-		s_num = p->nrn_spk[i].size();
-		for (int j = 0; j < s_num; j++) {
-			spk_time = p->nrn_spk[i][j];
-			if (spk_time >= (p->t - p->move_window) && spk_time <= p->t) {
-				tot += 1;
-			}
-		}
-		if (p->gc_to_gc && i < (p->x_size*p->y_size)) {
-			gc_firing[i] = tot;
-		}
-	}
+	count_gc_firing(p);
 
 	set_pos(p, direction);
 
@@ -431,18 +456,18 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 		}
 
 		if (p->base_input) {
-			gc_firing[gc_i] = gc_firing[gc_i] + pd_fac;
+			in_firing[gc_i] = p->gc_firing[gc_i] + pd_fac;
 		}
 	}
 
 	/* place cell firing */
 	if (p->pc_to_gc) {
-		//place_cell_firing(gc_firing, g);
+		//place_cell_firing(in_firing, g);
 	}
 
 	/* boundary cell firing */
 	if (p->bc_to_gc) {
-		//boundary_cell_firing(gc_firing, g);
+		//boundary_cell_firing(in_firing, g);
 	}
 
 	/* grid cell and interneuron synapse connections */
@@ -460,7 +485,7 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 
 							mex_hat = get_mex_hat(d, p);
 
-							new_firing = (gc_firing[pd_i] * mex_hat) - ((1/pow(p->dist_thresh,1.75))*8);
+							new_firing = (in_firing[pd_i] * mex_hat) - ((1/pow(p->dist_thresh,1.75))*8);
 
 							new_firing_group[gc_i] = new_firing_group[gc_i] + new_firing;
 						}
@@ -472,31 +497,77 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 
 	for (int i = 0; i < p->layer_size; i++) {
 		if (p->gc_to_gc) {
+			//new_firing_group[i] = -1 * new_firing_group[i];
 			if (new_firing_group[i] > 0) {
 				new_firing_group[i] = 0; // only negative values for IN weights
 			}
-			gc_firing[i] = new_firing_group[i] + (p->dist_thresh*1.7);
-			//gc_firing[i] = new_firing_group[i] + (p->dist_thresh*2.6);
-			//gc_firing[i] = gc_firing[i] * .35;
+			in_firing[i] = new_firing_group[i] + (p->dist_thresh*1.7);
+			//in_firing[i] = new_firing_group[i] + (p->dist_thresh*2.6);
+			//in_firing[i] = new_firing_group[i] - (p->dist_thresh*3.7);
+			//in_firing[i] = in_firing[i] * .35;
+			in_firing[i] = 0;//new_firing_group[i];
 		}
-
 		// original tau derivative
-		gc_firing[i] = p->asig_a * exp(-1*(gc_firing[i]/p->asig_b))+p->asig_c;
+		in_firing[i] = p->asig_a * exp(-1*(in_firing[i]/p->asig_b))+p->asig_c;
 		// non zero firing rectifier
-		if (gc_firing[i] < 0) {
-			gc_firing[i] = 0;
+		if (in_firing[i] < 0) {
+			in_firing[i] = 0;
 		}
-		/*if (gc_firing[i] > 1) {
-			gc_firing[i] = 1;
-		}*/
 		// add random noise for realism		
 		if (p->noise_active == true) {
 			sim->setWeight(3,i,i,get_noise(p),true);
 		}
 	}
 
-	//PrintWeightsAndFiring(p, gc_firing, e);
-	StoreWeights(sim, gc_firing, p);
+	PrintWeightsAndFiring(p, in_firing, e);
+	StoreWeights(sim, in_firing, p);
+}
+
+void write_firing(P *p) {
+	ofstream output_file;
+	string filename = "output/firing_t" + int_to_string(p->t) + ".csv";
+	output_file.open(filename);
+
+	int i_f = 0; // firing index
+
+	if (p->t != 0) {
+		for (int i = (p->x_size - 1); i >= 0; i--) {
+			for (int j = 0; j < p->y_size; j++) {
+				i_f = (i * p->x_size) + j;
+
+				output_file << p->firing_positions[i_f];
+
+				if (j != (p->y_size -1)) {
+					output_file << ",";
+				}
+			}
+			if (i != 0) {
+				output_file << "\n";
+			}
+		}
+	}
+
+  output_file.close();
+}
+
+void RecordNeuronVsLocation(CARLsim* sim, P* p, EIWP e) {
+	/*
+		Detect firing of a selected individual neuron and record the animal's
+		position when the firing occured. Amount of firing is also recorded.
+
+		Note: are the 10ms time bins firing is counted enough resolution for this?
+	*/
+
+	int i;
+
+	if (p->gc_firing[p->selected_neuron] > 0) {
+		// get index from position
+		i = (p->pos[1] * p->x_size) + p->pos[0];
+
+		p->firing_positions[i] = p->firing_positions[i] + p->gc_firing[p->selected_neuron];
+	}
+
+	write_firing(p);
 }
 
 int main() {
@@ -530,9 +601,9 @@ int main() {
 	int gexc=sim.createGroup("gc_exc", grid_exc, EXCITATORY_NEURON);
 	int ginh=sim.createGroup("gc_inh", grid_inh, INHIBITORY_NEURON);
 	int gnos=sim.createSpikeGeneratorGroup("noise", grid_nos, EXCITATORY_NEURON);
-	sim.setNeuronParameters(gexc, 0.02f, 0.2f, -65.0f, 8.0f); // RS
+	//sim.setNeuronParameters(gexc, 0.02f, 0.2f, -65.0f, 8.0f); // RS
+	sim.setNeuronParameters(gexc, 0.1f, 0.2f, -65.0f, 2.0f); // RS
 	sim.setNeuronParameters(ginh, 0.1f, 0.2f, -65.0f, 2.0f); // FS
-	//sim.connect(gext, gexc, "one-to-one", 0.08f, 1.0f); // using one-to-one for faster testing than full conn
 	sim.connect(gext, gexc, "one-to-one", 0.5f, 1.0f); // using one-to-one for faster testing than full conn
 	base_w = 0.5f; // baseline weight
 	sim.connect(gexc, ginh, "one-to-one", RangeWeight(base_w), 1.0f);
@@ -599,6 +670,7 @@ int main() {
 			move_path_bound_test(&sim, eiwp, &p);
 			//move_path2(&sim, eiwp, &p);
 			//straight_path(&sim, eiwp, &p);
+			RecordNeuronVsLocation(&sim, &p, eiwp);
 		}
 
 		//if (p.print_time && t % 100 == 0) {printf("t: %dms loc x:%d y:%d\n",t,p.pos[0],p.pos[1]);}
