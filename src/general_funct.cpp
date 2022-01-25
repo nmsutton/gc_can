@@ -142,7 +142,7 @@ struct P {
 	// neuron vs location parameters
 	int selected_neuron = 10;
 	double firing_positions[x_size*y_size]; // locations of firing of a neuron
-
+	double animal_location[x_size*y_size]; // location of animal
 };
 
 double get_mex_hat(double d, P *p) {

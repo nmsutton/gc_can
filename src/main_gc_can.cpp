@@ -523,9 +523,9 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 	StoreWeights(sim, in_firing, p);
 }
 
-void write_firing(P *p) {
+void write_firing(double *firing_matrix, string output_folder, P *p) {
 	ofstream output_file;
-	string filename = "output/firing_t" + int_to_string(p->t) + ".csv";
+	string filename = "output/" + output_folder + "/firing_t" + int_to_string(p->t) + ".csv";
 	output_file.open(filename);
 
 	int i_f = 0; // firing index
@@ -535,7 +535,7 @@ void write_firing(P *p) {
 			for (int j = 0; j < p->y_size; j++) {
 				i_f = (i * p->x_size) + j;
 
-				output_file << p->firing_positions[i_f];
+				output_file << firing_matrix[i_f];
 
 				if (j != (p->y_size -1)) {
 					output_file << ",";
@@ -567,7 +567,22 @@ void RecordNeuronVsLocation(CARLsim* sim, P* p, EIWP e) {
 		p->firing_positions[i] = p->firing_positions[i] + p->gc_firing[p->selected_neuron];
 	}
 
-	write_firing(p);
+	write_firing(p->firing_positions, "firing_vs_loc", p);
+}
+
+void RecordLocationPath(P *p) {
+	int pos_i = (p->pos[1] * p->x_size) + p->pos[0];
+
+	for (int i = 0; i < p->layer_size; i++) {
+		if (i == pos_i) {
+			p->animal_location[i] = 5;
+		}
+		else {
+			p->animal_location[i] = 0;	
+		}
+	}
+
+	write_firing(p->animal_location, "pos_track", p);
 }
 
 int main() {
@@ -671,6 +686,7 @@ int main() {
 			//move_path2(&sim, eiwp, &p);
 			//straight_path(&sim, eiwp, &p);
 			RecordNeuronVsLocation(&sim, &p, eiwp);
+			RecordLocationPath(&p);
 		}
 
 		//if (p.print_time && t % 100 == 0) {printf("t: %dms loc x:%d y:%d\n",t,p.pos[0],p.pos[1]);}
