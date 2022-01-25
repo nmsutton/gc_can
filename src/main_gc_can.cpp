@@ -81,8 +81,8 @@ using namespace std;
 #include "move_path.cpp"
 /*
 #include "boundary_cells.cpp"
-#include "place_cells.cpp"
 */
+#include "place_cells.cpp"
 
 using namespace std;
 
@@ -422,107 +422,6 @@ void count_gc_firing(P* p) {
 	}
 }
 
-void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
-	/*
-		Process signaling between gc exc and inh neurons.
-	*/	
-
-	double new_firing, new_weight, weight_sum, pd_fac, mex_hat;
-	double pdx, pdy, gcx, gcy, d; // for distance
-	int pd_i, gc_i;
-	double new_firing_group[p->layer_size];
-	for (int i = 0; i < p->layer_size; i++) {
-		new_firing_group[i] = 0.00001;
-	}
-	int nrn_size, s_num, spk_time, tot; // t_y, t_x: target y and x
-	double in_firing[p->x_size*p->y_size]; // gc spike amount
-	for (int i = 0; i < (p->x_size*p->y_size); i++) {
-		in_firing[i] = 0.0; // initialize as 0
-	}
-
-	count_gc_firing(p);
-
-	set_pos(p, direction);
-
-	if (p->print_move) {cout << "\n";}
-
-	/* apply ext input first */
-	for (int gc_i = 0; gc_i < p->layer_size; gc_i++) {
-		if (get_pd(gc_i, p) == direction) {
-			pd_fac = 1.0;
-		}
-		else {
-			pd_fac = 0.0;
-		}
-
-		if (p->base_input) {
-			in_firing[gc_i] = p->gc_firing[gc_i] + pd_fac;
-		}
-	}
-
-	/* place cell firing */
-	if (p->pc_to_gc) {
-		//place_cell_firing(in_firing, g);
-	}
-
-	/* boundary cell firing */
-	if (p->bc_to_gc) {
-		//boundary_cell_firing(in_firing, g);
-	}
-
-	/* grid cell and interneuron synapse connections */
-	for (int pdy = 0; pdy < p->y_size; pdy++) {
-		for (int pdx = 0; pdx < p->x_size; pdx++) {
-			if (direction == get_pd(pdx, pdy) || direction == 'n') {
-				for (int gcy = 0; gcy < p->y_size; gcy++) {
-					for (int gcx = 0; gcx < p->x_size; gcx++) {			
-						pd_i = (pdy * p->x_size) + pdx;						
-						gc_i = (gcy * p->x_size) + gcx;
-
-						d = get_distance(pdx, pdy, gcx, gcy, direction, p);
-
-						if (d < p->dist_thresh) { 
-
-							mex_hat = get_mex_hat(d, p);
-
-							new_firing = (in_firing[pd_i] * mex_hat) - ((1/pow(p->dist_thresh,1.75))*8);
-
-							new_firing_group[gc_i] = new_firing_group[gc_i] + new_firing;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	for (int i = 0; i < p->layer_size; i++) {
-		if (p->gc_to_gc) {
-			//new_firing_group[i] = -1 * new_firing_group[i];
-			if (new_firing_group[i] > 0) {
-				new_firing_group[i] = 0; // only negative values for IN weights
-			}
-			in_firing[i] = new_firing_group[i] + (p->dist_thresh*1.7);
-			//in_firing[i] = new_firing_group[i] + (p->dist_thresh*2.6);
-			//in_firing[i] = new_firing_group[i] - (p->dist_thresh*3.7);
-			//in_firing[i] = in_firing[i] * .35;
-			in_firing[i] = 0;//new_firing_group[i];
-		}
-		// original tau derivative
-		in_firing[i] = p->asig_a * exp(-1*(in_firing[i]/p->asig_b))+p->asig_c;
-		// non zero firing rectifier
-		if (in_firing[i] < 0) {
-			in_firing[i] = 0;
-		}
-		// add random noise for realism		
-		if (p->noise_active == true) {
-			sim->setWeight(3,i,i,get_noise(p),true);
-		}
-	}
-
-	PrintWeightsAndFiring(p, in_firing, e);
-	StoreWeights(sim, in_firing, p);
-}
-
 void write_firing(double *firing_matrix, string output_folder, P *p) {
 	ofstream output_file;
 	string filename = "output/" + output_folder + "/firing_t" + int_to_string(p->t) + ".csv";
@@ -585,6 +484,107 @@ void RecordLocationPath(P *p) {
 	write_firing(p->animal_location, "pos_track", p);
 }
 
+void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
+	/*
+		Process signaling between gc exc and inh neurons.
+	*/	
+
+	double new_firing, new_weight, weight_sum, pd_fac, mex_hat;
+	double pdx, pdy, gcx, gcy, d; // for distance
+	int pd_i, gc_i;
+	double new_firing_group[p->layer_size];
+	for (int i = 0; i < p->layer_size; i++) {
+		new_firing_group[i] = 0.00001;
+	}
+	int nrn_size, s_num, spk_time, tot; // t_y, t_x: target y and x
+	double in_firing[p->x_size*p->y_size]; // gc spike amount
+	for (int i = 0; i < (p->x_size*p->y_size); i++) {
+		in_firing[i] = 0.0; // initialize as 0
+	}
+
+	count_gc_firing(p);
+
+	set_pos(p, direction);
+
+	if (p->print_move) {cout << "\n";}
+
+	/* apply ext input first */
+	for (int gc_i = 0; gc_i < p->layer_size; gc_i++) {
+		if (get_pd(gc_i, p) == direction) {
+			pd_fac = 1.0;
+		}
+		else {
+			pd_fac = 0.0;
+		}
+
+		if (p->base_input) {
+			in_firing[gc_i] = p->gc_firing[gc_i] + pd_fac;
+		}
+	}
+
+	/* place cell firing */
+	if (p->pc_to_gc) {
+		place_cell_firing(in_firing, p);
+	}
+
+	/* boundary cell firing */
+	if (p->bc_to_gc) {
+		//boundary_cell_firing(in_firing, g);
+	}
+
+	/* grid cell and interneuron synapse connections */
+	for (int pdy = 0; pdy < p->y_size; pdy++) {
+		for (int pdx = 0; pdx < p->x_size; pdx++) {
+			if (direction == get_pd(pdx, pdy) || direction == 'n') {
+				for (int gcy = 0; gcy < p->y_size; gcy++) {
+					for (int gcx = 0; gcx < p->x_size; gcx++) {			
+						pd_i = (pdy * p->x_size) + pdx;						
+						gc_i = (gcy * p->x_size) + gcx;
+
+						d = get_distance(pdx, pdy, gcx, gcy, direction, p);
+
+						if (d < p->dist_thresh) { 
+
+							mex_hat = get_mex_hat(d, p);
+
+							new_firing = (in_firing[pd_i] * mex_hat) - ((1/pow(p->dist_thresh,1.75))*8);
+
+							new_firing_group[gc_i] = new_firing_group[gc_i] + new_firing;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < p->layer_size; i++) {
+		if (p->gc_to_gc) {
+			//new_firing_group[i] = -1 * new_firing_group[i];
+			if (new_firing_group[i] > 0) {
+				new_firing_group[i] = 0; // only negative values for IN weights
+			}
+			in_firing[i] = new_firing_group[i] + (p->dist_thresh*1.7);
+			//in_firing[i] = new_firing_group[i] + (p->dist_thresh*2.6);
+			//in_firing[i] = new_firing_group[i] - (p->dist_thresh*3.7);
+			//in_firing[i] = in_firing[i] * .35;
+			in_firing[i] = 0;//new_firing_group[i];
+		}
+		// original tau derivative
+		in_firing[i] = p->asig_a * exp(-1*(in_firing[i]/p->asig_b))+p->asig_c;
+		// non zero firing rectifier
+		if (in_firing[i] < 0) {
+			in_firing[i] = 0;
+		}
+		// add random noise for realism		
+		if (p->noise_active == true) {
+			sim->setWeight(3,i,i,get_noise(p),true);
+		}
+	}
+
+	PrintWeightsAndFiring(p, in_firing, e);
+	StoreWeights(sim, in_firing, p);
+}
+
 int main() {
 	struct P p;	
 	// keep track of execution time
@@ -605,6 +605,7 @@ int main() {
 	struct EIWP eiwp;
 	double temp_gctoin_wts[p.x_size*p.y_size]; // temp matrix for GC weights
 	double temp_intogc_wts[p.x_size*p.y_size]; // temp matrix for IN weights
+	double base_input_weight = 0.0;
 	eiwp.pd = pd; 
 
 	// configure the network
@@ -619,8 +620,11 @@ int main() {
 	//sim.setNeuronParameters(gexc, 0.02f, 0.2f, -65.0f, 8.0f); // RS
 	sim.setNeuronParameters(gexc, 0.1f, 0.2f, -65.0f, 2.0f); // RS
 	sim.setNeuronParameters(ginh, 0.1f, 0.2f, -65.0f, 2.0f); // FS
-	sim.connect(gext, gexc, "one-to-one", 0.5f, 1.0f); // using one-to-one for faster testing than full conn
-	base_w = 0.5f; // baseline weight
+	if (p.base_input == true) {
+		base_input_weight = p.base_input_weight;
+	}
+	sim.connect(gext, gexc, "one-to-one", base_input_weight, 1.0f); // using one-to-one for faster testing than full conn
+	base_w = 0.0f;//0.5f; // baseline weight
 	sim.connect(gexc, ginh, "one-to-one", RangeWeight(base_w), 1.0f);
 	sim.connect(ginh, gexc, "one-to-one", RangeWeight(base_w), 1.0f);
 	sim.connect(gnos, gexc, "one-to-one", 0.5f, 1.0f);
@@ -682,11 +686,14 @@ int main() {
 			eiwp.ecin_weights = ecin_weights;	
 			etec_weights = CMetec->takeSnapshot();	
 			eiwp.etec_weights = etec_weights;
+
 			move_path_bound_test(&sim, eiwp, &p);
+			
 			//move_path2(&sim, eiwp, &p);
 			//straight_path(&sim, eiwp, &p);
-			RecordNeuronVsLocation(&sim, &p, eiwp);
-			RecordLocationPath(&p);
+
+			//RecordNeuronVsLocation(&sim, &p, eiwp);
+			//RecordLocationPath(&p);
 		}
 
 		//if (p.print_time && t % 100 == 0) {printf("t: %dms loc x:%d y:%d\n",t,p.pos[0],p.pos[1]);}

@@ -41,14 +41,14 @@ struct P {
 	// general parameters
 	static const int bump_init_x = 1.0; // initial bump x
 	static const int bump_init_y = 1.0; // initial bump y
-	static const int bump_dist = 7.0; // inter-bump distance
+	static const int bump_dist = 15;//7.0; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
 	static const int bumps_y = 2; // number of bumps on y axis
 	static const int num_bumps = bumps_x * bumps_y; // number of initial bumps
 	double pos[2] = {1,1}; // starting position; {x,y}
 	char last_dir; // last direction command
-	static const int x_size = 20;//26;
-	static const int y_size = 20;//26;
+	static const int x_size = 30;//20;//26;
+	static const int y_size = 30;//20;//26;
 	static const int layer_size = x_size * y_size;
 	int move_window = 10; // number of miliseconds before each movement command
 	int start_t = -1; // beginning time of move command
@@ -59,18 +59,19 @@ struct P {
 
 	// common parameters that can vary per each run
 	double sim_time = 500; // sim run time in ms
+	double base_input_weight = 0.01;//0.5; // baseline input from ext_input to GC
 	bool print_move = 0; // print each move's direction
 	bool print_time = 1; // print time after processing
-	bool print_in_weights = 1;
+	bool print_in_weights = 0;
 	bool print_ext_weights = 0;
-	bool print_gc_firing = 1;
+	bool print_gc_firing = 0;
 	bool init_bumps = 1; // inital bumps present
 	bool base_input = 1; // baseline external signal input
-	bool gc_to_gc = 1; // grid cell to grid cell signaling
+	bool gc_to_gc = 0; // grid cell to grid cell signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
-	bool pc_to_gc = 0; // place cells to grid cells signaling
+	bool pc_to_gc = 1; // place cells to grid cells signaling
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
-	bool pc_active = 0; // pc signaling active. bc->pc->gc can still work even if this is disabled.
+	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 
 	// noise parameters
 	bool noise_active = 0; // activate noise
@@ -121,8 +122,8 @@ struct P {
 	double asig_scale = 1.0;//2.0;//-0.9;
 
 	// place cell parameters
-	double pc_sig = 0.25; // sigma symbol; width of the place feild
-	double pc_level = 14.0; // place cell firing level
+	double pc_sig = 1.0;//0.25; // sigma symbol; width of the place feild
+	double pc_level = 50.0;//14.0; // place cell firing level
 
 	// boundary cell parameters
 	double r_d = 1.0; // boundary cell active region width
