@@ -226,10 +226,28 @@ void StoreWeights(CARLsim *sim, double *in_firing, P *p) {
 		for (int x = 0; x < p->x_size; x++) {
 			i = (y * p->x_size) + x;
 
-			sim->setWeight(1,i,i,in_firing[i],true);
-			sim->setWeight(2,i,i,in_firing[i],true);
+			// normal condition
+			//sim->setWeight(1,i,i,in_firing[i],true);
+			//sim->setWeight(2,i,i,in_firing[i],true);
+
 			//sim->setWeight(1,i,i,in_firing[i],false);
 			//sim->setWeight(2,i,i,in_firing[i],false);
+
+			// for fire vs loc plot testing
+			double new_weight = in_firing[i];
+			new_weight = new_weight - 2;
+			if (new_weight >= 0) {
+				sim->setWeight(4,i,i,new_weight,true);
+				sim->setWeight(1,i,i,0,true);
+			  sim->setWeight(2,i,i,0,true);
+			}
+			else {
+				//sim->setWeight(1,i,i,abs(2-new_weight),true);
+			  //sim->setWeight(2,i,i,abs(2-new_weight),true);
+			  sim->setWeight(1,i,i,1,true);
+			  sim->setWeight(2,i,i,1,true);
+			  sim->setWeight(4,i,i,0,true);
+			}
 		}
 	}
 }
@@ -416,7 +434,8 @@ void count_gc_firing(P* p) {
 				tot += 1;
 			}
 		}
-		if (p->gc_to_gc && i < (p->x_size*p->y_size)) {
+		//if (p->gc_to_gc && i < (p->x_size*p->y_size)) {
+		if (i < (p->x_size*p->y_size)) {
 			p->gc_firing[i] = tot;
 		}
 	}
@@ -508,7 +527,7 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 
 	if (p->print_move) {cout << "\n";}
 
-	/* apply ext input first */
+	/* apply direction-based ext input first */
 	for (int gc_i = 0; gc_i < p->layer_size; gc_i++) {
 		if (get_pd(gc_i, p) == direction) {
 			pd_fac = 1.0;
@@ -517,7 +536,7 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 			pd_fac = 0.0;
 		}
 
-		if (p->base_input) {
+		if (p->base_dir_input) {
 			in_firing[gc_i] = p->gc_firing[gc_i] + pd_fac;
 		}
 	}
@@ -606,6 +625,7 @@ int main() {
 	double temp_gctoin_wts[p.x_size*p.y_size]; // temp matrix for GC weights
 	double temp_intogc_wts[p.x_size*p.y_size]; // temp matrix for IN weights
 	double base_input_weight = 0.0;
+	double noise_input_weight = 0.0;
 	eiwp.pd = pd; 
 
 	// configure the network
@@ -613,10 +633,12 @@ int main() {
 	Grid3D grid_exc(p.x_size,p.y_size,1); // GCs
 	Grid3D grid_inh(p.x_size,p.y_size,1); // interneurons
 	Grid3D grid_nos(p.x_size,p.y_size,1); // noise
+	Grid3D grid_pcs(p.x_size,p.y_size,1); // PCs
 	int gext=sim.createSpikeGeneratorGroup("ext_input", grid_ext, EXCITATORY_NEURON);
 	int gexc=sim.createGroup("gc_exc", grid_exc, EXCITATORY_NEURON);
 	int ginh=sim.createGroup("gc_inh", grid_inh, INHIBITORY_NEURON);
 	int gnos=sim.createSpikeGeneratorGroup("noise", grid_nos, EXCITATORY_NEURON);
+	int gpcs=sim.createSpikeGeneratorGroup("place", grid_pcs, EXCITATORY_NEURON);
 	//sim.setNeuronParameters(gexc, 0.02f, 0.2f, -65.0f, 8.0f); // RS
 	sim.setNeuronParameters(gexc, 0.1f, 0.2f, -65.0f, 2.0f); // RS
 	sim.setNeuronParameters(ginh, 0.1f, 0.2f, -65.0f, 2.0f); // FS
@@ -624,10 +646,13 @@ int main() {
 		base_input_weight = p.base_input_weight;
 	}
 	sim.connect(gext, gexc, "one-to-one", base_input_weight, 1.0f); // using one-to-one for faster testing than full conn
-	base_w = 0.0f;//0.5f; // baseline weight
-	sim.connect(gexc, ginh, "one-to-one", RangeWeight(base_w), 1.0f);
-	sim.connect(ginh, gexc, "one-to-one", RangeWeight(base_w), 1.0f);
-	sim.connect(gnos, gexc, "one-to-one", 0.5f, 1.0f);
+	sim.connect(gexc, ginh, "one-to-one", p.base_intern_weight, 1.0f);
+	sim.connect(ginh, gexc, "one-to-one", p.base_intern_weight, 1.0f);
+	if (p.noise_active == true) {
+		noise_input_weight = p.noise_input_weight;
+	}
+	sim.connect(gnos, gexc, "one-to-one", noise_input_weight, 1.0f);
+	sim.connect(gpcs, gexc, "one-to-one", 0.0f, 1.0f);
 	eiwp.base_w = base_w;
 	sim.setConductances(true); // COBA mode; setConductances = true
 
@@ -656,6 +681,14 @@ int main() {
 		noise.setRates(25.0f);
 		sim.setSpikeRate(gnos,&in);
 	}
+
+	PoissonRate pc_in(grid_ext.N);
+	pc_in.setRates(50.0f); //in.setRates(30.0f); //in.setRates(15.0f);
+	sim.setSpikeRate(gpcs,&pc_in);
+
+	//sim.setSpikeRate(gpcs,1.0f);
+	//sim.setExternalCurrent(gexc, 5.0f);
+	//sim.setWeight(4,465,465,1.0,true);
 
 	// ---------------- RUN STATE -------------------
 	SMext->startRecording();
@@ -692,8 +725,12 @@ int main() {
 			//move_path2(&sim, eiwp, &p);
 			//straight_path(&sim, eiwp, &p);
 
-			//RecordNeuronVsLocation(&sim, &p, eiwp);
-			//RecordLocationPath(&p);
+			if (p.record_fire_vs_pos) {
+				RecordNeuronVsLocation(&sim, &p, eiwp);
+			}
+			if (p.record_pos_track) {
+				RecordLocationPath(&p);
+			}
 		}
 
 		//if (p.print_time && t % 100 == 0) {printf("t: %dms loc x:%d y:%d\n",t,p.pos[0],p.pos[1]);}

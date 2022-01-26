@@ -9,7 +9,7 @@ clear all;
 clc;
 %input_folder = "pos_track";
 input_folder = "firing_vs_loc";
-time=48; % time steps, use (end frame - 1) = time
+time=4980; % time steps, use (end frame - 1) = time
 bin_size = 10; % time in ms that bins spiking
 t=[0:0.1:(time*.1)];
 hFigure = figure;
@@ -53,7 +53,7 @@ for frameIndex = 1 : numberOfFrames
   %set(cb, 'ylim', [0 4]); % set colorbar range
   set(cb, 'ylim', [0 5.5]); % set colorbar range
   %zlim([0, 1]);
-  caption = sprintf('Grid cell firing amounts, t = %.0f ms', frameIndex);
+  caption = sprintf('Grid cell firing amounts, t = %.0f ms', (frameIndex*bin_size));
   title(caption, 'FontSize', 15);
   %hold on;
   %hb = imshow(A, [], 'Colormap', gray(256));
