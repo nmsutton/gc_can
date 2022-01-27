@@ -488,19 +488,29 @@ void RecordNeuronVsLocation(CARLsim* sim, P* p, EIWP e) {
 	write_firing(p->firing_positions, "firing_vs_loc", p);
 }
 
-void RecordLocationPath(P *p) {
+void RecordLocationPath(P *p, string rec_type) {
 	int pos_i = (p->pos[1] * p->x_size) + p->pos[0];
 
 	for (int i = 0; i < p->layer_size; i++) {
-		if (i == pos_i) {
-			p->animal_location[i] = 5;
+		if (rec_type != "all") {
+			if (i == pos_i) {
+				p->animal_location[i] = 5;
+			}
+			else {
+				p->animal_location[i] = 0;
+			}
 		}
-		else {
-			p->animal_location[i] = 0;	
+		else if (i == pos_i) {
+			p->animal_location_all[i] = 1;
 		}
 	}
 
-	write_firing(p->animal_location, "pos_track", p);
+	if (rec_type != "all") {
+		write_firing(p->animal_location, "pos_track", p);
+	}
+	else {
+		write_firing(p->animal_location_all, "pos_track_all", p);
+	}
 }
 
 void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
@@ -627,6 +637,9 @@ int main() {
 	double base_input_weight = 0.0;
 	double noise_input_weight = 0.0;
 	eiwp.pd = pd; 
+	for (int i = 0; i < (p.x_size*p.y_size); i++) {
+		p.animal_location_all[i] = 0.0; // initialize
+	}
 
 	// configure the network
 	Grid3D grid_ext(p.x_size,p.y_size,1); // external input
@@ -729,7 +742,10 @@ int main() {
 				RecordNeuronVsLocation(&sim, &p, eiwp);
 			}
 			if (p.record_pos_track) {
-				RecordLocationPath(&p);
+				RecordLocationPath(&p, "current");
+			}
+			if (p.record_pos_track_all) {
+				RecordLocationPath(&p, "all");
 			}
 		}
 

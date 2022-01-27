@@ -58,7 +58,7 @@ struct P {
 	double gc_firing[x_size*y_size]; // gc spike amount
 
 	// common parameters that can vary per each run
-	double sim_time = 50000; // sim run time in ms
+	double sim_time = 5000; // sim run time in ms
 	double base_input_weight = 0.008; //0.5; // baseline input from ext_input to GC
 	double base_intern_weight = 0.0f;//0.5f; // baseline interneuron synapse weight
 	bool print_move = 0; // print each move's direction
@@ -68,6 +68,7 @@ struct P {
 	bool print_gc_firing = 0;
 	bool record_fire_vs_pos = 1; // write files for firing vs position plotting
 	bool record_pos_track = 1; // write files for animal position tracking plotting
+	bool record_pos_track_all = 1; // write files for animal positions with no past posit. clearing
 	//bool intern_connect = 1; // interneuron connections toggle
 	bool init_bumps = 0; // inital bumps present
 	bool base_input = 1; // baseline external signal input
@@ -150,6 +151,7 @@ struct P {
 	int selected_neuron = 465;//10;
 	double firing_positions[x_size*y_size]; // locations of firing of a neuron
 	double animal_location[x_size*y_size]; // location of animal
+	double animal_location_all[x_size*y_size]; // location of animal
 };
 
 double get_mex_hat(double d, P *p) {
