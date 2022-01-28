@@ -9,7 +9,7 @@ clear all;
 clc;
 %input_folder = "pos_track";
 input_folder = "firing_vs_loc";
-time=4980; % time steps, use (end frame - 1) = time. 1 = 10ms.
+time=45; % time steps, use (end frame - 1) = time. 1 = 10ms.
 bin_size = 10; % time in ms that bins spiking
 t=[0:0.1:(time*.1)];
 hFigure = figure;

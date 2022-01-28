@@ -501,7 +501,7 @@ void RecordLocationPath(P *p, string rec_type) {
 			}
 		}
 		else if (i == pos_i) {
-			p->animal_location_all[i] = 1;
+			p->animal_location_all[i] = p->animal_location_all[i] + 1;
 		}
 	}
 

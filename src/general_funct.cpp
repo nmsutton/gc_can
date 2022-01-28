@@ -58,7 +58,7 @@ struct P {
 	double gc_firing[x_size*y_size]; // gc spike amount
 
 	// common parameters that can vary per each run
-	double sim_time = 5000; // sim run time in ms
+	double sim_time = 500; // sim run time in ms
 	double base_input_weight = 0.008; //0.5; // baseline input from ext_input to GC
 	double base_intern_weight = 0.0f;//0.5f; // baseline interneuron synapse weight
 	bool print_move = 0; // print each move's direction
