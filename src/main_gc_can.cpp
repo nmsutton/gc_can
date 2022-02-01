@@ -161,7 +161,7 @@ void SetIndices(int i, int *i_o, int g_max_x, int g_max_y, char axis, int max_i,
 	}
 }
 
-void PrintWeightsAndFiring(P *p, double *in_firing, EIWP e) {
+void PrintWeightsAndFiring(P *p, double *in_weights, EIWP e) {
 	int x_p = 20;
 	int y_p = 20;
 	int max_x = p->x_size;
@@ -173,7 +173,7 @@ void PrintWeightsAndFiring(P *p, double *in_firing, EIWP e) {
 			printf("\n");
 			for (int j = 0; j < x_p; j++) {
 				n = (i * max_x) + j;
-				printf("[%.1f]\t",e.ecin_weights[n][n]);	
+				printf("[%.1f]\t",e.inec_weights[n][n]);	
 			}
 		}
 	}
@@ -216,7 +216,7 @@ void PrintTempWeights(double* temp_gctoin_wts, double* temp_intogc_wts, int t) {
 	}
 }
 
-void StoreWeights(CARLsim *sim, double *in_firing, P *p) {
+void StoreWeights(CARLsim *sim, double *in_weights, P *p) {
 	/*
 		transfer weights from temp matrix to synapse values
 	*/
@@ -226,27 +226,26 @@ void StoreWeights(CARLsim *sim, double *in_firing, P *p) {
 		for (int x = 0; x < p->x_size; x++) {
 			i = (y * p->x_size) + x;
 
-			// normal condition
-			//sim->setWeight(1,i,i,in_firing[i],true);
-			//sim->setWeight(2,i,i,in_firing[i],true);
-
-			//sim->setWeight(1,i,i,in_firing[i],false);
-			//sim->setWeight(2,i,i,in_firing[i],false);
-
-			// for fire vs loc plot testing
-			double new_weight = in_firing[i];
-			new_weight = new_weight - 2;
-			if (new_weight >= 0) {
-				sim->setWeight(4,i,i,new_weight,true);
-				sim->setWeight(1,i,i,0,true);
-			  sim->setWeight(2,i,i,0,true);
+			if (!p->fire_vs_pos_test_mode) {
+				// normal, non-testing, mode
+			  //sim->setWeight(1,i,i,in_weights[i],true);
+			  sim->setWeight(2,i,i,in_weights[i],true);
 			}
 			else {
-				//sim->setWeight(1,i,i,abs(2-new_weight),true);
-			  //sim->setWeight(2,i,i,abs(2-new_weight),true);
-			  sim->setWeight(1,i,i,1,true);
-			  sim->setWeight(2,i,i,1,true);
-			  sim->setWeight(4,i,i,0,true);
+				// for fire vs loc plot testing
+				double new_weight = in_weights[i];
+				new_weight = new_weight - 2;
+				// following generates PC firing for excitatory mex hat portion and IN firing for inhib. mex hat.
+				if (new_weight >= 0) {
+					sim->setWeight(4,i,i,new_weight,true);
+					sim->setWeight(1,i,i,0,true);
+				  sim->setWeight(2,i,i,0,true);
+				}
+				else {
+				  sim->setWeight(1,i,i,1,true);
+				  sim->setWeight(2,i,i,1,true);
+				  sim->setWeight(4,i,i,0,true);
+				}
 			}
 		}
 	}
@@ -262,9 +261,12 @@ void init_firing(CARLsim* sim, P *p) {
 	double mex_hat, d, new_firing;
 	double firing_bumps[p->layer_size];
 	for (int i = 0; i < p->layer_size; i++) {
-		firing_bumps[i] = 0.0;
+		firing_bumps[i] = -1.0;
 	}
-	int bump_pos[p->num_bumps][2] = {{init_x,init_y},{(init_x+(bump_d/2)),(init_y+bump_d)},{(init_x+bump_d),init_y},{(init_x+(bump_d+(bump_d/2))),(init_y+bump_d)}};
+	int bump_pos[p->num_bumps][2] = {{init_x,init_y},
+	{(init_x+bump_d),init_y},
+	{init_x,(init_y+bump_d)},
+	{(init_x+bump_d),(init_y+bump_d)}};
 	p->y_inter = p->y_inter_init; // y intercept
 	p->s_1 = p->s_1_init; // sigma_1. Note: specific value used for equalibrium of weights over time.
 	p->s_2 = p->s_2_init;
@@ -302,10 +304,9 @@ void init_firing(CARLsim* sim, P *p) {
 		if (firing_bumps[i] < 0.0) {			
 			firing_bumps[i] = 0.0; // no neg values rectifier
 		}
+		//firing_bumps[i] = firing_bumps[i] + (p->dist_thresh*1.7);
 		if (p->init_bumps) {
-			//in_firing[i] = firing_bumps[i];
 			sim->setWeight(2,i,i,firing_bumps[i],true);
-			//sim->setWeight(2,i,i,firing_bumps[i],false);
 		}
 	}
 
@@ -419,7 +420,7 @@ double get_noise(P *p) {
 
 void count_gc_firing(P* p) {
 	int nrn_size, s_num, spk_time, tot;
-	for (int i = 0; i < (p->x_size*p->y_size); i++) {
+	for (int i = 0; i < (p->layer_size); i++) {
 		p->gc_firing[i] = 0.0; // initialize as 0
 	}
 
@@ -434,8 +435,8 @@ void count_gc_firing(P* p) {
 				tot += 1;
 			}
 		}
-		//if (p->gc_to_gc && i < (p->x_size*p->y_size)) {
-		if (i < (p->x_size*p->y_size)) {
+		//if (p->gc_to_gc && i < (p->layer_size)) {
+		if (i < (p->layer_size)) {
 			p->gc_firing[i] = tot;
 		}
 	}
@@ -513,22 +514,34 @@ void RecordLocationPath(P *p, string rec_type) {
 	}
 }
 
+void GetMexHatEx(double d, P *p) {
+	double res = 0; //signal responce
+
+	res = p->me1*exp(-((p->me2*pow(d,2))/(p->me3*pow(p->me4,p->me5))));
+
+
+}
+
 void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 	/*
 		Process signaling between gc exc and inh neurons.
 	*/	
 
-	double new_firing, new_weight, weight_sum, pd_fac, mex_hat;
+	double new_firing, new_weight, weight_sum, pd_fac, mexhat_ex, mexhat_in;
 	double pdx, pdy, gcx, gcy, d; // for distance
 	int pd_i, gc_i;
-	double new_firing_group[p->layer_size];
+	double new_ex_weights[p->layer_size];
+	double new_in_weights[p->layer_size];
 	for (int i = 0; i < p->layer_size; i++) {
-		new_firing_group[i] = 0.00001;
+		new_ex_weights[i] = 0.00001;
+		new_in_weights[i] = 0.00001;
 	}
 	int nrn_size, s_num, spk_time, tot; // t_y, t_x: target y and x
-	double in_firing[p->x_size*p->y_size]; // gc spike amount
-	for (int i = 0; i < (p->x_size*p->y_size); i++) {
-		in_firing[i] = 0.0; // initialize as 0
+	double ex_weights[p->layer_size]; // excitatory weights
+	double in_weights[p->layer_size]; // inhibitory weights
+	for (int i = 0; i < (p->layer_size); i++) {
+		ex_weights[i] = 0.0; // initialize as 0
+		in_weights[i] = 0.0;
 	}
 
 	count_gc_firing(p);
@@ -547,18 +560,18 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 		}
 
 		if (p->base_dir_input) {
-			in_firing[gc_i] = p->gc_firing[gc_i] + pd_fac;
+			in_weights[gc_i] = p->gc_firing[gc_i] + pd_fac;
 		}
 	}
 
 	/* place cell firing */
 	if (p->pc_to_gc) {
-		place_cell_firing(in_firing, p);
+		place_cell_firing(in_weights, p);
 	}
 
 	/* boundary cell firing */
 	if (p->bc_to_gc) {
-		//boundary_cell_firing(in_firing, g);
+		//boundary_cell_firing(in_weights, g);
 	}
 
 	/* grid cell and interneuron synapse connections */
@@ -573,12 +586,16 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 						d = get_distance(pdx, pdy, gcx, gcy, direction, p);
 
 						if (d < p->dist_thresh) { 
+							// excitatory
+							mexhat_ex = GetMexHatEx(d, p);
+							new_firing = (ex_weights[pd_i] * mexhat_ex);
+							new_ex_weights[gc_i] = new_ex_weights[gc_i] + new_firing;
 
-							mex_hat = get_mex_hat(d, p);
+							// inhibitory
 
-							new_firing = (in_firing[pd_i] * mex_hat) - ((1/pow(p->dist_thresh,1.75))*8);
+							new_firing = (in_weights[pd_i] * mex_hat);// - ((1/pow(p->dist_thresh,1.75))*8);
 
-							new_firing_group[gc_i] = new_firing_group[gc_i] + new_firing;
+							new_ex_weights[gc_i] = new_ex_weights[gc_i] + new_firing;
 						}
 					}
 				}
@@ -588,21 +605,22 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 
 	for (int i = 0; i < p->layer_size; i++) {
 		if (p->gc_to_gc) {
-			//new_firing_group[i] = -1 * new_firing_group[i];
-			if (new_firing_group[i] > 0) {
-				new_firing_group[i] = 0; // only negative values for IN weights
-			}
-			in_firing[i] = new_firing_group[i] + (p->dist_thresh*1.7);
-			//in_firing[i] = new_firing_group[i] + (p->dist_thresh*2.6);
-			//in_firing[i] = new_firing_group[i] - (p->dist_thresh*3.7);
-			//in_firing[i] = in_firing[i] * .35;
-			in_firing[i] = 0;//new_firing_group[i];
+			new_ex_weights[i] = new_ex_weights[i] * -1; // invert values
+			/*if (new_ex_weights[i] > 0) {
+				new_ex_weights[i] = 0; // only negative values for IN weights
+			}*/
+			//in_weights[i] = new_ex_weights[i] + 1 + (p->dist_thresh*1.7);
+
+			//in_weights[i] = new_ex_weights[i] + (p->dist_thresh*2.6);
+			//in_weights[i] = new_ex_weights[i] - (p->dist_thresh*3.7);
+			//in_weights[i] = in_weights[i] * .35;
+			//in_weights[i] = 0;//new_ex_weights[i];
 		}
 		// original tau derivative
-		in_firing[i] = p->asig_a * exp(-1*(in_firing[i]/p->asig_b))+p->asig_c;
+		in_weights[i] = p->asig_a * exp(-1*(in_weights[i]/p->asig_b))+p->asig_c;
 		// non zero firing rectifier
-		if (in_firing[i] < 0) {
-			in_firing[i] = 0;
+		if (in_weights[i] < 0) {
+			in_weights[i] = 0;
 		}
 		// add random noise for realism		
 		if (p->noise_active == true) {
@@ -610,8 +628,10 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 		}
 	}
 
-	PrintWeightsAndFiring(p, in_firing, e);
-	StoreWeights(sim, in_firing, p);
+	PrintWeightsAndFiring(p, in_weights, e);
+	if (p->gc_to_gc) {
+		StoreWeights(sim, in_weights, p);
+	}	
 }
 
 int main() {
@@ -628,7 +648,7 @@ int main() {
 	bool man_move_det = false;
 	char pd[p.x_size*p.y_size] = { 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u' }; 
 	std::vector<std::vector<float>> etec_weights;
-	std::vector<std::vector<float>> ecin_weights;
+	std::vector<std::vector<float>> inec_weights;
 	double base_w;
 	struct MOVE move;
 	struct EIWP eiwp;
@@ -659,8 +679,8 @@ int main() {
 		base_input_weight = p.base_input_weight;
 	}
 	sim.connect(gext, gexc, "one-to-one", base_input_weight, 1.0f); // using one-to-one for faster testing than full conn
-	sim.connect(gexc, ginh, "one-to-one", p.base_intern_weight, 1.0f);
-	sim.connect(ginh, gexc, "one-to-one", p.base_intern_weight, 1.0f);
+	sim.connect(gexc, ginh, "one-to-one", p.base_gc_to_in_weight, 1.0f);
+	sim.connect(ginh, gexc, "one-to-one", p.base_in_to_gc_weight, 1.0f);
 	if (p.noise_active == true) {
 		noise_input_weight = p.noise_input_weight;
 	}
@@ -728,8 +748,8 @@ int main() {
 			p.nrn_spk = SMexc->getSpikeVector2D();
 			SMexc->startRecording();
 			// store weights in vector
-			ecin_weights = CMecin->takeSnapshot();	
-			eiwp.ecin_weights = ecin_weights;	
+			inec_weights = CMinec->takeSnapshot();	
+			eiwp.inec_weights = inec_weights;	
 			etec_weights = CMetec->takeSnapshot();	
 			eiwp.etec_weights = etec_weights;
 
