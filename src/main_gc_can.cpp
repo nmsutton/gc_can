@@ -261,7 +261,7 @@ void init_firing(CARLsim* sim, P *p) {
 	double mex_hat, d, new_firing;
 	double firing_bumps[p->layer_size];
 	for (int i = 0; i < p->layer_size; i++) {
-		firing_bumps[i] = -1.0;
+		firing_bumps[i] = 0.3;
 	}
 	int bump_pos[p->num_bumps][2] = {{init_x,init_y},
 	{(init_x+bump_d),init_y},
@@ -290,17 +290,15 @@ void init_firing(CARLsim* sim, P *p) {
 
 				if (d < p->dist_thresh) {
 					mex_hat = get_mex_hat(d, p);
-
-					new_firing = mex_hat - ((1/pow(p->dist_thresh,1.75))*8);
-
-					firing_bumps[i] = firing_bumps[i] + new_firing;		
+					//new_firing = firing_bumps[i] * mex_hat;// - ((1/pow(p->dist_thresh,1.75))*8);
+					firing_bumps[i] = firing_bumps[i] * mex_hat;		
 				}
 			}
 		}
 	}
 
 	for (int i = 0; i < p->layer_size; i++) {
-		firing_bumps[i] = firing_bumps[i] * -1; // invert values
+		//firing_bumps[i] = firing_bumps[i] * -1; // invert values
 		if (firing_bumps[i] < 0.0) {			
 			firing_bumps[i] = 0.0; // no neg values rectifier
 		}
@@ -592,11 +590,6 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 				new_in_weights[i] = 0; // only negative values for IN weights
 			}*/
 			//in_weights[i] = new_in_weights[i] + 1 + (p->dist_thresh*1.7);
-
-			//in_weights[i] = new_in_weights[i] + (p->dist_thresh*2.6);
-			//in_weights[i] = new_in_weights[i] - (p->dist_thresh*3.7);
-			//in_weights[i] = in_weights[i] * .35;
-			//in_weights[i] = 0;//new_in_weights[i];
 		}
 		// original tau derivative
 		in_weights[i] = p->asig_a * exp(-1*(in_weights[i]/p->asig_b))+p->asig_c;
@@ -687,19 +680,20 @@ int main() {
 
 	//setup some baseline input
 	PoissonRate in(grid_ext.N);
-	in.setRates(400.0f); //in.setRates(30.0f); //in.setRates(15.0f);
+	in.setRates(200.0f); //in.setRates(30.0f); //in.setRates(15.0f);
 	sim.setSpikeRate(gext,&in);
 
 	// add random noise for realism		
-	if (p.noise_active == true) {
-		PoissonRate noise(grid_nos.N);
-		noise.setRates(25.0f);
-		sim.setSpikeRate(gnos,&in);
-	}
+	PoissonRate noise(grid_nos.N);
+	noise.setRates(25.0f);
+	sim.setSpikeRate(gnos,&noise);
 
-	PoissonRate pc_in(grid_ext.N);
-	pc_in.setRates(50.0f); //in.setRates(30.0f); //in.setRates(15.0f);
-	sim.setSpikeRate(gpcs,&pc_in);
+	// place cell input
+	if (p.pc_active == true) {
+		PoissonRate pc_in(grid_ext.N);
+		pc_in.setRates(50.0f); //in.setRates(30.0f); //in.setRates(15.0f);
+		sim.setSpikeRate(gpcs,&pc_in);
+	}
 
 	//sim.setSpikeRate(gpcs,1.0f);
 	//sim.setExternalCurrent(gexc, 5.0f);
