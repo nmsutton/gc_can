@@ -58,7 +58,7 @@ struct P {
 	double gc_firing[x_size*y_size]; // gc spike amount
 
 	// common parameters that can vary per each run
-	double sim_time = 50; // sim run time in ms
+	double sim_time = 100; // sim run time in ms
 	double base_input_weight = 0.058; //0.5; // baseline input from ext_input to GC
 	double base_gc_to_in_weight = 1.0f;//0.5f; // baseline interneuron synapse weight
 	double base_in_to_gc_weight = 1.0f;//0.5f; // baseline interneuron synapse weight
@@ -74,8 +74,8 @@ struct P {
 	//bool intern_connect = 1; // interneuron connections toggle
 	bool init_bumps = 1; // inital bumps present
 	bool base_input = 1; // baseline external signal input
-	bool base_dir_input = 1; // baseline external signal direction-based input
-	bool gc_to_gc = 1; // grid cell to grid cell signaling
+	bool base_dir_input = 0; // baseline external signal direction-based input
+	bool gc_to_gc = 0; // grid cell to grid cell signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 	bool pc_to_gc = 0; // place cells to grid cells signaling
 	bool bc_to_pc = 0; // boundary cells to place cells signaling

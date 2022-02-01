@@ -514,33 +514,21 @@ void RecordLocationPath(P *p, string rec_type) {
 	}
 }
 
-void GetMexHatEx(double d, P *p) {
-	double res = 0; //signal responce
-
-	res = p->me1*exp(-((p->me2*pow(d,2))/(p->me3*pow(p->me4,p->me5))));
-
-
-}
-
 void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 	/*
 		Process signaling between gc exc and inh neurons.
 	*/	
 
-	double new_firing, new_weight, weight_sum, pd_fac, mexhat_ex, mexhat_in;
+	double new_firing, new_weight, weight_sum, pd_fac, mex_hat;
 	double pdx, pdy, gcx, gcy, d; // for distance
 	int pd_i, gc_i;
-	double new_ex_weights[p->layer_size];
 	double new_in_weights[p->layer_size];
 	for (int i = 0; i < p->layer_size; i++) {
-		new_ex_weights[i] = 0.00001;
 		new_in_weights[i] = 0.00001;
 	}
 	int nrn_size, s_num, spk_time, tot; // t_y, t_x: target y and x
-	double ex_weights[p->layer_size]; // excitatory weights
 	double in_weights[p->layer_size]; // inhibitory weights
 	for (int i = 0; i < (p->layer_size); i++) {
-		ex_weights[i] = 0.0; // initialize as 0
 		in_weights[i] = 0.0;
 	}
 
@@ -586,16 +574,9 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 						d = get_distance(pdx, pdy, gcx, gcy, direction, p);
 
 						if (d < p->dist_thresh) { 
-							// excitatory
-							mexhat_ex = GetMexHatEx(d, p);
-							new_firing = (ex_weights[pd_i] * mexhat_ex);
-							new_ex_weights[gc_i] = new_ex_weights[gc_i] + new_firing;
-
-							// inhibitory
-
+							mex_hat = get_mex_hat(d, p);
 							new_firing = (in_weights[pd_i] * mex_hat);// - ((1/pow(p->dist_thresh,1.75))*8);
-
-							new_ex_weights[gc_i] = new_ex_weights[gc_i] + new_firing;
+							new_in_weights[gc_i] = new_in_weights[gc_i] + new_firing;
 						}
 					}
 				}
@@ -605,16 +586,17 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 
 	for (int i = 0; i < p->layer_size; i++) {
 		if (p->gc_to_gc) {
-			new_ex_weights[i] = new_ex_weights[i] * -1; // invert values
-			/*if (new_ex_weights[i] > 0) {
-				new_ex_weights[i] = 0; // only negative values for IN weights
+			new_in_weights[i] = new_in_weights[i] * -1; // invert values
+			in_weights[i] = new_in_weights[i];
+			/*if (new_in_weights[i] > 0) {
+				new_in_weights[i] = 0; // only negative values for IN weights
 			}*/
-			//in_weights[i] = new_ex_weights[i] + 1 + (p->dist_thresh*1.7);
+			//in_weights[i] = new_in_weights[i] + 1 + (p->dist_thresh*1.7);
 
-			//in_weights[i] = new_ex_weights[i] + (p->dist_thresh*2.6);
-			//in_weights[i] = new_ex_weights[i] - (p->dist_thresh*3.7);
+			//in_weights[i] = new_in_weights[i] + (p->dist_thresh*2.6);
+			//in_weights[i] = new_in_weights[i] - (p->dist_thresh*3.7);
 			//in_weights[i] = in_weights[i] * .35;
-			//in_weights[i] = 0;//new_ex_weights[i];
+			//in_weights[i] = 0;//new_in_weights[i];
 		}
 		// original tau derivative
 		in_weights[i] = p->asig_a * exp(-1*(in_weights[i]/p->asig_b))+p->asig_c;
