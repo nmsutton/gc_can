@@ -58,15 +58,15 @@ struct P {
 	double gc_firing[x_size*y_size]; // gc spike amount
 
 	// common parameters that can vary per each run
-	double sim_time = 1000; // sim run time in ms
-	double base_input_weight = 0.6; //0.5; // baseline input from ext_input to GC
-	double base_gc_to_in_weight = 1.0f;//0.5f; // baseline interneuron synapse weight
+	double sim_time = 40; // sim run time in ms
+	double base_input_weight = 0.3; //0.5; // baseline input from ext_input to GC
+	double base_gc_to_in_weight = 2.0f;//1.0f;//0.5f; // baseline interneuron synapse weight
 	double base_in_to_gc_weight = 1.0f;//0.5f; // baseline interneuron synapse weight
 	bool print_move = 0; // print each move's direction
 	bool print_time = 1; // print time after processing
-	bool print_in_weights = 0;
+	bool print_in_weights = 1;
 	bool print_ext_weights = 0;
-	bool print_gc_firing = 0;
+	bool print_gc_firing = 1;
 	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
 	bool record_pos_track = 0; // write files for animal position tracking plotting
 	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
@@ -94,8 +94,8 @@ struct P {
 	double min_speed = 0.25; // minimum speed for random speed generator. note: signal applied even when stopped.
 	double max_speed = 1.0; // maximum speed for random speed generator
 	double tau_syn = .6;
-	double y_inter_syn = 0.4;//-1;//-0.03;//-0.05;//0.15;//-.5;//1.044;//1.055; // y intercept
-	double scale_syn = 5.0;//0.25;//1.0; // multiple synaptic connections scaling factor
+	double y_inter_syn = 0.5;//-1;//-0.03;//-0.05;//0.15;//-.5;//1.044;//1.055; // y intercept
+	double scale_syn = 2.0;//0.25;//1.0; // multiple synaptic connections scaling factor
 	double m_syn = 2.0; // magnitude variable for mex hat f1
 	double m_syn2 = 0.6; // f2 f3
 	double m_syn3 = 0.3; // f4
@@ -109,8 +109,8 @@ struct P {
 	double dist_thresh = 5; // distance threshold for only local connections
 
 	// initial values
-	double y_inter_init = 0.4;//y_inter_syn; // y intercept
-	double scale_init=0.2;//scale_syn;	
+	double y_inter_init = 1.5;//y_inter_syn; // y intercept
+	double scale_init=4;//scale_syn;	
 	double s_1_init = s_1_syn; // sigma_1. Note: specific value used for equalibrium of weights over time.
 	double s_2_init = s_2_syn;
 	double s_3_init = s_3_syn;
@@ -175,11 +175,14 @@ double get_mex_hat(double d, P *p) {
 	((1-(pow((m1*d)/s1,2))) *
 	(exp(-1*(m3*pow(d,2))/(12*pow(s3,2)))));*/
 
-	mex_hat = scale * (y_inter - (exp(-((m1*pow(d,2))/(2*pow(s1,2))))-m2*exp(-pow(d,2)/(2*pow(s2,2)))));
+	//mex_hat = scale * (y_inter - (exp(-((m1*pow(d,2))/(2*pow(s1,2))))-m2*exp(-pow(d,2)/(2*pow(s2,2)))));
 
-	if (d >1.9 && d < 2.1) {
-		//printf("%f %f\n",d,mex_hat);
-	}
+	mex_hat = y_inter-(scale*(exp(-((m1*pow(d,2))/(2*pow(s1,2))))
+		-m2*exp(-pow(d,2)/(2*pow(s2,2)))));
+
+	/*if (d >1.9 && d < 2.1) {
+		printf("%f %f\n",d,mex_hat);
+	}*/
 
 	return mex_hat;
 }
