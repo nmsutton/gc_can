@@ -4,7 +4,6 @@
 
 #define PI 3.14159265
 
-
 struct EIWP
 {
 	// exc -> inh synaptic weight relevant parameters
@@ -55,18 +54,19 @@ struct P {
 	int mi = 0; // move list index
 	int t = 0; // time
 	vector<vector<int>> nrn_spk; // for total firing recording
+	vector<vector<double>> weights_in; // IN-GC weights
 	double gc_firing[x_size*y_size]; // gc spike amount
 
 	// common parameters that can vary per each run
-	double sim_time = 40; // sim run time in ms
-	double base_input_weight = 0.3; //0.5; // baseline input from ext_input to GC
+	double sim_time = 100; // sim run time in ms
+	double base_input_weight = 0.03;//0.3; //0.5; // baseline input from ext_input to GC
 	double base_gc_to_in_weight = 2.0f;//1.0f;//0.5f; // baseline interneuron synapse weight
 	double base_in_to_gc_weight = 1.0f;//0.5f; // baseline interneuron synapse weight
 	bool print_move = 0; // print each move's direction
 	bool print_time = 1; // print time after processing
-	bool print_in_weights = 1;
+	bool print_in_weights = 0;
 	bool print_ext_weights = 0;
-	bool print_gc_firing = 1;
+	bool print_gc_firing = 0;
 	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
 	bool record_pos_track = 0; // write files for animal position tracking plotting
 	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
@@ -107,6 +107,7 @@ struct P {
 	double s_5_syn = 1.0;
 	double a_syn = 4.4; // add f2 f3
 	double dist_thresh = 5; // distance threshold for only local connections
+	double non_range_weight = 2.0; // default out of range weight
 
 	// initial values
 	double y_inter_init = 1.5;//y_inter_syn; // y intercept

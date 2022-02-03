@@ -18,7 +18,7 @@ double pc_rate(int p_x, int p_y, int b_x, int b_y, P *p) {
 	return rate;
 }
 
-void place_cell_firing(double *in_firing, P *p) {
+void place_cell_firing(CARLsim* sim, P *p) {
 	/*
 		generate place cell firing
 	*/
@@ -74,7 +74,8 @@ void place_cell_firing(double *in_firing, P *p) {
 			}
 
 			gc_i = (p_y * p->x_size) + p_x;
-			in_firing[gc_i] = in_firing[gc_i] + pc_firing;
+			//in_firing[gc_i] = in_firing[gc_i] + pc_firing;
+			sim->setWeight(4,gc_i,gc_i,pc_firing,true);
 		}
 	}
 }
