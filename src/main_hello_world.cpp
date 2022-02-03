@@ -352,6 +352,44 @@ double adj_weight(double value) {
 	return value;
 }
 
+void init_firing2(CARLsim* sim, P *p) {
+	// set values for 2d weight matrix for IN->GC connections
+	double mex_hat, d;
+	int i, j;
+
+	// generate weights
+	for (int y_in = 0; y_in < p->y_size; y_in++) {
+		for (int x_in = 0; x_in < p->x_size; x_in++) {
+			for (int y_gc = 0; y_gc < p->y_size; y_gc++) {
+				for (int x_gc = 0; x_gc < p->x_size; x_gc++) {			
+					i = (y_in * p->x_size) + x_in; // in neuron	
+					j = (y_gc * p->x_size) + x_gc; // gc neuron
+							
+					if (i == 31) {						
+						d = get_distance(x_in, y_in, x_gc, y_gc, 'n', p);
+
+						if (d < p->dist_thresh) { 
+							mex_hat = get_mex_hat(d, p);
+							if (mex_hat > 0) {
+								p->weights_in[i][j] = mex_hat;
+							}
+							else {
+								p->weights_in[i][j] = 0.0;
+							}
+						}
+						else {
+							p->weights_in[i][j] = p->non_range_weight; 
+						}
+					}
+					else {
+						p->weights_in[i][j] = p->non_range_weight;
+					}
+				}
+			}
+		}
+	}
+}
+
 void init_firing(CARLsim* sim, P *p) {
 	// initialize firing with bumps
 
@@ -668,33 +706,6 @@ void SetInExcMatrix(char direction, CARLsim* sim, P *p) {
 			}
 		}
 	}
-
-	/*
-	// store weights
-	for (int y_in = 0; y_in < p->y_size; y_in++) {
-		for (int x_in = 0; x_in < p->x_size; x_in++) {
-			for (int y_gc = 0; y_gc < p->y_size; y_gc++) {
-				for (int x_gc = 0; x_gc < p->x_size; x_gc++) {			
-					i = (y_in * p->x_size) + x_in;						
-					j = (y_gc * p->x_size) + x_gc;
-
-					//sim->setWeight(2,i,j,p->weights_in[i][j],true);
-					//sim->setWeight(2,i,j,0.0,true);
-					//printf("%d %d\n",i,j);
-					//sim->setWeight(2,899,899,0.0,true);
-				}		
-				//sim->setWeightFast(2,899,899,0.0,true);
-			}
-		}
-	}
-	//sim->setWeight(2,899,899,0.0,true);
-	//sim->setWeightFast(2,899,899,0.0,true);
-	printf("\ncompleted an interation\n");
-	*/
-}
-
-void print_test() {
-	printf("2\n");
 }
 
 // custom ConnectionGenerator
@@ -711,15 +722,10 @@ public:
     // note that weight, maxWt, delay, and connected are passed by reference
     void connect(CARLsim* sim, int srcGrp, int i, int destGrp, int j, float& weight, float& maxWt,
             float& delay, bool& connected) {
-        // connect n-th neuron in pre to n-th neuron in post (with 10% prob)
-        //connected = (i==j) && (rand()/RAND_MAX < 0.1f);
     		connected = 1;
-        //weight = 1.0f;
         weight = this->weights_in[i][j];
         maxWt = 10.0f;
         delay = 1; 
-        //print_test();
-        //printf("%f\n",this->weights_in[0][0]);
     }
 };
 
@@ -750,7 +756,7 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 	}
 
 	if (p->gc_to_gc) {
-		//SetInExcMatrix(direction, sim, p);
+		SetInExcMatrix(direction, sim, p);
 	}
 
 	if (p->print_move) {cout << "\n";}
@@ -879,12 +885,13 @@ int main() {
 	}
 	SetInExcMatrix('u', &sim, &p);
 	MexHatConnection* MexHatConn = new MexHatConnection(&p);	
-	sim.connect(gebs, gexc, "one-to-one", base_input_weight, 1.0f); // using one-to-one for faster testing than full conn
-	sim.connect(gexc, ginh, "one-to-one", p.base_gc_to_in_weight, 1.0f);
-	sim.connect(ginh, gexc, MexHatConn, SYN_FIXED);
-	sim.connect(gnos, gexc, "one-to-one", noise_input_weight, 1.0f);
-	sim.connect(gpcs, gexc, "one-to-one", 0.0f, 1.0f);
-	sim.connect(gedr, gexc, "one-to-one", 0.0f, 1.0f);
+	sim.connect(gebs, gexc, "one-to-one", base_input_weight, 1.0f); // 1; using one-to-one for faster testing than full conn
+	sim.connect(gexc, ginh, "one-to-one", p.base_gc_to_in_weight, 1.0f); // 2;
+	sim.connect(ginh, gexc, "one-to-one", 0.0f, 1.0f); // 3;
+	//sim.connect(ginh, gexc, MexHatConn, SYN_FIXED);
+	sim.connect(gnos, gexc, "one-to-one", noise_input_weight, 1.0f); // 4;
+	sim.connect(gpcs, gexc, "one-to-one", 0.0f, 1.0f); // 5;
+	sim.connect(gedr, gexc, "one-to-one", 0.0f, 1.0f); // 6;
 	eiwp.base_w = base_w;
 	sim.setConductances(true); // COBA mode; setConductances = true
 
@@ -933,7 +940,7 @@ int main() {
 
 	// set activity bump initialization
 	if (p.init_bumps) {
-		init_firing(&sim, &p);
+		init_firing2(&sim, &p);
 	}
 
 	for (int t=0; t<p.sim_time; t++) {	

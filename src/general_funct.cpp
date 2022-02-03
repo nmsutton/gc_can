@@ -58,7 +58,7 @@ struct P {
 	double gc_firing[x_size*y_size]; // gc spike amount
 
 	// common parameters that can vary per each run
-	double sim_time = 100; // sim run time in ms
+	double sim_time = 500; // sim run time in ms
 	double base_input_weight = 0.03;//0.3; //0.5; // baseline input from ext_input to GC
 	double base_gc_to_in_weight = 2.0f;//1.0f;//0.5f; // baseline interneuron synapse weight
 	double base_in_to_gc_weight = 1.0f;//0.5f; // baseline interneuron synapse weight
@@ -73,18 +73,18 @@ struct P {
 	bool fire_vs_pos_test_mode = 0; // changes just for testing fire vs pos
 	//bool intern_connect = 1; // interneuron connections toggle
 	bool init_bumps = 1; // inital bumps present
-	bool base_input = 1; // baseline external signal input
+	bool base_input = 0; // baseline external signal input
 	bool base_dir_input = 0; // baseline external signal direction-based input
 	bool gc_to_gc = 0; // grid cell to grid cell signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
-	bool pc_to_gc = 0; // place cells to grid cells signaling
+	bool pc_to_gc = 1; // place cells to grid cells signaling
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
-	bool pc_active = 0; // pc signaling active. bc->pc->gc can still work even if this is disabled.
+	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 
 	// noise parameters
-	bool noise_active = 0; // activate noise
+	bool noise_active = 1; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
-	double noise_scale = 0.005; // scale to desired size for firing
+	double noise_scale = 0.0005;//0.005; // scale to desired size for firing
 	double noise_input_weight = 0.5f; // external noise firing synaptic input weight
 
 	// values for synapse activites
@@ -107,7 +107,7 @@ struct P {
 	double s_5_syn = 1.0;
 	double a_syn = 4.4; // add f2 f3
 	double dist_thresh = 5; // distance threshold for only local connections
-	double non_range_weight = 2.0; // default out of range weight
+	double non_range_weight = 0.0;//0.1;//2.0; // default out of range weight
 
 	// initial values
 	double y_inter_init = 1.5;//y_inter_syn; // y intercept
@@ -133,7 +133,7 @@ struct P {
 
 	// place cell parameters
 	double pc_sig = 0.25; // sigma symbol; width of the place feild
-	double pc_level = 14.0; // place cell firing level
+	double pc_level = 5.0; //14.0; // place cell firing level
 
 	// boundary cell parameters
 	double r_d = 1.0; // boundary cell active region width
