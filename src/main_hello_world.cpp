@@ -266,8 +266,8 @@ void PrintWeightsAndFiring(P *p, EIWP e) {
 			printf("\n");
 			for (int j = 0; j < x_p; j++) {
 				n = (i * max_x) + j;
-				//printf("[%.4f]",p->weights_in[n][n]);	
-				printf("[%.4f]",p->weights_in[31][n]);	
+				printf("[%.4f]",p->weights_in[n][n]);	
+				//printf("[%.4f]",p->weights_in[31][n]);	
 			}
 		}
 	}
@@ -722,7 +722,8 @@ public:
     // note that weight, maxWt, delay, and connected are passed by reference
     void connect(CARLsim* sim, int srcGrp, int i, int destGrp, int j, float& weight, float& maxWt,
             float& delay, bool& connected) {
-    		connected = 1;
+    		//connected = 1;
+    		connected = (i == j); // one-to-one
         weight = this->weights_in[i][j];
         maxWt = 10.0f;
         delay = 1; 
@@ -734,15 +735,16 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 		Process signaling between gc exc and inh neurons.
 	*/	
 
-	//double new_firing, new_weight, weight_sum, pd_fac, mex_hat;
-	//double pdx, pdy, gcx, gcy, d; // for distance
-	//int pd_i, gc_i;
-	/*double new_in_weights[p->layer_size];
+	double new_firing, new_weight, weight_sum, pd_fac, mex_hat;
+	double x_in, y_in, x_gc, y_gc, d; // for distance
+	int i_in, i_gc;
+	vector<vector<double>> weights_in_new(p->layer_size, vector<double>(p->layer_size));
+	//double weights_in_new[p->layer_size];
 	for (int i = 0; i < p->layer_size; i++) {
-		new_in_weights[i] = 0.00001;
+		weights_in_new[i][i] = 0.00001;
 	}
 	int nrn_size, s_num, spk_time, tot; // t_y, t_x: target y and x
-	double in_weights[p->layer_size]; // inhibitory weights
+	/*double in_weights[p->layer_size]; // inhibitory weights
 	for (int i = 0; i < (p->layer_size); i++) {
 		in_weights[i] = p->gc_firing[i];//0.0;
 	}*/
@@ -755,23 +757,23 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 		SetDirWeights(direction, sim, p);
 	}
 
-	if (p->gc_to_gc) {
+	/*if (p->gc_to_gc) {
 		SetInExcMatrix(direction, sim, p);
-	}
+	}*/
 
 	if (p->print_move) {cout << "\n";}
 
 	/* apply direction-based ext input first */
-	/*for (int gc_i = 0; gc_i < p->layer_size; gc_i++) {
-		if (get_pd(gc_i, p) == direction) {
+	/*for (int i_gc = 0; i_gc < p->layer_size; i_gc++) {
+		if (get_pd(i_gc, p) == direction) {
 			pd_fac = 1.0;
 		}
 		else {
 			pd_fac = 0.0;
 		}
-		in_weights[gc_i] = p->gc_firing[gc_i];
+		in_weights[i_gc] = p->gc_firing[i_gc];
 		if (p->base_dir_input) {
-			in_weights[gc_i] = in_weights[gc_i] + pd_fac;
+			in_weights[i_gc] = in_weights[i_gc] + pd_fac;
 		}
 	}*/
 
@@ -786,31 +788,32 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 	}
 
 	/* grid cell and interneuron synapse connections */
-	/*for (int pdy = 0; pdy < p->y_size; pdy++) {
-		for (int pdx = 0; pdx < p->x_size; pdx++) {
-			if (direction == get_pd(pdx, pdy) || direction == 'n') {
-				for (int gcy = 0; gcy < p->y_size; gcy++) {
-					for (int gcx = 0; gcx < p->x_size; gcx++) {			
-						pd_i = (pdy * p->x_size) + pdx;						
-						gc_i = (gcy * p->x_size) + gcx;
+	for (int y_in = 0; y_in < p->y_size; y_in++) {
+		for (int x_in = 0; x_in < p->x_size; x_in++) {
+			if (direction == get_pd(x_in, y_in) || direction == 'n') {
+				for (int y_gc = 0; y_gc < p->y_size; y_gc++) {
+					for (int x_gc = 0; x_gc < p->x_size; x_gc++) {			
+						i_in = (y_in * p->x_size) + x_in;						
+						i_gc = (y_gc * p->x_size) + x_gc;
 
-						d = get_distance(pdx, pdy, gcx, gcy, direction, p);
+						d = get_distance(x_in, y_in, x_gc, y_gc, direction, p);
 
 						if (d < p->dist_thresh) { 
 							mex_hat = get_mex_hat(d, p);
-							//new_firing = (in_weights[pd_i] * mex_hat)*.02;// - ((1/pow(p->dist_thresh,1.75))*8);
-							//new_firing = in_weights[pd_i]*.1;
-							//new_firing = (in_weights[pd_i]*0.1)*(mex_hat*1);
+							//new_firing = (in_weights[i_in] * mex_hat)*.02;// - ((1/pow(p->dist_thresh,1.75))*8);
+							//new_firing = in_weights[i_in]*.1;
+							//new_firing = (in_weights[i_in]*0.1)*(mex_hat*1);
 							new_firing = mex_hat*.2;
-							new_in_weights[gc_i] = new_in_weights[gc_i] + new_firing;
+							weights_in_new[i_in][i_gc] = weights_in_new[i_in][i_gc] + new_firing;
 						}
 					}
 				}
 			}
 		}
-	}*/
+	}
 
 	for (int i = 0; i < p->layer_size; i++) {
+		p->weights_in[i][i] = weights_in_new[i][i];
 		// add random noise for realism		
 		if (p->noise_active == true) {
 			sim->setWeight(3,i,i,get_noise(p),true);
@@ -818,9 +821,9 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 	}
 
 	PrintWeightsAndFiring(p, e);
-	if (p->gc_to_gc) {
-		//StoreWeights(sim, in_weights, p);
-	}	
+	/*if (p->gc_to_gc) {
+		StoreWeights(sim, in_weights, p);
+	}*/
 }
 
 int main() {
@@ -856,10 +859,13 @@ int main() {
 	vector<vector<double>> weights_in_temp(p.layer_size, vector<double>(p.layer_size)); // set size
 	p.weights_in = weights_in_temp;
 	for (int i = 0; i < p.layer_size; i++) {
+		p.weights_in[i][i] = 0.0; // only init one-to-one connections
+	}
+	/*for (int i = 0; i < p.layer_size; i++) {
 		for (int j = 0; j < p.layer_size; j++) {
 			p.weights_in[i][j] = 0.0;
 		}
-	}
+	}*/
 
 	// configure the network
 	Grid3D grid_ext_base(p.x_size,p.y_size,1); // external input
@@ -887,8 +893,8 @@ int main() {
 	MexHatConnection* MexHatConn = new MexHatConnection(&p);	
 	sim.connect(gebs, gexc, "one-to-one", base_input_weight, 1.0f); // 1; using one-to-one for faster testing than full conn
 	sim.connect(gexc, ginh, "one-to-one", p.base_gc_to_in_weight, 1.0f); // 2;
-	sim.connect(ginh, gexc, "one-to-one", 0.0f, 1.0f); // 3;
-	//sim.connect(ginh, gexc, MexHatConn, SYN_FIXED);
+	//sim.connect(ginh, gexc, "one-to-one", 0.0f, 1.0f); // 3;
+	sim.connect(ginh, gexc, MexHatConn, SYN_FIXED); // 3;
 	sim.connect(gnos, gexc, "one-to-one", noise_input_weight, 1.0f); // 4;
 	sim.connect(gpcs, gexc, "one-to-one", 0.0f, 1.0f); // 5;
 	sim.connect(gedr, gexc, "one-to-one", 0.0f, 1.0f); // 6;

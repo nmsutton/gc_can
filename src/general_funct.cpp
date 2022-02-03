@@ -75,7 +75,7 @@ struct P {
 	bool init_bumps = 1; // inital bumps present
 	bool base_input = 0; // baseline external signal input
 	bool base_dir_input = 0; // baseline external signal direction-based input
-	bool gc_to_gc = 0; // grid cell to grid cell signaling
+	bool gc_to_gc = 1; // grid cell to grid cell signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 	bool pc_to_gc = 1; // place cells to grid cells signaling
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
