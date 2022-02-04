@@ -148,6 +148,7 @@ all: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /comp_neuro/Software/CARLsim6/projects/hello_world/build/CMakeFiles /comp_neuro/Software/CARLsim6/projects/hello_world/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
 	$(CMAKE_COMMAND) -E cmake_progress_start /comp_neuro/Software/CARLsim6/projects/hello_world/build/CMakeFiles 0
+	echo "test"
 .PHONY : all
 
 # The main clean target

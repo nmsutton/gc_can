@@ -14,8 +14,6 @@ struct EIWP
 	float gc_spk;
 	char gc_pd;
 	char *pd; 
-	std::vector<std::vector<float>> inec_weights;
-	std::vector<std::vector<float>> etec_weights;
 	int conn_groups = 1; // exc -> inh
 	int conn_groups2 = 2; // inh -> exc
 	int spk_thresh = 3;
@@ -55,16 +53,19 @@ struct P {
 	int t = 0; // time
 	vector<vector<int>> nrn_spk; // for total firing recording
 	vector<vector<double>> weights_in; // IN-GC weights
+	vector<vector<bool>> weights_in_upd; // record of updates
 	double gc_firing[x_size*y_size]; // gc spike amount
+	vector<vector<float>> inec_weights;
+	vector<vector<float>> etec_weights;
 
 	// common parameters that can vary per each run
-	double sim_time = 500; // sim run time in ms
+	double sim_time = 150; // sim run time in ms
 	double base_input_weight = 0.03;//0.3; //0.5; // baseline input from ext_input to GC
 	double base_gc_to_in_weight = 2.0f;//1.0f;//0.5f; // baseline interneuron synapse weight
 	double base_in_to_gc_weight = 1.0f;//0.5f; // baseline interneuron synapse weight
 	bool print_move = 0; // print each move's direction
 	bool print_time = 1; // print time after processing
-	bool print_in_weights = 0;
+	bool print_in_weights = 1;
 	bool print_ext_weights = 0;
 	bool print_gc_firing = 0;
 	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
@@ -73,7 +74,7 @@ struct P {
 	bool fire_vs_pos_test_mode = 0; // changes just for testing fire vs pos
 	//bool intern_connect = 1; // interneuron connections toggle
 	bool init_bumps = 1; // inital bumps present
-	bool base_input = 0; // baseline external signal input
+	bool base_input = 1; // baseline external signal input
 	bool base_dir_input = 0; // baseline external signal direction-based input
 	bool gc_to_gc = 1; // grid cell to grid cell signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
@@ -82,7 +83,7 @@ struct P {
 	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 
 	// noise parameters
-	bool noise_active = 1; // activate noise
+	bool noise_active = 0; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
 	double noise_scale = 0.0005;//0.005; // scale to desired size for firing
 	double noise_input_weight = 0.5f; // external noise firing synaptic input weight
@@ -132,8 +133,8 @@ struct P {
 	double asig_scale = 1.0;//2.0;//-0.9;
 
 	// place cell parameters
-	double pc_sig = 0.25; // sigma symbol; width of the place feild
-	double pc_level = 5.0; //14.0; // place cell firing level
+	double pc_sig = 1.0;//0.25; // sigma symbol; width of the place feild
+	double pc_level = 15.0;//5.0; //14.0; // place cell firing level
 
 	// boundary cell parameters
 	double r_d = 1.0; // boundary cell active region width
@@ -180,10 +181,14 @@ double get_mex_hat(double d, P *p) {
 
 	mex_hat = y_inter-(scale*(exp(-((m1*pow(d,2))/(2*pow(s1,2))))
 		-m2*exp(-pow(d,2)/(2*pow(s2,2)))));
+	//printf("%f-(%f*(exp(-((%f*pow(%f,2))/(2*pow(%f,2))))-%f*exp(-pow(%f,2)/(2*pow(%f,2)))))\n",y_inter,scale,m1,d,s1,m2,d,s2);
 
 	/*if (d >1.9 && d < 2.1) {
 		printf("%f %f\n",d,mex_hat);
 	}*/
+	if (mex_hat < 0) {
+		mex_hat = 0;
+	}
 
 	return mex_hat;
 }

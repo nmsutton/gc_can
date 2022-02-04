@@ -99,7 +99,7 @@ void rand_path(CARLsim* sim, EIWP e, P* p) {
 void move_path_bound_test(CARLsim* sim, EIWP e, P* p) {
 	// movement path
 
-	char moves[] {'u','l','l','u','r','r','l','r','r','r','r','u','r','l','l','l','u','r','r','r','u','l',
+	char moves[] {'u','l','l','u','r','r','l','r','r','r','r','u','u','u','l','l','u','r','r','r','u','l',
 	'd','r','d','r','l','l','u','r','r','r','l','l','l','l','u','r','l','d','r','d','d','u','d','u','d','u',
 	'u','r','d','l','l','l','r','u','u','u','r','r','u','r','r','r','r','r','u','r','r','r','r','d','u','r',
 	'l','u','r','u','d','r','l','l','r','u','r','r','r','l','d','r','d','r','l','d','r','d','d','u','r','d',

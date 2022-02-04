@@ -57,6 +57,8 @@
 #include <carlsim.h>
 
 //#include <periodic_spikegen.h>
+//#include "/comp_neuro/Software/CARLsim6/tools/spike_generators/carlsim_spike_generators_api.h"
+//#include "/home/nmsutton/CARLsim6/include/periodic_spikegen.h"
 
 // include stopwatch for timing
 //#include <stopwatch.h>
@@ -254,24 +256,25 @@ void SetIndices(int i, int *i_o, int g_max_x, int g_max_y, char axis, int max_i,
 	}
 }
 
-void PrintWeightsAndFiring(P *p, EIWP e) {
+void PrintWeightsAndFiring(P *p) {
 	int x_p = 19;//20;
 	int y_p = 19;//20;
 	int max_x = p->x_size;
 	int n = 0;
 
 	if (p->print_in_weights) {
-		printf("\n\nec->in weights at time %d",e.t);
+		printf("\n\nec->in weights at time %d",p->t);
 		for (int i = (y_p - 1); i >= 0; i--) {
 			printf("\n");
 			for (int j = 0; j < x_p; j++) {
 				n = (i * max_x) + j;
-				printf("[%.4f]",p->weights_in[n][n]);	
+				//printf("[%.2f]",p->weights_in[n][n]);	
+				printf("[%.2f]",p->inec_weights[n][n]);	
 				//printf("[%.4f]",p->weights_in[31][n]);	
 			}
 		}
 	}
-	if (p->print_ext_weights) {
+	/*if (p->print_ext_weights) {
 		printf("\n\next->ec weights at time %d",e.t);
 		for (int i = (y_p - 1); i >= 0; i--) {
 			printf("\n");
@@ -280,7 +283,7 @@ void PrintWeightsAndFiring(P *p, EIWP e) {
 				printf("[%.1f]\t",e.etec_weights[n][n]);	
 			}
 		}
-	}
+	}*/
 	if (p->print_gc_firing) {
 		printf("\nGC firing t:%d",p->t);
 		for (int i = (y_p - 1); i >= 0; i--) {
@@ -738,16 +741,20 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 	double new_firing, new_weight, weight_sum, pd_fac, mex_hat;
 	double x_in, y_in, x_gc, y_gc, d; // for distance
 	int i_in, i_gc;
-	vector<vector<double>> weights_in_new(p->layer_size, vector<double>(p->layer_size));
+	/*vector<vector<double>> weights_in_new(p->layer_size, vector<double>(p->layer_size));
 	//double weights_in_new[p->layer_size];
 	for (int i = 0; i < p->layer_size; i++) {
 		weights_in_new[i][i] = 0.00001;
-	}
+	}*/
 	int nrn_size, s_num, spk_time, tot; // t_y, t_x: target y and x
 	/*double in_weights[p->layer_size]; // inhibitory weights
 	for (int i = 0; i < (p->layer_size); i++) {
 		in_weights[i] = p->gc_firing[i];//0.0;
 	}*/
+	bool gc_to_gc = false;
+	if (p->gc_to_gc == true && p->t > 100) {
+		gc_to_gc = true; // allow time for initial bumps to form
+	}
 
 	count_gc_firing(p);
 
@@ -763,20 +770,6 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 
 	if (p->print_move) {cout << "\n";}
 
-	/* apply direction-based ext input first */
-	/*for (int i_gc = 0; i_gc < p->layer_size; i_gc++) {
-		if (get_pd(i_gc, p) == direction) {
-			pd_fac = 1.0;
-		}
-		else {
-			pd_fac = 0.0;
-		}
-		in_weights[i_gc] = p->gc_firing[i_gc];
-		if (p->base_dir_input) {
-			in_weights[i_gc] = in_weights[i_gc] + pd_fac;
-		}
-	}*/
-
 	/* place cell firing */
 	if (p->pc_to_gc) {
 		place_cell_firing(sim, p);
@@ -788,23 +781,33 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 	}
 
 	/* grid cell and interneuron synapse connections */
-	for (int y_in = 0; y_in < p->y_size; y_in++) {
-		for (int x_in = 0; x_in < p->x_size; x_in++) {
-			if (direction == get_pd(x_in, y_in) || direction == 'n') {
-				for (int y_gc = 0; y_gc < p->y_size; y_gc++) {
-					for (int x_gc = 0; x_gc < p->x_size; x_gc++) {			
-						i_in = (y_in * p->x_size) + x_in;						
-						i_gc = (y_gc * p->x_size) + x_gc;
+	if (gc_to_gc) {
+		for (int i = 0; i < p->layer_size; i++) {
+			p->weights_in[i][i] = 0.0; // reset weights
+			p->weights_in_upd[i][i] = false;
+		}
 
-						d = get_distance(x_in, y_in, x_gc, y_gc, direction, p);
-
-						if (d < p->dist_thresh) { 
-							mex_hat = get_mex_hat(d, p);
-							//new_firing = (in_weights[i_in] * mex_hat)*.02;// - ((1/pow(p->dist_thresh,1.75))*8);
-							//new_firing = in_weights[i_in]*.1;
-							//new_firing = (in_weights[i_in]*0.1)*(mex_hat*1);
-							new_firing = mex_hat*.2;
-							weights_in_new[i_in][i_gc] = weights_in_new[i_in][i_gc] + new_firing;
+		for (int y_in = 0; y_in < p->y_size; y_in++) {
+			for (int x_in = 0; x_in < p->x_size; x_in++) {
+				if (direction == get_pd(x_in, y_in) || direction == 'n') {
+					for (int y_gc = 0; y_gc < p->y_size; y_gc++) {
+						for (int x_gc = 0; x_gc < p->x_size; x_gc++) {			
+							i_in = (y_in * p->x_size) + x_in;						
+							i_gc = (y_gc * p->x_size) + x_gc;
+							d = get_distance(x_in, y_in, x_gc, y_gc, direction, p);
+							//if (d < p->dist_thresh) { 
+							if (i_in == 31 && d < p->dist_thresh) { 
+								mex_hat = get_mex_hat(d, p);
+								//new_firing = (in_weights[i_in] * mex_hat)*.02;// - ((1/pow(p->dist_thresh,1.75))*8);
+								//new_firing = .01;
+								new_firing = (((11-p->gc_firing[i_in])*(1/11)) + mex_hat)*(.1);//*.2;
+								p->weights_in[i_gc][i_gc] = p->weights_in[i_gc][i_gc] + new_firing;
+								if (i_in < 40) {
+									//printf("%d %d\n",i_in,i_gc);
+								}
+								//printf("%f %f\n",d,mex_hat);
+								p->weights_in_upd[i_gc][i_gc] = true;
+							}
 						}
 					}
 				}
@@ -813,17 +816,16 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 	}
 
 	for (int i = 0; i < p->layer_size; i++) {
-		p->weights_in[i][i] = weights_in_new[i][i];
-		// add random noise for realism		
+		if (gc_to_gc) {
+			if (p->weights_in_upd[i][i] == false) {
+				p->weights_in[i][i] = 0.5; // default for no update
+			}
+			sim->setWeight(2,i,i,p->weights_in[i][i],true);
+		}
 		if (p->noise_active == true) {
-			sim->setWeight(3,i,i,get_noise(p),true);
+			sim->setWeight(3,i,i,get_noise(p),true); // add random noise for realism
 		}
 	}
-
-	PrintWeightsAndFiring(p, e);
-	/*if (p->gc_to_gc) {
-		StoreWeights(sim, in_weights, p);
-	}*/
 }
 
 int main() {
@@ -857,7 +859,9 @@ int main() {
 	}
 	// initialize matrix
 	vector<vector<double>> weights_in_temp(p.layer_size, vector<double>(p.layer_size)); // set size
+	vector<vector<bool>> weights_in_upd_temp(p.layer_size, vector<bool>(p.layer_size)); // set size
 	p.weights_in = weights_in_temp;
+	p.weights_in_upd = weights_in_upd_temp;
 	for (int i = 0; i < p.layer_size; i++) {
 		p.weights_in[i][i] = 0.0; // only init one-to-one connections
 	}
@@ -878,11 +882,13 @@ int main() {
 	int gexc=sim.createGroup("gc_exc", grid_exc, EXCITATORY_NEURON);
 	int ginh=sim.createGroup("gc_inh", grid_inh, INHIBITORY_NEURON);
 	int gnos=sim.createSpikeGeneratorGroup("noise", grid_nos, EXCITATORY_NEURON);
-	int gpcs=sim.createSpikeGeneratorGroup("place", grid_pcs, EXCITATORY_NEURON);
+	//int gpcs=sim.createSpikeGeneratorGroup("place", grid_pcs, EXCITATORY_NEURON);
+	int gpcs=sim.createGroup("place", grid_pcs, EXCITATORY_NEURON);
 	int gedr=sim.createSpikeGeneratorGroup("ext_dir", grid_ext_base_dir, EXCITATORY_NEURON);
 	//sim.setNeuronParameters(gexc, 0.02f, 0.2f, -65.0f, 8.0f); // RS
 	sim.setNeuronParameters(gexc, 0.1f, 0.2f, -65.0f, 2.0f); // RS
 	sim.setNeuronParameters(ginh, 0.1f, 0.2f, -65.0f, 2.0f); // FS
+	sim.setNeuronParameters(gpcs, 0.1f, 0.2f, -65.0f, 2.0f); // FS
 	if (p.base_input == true) {
 		base_input_weight = p.base_input_weight;
 	}
@@ -902,10 +908,8 @@ int main() {
 	sim.setConductances(true); // COBA mode; setConductances = true
 
 	// ext dir input
-	/*
-	PeriodicSpikeGenerator ext_dir_in(40.0f, false);
-	sim.setSpikeGenerator(gedr, &ext_dir_in);
-	*/
+	//PeriodicSpikeGenerator ext_dir_in(40.0f, false);
+	//sim.setSpikeGenerator(gedr, &ext_dir_in);
 
 	// ---------------- SETUP STATE -------------------
 	// build the network
@@ -932,9 +936,12 @@ int main() {
 	sim.setSpikeRate(gnos,&noise);
 
 	// place cell input
+	/*
 	PoissonRate pc_in(grid_ext_base.N);
 	pc_in.setRates(50.0f); //in.setRates(30.0f); //in.setRates(15.0f);
 	sim.setSpikeRate(gpcs,&pc_in);
+	*/
+	sim.setExternalCurrent(gpcs, 10.0f);
 
 	// ---------------- RUN STATE -------------------
 	SMext->startRecording();
@@ -946,7 +953,7 @@ int main() {
 
 	// set activity bump initialization
 	if (p.init_bumps) {
-		init_firing2(&sim, &p);
+		init_firing(&sim, &p);
 	}
 
 	for (int t=0; t<p.sim_time; t++) {	
@@ -958,15 +965,16 @@ int main() {
 
 		// process movement
 		if (t % p.move_window == 0) {
+		//if (t % p.move_window == 0 && t > 100) {
 			// store firing in vector
 			SMexc->stopRecording();
 			p.nrn_spk = SMexc->getSpikeVector2D();
 			SMexc->startRecording();
 			// store weights in vectors
 			inec_weights = CMinec->takeSnapshot();	
-			eiwp.inec_weights = inec_weights;	
+			p.inec_weights = inec_weights;	
 			etec_weights = CMetec->takeSnapshot();	
-			eiwp.etec_weights = etec_weights;
+			p.etec_weights = etec_weights;
 
 			//p.weights_in[31][0] = p.weights_in[31][0] + 1.0;
 
@@ -976,6 +984,8 @@ int main() {
 			
 			//move_path2(&sim, eiwp, &p);
 			//straight_path(&sim, eiwp, &p);
+
+			PrintWeightsAndFiring(&p);
 
 			if (p.record_fire_vs_pos) {
 				RecordNeuronVsLocation(&sim, &p, eiwp);
