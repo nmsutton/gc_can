@@ -59,6 +59,7 @@
 //#include <periodic_spikegen.h>
 //#include "/comp_neuro/Software/CARLsim6/tools/spike_generators/carlsim_spike_generators_api.h"
 //#include "/home/nmsutton/CARLsim6/include/periodic_spikegen.h"
+#include "periodic_spikegen_custom.cpp"
 
 // include stopwatch for timing
 //#include <stopwatch.h>
@@ -818,7 +819,7 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 	for (int i = 0; i < p->layer_size; i++) {
 		if (gc_to_gc) {
 			if (p->weights_in_upd[i][i] == false) {
-				p->weights_in[i][i] = 0.5; // default for no update
+				p->weights_in[i][i] = 2.0;//0.5; // default for no update
 			}
 			sim->setWeight(2,i,i,p->weights_in[i][i],true);
 		}
@@ -903,13 +904,16 @@ int main() {
 	sim.connect(ginh, gexc, MexHatConn, SYN_FIXED); // 3;
 	sim.connect(gnos, gexc, "one-to-one", noise_input_weight, 1.0f); // 4;
 	sim.connect(gpcs, gexc, "one-to-one", 0.0f, 1.0f); // 5;
-	sim.connect(gedr, gexc, "one-to-one", 0.0f, 1.0f); // 6;
+	sim.connect(gedr, gexc, "one-to-one", 1.0f, 1.0f); // 6;
 	eiwp.base_w = base_w;
 	sim.setConductances(true); // COBA mode; setConductances = true
 
 	// ext dir input
-	//PeriodicSpikeGenerator ext_dir_in(40.0f, false);
-	//sim.setSpikeGenerator(gedr, &ext_dir_in);
+	//PeriodicSpikeGeneratorCustom ext_dir_in(40.0f);
+	//PeriodicSpikeGeneratorCustom ext_dir_in;
+	//ext_dir_in.setRate(40.0f);
+	PeriodicSpikeGenerator ext_dir_in(400.0f, false);
+	sim.setSpikeGenerator(gedr, &ext_dir_in);
 
 	// ---------------- SETUP STATE -------------------
 	// build the network
