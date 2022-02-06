@@ -61,50 +61,46 @@
 //class PeriodicSpikeGenerator {
 class CARLSIM_SPIKE_GENERATORS_API PeriodicSpikeGenerator : public SpikeGenerator {
 public:
-PeriodicSpikeGenerator() {
-}
+	PeriodicSpikeGenerator(float rate, bool spikeAtZero) {
+		assert(rate>0);
+		//  FIX: LN 20202002  does not work :  assertion seems not to work from different context (compiler flag!?)
+		// assert(rate>.0f);  
+		//}
+		rate_ = rate;	  // spike rate  
+		// ISSUE: warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+		// ISSUE: :\test\github\carlsim4\tools\spike_generators\periodic_spikegen.cpp(62): warning C4723: potential divide by 0
+		//isi_ = 1000/rate; // inter-spike interval in ms
+		// FIX1: LN20201002 explicit cast (trunc)  (int)(float expression)
+		// FIX2: LN20201002 solve numerical
+	#ifndef INT_MAX			// LN2021 g++
+	#define INT_MAX    2147483647	
+	#endif
+		isi_ = std::abs(rate)<0.00001f ? INT_MAX : int(1000.f/rate); // inter-spike interval in ms
+		
+		spikeAtZero_ = spikeAtZero;
 
-PeriodicSpikeGenerator(float rate, bool spikeAtZero) {
-	//assert(rate>0);
-	//  FIX: LN 20202002  does not work :  assertion seems not to work from different context (compiler flag!?)
-	// assert(rate>.0f);  
-	//}
-	rate_ = rate;	  // spike rate  
-	// ISSUE: warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-	// ISSUE: :\test\github\carlsim4\tools\spike_generators\periodic_spikegen.cpp(62): warning C4723: potential divide by 0
-	//isi_ = 1000/rate; // inter-spike interval in ms
-	// FIX1: LN20201002 explicit cast (trunc)  (int)(float expression)
-	// FIX2: LN20201002 solve numerical
-#ifndef INT_MAX			// LN2021 g++
-#define INT_MAX    2147483647	
-#endif
-	isi_ = std::abs(rate)<0.00001f ? INT_MAX : int(1000.f/rate); // inter-spike interval in ms
-	
-	//spikeAtZero_ = spikeAtZero;
-	spikeAtZero_ = false;
-
-	//checkFiringRate();
-}
-
-int nextSpikeTime(CARLsim* sim, int grpId, int nid, int currentTime, int lastScheduledSpikeTime, int endOfTimeSlice) {
-//		fprintf(stderr,"currentTime: %u lastScheduled: %u\n",currentTime,lastScheduledSpikeTime);
-
-	if (spikeAtZero_) {
-		// insert spike at t=0 for each neuron (keep track of neuron IDs to avoid getting stuck in infinite loop)
-		if (std::find(nIdFiredAtZero_.begin(), nIdFiredAtZero_.end(), nid)==nIdFiredAtZero_.end()) {
-			// spike at t=0 has not been scheduled yet for this neuron
-			nIdFiredAtZero_.push_back(nid);
-			return 0;
-		}
+		checkFiringRate();
 	}
 
-	// periodic spiking according to ISI
-	return lastScheduledSpikeTime+isi_;
-}
+	int nextSpikeTime(CARLsim* sim, int grpId, int nid, int currentTime, int lastScheduledSpikeTime, int endOfTimeSlice) {
+	//		fprintf(stderr,"currentTime: %u lastScheduled: %u\n",currentTime,lastScheduledSpikeTime);
 
-void setRate(float rate) {
-	this->rate_ = rate;
-}
+		if (spikeAtZero_) {
+			// insert spike at t=0 for each neuron (keep track of neuron IDs to avoid getting stuck in infinite loop)
+			if (std::find(nIdFiredAtZero_.begin(), nIdFiredAtZero_.end(), nid)==nIdFiredAtZero_.end()) {
+				// spike at t=0 has not been scheduled yet for this neuron
+				nIdFiredAtZero_.push_back(nid);
+				return 0;
+			}
+		}
+
+		// periodic spiking according to ISI
+		return lastScheduledSpikeTime+isi_;
+	}
+
+	void setRate(float rate) {
+		this->rate_ = rate;
+	}
 
 private:
 	float rate_;		//!< spike rate (Hz)
@@ -112,7 +108,7 @@ private:
 	std::vector<int> nIdFiredAtZero_; //!< keep track of all neuron IDs for which a spike at t=0 has been scheduled
 	bool spikeAtZero_; //!< whether to emit a spike at t=0
 
-void checkFiringRate() {
-	UserErrors::assertTrue(rate_>0, UserErrors::MUST_BE_POSITIVE, "PeriodicSpikeGenerator", "Firing rate");
-}
+	void checkFiringRate() {
+		UserErrors::assertTrue(rate_>0, UserErrors::MUST_BE_POSITIVE, "PeriodicSpikeGenerator", "Firing rate");
+	}
 };

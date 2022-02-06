@@ -335,14 +335,14 @@ void StoreWeights(CARLsim *sim, double *in_weights, P *p) {
 				new_weight = new_weight - 2;
 				// following generates PC firing for excitatory mex hat portion and IN firing for inhib. mex hat.
 				if (new_weight >= 0) {
-					sim->setWeight(4,i,i,new_weight,true);
+					sim->setWeight(3,i,i,new_weight,true);
 					sim->setWeight(1,i,i,0,true);
 				  sim->setWeight(2,i,i,0,true);
 				}
 				else {
 				  sim->setWeight(1,i,i,1,true);
 				  sim->setWeight(2,i,i,1,true);
-				  sim->setWeight(4,i,i,0,true);
+				  sim->setWeight(3,i,i,0,true);
 				}
 			}
 		}
@@ -661,10 +661,10 @@ void SetDirWeights(char direction, CARLsim* sim, P *p) {
 	// set weights for ext-dir input
 	for (int i = 0; i < p->layer_size; i++) {
 		if (get_pd(i, p) == direction) {
-			sim->setWeight(5,i,i,1.0,true);
+			sim->setWeight(4,i,i,1.0,true);
 		}
 		else {
-			sim->setWeight(5,i,i,0.0,true);
+			sim->setWeight(4,i,i,0.0,true);
 		}
 	}
 }
@@ -824,7 +824,7 @@ void EISignal(char direction, CARLsim* sim, P* p, EIWP e) {
 			sim->setWeight(2,i,i,p->weights_in[i][i],true);
 		}
 		if (p->noise_active == true) {
-			sim->setWeight(3,i,i,get_noise(p),true); // add random noise for realism
+			sim->setWeight(0,i,i,get_noise(p),true); // add random noise for realism
 		}
 	}
 }
@@ -847,13 +847,15 @@ int main() {
 	char pd[p.x_size*p.y_size] = { 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'd', 'r', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u', 'l', 'u' }; 
 	std::vector<std::vector<float>> etec_weights;
 	std::vector<std::vector<float>> inec_weights;
-	double base_w;
 	struct MOVE move;
 	struct EIWP eiwp;
 	double temp_gctoin_wts[p.x_size*p.y_size]; // temp matrix for GC weights
 	double temp_intogc_wts[p.x_size*p.y_size]; // temp matrix for IN weights
 	double base_input_weight = 0.0;
-	double noise_input_weight = 0.0;
+	double noise_addit_freq = 0.0;
+	if (p.noise_active) {
+		noise_addit_freq = p.noise_addit_freq;
+	}
 	eiwp.pd = pd; 
 	for (int i = 0; i < (p.x_size*p.y_size); i++) {
 		p.animal_location_all[i] = 0.0; // initialize
@@ -882,76 +884,52 @@ int main() {
 	int gebs=sim.createSpikeGeneratorGroup("ext_base", grid_ext_base, EXCITATORY_NEURON);
 	int gexc=sim.createGroup("gc_exc", grid_exc, EXCITATORY_NEURON);
 	int ginh=sim.createGroup("gc_inh", grid_inh, INHIBITORY_NEURON);
-	int gnos=sim.createSpikeGeneratorGroup("noise", grid_nos, EXCITATORY_NEURON);
-	//int gpcs=sim.createSpikeGeneratorGroup("place", grid_pcs, EXCITATORY_NEURON);
-	int gpcs=sim.createGroup("place", grid_pcs, EXCITATORY_NEURON);
+	int gpcs=sim.createSpikeGeneratorGroup("place", grid_pcs, EXCITATORY_NEURON);
 	int gedr=sim.createSpikeGeneratorGroup("ext_dir", grid_ext_base_dir, EXCITATORY_NEURON);
 	//sim.setNeuronParameters(gexc, 0.02f, 0.2f, -65.0f, 8.0f); // RS
 	sim.setNeuronParameters(gexc, 0.1f, 0.2f, -65.0f, 2.0f); // RS
 	sim.setNeuronParameters(ginh, 0.1f, 0.2f, -65.0f, 2.0f); // FS
-	sim.setNeuronParameters(gpcs, 0.1f, 0.2f, -65.0f, 2.0f); // FS
 	if (p.base_input == true) {
 		base_input_weight = p.base_input_weight;
-	}
-	if (p.noise_active == true) {
-		noise_input_weight = p.noise_input_weight;
 	}
 	SetInExcMatrix('u', &sim, &p);
 	MexHatConnection* MexHatConn = new MexHatConnection(&p);	
 	sim.connect(gebs, gexc, "one-to-one", base_input_weight, 1.0f); // 1; using one-to-one for faster testing than full conn
 	sim.connect(gexc, ginh, "one-to-one", p.base_gc_to_in_weight, 1.0f); // 2;
-	//sim.connect(ginh, gexc, "one-to-one", 0.0f, 1.0f); // 3;
-	sim.connect(ginh, gexc, MexHatConn, SYN_FIXED); // 3;
-	sim.connect(gnos, gexc, "one-to-one", noise_input_weight, 1.0f); // 4;
-	sim.connect(gpcs, gexc, "one-to-one", 0.0f, 1.0f); // 5;
-	sim.connect(gedr, gexc, "one-to-one", 1.0f, 1.0f); // 6;
-	eiwp.base_w = base_w;
+	sim.connect(ginh, gexc, "one-to-one", 0.0f, 1.0f); // 3;
+	//sim.connect(ginh, gexc, MexHatConn, SYN_FIXED); // 3;
+	sim.connect(gpcs, gexc, "one-to-one", 0.0f, 1.0f); // 4;
+	sim.connect(gedr, gexc, "one-to-one", 0.0f, 1.0f); // 5;
 	sim.setConductances(true); // COBA mode; setConductances = true
 
-	// ext dir input
-	//PeriodicSpikeGeneratorCustom ext_dir_in(40.0f);
-	//PeriodicSpikeGeneratorCustom ext_dir_in;
-	//ext_dir_in.setRate(40.0f);
-	PeriodicSpikeGenerator ext_dir_in(400.0f, false);
+	// baseline input
+	PeriodicSpikeGenerator ext_base_in((12.0f+noise_addit_freq), true);
+	sim.setSpikeGenerator(gebs, &ext_base_in);	
+
+	// PC input
+	PeriodicSpikeGenerator ext_dir_in(10.0f, true);
 	sim.setSpikeGenerator(gedr, &ext_dir_in);
+
+	// ext dir input
+	PeriodicSpikeGenerator pc_in(40.0f, true);
+	sim.setSpikeGenerator(gpcs, &pc_in);
 
 	// ---------------- SETUP STATE -------------------
 	// build the network
 	//watch.lap("setupNetwork");
 	sim.setupNetwork();
 
-	SpikeMonitor* SMext = sim.setSpikeMonitor(gebs, "DEFAULT");
+	//SpikeMonitor* SMext = sim.setSpikeMonitor(gebs, "DEFAULT");
 	SpikeMonitor* SMexc = sim.setSpikeMonitor(gexc, "DEFAULT");
 	SpikeMonitor* SMinh = sim.setSpikeMonitor(ginh, "DEFAULT");
-	SpikeMonitor* SMnos = sim.setSpikeMonitor(gnos, "DEFAULT");
-	ConnectionMonitor* CMetec = sim.setConnectionMonitor(gebs, gexc, "DEFAULT");
+	//ConnectionMonitor* CMetec = sim.setConnectionMonitor(gebs, gexc, "DEFAULT");
 	ConnectionMonitor* CMecin = sim.setConnectionMonitor(gexc, ginh, "DEFAULT");
-	ConnectionMonitor* CMinec = sim.setConnectionMonitor(ginh, gexc, "DEFAULT");
-	ConnectionMonitor* CMnsec = sim.setConnectionMonitor(gnos, gexc, "DEFAULT");	
-
-	// baseline input
-	PoissonRate in(grid_ext_base.N, true);
-	in.setRates(400.0f); //in.setRates(30.0f); //in.setRates(15.0f);
-	sim.setSpikeRate(gebs,&in);
-
-	// random noise input
-	PoissonRate noise(grid_nos.N);
-	noise.setRates(25.0f);
-	sim.setSpikeRate(gnos,&noise);
-
-	// place cell input
-	/*
-	PoissonRate pc_in(grid_ext_base.N);
-	pc_in.setRates(50.0f); //in.setRates(30.0f); //in.setRates(15.0f);
-	sim.setSpikeRate(gpcs,&pc_in);
-	*/
-	sim.setExternalCurrent(gpcs, 10.0f);
+	ConnectionMonitor* CMinec = sim.setConnectionMonitor(ginh, gexc, "DEFAULT");	
 
 	// ---------------- RUN STATE -------------------
-	SMext->startRecording();
+	//SMext->startRecording();
 	SMexc->startRecording();
 	SMinh->startRecording();
-	SMnos->startRecording();
 
 	SMexc->setPersistentData(true); // keep prior firing when recording is stopped and restarted
 
@@ -977,8 +955,8 @@ int main() {
 			// store weights in vectors
 			inec_weights = CMinec->takeSnapshot();	
 			p.inec_weights = inec_weights;	
-			etec_weights = CMetec->takeSnapshot();	
-			p.etec_weights = etec_weights;
+			//etec_weights = CMetec->takeSnapshot();	
+			//p.etec_weights = etec_weights;
 
 			//p.weights_in[31][0] = p.weights_in[31][0] + 1.0;
 
@@ -1006,14 +984,13 @@ int main() {
 		if (p.print_time && ((t < 1000 && t % 100 == 0) || (t % 1000 == 0))) {printf("t: %dms\n",t);}
 	}
 
-	SMext->stopRecording();
+	//SMext->stopRecording();
 	SMexc->stopRecording();
 	SMinh->stopRecording();
-	SMnos->stopRecording();
 
 	// print firing stats (but not the exact spike times)
 	printf("\n\n");
-	SMext->print(false);
+	//SMext->print(false);
 	SMexc->print(false);
 	SMinh->print(false);
 	

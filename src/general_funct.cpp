@@ -59,8 +59,8 @@ struct P {
 	vector<vector<float>> etec_weights;
 
 	// common parameters that can vary per each run
-	double sim_time = 150; // sim run time in ms
-	double base_input_weight = 0.03;//0.3; //0.5; // baseline input from ext_input to GC
+	double sim_time = 500; // sim run time in ms
+	double base_input_weight = 1.0; // baseline input from ext_input to GC
 	double base_gc_to_in_weight = 2.0f;//1.0f;//0.5f; // baseline interneuron synapse weight
 	double base_in_to_gc_weight = 1.0f;//0.5f; // baseline interneuron synapse weight
 	bool print_move = 0; // print each move's direction
@@ -73,10 +73,10 @@ struct P {
 	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
 	bool fire_vs_pos_test_mode = 0; // changes just for testing fire vs pos
 	//bool intern_connect = 1; // interneuron connections toggle
-	bool init_bumps = 1; // inital bumps present
-	bool base_input = 1; // baseline external signal input
+	bool init_bumps = 0; // inital bumps present
+	bool base_input = 0; // baseline external signal input
 	bool base_dir_input = 0; // baseline external signal direction-based input
-	bool gc_to_gc = 1; // grid cell to grid cell signaling
+	bool gc_to_gc = 0; // grid cell to grid cell signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 	bool pc_to_gc = 1; // place cells to grid cells signaling
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
@@ -85,8 +85,8 @@ struct P {
 	// noise parameters
 	bool noise_active = 0; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
-	double noise_scale = 0.0005;//0.005; // scale to desired size for firing
-	double noise_input_weight = 0.5f; // external noise firing synaptic input weight
+	double noise_scale = 0.01;//0.005; // scale to desired size for firing
+	double noise_addit_freq = 0.0f; // additional spiking frequency added to base external input
 
 	// values for synapse activites
 	bool speed_adjustable = 0;

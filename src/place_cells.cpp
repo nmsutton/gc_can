@@ -75,7 +75,7 @@ void place_cell_firing(CARLsim* sim, P *p) {
 
 			gc_i = (p_y * p->x_size) + p_x;
 			//in_firing[gc_i] = in_firing[gc_i] + pc_firing;
-			sim->setWeight(4,gc_i,gc_i,pc_firing,true);
+			sim->setWeight(3,gc_i,gc_i,pc_firing,true);
 		}
 	}
 }
