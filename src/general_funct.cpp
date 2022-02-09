@@ -44,13 +44,14 @@ struct P {
 	static const int num_bumps = bumps_x * bumps_y; // number of initial bumps
 	double pos[2] = {1,1}; // starting position; {x,y}
 	char last_dir; // last direction command
-	static const int x_size = 30;//20;//26;
-	static const int y_size = 30;//20;//26;
+	static const int x_size = 30;//26;
+	static const int y_size = 30;//26;
 	static const int layer_size = x_size * y_size;
 	int move_window = 10; // number of miliseconds before each movement command
 	int start_t = -1; // beginning time of move command
 	int mi = 0; // move list index
 	int t = 0; // time
+	char dirs[4] = {'u', 'r', 'd', 'l'};
 	vector<vector<int>> nrn_spk; // for total firing recording
 	vector<vector<double>> weights_in; // IN-GC weights
 	vector<vector<bool>> weights_in_upd; // record of updates
@@ -59,9 +60,9 @@ struct P {
 	vector<vector<float>> etec_weights;
 
 	// common parameters that can vary per each run
-	double sim_time = 500; // sim run time in ms
-	double base_input_weight = 1.0; // baseline input from ext_input to GC
-	double base_gc_to_in_weight = 2.0f;//1.0f;//0.5f; // baseline interneuron synapse weight
+	double sim_time = 40; // sim run time in ms
+	double base_input_weight = 0.094; // baseline input from ext_input to GC
+	double base_gc_to_in_weight = 1.0f;//1.0f;//0.5f; // baseline interneuron synapse weight
 	double base_in_to_gc_weight = 1.0f;//0.5f; // baseline interneuron synapse weight
 	bool print_move = 0; // print each move's direction
 	bool print_time = 1; // print time after processing
@@ -73,14 +74,14 @@ struct P {
 	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
 	bool fire_vs_pos_test_mode = 0; // changes just for testing fire vs pos
 	//bool intern_connect = 1; // interneuron connections toggle
-	bool init_bumps = 0; // inital bumps present
-	bool base_input = 0; // baseline external signal input
+	bool init_bumps = 1; // inital bumps present
+	bool base_input = 1; // baseline external signal input
 	bool base_dir_input = 0; // baseline external signal direction-based input
 	bool gc_to_gc = 0; // grid cell to grid cell signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
-	bool pc_to_gc = 1; // place cells to grid cells signaling
+	bool pc_to_gc = 0; // place cells to grid cells signaling
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
-	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
+	bool pc_active = 0; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 
 	// noise parameters
 	bool noise_active = 0; // activate noise

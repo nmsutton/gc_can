@@ -57,10 +57,10 @@ RM = /opt/cmake-3.22.0-rc3-linux-x86_64/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /comp_neuro/Software/CARLsim6
+CMAKE_SOURCE_DIR = /comp_neuro/Software/CARLsim6/projects/hello_world
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /comp_neuro/Software/CARLsim6/.build
+CMAKE_BINARY_DIR = /comp_neuro/Software/CARLsim6/projects/hello_world
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,7 +87,7 @@ rebuild_cache/fast: rebuild_cache
 
 # Special rule for the target list_install_components
 list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\" \"benchmark\" \"carlsim\" \"carlsim-simple-weight-tuner\" \"carlsim-spike-generators\" \"carlsim-stopwatch\" \"carlsim-visual-stimulus\" \"hello_world\""
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"hello_world\""
 .PHONY : list_install_components
 
 # Special rule for the target list_install_components
@@ -132,14 +132,14 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	cd /comp_neuro/Software/CARLsim6/.build && $(CMAKE_COMMAND) -E cmake_progress_start /comp_neuro/Software/CARLsim6/.build/CMakeFiles /comp_neuro/Software/CARLsim6/.build/projects/hello_world//CMakeFiles/progress.marks
-	cd /comp_neuro/Software/CARLsim6/.build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 projects/hello_world/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /comp_neuro/Software/CARLsim6/.build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /comp_neuro/Software/CARLsim6/projects/hello_world/CMakeFiles /comp_neuro/Software/CARLsim6/projects/hello_world//CMakeFiles/progress.marks
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
+	$(CMAKE_COMMAND) -E cmake_progress_start /comp_neuro/Software/CARLsim6/projects/hello_world/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /comp_neuro/Software/CARLsim6/.build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 projects/hello_world/clean
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 clean
 .PHONY : clean
 
 # The main clean target
@@ -148,56 +148,46 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /comp_neuro/Software/CARLsim6/.build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 projects/hello_world/preinstall
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /comp_neuro/Software/CARLsim6/.build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 projects/hello_world/preinstall
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /comp_neuro/Software/CARLsim6/.build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	$(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
-# Convenience name for target.
-projects/hello_world/CMakeFiles/hello_world.dir/rule:
-	cd /comp_neuro/Software/CARLsim6/.build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 projects/hello_world/CMakeFiles/hello_world.dir/rule
-.PHONY : projects/hello_world/CMakeFiles/hello_world.dir/rule
+#=============================================================================
+# Target rules for targets named hello_world
 
-# Convenience name for target.
-hello_world: projects/hello_world/CMakeFiles/hello_world.dir/rule
+# Build rule for target.
+hello_world: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 hello_world
 .PHONY : hello_world
 
 # fast build rule for target.
 hello_world/fast:
-	cd /comp_neuro/Software/CARLsim6/.build && $(MAKE) $(MAKESILENT) -f projects/hello_world/CMakeFiles/hello_world.dir/build.make projects/hello_world/CMakeFiles/hello_world.dir/build
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello_world.dir/build.make CMakeFiles/hello_world.dir/build
 .PHONY : hello_world/fast
 
-src/main_hello_world.o: src/main_hello_world.cpp.o
+# target to build an object file
+src/main_hello_world.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello_world.dir/build.make CMakeFiles/hello_world.dir/src/main_hello_world.o
 .PHONY : src/main_hello_world.o
 
-# target to build an object file
-src/main_hello_world.cpp.o:
-	cd /comp_neuro/Software/CARLsim6/.build && $(MAKE) $(MAKESILENT) -f projects/hello_world/CMakeFiles/hello_world.dir/build.make projects/hello_world/CMakeFiles/hello_world.dir/src/main_hello_world.cpp.o
-.PHONY : src/main_hello_world.cpp.o
-
-src/main_hello_world.i: src/main_hello_world.cpp.i
+# target to preprocess a source file
+src/main_hello_world.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello_world.dir/build.make CMakeFiles/hello_world.dir/src/main_hello_world.i
 .PHONY : src/main_hello_world.i
 
-# target to preprocess a source file
-src/main_hello_world.cpp.i:
-	cd /comp_neuro/Software/CARLsim6/.build && $(MAKE) $(MAKESILENT) -f projects/hello_world/CMakeFiles/hello_world.dir/build.make projects/hello_world/CMakeFiles/hello_world.dir/src/main_hello_world.cpp.i
-.PHONY : src/main_hello_world.cpp.i
-
-src/main_hello_world.s: src/main_hello_world.cpp.s
-.PHONY : src/main_hello_world.s
-
 # target to generate assembly for a file
-src/main_hello_world.cpp.s:
-	cd /comp_neuro/Software/CARLsim6/.build && $(MAKE) $(MAKESILENT) -f projects/hello_world/CMakeFiles/hello_world.dir/build.make projects/hello_world/CMakeFiles/hello_world.dir/src/main_hello_world.cpp.s
-.PHONY : src/main_hello_world.cpp.s
+src/main_hello_world.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hello_world.dir/build.make CMakeFiles/hello_world.dir/src/main_hello_world.s
+.PHONY : src/main_hello_world.s
 
 # Help Target
 help:
@@ -226,6 +216,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /comp_neuro/Software/CARLsim6/.build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	$(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 
