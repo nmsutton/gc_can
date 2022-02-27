@@ -52,7 +52,7 @@ for frameIndex = 1 : numberOfFrames
   %caxis([0 5.5])
   caxis([0 8.0])
   cb = colorbar;
-  set(cb, 'ylim', [0 5.5]); % set colorbar range
+  set(cb, 'ylim', [0 11.0]); % set colorbar range
   caption = sprintf('Neuron space grid cell firing amounts, t = %.0f ms', frameIndex);
   title(caption, 'FontSize', 15);
   thisFrame = getframe(gcf);

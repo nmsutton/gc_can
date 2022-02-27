@@ -324,7 +324,13 @@ public:
 
 void setInitExtDir(P* p) {
 	for (int i = 0; i < p->layer_size; i++) {
-		ext_dir[i] = 30*pow(ext_dir[i],5.0);
+		ext_dir_initial[i] = ext_dir_initial[i]*1;
+	}
+}
+
+void setExtDir(P* p) {
+	for (int i = 0; i < p->layer_size; i++) {
+		ext_dir[i] = 8.5*pow(ext_dir[i],3.0);
 	}
 }
 

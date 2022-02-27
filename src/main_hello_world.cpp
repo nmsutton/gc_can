@@ -143,6 +143,7 @@ int main() {
 	sim.setupNetwork();
 
 	// Initial excitatory current to GCs
+	setInitExtDir(&p);
 	//sim.setExternalCurrent(gedr, ext_dir_initial);
 	sim.setExternalCurrent(gedr, ext_dir_initial);
 	// Initial inhibitory current to GCs
@@ -168,8 +169,8 @@ int main() {
 		p.t = t;
 		// Disable initial current to GCs settings
 		if (t == 2) {
-			setInitExtDir(&p);
-			sim.setExternalCurrent(gexc, ext_dir);
+			setExtDir(&p);
+			sim.setExternalCurrent(gedr, ext_dir);
 		}
 		// run for 1 ms, don't generate run stats
 		sim.runNetwork(0,1,false);

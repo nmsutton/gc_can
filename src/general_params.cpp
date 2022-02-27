@@ -44,7 +44,7 @@ struct P {
 	//bool print_in_weights_all = 0;
 	bool print_ext_weights = 0;
 	bool print_in_firing = 0;
-	bool print_gc_firing = 0;
+	bool print_gc_firing = 1;
 	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
 	bool record_pos_track = 0; // write files for animal position tracking plotting
 	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
