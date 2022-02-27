@@ -39,64 +39,64 @@ double rand_speed(P *p) {
 	return (double) rand_val * scale;
 }
 
-void EISignal(char direction, CARLsim* sim, P* p, EIWP e);
+void EISignal(char direction, CARLsim* sim, P* p);
 
-void create_move(char dir, CARLsim* sim, EIWP e, P* p) {
+void create_move(char dir, CARLsim* sim, P* p) {
 	/*
 		Create movement after delay controlled by a speed variable.
 	*/
 	if (p->start_t == -1) {
-		p->start_t = e.t;
+		p->start_t = p->t;
 	}
-	if (e.t < (p->start_t + round(1/(p->speed*p->move_window))) && p->speed_adjustable == true) {
-		EISignal('n', sim, p, e);
+	if (p->t < (p->start_t + round(1/(p->speed*p->move_window))) && p->speed_adjustable == true) {
+		EISignal('n', sim, p);
 	}
 	else {
-		EISignal(dir, sim, p, e);
+		EISignal(dir, sim, p);
 		p->start_t = -1;
 		p->mi = p->mi + 1;
 		//printf("%d\n",p->mi);
 	}
 }
 
-void run_path(char *moves, double *speeds, int *speed_times, int num_moves, int num_speeds, CARLsim* sim, EIWP e, P *p) {
+void run_path(char *moves, double *speeds, int *speed_times, int num_moves, int num_speeds, CARLsim* sim, P *p) {
 	/*
 		Run movements through a path.
 	*/
 
 	if (p->mi < num_moves) {
 		for (int i = 0; i < num_speeds; i++) {
-			if (e.t == speed_times[i]*p->move_window) {
+			if (p->t == speed_times[i]*p->move_window) {
 				p->speed = speeds[i];
 			}
 		}
 
-		create_move(moves[p->mi], sim, e, p);
+		create_move(moves[p->mi], sim, p);
 	}
 	else {
-		if (e.t % (50*p->move_window) == 0) {
+		if (p->t % (50*p->move_window) == 0) {
 			p->speed = rand_speed(p);
 		}
-		create_move(rand_move(), sim, e, p);
+		create_move(rand_move(), sim, p);
 	}
 }
 
-void straight_path(CARLsim* sim, EIWP e, P* p) {
+void straight_path(CARLsim* sim, P* p) {
 	// stright line path
-	create_move('u', sim, e, p);
+	create_move('u', sim, p);
 }
 
-void rand_path(CARLsim* sim, EIWP e, P* p) {
+void rand_path(CARLsim* sim, P* p) {
 	// random move
 
-	if (e.t % 50 == 0) {
+	if (p->t % 50 == 0) {
 		p->speed = rand_speed(p);
 		//printf("speed: %f\n",p->speed);
 	}
-	create_move(rand_move(), sim, e, p);
+	create_move(rand_move(), sim, p);
 }
 
-void move_path_bound_test(CARLsim* sim, EIWP e, P* p) {
+void move_path_bound_test(CARLsim* sim, P* p) {
 	// movement path
 
 	char moves[] {'u','l','l','u','r','r','l','r','r','r','r','u','u','u','l','l','u','r','r','r','u','l',
@@ -113,10 +113,10 @@ void move_path_bound_test(CARLsim* sim, EIWP e, P* p) {
 	int num_moves = sizeof(moves);
 	int num_speeds = sizeof(speeds) / sizeof(double);
 
-	run_path(moves, speeds, speed_times, num_moves, num_speeds, sim, e, p);
+	run_path(moves, speeds, speed_times, num_moves, num_speeds, sim, p);
 }
 
-void move_path(CARLsim* sim, EIWP e, P* p) {
+void move_path(CARLsim* sim, P* p) {
 	// movement path
 
 	char moves[] {'u','u','u','r','r','r','r','u','r','l','r','l','r','u','r','l','r','l','r','u','r','d',
@@ -140,10 +140,10 @@ void move_path(CARLsim* sim, EIWP e, P* p) {
 	int num_moves = sizeof(moves);
 	int num_speeds = sizeof(speeds);
 
-	run_path(moves, speeds, speed_times, num_moves, num_speeds, sim, e, p);
+	run_path(moves, speeds, speed_times, num_moves, num_speeds, sim, p);
 }
 
-void move_path2(CARLsim* sim, EIWP e, P* p) {
+void move_path2(CARLsim* sim, P* p) {
 	// movement path
 
 	char moves[] = {'n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n',
@@ -154,5 +154,5 @@ void move_path2(CARLsim* sim, EIWP e, P* p) {
 	int num_moves = sizeof(moves);
 	int num_speeds = sizeof(speeds);
 
-	run_path(moves, speeds, speed_times, num_moves, num_speeds, sim, e, p);
+	run_path(moves, speeds, speed_times, num_moves, num_speeds, sim, p);
 }
