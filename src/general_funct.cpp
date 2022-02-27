@@ -47,37 +47,43 @@ struct P {
 	static const int x_size = 30;//26;
 	static const int y_size = 30;//26;
 	static const int layer_size = x_size * y_size;
-	int move_window = 10; // number of miliseconds before each movement command
+	int move_window = 10;//10; // number of miliseconds before each movement command
 	int start_t = -1; // beginning time of move command
 	int mi = 0; // move list index
 	int t = 0; // time
 	char dirs[4] = {'u', 'r', 'd', 'l'};
 	vector<vector<int>> nrn_spk; // for total firing recording
+	vector<vector<int>> in_nrn_spk; // for total firing recording
 	vector<vector<double>> weights_in; // IN-GC weights
+	vector<vector<double>> weights_in_all; // IN-GC weights all-to-all
 	vector<vector<bool>> weights_in_upd; // record of updates
-	double gc_firing[x_size*y_size]; // gc spike amount
+	double gc_firing[layer_size]; // gc spiking amount
+	double gc_firing_bin[layer_size]; // gc spiking amount in time bins
+	double in_firing[layer_size]; // gc spike amount
 	vector<vector<float>> inec_weights;
 	vector<vector<float>> etec_weights;
 
 	// common parameters that can vary per each run
-	double sim_time = 40; // sim run time in ms
-	double base_input_weight = 0.094; // baseline input from ext_input to GC
+	double sim_time = 20; // sim run time in ms
+	double base_input_weight = 0.01;//0.094; // baseline input from ext_input to GC
 	double base_gc_to_in_weight = 1.0f;//1.0f;//0.5f; // baseline interneuron synapse weight
 	double base_in_to_gc_weight = 1.0f;//0.5f; // baseline interneuron synapse weight
 	bool print_move = 0; // print each move's direction
 	bool print_time = 1; // print time after processing
-	bool print_in_weights = 1;
+	bool print_in_weights = 0;
+	//bool print_in_weights_all = 0;
 	bool print_ext_weights = 0;
+	bool print_in_firing = 0;
 	bool print_gc_firing = 1;
 	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
 	bool record_pos_track = 0; // write files for animal position tracking plotting
 	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
 	bool fire_vs_pos_test_mode = 0; // changes just for testing fire vs pos
 	//bool intern_connect = 1; // interneuron connections toggle
-	bool init_bumps = 1; // inital bumps present
-	bool base_input = 1; // baseline external signal input
-	bool base_dir_input = 0; // baseline external signal direction-based input
-	bool gc_to_gc = 0; // grid cell to grid cell signaling
+	bool init_bumps = 0; // inital bumps present
+	bool base_input = 0; // baseline external signal input
+	bool dir_input = 0; // baseline external signal direction-based input
+	bool gc_to_gc = 1; // grid cell to grid cell signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 	bool pc_to_gc = 0; // place cells to grid cells signaling
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
@@ -86,7 +92,7 @@ struct P {
 	// noise parameters
 	bool noise_active = 0; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
-	double noise_scale = 0.01;//0.005; // scale to desired size for firing
+	double noise_scale = 0.001;//0.01;//0.005; // scale to desired size for firing
 	double noise_addit_freq = 0.0f; // additional spiking frequency added to base external input
 
 	// values for synapse activites
@@ -95,7 +101,7 @@ struct P {
 	double base_ext = 1.0;//2.5; // baseline ext input speed level
 	double min_speed = 0.25; // minimum speed for random speed generator. note: signal applied even when stopped.
 	double max_speed = 1.0; // maximum speed for random speed generator
-	double tau_syn = .6;
+	double tau_syn = 10.0;//.6;
 	double y_inter_syn = 0.5;//-1;//-0.03;//-0.05;//0.15;//-.5;//1.044;//1.055; // y intercept
 	double scale_syn = 2.0;//0.25;//1.0; // multiple synaptic connections scaling factor
 	double m_syn = 2.0; // magnitude variable for mex hat f1
@@ -110,6 +116,9 @@ struct P {
 	double a_syn = 4.4; // add f2 f3
 	double dist_thresh = 5; // distance threshold for only local connections
 	double non_range_weight = 0.0;//0.1;//2.0; // default out of range weight
+	//double syn_scale = 5.0; // max spiking scale
+  	double in_scale = 1.0;//0.001;//0.0001;//0.001;//2.0; // interneuron firing scale factor
+  	//double ext_scale = 13.0; // ext_dir firing scale factor
 
 	// initial values
 	double y_inter_init = 1.5;//y_inter_syn; // y intercept

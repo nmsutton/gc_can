@@ -4,3 +4,4 @@ results/*.log
 scripts/*.avi
 scripts/*.mp4
 output/
+src/data/
