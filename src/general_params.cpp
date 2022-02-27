@@ -6,6 +6,7 @@
 
 struct P {
 	// general parameters
+	double sim_time = 1000; // sim run time in ms
 	static const int bump_init_x = 1.0; // initial bump x
 	static const int bump_init_y = 1.0; // initial bump y
 	static const int bump_dist = 15;//7.0; // inter-bump distance
@@ -34,7 +35,6 @@ struct P {
 	vector<vector<float>> etec_weights;
 
 	// common parameters that can vary per each run
-	double sim_time = 20; // sim run time in ms
 	double base_input_weight = 0.01;//0.094; // baseline input from ext_input to GC
 	double base_gc_to_in_weight = 1.0f;//1.0f;//0.5f; // baseline interneuron synapse weight
 	double base_in_to_gc_weight = 1.0f;//0.5f; // baseline interneuron synapse weight
@@ -44,7 +44,7 @@ struct P {
 	//bool print_in_weights_all = 0;
 	bool print_ext_weights = 0;
 	bool print_in_firing = 0;
-	bool print_gc_firing = 1;
+	bool print_gc_firing = 0;
 	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
 	bool record_pos_track = 0; // write files for animal position tracking plotting
 	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing

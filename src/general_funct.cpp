@@ -316,7 +316,7 @@ public:
     		if (this->weights_in[i][j] == 1.0) {
     			connected = 1; // only connect where matrix value is 1.0
     		}
-        weight = mex_hat[i][j];
+        weight = mex_hat[i][j]*1.0;
         maxWt = 10.0f;
         delay = 1; 
     }
@@ -324,7 +324,13 @@ public:
 
 void setInitExtDir(P* p) {
 	for (int i = 0; i < p->layer_size; i++) {
-		ext_dir_initial[i] = 60*pow(ext_dir_initial[i],5.0);
+		ext_dir[i] = 30*pow(ext_dir[i],5.0);
+	}
+}
+
+void setInitInhCurr(P* p) {
+	for (int i = 0; i < p->layer_size; i++) {
+		ii_initial[i] = ii_initial[i]*1;
 	}
 }
 

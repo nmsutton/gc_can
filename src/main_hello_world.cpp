@@ -59,13 +59,11 @@
 //#include "/comp_neuro/Software/CARLsim6/tools/spike_generators/carlsim_spike_generators_api.h"
 //#include "/home/nmsutton/CARLsim6/include/periodic_spikegen.h"
 #include "periodic_spikegen_custom.cpp"
-// include stopwatch for timing
-//#include <stopwatch.h>
+//#include <stopwatch.h> // include stopwatch for timing
 #include <vector>
 #include <spike_monitor.h>
 #include <math.h> // for sqrt() and other functions
-// for to_string()
-#include <string>
+#include <string> // for to_string()
 #include <cstring>
 #include <sstream>
 #include <iostream>
@@ -73,6 +71,7 @@
 using namespace std;
 #include <math.h> // for sqrt() and other functions
 #include "data/ext_dir_initial.cpp"
+#include "data/ext_dir.cpp"
 #include "data/ii_initial.cpp"
 #include "data/init_firings.cpp"
 #include "data/mex_hat.cpp"
@@ -84,10 +83,8 @@ using namespace std;
 
 int main() {
 	struct P p;	
-
 	// keep track of execution time
 	//Stopwatch watch;
-
 	// ---------------- CONFIG STATE -------------------
 	// create a network on GPU
 	int numGPUs = 1;
@@ -107,7 +104,9 @@ int main() {
 	vector<vector<double>> weights_in_temp(p.layer_size, vector<double>(p.layer_size)); // set size
 	p.weights_in = weights_in_temp;
 	for (int i = 0; i < p.layer_size; i++) {
-		p.weights_in[i][i] = 0.0; // only init one-to-one connections
+		for (int j = 0; j < p.layer_size; j++) {
+			p.weights_in[i][j] = 0.0;
+		}
 	}
 
 	// configure the network
@@ -126,9 +125,7 @@ int main() {
 	//sim.setNeuronParameters(gexc, 0.02f, 0.2f, -65.0f, 8.0f); // RS
 	sim.setNeuronParameters(gexc, 0.1f, 0.2f, -65.0f, 2.0f); // RS
 	sim.setNeuronParameters(ginh, 0.1f, 0.2f, -65.0f, 2.0f); // FS
-	if (p.base_input == true) {
-		base_input_weight = p.base_input_weight;
-	}
+	if (p.base_input == true) {base_input_weight = p.base_input_weight;}
 	setInExcConns(&sim, &p);
 	MexHatConnection* MexHatConn = new MexHatConnection(&p);	
 	sim.connect(gebs, gexc, "one-to-one", base_input_weight, 1.0f); // 0 BASE
@@ -146,12 +143,11 @@ int main() {
 	sim.setupNetwork();
 
 	// Initial excitatory current to GCs
-	setInitExtDir(&p);
 	//sim.setExternalCurrent(gedr, ext_dir_initial);
-	sim.setExternalCurrent(gexc, ext_dir_initial);
+	sim.setExternalCurrent(gedr, ext_dir_initial);
 	// Initial inhibitory current to GCs
-	sim.setExternalCurrent(ginh, ii_initial);
-
+	//setInitInhCurr(&p);
+	//sim.setExternalCurrent(ginh, ii_initial);
 	//SpikeMonitor* SMext = sim.setSpikeMonitor(gebs, "DEFAULT");
 	SpikeMonitor* SMexc = sim.setSpikeMonitor(gexc, "DEFAULT");
 	SpikeMonitor* SMinh = sim.setSpikeMonitor(ginh, "DEFAULT");
@@ -164,33 +160,28 @@ int main() {
 	SMexc->startRecording();
 	SMinh->startRecording();
 	SMexc->setPersistentData(true); // keep prior firing when recording is stopped and restarted
-
 	for (int i = 0; i < p.layer_size; i++) {
 		p.gc_firing[i] = init_firings[i]; // set initial firing
 	}
 
 	for (int t=0; t<p.sim_time; t++) {	
 		p.t = t;
-
-		if (t == 1) {
-			sim.setExternalCurrent(ginh, 0.0); // Disable initial inhibitory current to GCs
+		// Disable initial current to GCs settings
+		if (t == 2) {
+			setInitExtDir(&p);
+			sim.setExternalCurrent(gexc, ext_dir);
 		}
-
 		// run for 1 ms, don't generate run stats
 		sim.runNetwork(0,1,false);
-
-		// process movement
-		// store firing in vector
 		SMexc->stopRecording();
-		p.nrn_spk = SMexc->getSpikeVector2D();
+		p.nrn_spk = SMexc->getSpikeVector2D(); // store firing in vector
 		SMexc->startRecording();
 		SMinh->stopRecording();
 		p.in_nrn_spk = SMinh->getSpikeVector2D();
 		SMinh->startRecording();
-		// store weights in vectors
-		inec_weights = CMinec->takeSnapshot();	
-		p.inec_weights = inec_weights;	
-
+		inec_weights = CMinec->takeSnapshot();
+		p.inec_weights = inec_weights; // store weights in vectors
+		// process movement		
 		move_path_bound_test(&sim, &p);	
 		PrintWeightsAndFiring(&p);
 		if (p.record_fire_vs_pos) {RecordNeuronVsLocation(&sim, &p);}
@@ -198,11 +189,9 @@ int main() {
 		if (p.record_pos_track_all) {RecordLocationPath(&p, "all");}
 		if (p.print_time && ((t < 1000 && t % 100 == 0) || (t % 1000 == 0))) {printf("t: %dms\n",t);}
 	}
-
 	//SMext->stopRecording();
 	SMexc->stopRecording();
 	SMinh->stopRecording();
-
 	// print firing stats (but not the exact spike times)
 	printf("\n\n");
 	//SMext->print(false);
