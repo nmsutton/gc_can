@@ -144,7 +144,6 @@ int main() {
 
 	// Initial excitatory current to GCs
 	setInitExtDir(&p);
-	//sim.setExternalCurrent(gedr, ext_dir_initial);
 	sim.setExternalCurrent(gedr, ext_dir_initial);
 	// Initial inhibitory current to GCs
 	//setInitInhCurr(&p);
