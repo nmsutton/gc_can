@@ -76,31 +76,8 @@ void PrintWeightsAndFiring(P *p) {
 	}
 }
 
-char get_pd(int x, int y) {
-	char pd;
-
-	if (y % 2 == 0) {
-		if (x % 2 == 0) {
-			pd = 'd';
-		}
-		else {
-			pd = 'r';
-		}
-	}
-	else {
-		if (x % 2 == 0) {
-			pd = 'l';
-		}
-		else {
-			pd = 'u';
-		}		
-	}
-
-	return pd;
-}
-
 char get_pd(int i, P *p) {	
-	char pd;
+	char pd = 'n';
 	int x = i % p->x_size;
 	int y = i / p->x_size;
 
@@ -109,7 +86,33 @@ char get_pd(int i, P *p) {
 			pd = 'd';
 		}
 		else {
+			pd = 'u';
+		}
+	}
+	else {
+		if (x % 2 == 0) {
 			pd = 'r';
+		}
+		else {
+			pd = 'l';
+		}		
+	}
+
+	return pd;
+}
+
+char get_opp_pd(int i, P *p) {	
+	/* returns opposite preferred direction */
+	char pd;
+	int x = i % p->x_size;
+	int y = i / p->x_size;
+
+	if (y % 2 == 0) {
+		if (x % 2 == 0) {
+			pd = 'u';
+		}
+		else {
+			pd = 'd';
 		}
 	}
 	else {
@@ -117,7 +120,7 @@ char get_pd(int i, P *p) {
 			pd = 'l';
 		}
 		else {
-			pd = 'u';
+			pd = 'r';
 		}		
 	}
 
@@ -185,7 +188,7 @@ void count_firing(P* p, double *firing_matrix, vector<vector<int>> spike_recorde
 		s_num = spike_recorder[i].size();
 		for (int j = 0; j < s_num; j++) {
 			spk_time = spike_recorder[i][j];
-			if (spk_time >= (p->t - p->move_window) && spk_time <= p->t) {
+			if (spk_time >= (p->t - p->firing_bin) && spk_time <= p->t) {
 				tot += 1;
 			}
 		}
@@ -217,7 +220,8 @@ void find_spikes(P* p, double *firing_matrix, vector<vector<int>> spike_recorder
 
 void write_firing(double *firing_matrix, string output_folder, P *p) {
 	ofstream output_file;
-	string filename = "output/" + output_folder + "/firing_t" + int_to_string(p->t) + ".csv";
+	//string filename = "output/" + output_folder + "/firing_t" + int_to_string(p->t) + ".csv";
+	string filename = "/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/output/" + output_folder + "/firing_t" + int_to_string(p->t) + ".csv";
 	output_file.open(filename);
 
 	int i_f = 0; // firing index
@@ -239,7 +243,7 @@ void write_firing(double *firing_matrix, string output_folder, P *p) {
 		}
 	}
 
-  output_file.close();
+	output_file.close();
 }
 
 void RecordNeuronVsLocation(CARLsim* sim, P* p) {
@@ -249,7 +253,6 @@ void RecordNeuronVsLocation(CARLsim* sim, P* p) {
 
 		Note: are the 10ms time bins firing is counted enough resolution for this?
 	*/
-
 	int i;
 
 	if (p->gc_firing[p->selected_neuron] > 0) {
@@ -316,7 +319,7 @@ public:
     		if (this->weights_in[i][j] == 1.0) {
     			connected = 1; // only connect where matrix value is 1.0
     		}
-        weight = mex_hat[i][j]*1.0;
+        weight = mex_hat[i][j]*1;
         maxWt = 10.0f;
         delay = 1; 
     }
@@ -328,18 +331,51 @@ void setInitExtDir(P* p) {
 	}
 }
 
-void setExtDir(P* p) {
+void setExtDirOld(P* p) {
 	for (int i = 0; i < p->layer_size; i++) {
-		ext_dir[i] = 8.5*pow(ext_dir[i],3.0);
+		ext_dir[i] = p->base_ext*pow(ext_dir[i],3.0);
 	}
 }
 
+void setExtDir(P* p, char dir, double speed) {
+	/*double dir_angle;
+
+	if (dir == 'u') {
+		dir_angle = 0.5*PI;
+	}
+	else if (dir == 'r') {
+		dir_angle = 1*PI;
+	}
+	else if (dir == 'd') {
+		dir_angle = 1.5*PI;
+	}
+	else if (dir == 'l') {
+		dir_angle = 2.0*PI;
+	}
+	else {
+		dir_angle = 0.0;
+	}*/
+
+	for (int i = 0; i < p->layer_size; i++) {
+		if (get_pd(i, p) == dir) {
+			p->ext_dir[i] = p->base_ext*pow((1+speed),p->speed_mult);
+		}
+		//else if (get_opp_pd(i, p) == dir) {
+		//	p->ext_dir[i] = p->base_ext*pow((1-speed),p->speed_mult);
+		//}
+		else {
+			p->ext_dir[i] = p->base_ext;
+		}
+		printf("%f,",p->ext_dir[i]);		
+	}
+}
+/*
 void setInitInhCurr(P* p) {
 	for (int i = 0; i < p->layer_size; i++) {
 		ii_initial[i] = ii_initial[i]*1;
 	}
 }
-
+*/
 void EISignal(char direction, CARLsim* sim, P* p) {
 	/*
 		Apply external input

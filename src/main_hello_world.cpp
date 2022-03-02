@@ -72,7 +72,7 @@ using namespace std;
 #include <math.h> // for sqrt() and other functions
 #include "data/ext_dir_initial.cpp"
 #include "data/ext_dir.cpp"
-#include "data/ii_initial.cpp"
+//#include "data/ii_initial.cpp"
 #include "data/init_firings.cpp"
 #include "data/mex_hat.cpp"
 #include "general_params.cpp"
@@ -108,6 +108,9 @@ int main() {
 			p.weights_in[i][j] = 0.0;
 		}
 	}
+	vector<float> ext_dir_temp(p.layer_size); // set vector size
+	p.ext_dir = ext_dir_temp;
+	//p.ext_dir.reserve(p.layer_size); // set vector size
 
 	// configure the network
 	Grid3D grid_ext_base(p.x_size,p.y_size,1); // external input
@@ -136,6 +139,7 @@ int main() {
 	sim.connect(gedr, gexc, "one-to-one", 1.0f, 1.0f); // 4 DIR
 	// tau of receptors set to 10 for testing
 	sim.setConductances(true,10,10,10,10); // COBA mode; setConductances = true
+	//sim.setConductances(true); // COBA mode; setConductances = true
 
 	// ---------------- SETUP STATE -------------------
 	// build the network
@@ -168,8 +172,9 @@ int main() {
 		p.t = t;
 		// Disable initial current to GCs settings
 		if (t == 2) {
-			setExtDir(&p);
-			sim.setExternalCurrent(gedr, ext_dir);
+			//setExtDir2(&p,'r',0.015);
+			setExtDir(&p,'d',0.04);
+			sim.setExternalCurrent(gedr, p.ext_dir);
 		}
 		// run for 1 ms, don't generate run stats
 		sim.runNetwork(0,1,false);

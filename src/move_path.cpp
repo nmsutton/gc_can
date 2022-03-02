@@ -48,7 +48,7 @@ void create_move(char dir, CARLsim* sim, P* p) {
 	if (p->start_t == -1) {
 		p->start_t = p->t;
 	}
-	if (p->t < (p->start_t + round(1/(p->speed*p->move_window))) && p->speed_adjustable == true) {
+	if (p->t < (p->start_t + round(1/(p->base_ext*p->firing_bin))) && p->speed_adjustable == true) {
 		EISignal('n', sim, p);
 	}
 	else {
@@ -66,16 +66,16 @@ void run_path(char *moves, double *speeds, int *speed_times, int num_moves, int 
 
 	if (p->mi < num_moves) {
 		for (int i = 0; i < num_speeds; i++) {
-			if (p->t == speed_times[i]*p->move_window) {
-				p->speed = speeds[i];
+			if (p->t == speed_times[i]*p->firing_bin) {
+				p->base_ext = speeds[i];
 			}
 		}
 
 		create_move(moves[p->mi], sim, p);
 	}
 	else {
-		if (p->t % (50*p->move_window) == 0) {
-			p->speed = rand_speed(p);
+		if (p->t % (50*p->firing_bin) == 0) {
+			p->base_ext = rand_speed(p);
 		}
 		create_move(rand_move(), sim, p);
 	}
@@ -90,8 +90,8 @@ void rand_path(CARLsim* sim, P* p) {
 	// random move
 
 	if (p->t % 50 == 0) {
-		p->speed = rand_speed(p);
-		//printf("speed: %f\n",p->speed);
+		p->base_ext = rand_speed(p);
+		//printf("speed: %f\n",p->base_ext);
 	}
 	create_move(rand_move(), sim, p);
 }
