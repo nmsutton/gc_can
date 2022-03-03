@@ -172,8 +172,7 @@ int main() {
 		p.t = t;
 		// Disable initial current to GCs settings
 		if (t == 2) {
-			//setExtDir2(&p,'r',0.015);
-			setExtDir(&p,'d',0.04);
+			setExtDir(&p,'l',0.04);
 			sim.setExternalCurrent(gedr, p.ext_dir);
 		}
 		// run for 1 ms, don't generate run stats
@@ -185,9 +184,10 @@ int main() {
 		p.in_nrn_spk = SMinh->getSpikeVector2D();
 		SMinh->startRecording();
 		inec_weights = CMinec->takeSnapshot();
-		p.inec_weights = inec_weights; // store weights in vectors
+		p.inec_weights = inec_weights; // store weights in vectors	
 		// process movement		
-		move_path_bound_test(&sim, &p);	
+		//move_path_bound_test(&sim, &p);
+		move_path(&sim, &p);
 		PrintWeightsAndFiring(&p);
 		if (p.record_fire_vs_pos) {RecordNeuronVsLocation(&sim, &p);}
 		if (p.record_pos_track) {RecordLocationPath(&p, "current");}

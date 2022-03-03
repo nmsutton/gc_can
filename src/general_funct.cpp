@@ -331,31 +331,7 @@ void setInitExtDir(P* p) {
 	}
 }
 
-void setExtDirOld(P* p) {
-	for (int i = 0; i < p->layer_size; i++) {
-		ext_dir[i] = p->base_ext*pow(ext_dir[i],3.0);
-	}
-}
-
 void setExtDir(P* p, char dir, double speed) {
-	/*double dir_angle;
-
-	if (dir == 'u') {
-		dir_angle = 0.5*PI;
-	}
-	else if (dir == 'r') {
-		dir_angle = 1*PI;
-	}
-	else if (dir == 'd') {
-		dir_angle = 1.5*PI;
-	}
-	else if (dir == 'l') {
-		dir_angle = 2.0*PI;
-	}
-	else {
-		dir_angle = 0.0;
-	}*/
-
 	for (int i = 0; i < p->layer_size; i++) {
 		if (get_pd(i, p) == dir) {
 			p->ext_dir[i] = p->base_ext*pow((1+speed),p->speed_mult);
@@ -366,26 +342,28 @@ void setExtDir(P* p, char dir, double speed) {
 		else {
 			p->ext_dir[i] = p->base_ext;
 		}
-		printf("%f,",p->ext_dir[i]);		
+		//printf("%f,",p->ext_dir[i]);		
 	}
 }
-/*
-void setInitInhCurr(P* p) {
-	for (int i = 0; i < p->layer_size; i++) {
-		ii_initial[i] = ii_initial[i]*1;
-	}
-}
-*/
+
 void EISignal(char direction, CARLsim* sim, P* p) {
 	/*
 		Apply external input
 	*/	
-	find_spikes(p, p->gc_firing, p->nrn_spk);
+	double noise;
+
+	//find_spikes(p, p->gc_firing, p->nrn_spk);
 	count_firing(p, p->gc_firing_bin, p->nrn_spk);
 	count_firing(p, p->in_firing, p->in_nrn_spk);
 	set_pos(p, direction); if (p->print_move) {cout << "\n";}
 
-	double noise;
+	// set velocity of movement
+	if (p->t > 2) {
+		setExtDir(p,direction,0.04);
+		sim->setExternalCurrent(1, p->ext_dir);
+	}	
+
+	// noise
 	if (p->noise_active) {
 		for (int i = 0; i < p->layer_size; i++) {
 			// add random noise for realism		
