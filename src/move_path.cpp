@@ -54,7 +54,7 @@ void create_move(char dir, CARLsim* sim, P* p) {
 	else {*/
 		EISignal(dir, sim, p);
 		p->start_t = -1;
-		if (p->t % 1000 == 0) {
+		if (p->t % 50 == 0) {
 			p->mi = p->mi + 1;
 		}
 		//printf("%d\n",p->mi);

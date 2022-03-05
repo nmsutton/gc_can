@@ -154,15 +154,15 @@ int main() {
 	//sim.setExternalCurrent(ginh, ii_initial);
 	//SpikeMonitor* SMext = sim.setSpikeMonitor(gebs, "DEFAULT");
 	SpikeMonitor* SMexc = sim.setSpikeMonitor(gexc, "DEFAULT");
-	SpikeMonitor* SMinh = sim.setSpikeMonitor(ginh, "DEFAULT");
+	//SpikeMonitor* SMinh = sim.setSpikeMonitor(ginh, "DEFAULT");
 	//ConnectionMonitor* CMetec = sim.setConnectionMonitor(gebs, gexc, "DEFAULT");
-	ConnectionMonitor* CMecin = sim.setConnectionMonitor(gexc, ginh, "DEFAULT");
-	ConnectionMonitor* CMinec = sim.setConnectionMonitor(ginh, gexc, "DEFAULT");	
+	//ConnectionMonitor* CMecin = sim.setConnectionMonitor(gexc, ginh, "DEFAULT");
+	//ConnectionMonitor* CMinec = sim.setConnectionMonitor(ginh, gexc, "DEFAULT");	
 
 	// ---------------- RUN STATE -------------------
 	//SMext->startRecording();
 	SMexc->startRecording();
-	SMinh->startRecording();
+	//SMinh->startRecording();
 	SMexc->setPersistentData(true); // keep prior firing when recording is stopped and restarted
 	for (int i = 0; i < p.layer_size; i++) {
 		p.gc_firing[i] = init_firings[i]; // set initial firing
@@ -180,13 +180,7 @@ int main() {
 		SMexc->stopRecording();
 		p.nrn_spk = SMexc->getSpikeVector2D(); // store firing in vector
 		SMexc->startRecording();
-		SMinh->stopRecording();
-		p.in_nrn_spk = SMinh->getSpikeVector2D();
-		SMinh->startRecording();
-		inec_weights = CMinec->takeSnapshot();
-		p.inec_weights = inec_weights; // store weights in vectors	
-		// process movement		
-		//move_path_bound_test(&sim, &p);
+		//straight_path(&sim, &p); // process movement
 		move_path(&sim, &p);
 		PrintWeightsAndFiring(&p);
 		if (p.record_fire_vs_pos) {RecordNeuronVsLocation(&sim, &p);}
@@ -196,12 +190,12 @@ int main() {
 	}
 	//SMext->stopRecording();
 	SMexc->stopRecording();
-	SMinh->stopRecording();
+	//SMinh->stopRecording();
 	// print firing stats (but not the exact spike times)
 	printf("\n\n");
 	//SMext->print(false);
 	SMexc->print(false);
-	SMinh->print(false);
+	//SMinh->print(false);
 	
 	return 0;
 }

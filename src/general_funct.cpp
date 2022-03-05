@@ -319,7 +319,7 @@ public:
     		if (this->weights_in[i][j] == 1.0) {
     			connected = 1; // only connect where matrix value is 1.0
     		}
-        weight = mex_hat[i][j]*1;
+        weight = mex_hat[i][j]*1.3;
         maxWt = 10.0f;
         delay = 1; 
     }
@@ -354,12 +354,12 @@ void EISignal(char direction, CARLsim* sim, P* p) {
 
 	//find_spikes(p, p->gc_firing, p->nrn_spk);
 	count_firing(p, p->gc_firing_bin, p->nrn_spk);
-	count_firing(p, p->in_firing, p->in_nrn_spk);
+	//count_firing(p, p->in_firing, p->in_nrn_spk);
 	set_pos(p, direction); if (p->print_move) {cout << "\n";}
 
 	// set velocity of movement
 	if (p->t > 2) {
-		setExtDir(p,direction,0.04);
+		setExtDir(p,direction,0.2);
 		sim->setExternalCurrent(1, p->ext_dir);
 	}	
 
@@ -371,76 +371,4 @@ void EISignal(char direction, CARLsim* sim, P* p) {
 			sim->setWeight(0,i,i,noise,true);
 		}
 	}
-}
-
-double get_mex_hat(double d, P *p) {
-	double y_inter = p->y_inter;
-	double s1 = p->s_1;
-	double s2 = p->s_2;
-	double s3 = p->s_3;
-	double s4 = p->s_4;
-	double s5 = p->s_5;
-	double m1 = p->m;
-	double m2 = p->m2;
-	double m3 = p->m3;
-	double m4 = p->m4;
-	double a = p->a;
-	double scale = p->scale;
-	double mex_hat;
-
-	/*mex_hat = y_inter + scale * 
-	((1-(pow((m1*d)/s1,2))) *
-	(exp(-1*(m3*pow(d,2))/(12*pow(s3,2)))));*/
-
-	//mex_hat = scale * (y_inter - (exp(-((m1*pow(d,2))/(2*pow(s1,2))))-m2*exp(-pow(d,2)/(2*pow(s2,2)))));
-
-	mex_hat = y_inter-(scale*(exp(-((m1*pow(d,2))/(2*pow(s1,2))))
-		-m2*exp(-pow(d,2)/(2*pow(s2,2)))));
-	//printf("%f-(%f*(exp(-((%f*pow(%f,2))/(2*pow(%f,2))))-%f*exp(-pow(%f,2)/(2*pow(%f,2)))))\n",y_inter,scale,m1,d,s1,m2,d,s2);
-
-	/*if (d >1.9 && d < 2.1) {
-		printf("%f %f\n",d,mex_hat);
-	}*/
-	if (mex_hat < 0) {
-		mex_hat = 0;
-	}
-
-	return mex_hat;
-}
-
-double get_distance(int x1, int y1, int x2, int y2, char pd, P *p) {
-	// d = sqrt((e_x - i_x - o_x)^2+(e_y - i_y - o_y)^2)
-	/*int x2_x1 = (x2 - x1);
-	int y2_y1 = (y2 - y1);
-	int half_point = p->x_size / 2; // layer length divided by 2*/
-	double x2_x1 = (x2 - x1);
-	double y2_y1 = (y2 - y1);
-	double half_point = p->x_size / 2; // layer length divided by 2
-
-	// preferred direction bias
-	if (pd == 'u') {
-		y2_y1 = y2_y1 - 1;
-	}
-	if (pd == 'd') {
-		y2_y1 = y2_y1 + 1;
-	}
-	if (pd == 'r') {
-		x2_x1 = x2_x1 - 1;
-	}
-	if (pd == 'l') {
-		x2_x1 = x2_x1 + 1;
-	}	
-
-	// torus wrap around
-	if (abs(x2_x1) >= half_point) {
-		// distance wraps half way around
-		x2_x1 = (p->x_size - abs(x2_x1));
-	}
-	if (abs(y2_y1) >= half_point) {
-		y2_y1 = (p->y_size - abs(y2_y1));
-	}
-
-	double d = sqrt(pow(x2_x1,2)+pow(y2_y1,2));
-
-	return d;
 }
