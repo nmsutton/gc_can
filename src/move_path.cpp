@@ -53,10 +53,8 @@ void create_move(char dir, CARLsim* sim, P* p) {
 	}
 	else {*/
 		EISignal(dir, sim, p);
-		p->start_t = -1;
-		if (p->t % 50 == 0) {
-			p->mi = p->mi + 1;
-		}
+		p->start_t = -1;		
+		p->mi = p->mi + 1;
 		//printf("%d\n",p->mi);
 	//}
 }
@@ -66,20 +64,22 @@ void run_path(char *moves, double *speeds, int *speed_times, int num_moves, int 
 		Run movements through a path.
 	*/
 
-	if (p->mi < num_moves) {
-		/*for (int i = 0; i < num_speeds; i++) {
-			if (p->t == speed_times[i]*p->firing_bin) {
-				p->base_ext = speeds[i];
-			}
-		}*/
+	if (p->t % p->move_delay == 0) {
+		if (p->mi < num_moves) {
+			/*for (int i = 0; i < num_speeds; i++) {
+				if (p->t == speed_times[i]*p->firing_bin) {
+					p->base_ext = speeds[i];
+				}
+			}*/
 
-		create_move(moves[p->mi], sim, p);
-	}
-	else {
-		/*if (p->t % (50*p->firing_bin) == 0) {
-			p->base_ext = rand_speed(p);
-		}*/
-		create_move(rand_move(), sim, p);
+			create_move(moves[(int) floor(p->mi)], sim, p);
+		}
+		else {
+			/*if (p->t % (50*p->firing_bin) == 0) {
+				p->base_ext = rand_speed(p);
+			}*/
+			create_move(rand_move(), sim, p);
+		}
 	}
 }
 
@@ -151,6 +151,48 @@ void move_path2(CARLsim* sim, P* p) {
 	char moves[] = {'n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n',
 	'n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n',
 	'n','n','n',};
+	double speeds[] = {1.0};
+	int speed_times[] = {1};
+	int num_moves = sizeof(moves);
+	int num_speeds = sizeof(speeds);
+
+	run_path(moves, speeds, speed_times, num_moves, num_speeds, sim, p);
+}
+
+void move_path3(CARLsim* sim, P* p) {
+	// movement path
+
+	char moves[] {'r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',
+	'r','r','r','r','r','r','r','r','d'};
 	double speeds[] = {1.0};
 	int speed_times[] = {1};
 	int num_moves = sizeof(moves);

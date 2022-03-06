@@ -9,7 +9,7 @@ clear all;
 clc;
 input_folder = "pos_track_all";
 %input_folder = "firing_vs_loc";
-time=4980; % time steps, use (end frame - 1) = time
+time=1000; % time steps, use (end frame - 1) = time
 bin_size = 10; % time in ms that bins spiking
 t=[0:0.1:(time*.1)];
 hFigure = figure;
@@ -50,7 +50,8 @@ for frameIndex = 1 : numberOfFrames
   ylabel('animal position on y axis')
   shading interp;
   %caxis([0 3.5])
-  caxis([0 5.5])
+  %caxis([0 5.5])
+  caxis([0 11])
   cb = colorbar;
   %set(cb, 'ylim', [0 4]); % set colorbar range
   set(cb, 'ylim', [0 5.5]); % set colorbar range

@@ -255,11 +255,13 @@ void RecordNeuronVsLocation(CARLsim* sim, P* p) {
 	*/
 	int i;
 
-	if (p->gc_firing[p->selected_neuron] > 0) {
+	//if (p->gc_firing[p->selected_neuron] > 0) {
+	if (p->gc_firing_bin[p->selected_neuron] > 0) {
 		// get index from position
 		i = (p->pos[1] * p->x_size) + p->pos[0];
 
-		p->firing_positions[i] = p->firing_positions[i] + p->gc_firing[p->selected_neuron];
+		//p->firing_positions[i] = p->firing_positions[i] + p->gc_firing[p->selected_neuron];
+		p->firing_positions[i] = p->firing_positions[i] + p->gc_firing_bin[p->selected_neuron];
 	}
 
 	write_firing(p->firing_positions, "firing_vs_loc", p);
@@ -278,7 +280,7 @@ void RecordLocationPath(P *p, string rec_type) {
 			}
 		}
 		else if (i == pos_i) {
-			p->animal_location_all[i] = p->animal_location_all[i] + 1;
+			p->animal_location_all[i] = p->animal_location_all[i] + 0.1;
 		}
 	}
 
@@ -319,7 +321,7 @@ public:
     		if (this->weights_in[i][j] == 1.0) {
     			connected = 1; // only connect where matrix value is 1.0
     		}
-        weight = mex_hat[i][j]*1.3;
+        weight = mex_hat[i][j]*1.4;
         maxWt = 10.0f;
         delay = 1; 
     }
@@ -355,11 +357,16 @@ void EISignal(char direction, CARLsim* sim, P* p) {
 	//find_spikes(p, p->gc_firing, p->nrn_spk);
 	count_firing(p, p->gc_firing_bin, p->nrn_spk);
 	//count_firing(p, p->in_firing, p->in_nrn_spk);
-	set_pos(p, direction); if (p->print_move) {cout << "\n";}
+	//if (p->t % 42 == 0) { // movement delay accounting for firing bin size
+	if (true) { // movement delay accounting for firing bin size
+		set_pos(p, direction); if (p->print_move) {cout << "\n";}
+		//printf("t: %d; m: %f ",p->t,p->mi);
+	}
 
 	// set velocity of movement
 	if (p->t > 2) {
-		setExtDir(p,direction,0.2);
+		//setExtDir(p,direction,0.24);
+		setExtDir(p,direction,0.19);//0.20);
 		sim->setExternalCurrent(1, p->ext_dir);
 	}	
 

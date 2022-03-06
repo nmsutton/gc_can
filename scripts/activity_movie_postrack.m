@@ -9,11 +9,11 @@ clear all;
 clc;
 input_folder = "pos_track";
 %input_folder = "firing_vs_loc";
-time=45; % time steps, use (end frame - 1) = time
+time=1500; % time steps, use (end frame - 1) = time
 bin_size = 10; % time in ms that bins spiking
-t=[0:0.1:(time*.1)];
+t=[0:(1/bin_size):(time*(1/bin_size))];
 hFigure = figure;
-numberOfFrames = length(t);
+numberOfFrames = (length(t)-1)*(1/bin_size);
 % Set up the movie structure.
 % Preallocate recalledMovie, which will be an array of structures.
 % First get a cell array with all the frames.
