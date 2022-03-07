@@ -129,20 +129,21 @@ char get_opp_pd(int i, P *p) {
 
 void set_pos(P *p, char direction) {
 	if (direction == 'u') {
-		p->pos[1]++; 
+		p->pos[1] = p->pos[1] + p->move_increment; 
 	}
 	else if (direction == 'd') {
-		p->pos[1]--; 
+		p->pos[1] = p->pos[1] - p->move_increment; 
 	}
 	else if (direction == 'r') {
-		p->pos[0]++; 
+		p->pos[0] = p->pos[0] + p->move_increment; 
 	}
 	else if (direction == 'l') {
-		p->pos[0]--; 
+		p->pos[0] = p->pos[0] - p->move_increment; 
 	}
 
 	if (p->pos[0] >= p->x_size) {
 		p->pos[0] = 0;
+		//printf("%f >= %d\n",p->pos[0],p->x_size);
 	}
 	else if (p->pos[0] < 0) {
 		p->pos[0] = (p->x_size - 1);
@@ -253,22 +254,25 @@ void RecordNeuronVsLocation(CARLsim* sim, P* p) {
 
 		Note: are the 10ms time bins firing is counted enough resolution for this?
 	*/
+	double i_d;
 	int i;
 
 	//if (p->gc_firing[p->selected_neuron] > 0) {
 	if (p->gc_firing_bin[p->selected_neuron] > 0) {
 		// get index from position
-		i = (p->pos[1] * p->x_size) + p->pos[0];
+		i_d = (p->pos[1] * p->x_size) + p->pos[0];
+		i = floor(i_d);
 
 		//p->firing_positions[i] = p->firing_positions[i] + p->gc_firing[p->selected_neuron];
-		p->firing_positions[i] = p->firing_positions[i] + p->gc_firing_bin[p->selected_neuron];
+		//p->firing_positions[i] = p->firing_positions[i] + p->gc_firing_bin[p->selected_neuron];
+		p->firing_positions[i] = p->firing_positions[i] + 0.5;
 	}
 
 	write_firing(p->firing_positions, "firing_vs_loc", p);
 }
 
 void RecordLocationPath(P *p, string rec_type) {
-	int pos_i = (p->pos[1] * p->x_size) + p->pos[0];
+	double pos_i = (floor(p->pos[1]) * p->x_size) + floor(p->pos[0]);
 
 	for (int i = 0; i < p->layer_size; i++) {
 		if (rec_type != "all") {
@@ -357,7 +361,7 @@ void EISignal(char direction, CARLsim* sim, P* p) {
 	//find_spikes(p, p->gc_firing, p->nrn_spk);
 	count_firing(p, p->gc_firing_bin, p->nrn_spk);
 	//count_firing(p, p->in_firing, p->in_nrn_spk);
-	//if (p->t % 42 == 0) { // movement delay accounting for firing bin size
+	//if (p->t % 2 == 0) { // movement delay accounting for firing bin size
 	if (true) { // movement delay accounting for firing bin size
 		set_pos(p, direction); if (p->print_move) {cout << "\n";}
 		//printf("t: %d; m: %f ",p->t,p->mi);
@@ -366,7 +370,7 @@ void EISignal(char direction, CARLsim* sim, P* p) {
 	// set velocity of movement
 	if (p->t > 2) {
 		//setExtDir(p,direction,0.24);
-		setExtDir(p,direction,0.19);//0.20);
+		setExtDir(p,direction,0.24);//0.20);
 		sim->setExternalCurrent(1, p->ext_dir);
 	}	
 

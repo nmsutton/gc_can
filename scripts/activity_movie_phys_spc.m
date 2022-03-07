@@ -9,7 +9,7 @@ clear all;
 clc;
 %input_folder = "pos_track";
 input_folder = "firing_vs_loc";
-time=89000; % time steps, use (end frame - 1) = time. 1 = 10ms.
+time=35000; % time steps, use (end frame - 1) = time. 1 = 10ms.
 bin_size = 10; % time in ms that bins spiking
 t=[0:(1/bin_size):(time*(1/bin_size))];
 hFigure = figure;
@@ -49,10 +49,10 @@ for frameIndex = (numberOfFrames-30) : (numberOfFrames - 10)
   ylabel('animal position on y axis')
   shading interp;
   %caxis([0 3.5])
-  caxis([0 5.5])
+  caxis([0 100])
   cb = colorbar;
   %set(cb, 'ylim', [0 4]); % set colorbar range
-  set(cb, 'ylim', [0 5.5]); % set colorbar range
+  %set(cb, 'ylim', [0 5.5]); % set colorbar range
   %zlim([0, 1]);
   caption = sprintf('Physical space grid cell firing amounts, t = %.0f ms', (frameIndex*bin_size));
   title(caption, 'FontSize', 15);
