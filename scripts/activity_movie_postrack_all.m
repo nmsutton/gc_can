@@ -9,11 +9,12 @@ clear all;
 clc;
 input_folder = "pos_track_all";
 %input_folder = "firing_vs_loc";
-time=3500; % time steps, use (end frame - 1) = time
+%time=89900; % time steps, use (end frame - 1) = time
+time=129900; % time steps, use (end frame - 1) = time
 bin_size = 10; % time in ms that bins spiking
-t=[0:0.1:(time*.1)];
+t=[0:(1/bin_size):(time*(1/bin_size))];
 hFigure = figure;
-numberOfFrames = length(t);
+numberOfFrames = (length(t)-1)*(1/bin_size);
 % Set up the movie structure.
 % Preallocate recalledMovie, which will be an array of structures.
 % First get a cell array with all the frames.
@@ -36,7 +37,8 @@ custom_colormap = load('animal_location_colormap.mat');
 %[A,map,alpha] = imread('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/media/grid.png');
 %A = imread('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/media/grid.png');
 
-for frameIndex = 1 : numberOfFrames
+%for frameIndex = 1 : numberOfFrames
+for frameIndex = (numberOfFrames-30) : (numberOfFrames - 10)
   filename = strcat('../output/',input_folder,'/firing_t',int2str(frameIndex*bin_size),'.csv');
   [imgfile,delimiterOut]=importdata(filename);
   cla reset;
@@ -50,7 +52,6 @@ for frameIndex = 1 : numberOfFrames
   ylabel('animal position on y axis')
   shading interp;
   %caxis([0 3.5])
-  %caxis([0 5.5])
   caxis([0 11])
   cb = colorbar;
   %set(cb, 'ylim', [0 4]); % set colorbar range

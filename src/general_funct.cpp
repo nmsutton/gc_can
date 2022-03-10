@@ -313,8 +313,10 @@ void setInExcConns(CARLsim* sim, P *p) {
 class MexHatConnection : public ConnectionGenerator {
 public:
     vector<vector<double>> weights_in;
+    double mex_hat_multi;
     MexHatConnection(P *p) {
     	this->weights_in = p->weights_in; // set matrix size
+    	this->mex_hat_multi = p->mex_hat_multi;
     }
     ~MexHatConnection() {}
  
@@ -325,7 +327,7 @@ public:
     		if (this->weights_in[i][j] == 1.0) {
     			connected = 1; // only connect where matrix value is 1.0
     		}
-        weight = mex_hat[i][j]*1.4;
+        weight = mex_hat[i][j]*mex_hat_multi;
         maxWt = 10.0f;
         delay = 1; 
     }
@@ -370,7 +372,7 @@ void EISignal(char direction, CARLsim* sim, P* p) {
 	// set velocity of movement
 	if (p->t > 2) {
 		//setExtDir(p,direction,0.24);
-		setExtDir(p,direction,0.24);//0.20);
+		setExtDir(p,direction,p->const_speed);//0.20);
 		sim->setExternalCurrent(1, p->ext_dir);
 	}	
 

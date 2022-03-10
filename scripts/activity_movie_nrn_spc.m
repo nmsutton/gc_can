@@ -15,7 +15,7 @@ initOAT;
 SpikeReader('/comp_neuro/Software/CARLsim6/.build/projects/hello_world/results/spk_gc_exc.dat', false, 'silent');
 spk_data = SpikeReader('/comp_neuro/Software/CARLsim6/.build/projects/hello_world/results/spk_gc_exc.dat', false, 'silent');
 delay_frames = false;%true;
-time=35000; % time steps, use (end frame - 1) = time. unit is 10ms per time step
+time=49900; % time steps, use (end frame - 1) = time. unit is 10ms per time step
 bin_size = 10; % size of firing bin in ms
 t=[0:(1/bin_size):(time*(1/bin_size))];
 x_size = 30; % size of network on x-axis

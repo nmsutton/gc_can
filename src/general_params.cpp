@@ -7,7 +7,7 @@
 struct P {
 	// general parameters
 	int firing_bin = 10; // size of bins to record firing activity
-	double sim_time = 10000*firing_bin; // sim run time in ms
+	double sim_time = 5000*firing_bin; // sim run time in ms
 	static const int bump_init_x = 1.0; // initial bump x
 	static const int bump_init_y = 1.0; // initial bump y
 	static const int bump_dist = 15;//7.0; // inter-bump distance
@@ -45,8 +45,8 @@ struct P {
 	bool print_ext_weights = 0;
 	bool print_in_firing = 0;
 	bool print_gc_firing = 0;
-	bool record_fire_vs_pos = 1; // write files for firing vs position plotting
-	bool record_pos_track = 1; // write files for animal position tracking plotting
+	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
+	bool record_pos_track = 0; // write files for animal position tracking plotting
 	bool record_pos_track_all = 1; // write files for animal positions with no past posit. clearing
 	bool fire_vs_pos_test_mode = 0; // changes just for testing fire vs pos
 	//bool intern_connect = 1; // interneuron connections toggle
@@ -68,9 +68,11 @@ struct P {
 	// values for synapse activites
 	bool speed_adjustable = 0;
 	double speed_mult = 3.0; // starting grid cell input speed level
-	double base_ext = 4.5;//8.5;//2.5; // baseline ext input speed level
+	double base_ext = 6;//4.5;//8.5;//2.5; // baseline ext input speed level
+	double const_speed = 0.12; // setting for use of a constant speed	
+	double mex_hat_multi = 1.5; // mexican hat multiplier
 	int move_delay = 25;//50; // delay in speed that moves are commanded to occur
-	double move_increment = 0.65; // amount to move in position each move command
+	double move_increment = 0.2634;//0.325;//0.65; // amount to move in position each move command
 	vector<float> ext_dir;
 	double min_speed = 0.25; // minimum speed for random speed generator. note: signal applied even when stopped.
 	double max_speed = 1.0; // maximum speed for random speed generator
