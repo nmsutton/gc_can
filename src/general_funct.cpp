@@ -82,20 +82,12 @@ char get_pd(int i, P *p) {
 	int y = i / p->x_size;
 
 	if (y % 2 == 0) {
-		if (x % 2 == 0) {
-			pd = 'd';
-		}
-		else {
-			pd = 'u';
-		}
+		if (x % 2 == 0) {pd = 'd';}
+		else {pd = 'u';}
 	}
 	else {
-		if (x % 2 == 0) {
-			pd = 'r';
-		}
-		else {
-			pd = 'l';
-		}		
+		if (x % 2 == 0) {pd = 'r';}
+		else {pd = 'l';}		
 	}
 
 	return pd;
@@ -108,20 +100,12 @@ char get_opp_pd(int i, P *p) {
 	int y = i / p->x_size;
 
 	if (y % 2 == 0) {
-		if (x % 2 == 0) {
-			pd = 'u';
-		}
-		else {
-			pd = 'd';
-		}
+		if (x % 2 == 0) {pd = 'u';}
+		else {pd = 'd';}
 	}
 	else {
-		if (x % 2 == 0) {
-			pd = 'l';
-		}
-		else {
-			pd = 'r';
-		}		
+		if (x % 2 == 0) {pd = 'l';}
+		else {pd = 'r';}		
 	}
 
 	return pd;
@@ -129,10 +113,10 @@ char get_opp_pd(int i, P *p) {
 
 void set_pos(P *p, char direction) {
 	if (direction == 'u') {
-		p->pos[1] = p->pos[1] + p->move_increment; 
+		p->pos[1] = p->pos[1] - p->move_increment; 
 	}
 	else if (direction == 'd') {
-		p->pos[1] = p->pos[1] - p->move_increment; 
+		p->pos[1] = p->pos[1] + p->move_increment; 
 	}
 	else if (direction == 'r') {
 		p->pos[0] = p->pos[0] + p->move_increment; 
@@ -228,7 +212,8 @@ void write_firing(double *firing_matrix, string output_folder, P *p) {
 	int i_f = 0; // firing index
 
 	if (p->t != 0) {
-		for (int i = (p->x_size - 1); i >= 0; i--) {
+		//for (int i = (p->x_size - 1); i >= 0; i--) {
+		for (int i = 0; i < p->x_size; i++) {
 			for (int j = 0; j < p->y_size; j++) {
 				i_f = (i * p->x_size) + j;
 
@@ -238,7 +223,8 @@ void write_firing(double *firing_matrix, string output_folder, P *p) {
 					output_file << ",";
 				}
 			}
-			if (i != 0) {
+			//if (i != 0) {
+			if (i != p->y_size) {
 				output_file << "\n";
 			}
 		}
@@ -350,7 +336,6 @@ void setExtDir(P* p, char dir, double speed) {
 		else {
 			p->ext_dir[i] = p->base_ext;
 		}
-		//printf("%f,",p->ext_dir[i]);		
 	}
 }
 
@@ -360,27 +345,23 @@ void EISignal(char direction, CARLsim* sim, P* p) {
 	*/	
 	double noise;
 
-	//find_spikes(p, p->gc_firing, p->nrn_spk);
 	count_firing(p, p->gc_firing_bin, p->nrn_spk);
-	//count_firing(p, p->in_firing, p->in_nrn_spk);
-	//if (p->t % 2 == 0) { // movement delay accounting for firing bin size
-	if (true) { // movement delay accounting for firing bin size
-		set_pos(p, direction); if (p->print_move) {cout << "\n";}
-		//printf("t: %d; m: %f ",p->t,p->mi);
-	}
+	set_pos(p, direction); 
+	if (p->print_move) {cout << "\n";}
 
 	// set velocity of movement
 	if (p->t > 2) {
-		//setExtDir(p,direction,0.24);
 		setExtDir(p,direction,p->const_speed);//0.20);
-		sim->setExternalCurrent(1, p->ext_dir);
+		sim->setExternalCurrent(0, p->ext_dir);
 	}	
+
+	// place cell input
+	place_cell_firing(sim, p);
 
 	// noise
 	if (p->noise_active) {
-		for (int i = 0; i < p->layer_size; i++) {
-			// add random noise for realism		
-			noise = get_noise(p);
+		for (int i = 0; i < p->layer_size; i++) {		
+			noise = get_noise(p); // add random noise for realism
 			sim->setWeight(0,i,i,noise,true);
 		}
 	}

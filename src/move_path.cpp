@@ -100,7 +100,7 @@ void rand_path(CARLsim* sim, P* p) {
 void move_path_bound_test(CARLsim* sim, P* p) {
 	// movement path
 
-	vector<char> moves {'u','l','l','u','r','r','l','r','r','r','r','u','u','u','l','l','u','r','r','r','u','l',
+	vector<char> moves{'u','l','l','u','r','r','l','r','r','r','r','u','u','u','l','l','u','r','r','r','u','l',
 	'd','r','d','r','l','l','u','r','r','r','l','l','l','l','u','r','l','d','r','d','d','u','d','u','d','u',
 	'u','r','d','l','l','l','r','u','u','u','r','r','u','r','r','r','r','r','u','r','r','r','r','d','u','r',
 	'l','u','r','u','d','r','l','l','r','u','r','r','r','l','d','r','d','r','l','d','r','d','d','u','r','d',
@@ -120,7 +120,7 @@ void move_path_bound_test(CARLsim* sim, P* p) {
 void move_path(CARLsim* sim, P* p) {
 	// movement path
 
-	vector<char> moves {'u','r','d','r','d','l','r','u','r','l','r','l','r','u','r','l','r','l','r','u','r','d',
+	vector<char> moves{'u','r','d','r','d','l','r','u','r','l','r','l','r','u','r','l','r','l','r','u','r','d',
 	'r','u','r','r','r','d','d','l','u','u','r','r','u','u','l','l','d','r','r','d','d','r','r','l','l','d',
 	'l','r','u','d','r','u','r','d','r','r','l','l','d','l','r','u','d','r','r','r','l','l','d','l','r','u',
 	'd','r','d','r','u','r','d','r','r','l','l','d','l','r','u','d','r','r','r','l','d','l','l','u','u','l',
@@ -147,7 +147,7 @@ void move_path(CARLsim* sim, P* p) {
 void move_path2(CARLsim* sim, P* p) {
 	// movement path
 
-	vector<char> moves = {'n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n',
+	vector<char> moves{'n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n',
 	'n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n',
 	'n','n','n',};
 	double speeds[] = {1.0};
@@ -163,12 +163,12 @@ void move_path3(CARLsim* sim, P* p) {
 
 	vector<char> moves;
 	for (int i = 0; i < 34; i++) {
-		for (int j = 0; j < 120; j++) {
+		for (int j = 0; j < 60; j++) {
 			moves.push_back('r');
 		}
 		moves.push_back('d');
 		moves.push_back('d');
-		moves.push_back('d');
+		//moves.push_back('d');
 	}
 
 	double speeds[] = {1.0};
