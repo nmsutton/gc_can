@@ -37,33 +37,11 @@ void PrintWeightsAndFiring(P *p) {
 		for (int i = (y_p - 1); i >= 0; i--) {
 			printf("\n");
 			for (int j = 0; j < x_p; j++) {
-				n = (i * max_x) + j;
-				//printf("[%.2f]",p->weights_in[n][n]);	
+				n = (i * max_x) + j;	
 				printf("[%.3f]",p->inec_weights[n][n]);	
-				//printf("[%.4f]",p->weights_in[31][n]);	
 			}
 		}
 	}
-	/*if (p->print_ext_weights) {
-		printf("\n\next->ec weights at time %d",e.t);
-		for (int i = (y_p - 1); i >= 0; i--) {
-			printf("\n");
-			for (int j = 0; j < x_p; j++) {
-				n = (i * max_x) + j;
-				printf("[%.1f]\t",e.etec_weights[n][n]);	
-			}
-		}
-	}*/
-	if (p->print_in_firing) {
-		printf("\nIN firing t:%d",p->t);
-		for (int i = (y_p - 1); i >= 0; i--) {
-			printf("\n");
-			for (int j = 0; j < x_p; j++) {
-				n = (i * max_x) + j;
-				printf("[%.0f]\t",p->in_firing[n]);	
-			}
-		}
-	}	
 	if (p->print_gc_firing) {
 		printf("\nGC firing t:%d",p->t);
 		for (int i = (y_p - 1); i >= 0; i--) {
@@ -237,8 +215,6 @@ void RecordNeuronVsLocation(CARLsim* sim, P* p) {
 	/*
 		Detect firing of a selected individual neuron and record the animal's
 		position when the firing occured. Amount of firing is also recorded.
-
-		Note: are the 10ms time bins firing is counted enough resolution for this?
 	*/
 	double i_d;
 	int i;
@@ -248,10 +224,7 @@ void RecordNeuronVsLocation(CARLsim* sim, P* p) {
 		// get index from position
 		i_d = (p->pos[1] * p->x_size) + p->pos[0];
 		i = floor(i_d);
-
-		//p->firing_positions[i] = p->firing_positions[i] + p->gc_firing[p->selected_neuron];
-		//p->firing_positions[i] = p->firing_positions[i] + p->gc_firing_bin[p->selected_neuron];
-		p->firing_positions[i] = p->firing_positions[i] + 0.5;
+		p->firing_positions[i] = p->firing_positions[i] + p->fvp_act_lvl;
 	}
 
 	write_firing(p->firing_positions, "firing_vs_loc", p);
@@ -263,14 +236,14 @@ void RecordLocationPath(P *p, string rec_type) {
 	for (int i = 0; i < p->layer_size; i++) {
 		if (rec_type != "all") {
 			if (i == pos_i) {
-				p->animal_location[i] = 5;
+				p->animal_location[i] = p->al_act_lvl;
 			}
 			else {
 				p->animal_location[i] = 0;
 			}
 		}
 		else if (i == pos_i) {
-			p->animal_location_all[i] = p->animal_location_all[i] + 0.1;
+			p->animal_location_all[i] = p->animal_location_all[i] + p->ala_act_lvl;
 		}
 	}
 

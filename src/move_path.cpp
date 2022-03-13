@@ -41,24 +41,6 @@ double rand_speed(P *p) {
 
 void EISignal(char direction, CARLsim* sim, P* p);
 
-void create_move(char dir, CARLsim* sim, P* p) {
-	/*
-		Create movement after delay controlled by a speed variable.
-	*/
-	/*if (p->start_t == -1) {
-		p->start_t = p->t;
-	}
-	if (p->t < (p->start_t + round(1/(p->base_ext*p->firing_bin))) && p->speed_adjustable == true) {
-		EISignal('n', sim, p);
-	}
-	else {*/
-		EISignal(dir, sim, p);
-		p->start_t = -1;		
-		p->mi = p->mi + 1;
-		//printf("%d\n",p->mi);
-	//}
-}
-
 void run_path(vector<char> *moves, double *speeds, int *speed_times, int num_moves, int num_speeds, CARLsim* sim, P *p) {
 	/*
 		Run movements through a path.
@@ -71,20 +53,21 @@ void run_path(vector<char> *moves, double *speeds, int *speed_times, int num_mov
 					p->base_ext = speeds[i];
 				}
 			}*/
-			create_move((*moves)[(int) floor(p->mi)], sim, p);
+			EISignal((*moves)[(int) floor(p->mi)], sim, p);
 		}
 		else {
 			/*if (p->t % (50*p->firing_bin) == 0) {
 				p->base_ext = rand_speed(p);
 			}*/
-			create_move(rand_move(), sim, p);
+			EISignal(rand_move(), sim, p);
 		}
+		p->mi = p->mi + 1;
 	}
 }
 
 void straight_path(CARLsim* sim, P* p) {
 	// stright line path
-	create_move('r', sim, p);
+	EISignal('r', sim, p);
 }
 
 void rand_path(CARLsim* sim, P* p) {
@@ -94,7 +77,7 @@ void rand_path(CARLsim* sim, P* p) {
 		p->base_ext = rand_speed(p);
 		//printf("speed: %f\n",p->base_ext);
 	}
-	create_move(rand_move(), sim, p);
+	EISignal(rand_move(), sim, p);
 }
 
 void move_path_bound_test(CARLsim* sim, P* p) {
@@ -168,7 +151,6 @@ void move_path3(CARLsim* sim, P* p) {
 		}
 		moves.push_back('d');
 		moves.push_back('d');
-		//moves.push_back('d');
 	}
 
 	double speeds[] = {1.0};

@@ -49,7 +49,7 @@ for frameIndex = 1 : numberOfFrames
   ylabel('animal position on y axis')
   shading interp;
   %caxis([0 3.5])
-  caxis([0 100])
+  caxis([0 40])
   cb = colorbar;
   %set(cb, 'ylim', [0 4]); % set colorbar range
   %set(cb, 'ylim', [0 5.5]); % set colorbar range

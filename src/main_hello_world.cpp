@@ -84,7 +84,6 @@ int main() {
 	CARLsim sim("gc can", GPU_MODE, USER, numGPUs, randSeed);
 	//CARLsim sim("gc can", CPU_MODE, USER);
 	int n_num;
-	std::vector<std::vector<float>> etec_weights;
 	std::vector<std::vector<float>> inec_weights;
 	double base_input_weight = 0.0;
 	double noise_addit_freq = 0.0;

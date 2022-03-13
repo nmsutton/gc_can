@@ -93,7 +93,7 @@ void place_cell_firing(CARLsim* sim, P *p) {
 			pc_firing = 0.0;
 			if (cb_dist < p->dist_thresh) {
 				if (p->pc_active) {
-					pc_firing = 0.5*pc_rate(p_x, p_y, cb_x, cb_y, p);
+					pc_firing = pc_rate(p_x, p_y, cb_x, cb_y, p);
 				}
 
 				// add boundary cell input

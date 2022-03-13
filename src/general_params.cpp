@@ -5,12 +5,9 @@
 #define PI 3.14159265
 
 struct P {
-	// general parameters
 	int firing_bin = 10; // size of bins to record firing activity
-	double sim_time = 3000*firing_bin; // sim run time in ms
-	static const int bump_init_x = 1.0; // initial bump x
-	static const int bump_init_y = 1.0; // initial bump y
-	static const int bump_dist = 15;//7.0; // inter-bump distance
+	double sim_time = 500*firing_bin; // sim run time in ms
+	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
 	static const int bumps_y = 2; // number of bumps on y axis
 	static const int num_bumps = bumps_x * bumps_y; // number of initial bumps
@@ -19,20 +16,14 @@ struct P {
 	static const int x_size = 30;//26;
 	static const int y_size = 30;//26;
 	static const int layer_size = x_size * y_size;
-	int start_t = -1; // beginning time of move command
 	double mi = 0; // move list index
 	int t = 0; // time
 	char dirs[4] = {'u', 'r', 'd', 'l'};
 	vector<vector<int>> nrn_spk; // for total firing recording
-	vector<vector<int>> in_nrn_spk; // for total firing recording
 	vector<vector<double>> weights_in; // IN-GC weights
-	vector<vector<double>> weights_in_all; // IN-GC weights all-to-all
-	vector<vector<bool>> weights_in_upd; // record of updates
 	double gc_firing[layer_size]; // gc spiking amount
 	double gc_firing_bin[layer_size]; // gc spiking amount in time bins
-	double in_firing[layer_size]; // gc spike amount
 	vector<vector<float>> inec_weights;
-	vector<vector<float>> etec_weights;
 
 	// common parameters that can vary per each run
 	double base_input_weight = 0.01;//0.094; // baseline input from ext_input to GC
@@ -73,6 +64,9 @@ struct P {
 	double mex_hat_multi = 1.4;//1.5; // mexican hat multiplier
 	int move_delay = 25;//50; // delay in speed that moves are commanded to occur
 	double move_increment = 0.5;//0.2634;//0.325;//0.65; // amount to move in position each move command
+	double fvp_act_lvl = 0.5; // amount of activity level added for each visit with firing vs. position plot.
+	double al_act_lvl = 5.0; // amount of activity level added for each visit with animal location non-all plot.
+	double ala_act_lvl = 0.1; // amount of activity level added for each visit with animal location all plot.
 	vector<float> ext_dir;
 	double min_speed = 0.25; // minimum speed for random speed generator. note: signal applied even when stopped.
 	double max_speed = 1.0; // maximum speed for random speed generator
@@ -119,7 +113,7 @@ struct P {
 
 	// place cell parameters
 	double pc_sig = 1.0;//0.25; // sigma symbol; width of the place feild
-	double pc_level = 15.0;//5.0; //14.0; // place cell firing level
+	double pc_level = 7.5;//5.0; //14.0; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters
