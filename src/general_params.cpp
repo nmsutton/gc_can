@@ -6,12 +6,12 @@
 
 struct P {
 	int firing_bin = 10; // size of bins to record firing activity
-	double sim_time = 500*firing_bin; // sim run time in ms
+	double sim_time = 5000*firing_bin; // sim run time in ms
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
 	static const int bumps_y = 2; // number of bumps on y axis
 	static const int num_bumps = bumps_x * bumps_y; // number of initial bumps
-	double pos[2] = {1,1}; // starting position; {x,y}
+	double pos[2] = {3,6}; // starting position; {x,y}
 	char last_dir; // last direction command
 	static const int x_size = 30;//26;
 	static const int y_size = 30;//26;
@@ -112,8 +112,8 @@ struct P {
 	double asig_scale = 1.0;//2.0;//-0.9;
 
 	// place cell parameters
-	double pc_sig = 1.0;//0.25; // sigma symbol; width of the place feild
-	double pc_level = 7.5;//5.0; //14.0; // place cell firing level
+	double pc_sig = 4.0;//1.0;//0.25; // sigma symbol; width of the place feild
+	double pc_level = 5.5;//7.5;//5.0; //14.0; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters

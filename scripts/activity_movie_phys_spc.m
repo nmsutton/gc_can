@@ -35,8 +35,8 @@ caxis manual;          % allow subsequent plots to use the same color limits
 %[A,map,alpha] = imread('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/media/grid.png');
 %A = imread('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/media/grid.png');
 
-for frameIndex = 1 : numberOfFrames
-%for frameIndex = (numberOfFrames-30) : (numberOfFrames - 10)
+%for frameIndex = 1 : numberOfFrames
+for frameIndex = (numberOfFrames-30) : (numberOfFrames - 10)
   filename = strcat('../output/',input_folder,'/firing_t',int2str(frameIndex*bin_size),'.csv');
   [imgfile,delimiterOut]=importdata(filename);
   cla reset;

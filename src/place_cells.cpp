@@ -65,7 +65,7 @@ void place_cell_firing(CARLsim* sim, P *p) {
 		for (int p_x = 0; p_x < p->x_size; p_x++) {
 
 			// find closest bump
-			closest_bump = -1;
+			/*closest_bump = -1;
 			for (int b_i = 0; b_i < p->num_bumps; b_i++) {				
 				bump_x = p->pos[0] + ((b_i % p->bumps_x) * p->bump_dist); // closest bump x
 				bump_y = p->pos[1] + ((b_i / p->bumps_y) * p->bump_dist);
@@ -87,7 +87,9 @@ void place_cell_firing(CARLsim* sim, P *p) {
 					cb_x = bump_x;
 					cb_y = bump_y;			
 				}
-			}		
+			}*/		
+			cb_x = bump_x = p->pos[0];
+			cb_y = bump_y = p->pos[1];
 
 			// find firing
 			pc_firing = 0.0;
