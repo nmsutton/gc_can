@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 10; // size of bins to record firing activity
-	double sim_time = 5000*firing_bin; // sim run time in ms
+	double sim_time = 500*firing_bin; // sim run time in ms
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
 	static const int bumps_y = 2; // number of bumps on y axis
