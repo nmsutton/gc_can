@@ -85,7 +85,6 @@ int main() {
 	//CARLsim sim("gc can", CPU_MODE, USER);
 	int n_num;
 	std::vector<std::vector<float>> inec_weights;
-	double base_input_weight = 0.0;
 	double noise_addit_freq = 0.0;
 	if (p.noise_active) {noise_addit_freq = p.noise_addit_freq;}
 	for (int i = 0; i < (p.x_size*p.y_size); i++) {
@@ -111,18 +110,31 @@ int main() {
 	int ginh=sim.createGroup("gc_inh", grid_inh, INHIBITORY_NEURON);
 	int gpcs=sim.createGroup("place", grid_pcs, EXCITATORY_NEURON);
 	sim.setNeuronParameters(gedr, 0.1f, 0.2f, -65.0f, 2.0f); // FS // 0.02f, 0.2f, -65.0f, 8.0f); // RS
-	sim.setNeuronParameters(gexc, 0.1f, 0.2f, -65.0f, 2.0f); // FS
+	//sim.setNeuronParameters(gexc, 0.1f, 0.2f, -65.0f, 2.0f); // FS
+	sim.setNeuronParameters(gexc, 0.02f, 0.2f, -65.0f, 8.0f); // RS
 	sim.setNeuronParameters(ginh, 0.1f, 0.2f, -65.0f, 2.0f); // FS
 	sim.setNeuronParameters(gpcs, 0.1f, 0.2f, -65.0f, 2.0f); // FS
 	setInExcConns(&sim, &p);
 	MexHatConnection* MexHatConn = new MexHatConnection(&p);	
-	sim.connect(gedr, gexc, "one-to-one", 1.0f, 1.0f); // 0 DIR
-	sim.connect(gexc, ginh, "one-to-one", 1.0f, 1.0f); // 1 GC->IN
-	sim.connect(ginh, gexc, MexHatConn, SYN_FIXED); // 2 IN->GC one-to-many
-	sim.connect(gpcs, gexc, "one-to-one", 1.0f, 1.0f); // 3 PCs
+	/*
+	sim.connect(gedr, gexc, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.0f, 0.0f); // 0 DIR
+	sim.connect(gexc, ginh, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.0f, 0.0f); // 1 GC->IN
+	sim.connect(ginh, gexc, MexHatConn, SYN_FIXED, 1.0f, 0.0f); // 2 IN->GC one-to-many
+	sim.connect(gpcs, gexc, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.0f, 0.0f); // 3 PCs
+	*/
+	//sim.connect(gedr, gexc, "one-to-one", 1.0f, 1.0f); // 0 DIR
+	sim.connect(gedr, gexc, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.0f, 0.0f); // 0 DIR
+	//sim.connect(gexc, ginh, "one-to-one", 1.0f, 1.0f); // 1 GC->IN
+	sim.connect(gexc, ginh, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.0f, 0.0f); // 1 GC->IN
+	//sim.connect(ginh, gexc, MexHatConn, SYN_FIXED); // 2 IN->GC one-to-many
+	sim.connect(ginh, gexc, MexHatConn, SYN_FIXED, 1.0f, 0.0f); // 2 IN->GC one-to-many
+	//sim.connect(gpcs, gexc, "one-to-one", 1.0f, 1.0f); // 3 PCs
+	sim.connect(gpcs, gexc, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.0f, 0.0f); // 3 PCs
 	// tau of receptors set to 10 for testing
-	sim.setConductances(true,10,10,10,10); // COBA mode; setConductances = true
-	//sim.setConductances(true); // COBA mode; setConductances = true
+	//sim.setConductances(true,10,10,10,10); // COBA mode; setConductances = true
+	//sim.setConductances(true,5,150,6,150); // COBA mode; setConductances = true
+	//sim.setConductances(true,5,50,6,50); // COBA mode; setConductances = true
+	sim.setConductances(true); // COBA mode; setConductances = true
 
 	// ---------------- SETUP STATE -------------------
 	// build the network

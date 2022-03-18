@@ -127,7 +127,7 @@ void set_pos(P *p, char direction) {
 double get_noise(P *p) {
 	int rand_max = p->noise_rand_max;
 	double scale = p->noise_scale;
-	double base_input_weight = p->base_input_weight;
+	double base_input_weight = 1.0;
 
 	double rand_val = rand() % rand_max; // rand number up to rand_max
 	rand_val = rand_val * scale; // scale to desired size

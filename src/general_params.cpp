@@ -6,49 +6,37 @@
 
 struct P {
 	int firing_bin = 10; // size of bins to record firing activity
-	double sim_time = 500*firing_bin; // sim run time in ms
+	double sim_time = 1000*firing_bin; // sim run time in ms
+	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
 	static const int bumps_y = 2; // number of bumps on y axis
 	static const int num_bumps = bumps_x * bumps_y; // number of initial bumps
-	double pos[2] = {3,6}; // starting position; {x,y}
-	char last_dir; // last direction command
 	static const int x_size = 30;//26;
 	static const int y_size = 30;//26;
 	static const int layer_size = x_size * y_size;
-	double mi = 0; // move list index
-	int t = 0; // time
+	double pos[2] = {3,6}; // starting position; {x,y}
 	char dirs[4] = {'u', 'r', 'd', 'l'};
+	char last_dir; // last direction command
+	double mi = 0; // move list index
 	vector<vector<int>> nrn_spk; // for total firing recording
 	vector<vector<double>> weights_in; // IN-GC weights
+	vector<vector<float>> inec_weights;
 	double gc_firing[layer_size]; // gc spiking amount
 	double gc_firing_bin[layer_size]; // gc spiking amount in time bins
-	vector<vector<float>> inec_weights;
 
 	// common parameters that can vary per each run
-	double base_input_weight = 0.01;//0.094; // baseline input from ext_input to GC
-	double base_gc_to_in_weight = 1.0f;//1.0f;//0.5f; // baseline interneuron synapse weight
-	double base_in_to_gc_weight = 1.0f;//0.5f; // baseline interneuron synapse weight
 	bool print_move = 0; // print each move's direction
 	bool print_time = 1; // print time after processing
 	bool print_in_weights = 0;
-	//bool print_in_weights_all = 0;
-	bool print_ext_weights = 0;
-	bool print_in_firing = 0;
 	bool print_gc_firing = 0;
 	bool record_fire_vs_pos = 1; // write files for firing vs position plotting
 	bool record_pos_track = 1; // write files for animal position tracking plotting
 	bool record_pos_track_all = 1; // write files for animal positions with no past posit. clearing
-	bool fire_vs_pos_test_mode = 0; // changes just for testing fire vs pos
-	//bool intern_connect = 1; // interneuron connections toggle
-	bool init_bumps = 0; // inital bumps present
-	bool base_input = 0; // baseline external signal input
-	bool dir_input = 0; // baseline external signal direction-based input
-	bool gc_to_gc = 1; // grid cell to grid cell signaling
-	bool bc_to_gc = 0; // boundary cells to grid cells signaling
+	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 	bool pc_to_gc = 0; // place cells to grid cells signaling
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
-	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
+	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 
 	// noise parameters
 	bool noise_active = 0; // activate noise
@@ -57,59 +45,24 @@ struct P {
 	double noise_addit_freq = 0.0f; // additional spiking frequency added to base external input
 
 	// values for synapse activites
-	bool speed_adjustable = 0;
-	double speed_mult = 3.0; // starting grid cell input speed level
-	double base_ext = 4.5;//6;//4.5;//8.5;//2.5; // baseline ext input speed level
-	double const_speed = 0.195;//0.12; // setting for use of a constant speed	
-	double mex_hat_multi = 1.4;//1.5; // mexican hat multiplier
+	double base_ext = 7.5;//4.5; // baseline ext input speed level
+	double speed_mult = 7.5; // starting grid cell input speed level
+	double mex_hat_multi = 1.5;//1.4; // mexican hat multiplier
 	int move_delay = 25;//50; // delay in speed that moves are commanded to occur
+	double dist_thresh = 5; // distance threshold for only local connections
+	double const_speed = 0.195;//0.12; // setting for use of a constant virtual animal speed
 	double move_increment = 0.5;//0.2634;//0.325;//0.65; // amount to move in position each move command
+	vector<float> ext_dir;
+
+	// speed
+	bool speed_adjustable = 0;
+	double min_speed = 0.25; // minimum speed for random speed generator. note: signal applied even when stopped.
+	double max_speed = 1.0; // maximum speed for random speed generator
+
+  	// plotting
 	double fvp_act_lvl = 0.5; // amount of activity level added for each visit with firing vs. position plot.
 	double al_act_lvl = 5.0; // amount of activity level added for each visit with animal location non-all plot.
 	double ala_act_lvl = 0.1; // amount of activity level added for each visit with animal location all plot.
-	vector<float> ext_dir;
-	double min_speed = 0.25; // minimum speed for random speed generator. note: signal applied even when stopped.
-	double max_speed = 1.0; // maximum speed for random speed generator
-	double tau_syn = 10.0;//.6;
-	double y_inter_syn = 0.5;//-1;//-0.03;//-0.05;//0.15;//-.5;//1.044;//1.055; // y intercept
-	double scale_syn = 2.0;//0.25;//1.0; // multiple synaptic connections scaling factor
-	double m_syn = 2.0; // magnitude variable for mex hat f1
-	double m_syn2 = 0.6; // f2 f3
-	double m_syn3 = 0.3; // f4
-	double m_syn4 = 1.1; // f2 f3
-	double s_1_syn = 2.2; // f1
-	double s_2_syn = 2.2; // f2 f3
-	double s_3_syn = .4; // f4
-	double s_4_syn = 1.5; 
-	double s_5_syn = 1.0;
-	double a_syn = 4.4; // add f2 f3
-	double dist_thresh = 5; // distance threshold for only local connections
-	double non_range_weight = 0.0;//0.1;//2.0; // default out of range weight
-	//double syn_scale = 5.0; // max spiking scale
-  	double in_scale = 1.0;//0.001;//0.0001;//0.001;//2.0; // interneuron firing scale factor
-  	//double ext_scale = 13.0; // ext_dir firing scale factor
-
-	// initial values
-	double y_inter_init = 1.5;//y_inter_syn; // y intercept
-	double scale_init=4;//scale_syn;	
-	double s_1_init = s_1_syn; // sigma_1. Note: specific value used for equalibrium of weights over time.
-	double s_2_init = s_2_syn;
-	double s_3_init = s_3_syn;
-	double s_4_init = s_4_syn;
-	double s_5_init = s_5_syn;
-	double m_init=m_syn;
-	double m_init2=m_syn2;
-	double m_init3=m_syn3;
-	double m_init4=m_syn4;
-	double a_init=a_syn;
-	double tau, y_inter, scale, s_1, s_2, s_3, s_4, s_5, m, m2, m3, m4, a;
-
-	// tau time constant and asymmetric sigmoid parameters. https://en.wikipedia.org/wiki/Gompertz_function
-	double asig_a = -5;//-10;//-8.0;//0.6;//0.45;//2.0;//0.45;
-	double asig_b = 3.5;//9.5;//2.2;//9.89493996719;//0.6;//2.15;//0.6;
-	double asig_c = 5;//10.0;//4.9898;//3.0;//0.457921;//1.0;//0.5;
-	double asig_yi = 0.0;//-0.9;//0.0;//-0.9;
-	double asig_scale = 1.0;//2.0;//-0.9;
 
 	// place cell parameters
 	double pc_sig = 4.0;//1.0;//0.25; // sigma symbol; width of the place feild
