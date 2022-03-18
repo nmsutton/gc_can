@@ -109,11 +109,11 @@ int main() {
 	int gexc=sim.createGroup("gc_exc", grid_exc, EXCITATORY_NEURON);
 	int ginh=sim.createGroup("gc_inh", grid_inh, INHIBITORY_NEURON);
 	int gpcs=sim.createGroup("place", grid_pcs, EXCITATORY_NEURON);
-	sim.setNeuronParameters(gedr, 0.1f, 0.2f, -65.0f, 2.0f); // FS // 0.02f, 0.2f, -65.0f, 8.0f); // RS
+	sim.setNeuronParameters(gedr, 0.02f, 0.2f, -65.0f, 8.0f); // RS // 0.02f, 0.2f, -65.0f, 8.0f); // RS
 	//sim.setNeuronParameters(gexc, 0.1f, 0.2f, -65.0f, 2.0f); // FS
 	sim.setNeuronParameters(gexc, 0.02f, 0.2f, -65.0f, 8.0f); // RS
 	sim.setNeuronParameters(ginh, 0.1f, 0.2f, -65.0f, 2.0f); // FS
-	sim.setNeuronParameters(gpcs, 0.1f, 0.2f, -65.0f, 2.0f); // FS
+	sim.setNeuronParameters(gpcs, 0.02f, 0.2f, -65.0f, 8.0f); // RS
 	setInExcConns(&sim, &p);
 	MexHatConnection* MexHatConn = new MexHatConnection(&p);	
 	/*
