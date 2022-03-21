@@ -114,8 +114,8 @@ int main() {
 	//sim.setNeuronParameters(gexc, 0.1f, 0.2f, -65.0f, 2.0f); // FS
 	sim.setNeuronParameters(gexc, 0.02f, 0.2f, -65.0f, 8.0f); // RS
 	//sim.setNeuronParameters(gexc, 100.0f, 0.7f, -60.0f, -40.0f, 0.03f, -2.0f, 35.0f, -50.0f, 100.0f); // RS // C,k,vr,vt,a,b,vpeak,c,d
-	sim.setNeuronParameters(ginh, 0.1f, 0.2f, -65.0f, 2.0f); // FS
-	//sim.setNeuronParameters(ginh, 20.0f, 1.0f, -55.0f, -40.0f, 0.15f, 8.0f, 25.0f, -55.0f, 200.0f); // FS // C,k,vr,vt,a,b,vpeak,c,d
+	//sim.setNeuronParameters(ginh, 0.1f, 0.2f, -65.0f, 2.0f); // FS
+	sim.setNeuronParameters(ginh, 20.0f, 1.0f, -55.0f, -40.0f, 0.15f, 8.0f, 25.0f, -55.0f, 200.0f); // FS // C,k,vr,vt,a,b,vpeak,c,d
 	sim.setNeuronParameters(gpcs, 0.02f, 0.2f, -65.0f, 8.0f); // RS
 	//sim.setNeuronParameters(gpcs, 100.0f, 0.7f, -60.0f, -40.0f, 0.03f, -2.0f, 35.0f, -50.0f, 100.0f); // RS // C,k,vr,vt,a,b,vpeak,c,d
 	setInExcConns(&sim, &p);
@@ -129,7 +129,7 @@ int main() {
 	//sim.connect(gedr, gexc, "one-to-one", 1.0f, 1.0f); // 0 DIR
 	sim.connect(gedr, gexc, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.0f, 0.0f); // 0 DIR
 	//sim.connect(gexc, ginh, "one-to-one", 1.0f, 1.0f); // 1 GC->IN
-	sim.connect(gexc, ginh, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.0f, 0.0f); // 1 GC->IN
+	sim.connect(gexc, ginh, "one-to-one", 20.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.0f, 0.0f); // 1 GC->IN
 	//sim.connect(ginh, gexc, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.0f, 0.0f); // 1 GC->IN
 	//sim.connect(ginh, gexc, MexHatConn, SYN_FIXED); // 2 IN->GC one-to-many
 	sim.connect(ginh, gexc, MexHatConn, SYN_FIXED, 1.0f, 0.0f); // 2 IN->GC one-to-many

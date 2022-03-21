@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 10; // size of bins to record firing activity
-	double sim_time = 100*firing_bin; // sim run time in ms
+	double sim_time = 500*firing_bin; // sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -29,7 +29,7 @@ struct P {
 	bool print_move = 0; // print each move's direction
 	bool print_time = 1; // print time after processing
 	bool print_in_weights = 0;
-	bool print_gc_firing = 1;
+	bool print_gc_firing = 0;
 	bool record_fire_vs_pos = 1; // write files for firing vs position plotting
 	bool record_pos_track = 1; // write files for animal position tracking plotting
 	bool record_pos_track_all = 1; // write files for animal positions with no past posit. clearing
