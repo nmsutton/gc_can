@@ -45,10 +45,10 @@ struct P {
 	double noise_addit_freq = 0.0f; // additional spiking frequency added to base external input
 
 	// values for synapse activites
-	double base_ext = 1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level
+	double base_ext = 1020.0;//34680;//1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level
 	double speed_mult = 4.5;//7.5; // starting grid cell input speed level
 	double mex_hat_multi = 1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
-	double dir_init_multi = 10000;//1;//10000;
+	double dir_init_multi = 100000000;//10000;//1;//10000;
 	int move_delay = 25;//50; // delay in speed that moves are commanded to occur
 	double dist_thresh = 5; // distance threshold for only local connections
 	double const_speed = 0.195;//0.12; // setting for use of a constant virtual animal speed
