@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 10; // size of bins to record firing activity
-	double sim_time = 1000*firing_bin; // sim run time in ms
+	double sim_time = 100*firing_bin; // sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -29,7 +29,7 @@ struct P {
 	bool print_move = 0; // print each move's direction
 	bool print_time = 1; // print time after processing
 	bool print_in_weights = 0;
-	bool print_gc_firing = 0;
+	bool print_gc_firing = 1;
 	bool record_fire_vs_pos = 1; // write files for firing vs position plotting
 	bool record_pos_track = 1; // write files for animal position tracking plotting
 	bool record_pos_track_all = 1; // write files for animal positions with no past posit. clearing
@@ -45,9 +45,10 @@ struct P {
 	double noise_addit_freq = 0.0f; // additional spiking frequency added to base external input
 
 	// values for synapse activites
-	double base_ext = 10.5;//4.5; // baseline ext input speed level
-	double speed_mult = 7.5; // starting grid cell input speed level
-	double mex_hat_multi = 1.2;//1.4; // mexican hat multiplier
+	double base_ext = 1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level
+	double speed_mult = 4.5;//7.5; // starting grid cell input speed level
+	double mex_hat_multi = 1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
+	double dir_init_multi = 10000;//1;//10000;
 	int move_delay = 25;//50; // delay in speed that moves are commanded to occur
 	double dist_thresh = 5; // distance threshold for only local connections
 	double const_speed = 0.195;//0.12; // setting for use of a constant virtual animal speed

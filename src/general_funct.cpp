@@ -287,14 +287,14 @@ public:
     			connected = 1; // only connect where matrix value is 1.0
     		}
         weight = mex_hat[i][j]*mex_hat_multi;
-        maxWt = 10.0f;
+        maxWt = 1000.0f;
         delay = 1; 
     }
 };
 
 void setInitExtDir(P* p) {
 	for (int i = 0; i < p->layer_size; i++) {
-		ext_dir_initial[i] = ext_dir_initial[i]*1;
+		ext_dir_initial[i] = ext_dir_initial[i]*p->dir_init_multi;
 	}
 }
 

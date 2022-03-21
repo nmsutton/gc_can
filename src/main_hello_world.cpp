@@ -109,11 +109,15 @@ int main() {
 	int gexc=sim.createGroup("gc_exc", grid_exc, EXCITATORY_NEURON);
 	int ginh=sim.createGroup("gc_inh", grid_inh, INHIBITORY_NEURON);
 	int gpcs=sim.createGroup("place", grid_pcs, EXCITATORY_NEURON);
-	sim.setNeuronParameters(gedr, 0.02f, 0.2f, -65.0f, 8.0f); // RS // 0.02f, 0.2f, -65.0f, 8.0f); // RS
+	//sim.setNeuronParameters(gedr, 0.02f, 0.2f, -65.0f, 8.0f); // RS // 0.02f, 0.2f, -65.0f, 8.0f); // RS
+	sim.setNeuronParameters(gedr, 100.0f, 0.7f, -60.0f, -40.0f, 0.03f, -2.0f, 35.0f, -50.0f, 100.0f); // RS // C,k,vr,vt,a,b,vpeak,c,d
 	//sim.setNeuronParameters(gexc, 0.1f, 0.2f, -65.0f, 2.0f); // FS
 	sim.setNeuronParameters(gexc, 0.02f, 0.2f, -65.0f, 8.0f); // RS
+	//sim.setNeuronParameters(gexc, 100.0f, 0.7f, -60.0f, -40.0f, 0.03f, -2.0f, 35.0f, -50.0f, 100.0f); // RS // C,k,vr,vt,a,b,vpeak,c,d
 	sim.setNeuronParameters(ginh, 0.1f, 0.2f, -65.0f, 2.0f); // FS
+	//sim.setNeuronParameters(ginh, 20.0f, 1.0f, -55.0f, -40.0f, 0.15f, 8.0f, 25.0f, -55.0f, 200.0f); // FS // C,k,vr,vt,a,b,vpeak,c,d
 	sim.setNeuronParameters(gpcs, 0.02f, 0.2f, -65.0f, 8.0f); // RS
+	//sim.setNeuronParameters(gpcs, 100.0f, 0.7f, -60.0f, -40.0f, 0.03f, -2.0f, 35.0f, -50.0f, 100.0f); // RS // C,k,vr,vt,a,b,vpeak,c,d
 	setInExcConns(&sim, &p);
 	MexHatConnection* MexHatConn = new MexHatConnection(&p);	
 	/*
@@ -126,10 +130,11 @@ int main() {
 	sim.connect(gedr, gexc, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.0f, 0.0f); // 0 DIR
 	//sim.connect(gexc, ginh, "one-to-one", 1.0f, 1.0f); // 1 GC->IN
 	sim.connect(gexc, ginh, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.0f, 0.0f); // 1 GC->IN
+	//sim.connect(ginh, gexc, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.0f, 0.0f); // 1 GC->IN
 	//sim.connect(ginh, gexc, MexHatConn, SYN_FIXED); // 2 IN->GC one-to-many
 	sim.connect(ginh, gexc, MexHatConn, SYN_FIXED, 1.0f, 0.0f); // 2 IN->GC one-to-many
 	//sim.connect(gpcs, gexc, "one-to-one", 1.0f, 1.0f); // 3 PCs
-	sim.connect(gpcs, gexc, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.0f, 0.0f); // 3 PCs
+	sim.connect(gpcs, gexc, "one-to-one", 0.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.0f, 0.0f); // 3 PCs
 	// tau of receptors set to 10 for testing
 	//sim.setConductances(true,10,10,10,10); // COBA mode; setConductances = true
 	//sim.setConductances(true,5,150,6,150); // COBA mode; setConductances = true
