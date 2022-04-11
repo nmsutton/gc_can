@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 10; // size of bins to record firing activity
-	double sim_time = 500*firing_bin; // sim run time in ms
+	double sim_time = 100*firing_bin; // sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -30,9 +30,12 @@ struct P {
 	bool print_time = 1; // print time after processing
 	bool print_in_weights = 0;
 	bool print_gc_firing = 0;
-	bool record_fire_vs_pos = 1; // write files for firing vs position plotting
-	bool record_pos_track = 1; // write files for animal position tracking plotting
-	bool record_pos_track_all = 1; // write files for animal positions with no past posit. clearing
+	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
+	bool record_pos_track = 0; // write files for animal position tracking plotting
+	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
+	bool record_gc_voltage = 0; // record GC voltage trace
+	bool record_in_voltage = 0; // record IN voltage trace
+	bool record_pc_voltage = 0; // record PC voltage trace
 	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 	bool pc_to_gc = 0; // place cells to grid cells signaling
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
@@ -45,14 +48,14 @@ struct P {
 	double noise_addit_freq = 0.0f; // additional spiking frequency added to base external input
 
 	// values for synapse activites
-	double base_ext = 1020.0;//34680;//1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level
-	double speed_mult = 4.5;//7.5; // starting grid cell input speed level
-	double mex_hat_multi = 1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
+	double base_ext = 600000;//1020.0;//5000;//16000.0;//1020.0;//2000.0;//1020.0;//34680;//1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level
+	double speed_mult = 4.5;//1.5;//4.5;//7.5; // starting grid cell input speed level
+	double mex_hat_multi = 1.2;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
 	double dir_init_multi = 100000000;//10000;//1;//10000;
 	int move_delay = 25;//50; // delay in speed that moves are commanded to occur
 	double dist_thresh = 5; // distance threshold for only local connections
 	double const_speed = 0.195;//0.12; // setting for use of a constant virtual animal speed
-	double move_increment = 0.5;//0.2634;//0.325;//0.65; // amount to move in position each move command
+	double move_increment = 0.1;//0.5;//0.2634;//0.325;//0.65; // amount to move in position each move command
 	vector<float> ext_dir;
 
 	// speed
@@ -67,7 +70,7 @@ struct P {
 
 	// place cell parameters
 	double pc_sig = 4.0;//1.0;//0.25; // sigma symbol; width of the place feild
-	double pc_level = 5.5;//7.5;//5.0; //14.0; // place cell firing level
+	double pc_level = 1000.0;//5.5;//7.5;//5.0; //14.0; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters
@@ -90,4 +93,12 @@ struct P {
 	double firing_positions[x_size*y_size]; // locations of firing of a neuron
 	double animal_location[x_size*y_size]; // location of animal
 	double animal_location_all[x_size*y_size]; // location of animal
+
+	// voltage recording parameters
+	string gc_volt_out_path = "gc_voltages.csv";
+	string in_volt_out_path = "in_voltages.csv";
+	string pc_volt_out_path = "pc_voltages.csv";
+	int gc_volt_neuron = 125;
+	int in_volt_neuron = 125;
+	int pc_volt_neuron = 125;
 };

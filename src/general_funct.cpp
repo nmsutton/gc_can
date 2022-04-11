@@ -262,6 +262,7 @@ void setInExcConns(CARLsim* sim, P *p) {
 	for (int i = 0; i < p->layer_size; i++) {
 		for (int j = 0; j < p->layer_size; j++) {
 			if (mex_hat[i][j] != 0.0) {
+			//if ((double) mex_hat[i][j] >= 0.006) {
 				p->weights_in[i][j] = 1;
 			}
 		}
@@ -274,7 +275,7 @@ public:
     vector<vector<double>> weights_in;
     double mex_hat_multi;
     MexHatConnection(P *p) {
-    	this->weights_in = p->weights_in; // set matrix size
+    	this->weights_in = p->weights_in; // set matrix
     	this->mex_hat_multi = p->mex_hat_multi;
     }
     ~MexHatConnection() {}
@@ -285,6 +286,10 @@ public:
             float& delay, bool& connected) {
     		if (this->weights_in[i][j] == 1.0) {
     			connected = 1; // only connect where matrix value is 1.0
+    			//printf("%d %d\n",i,j);
+    		}
+    		else {
+    			connected = 0;
     		}
         weight = mex_hat[i][j]*mex_hat_multi;
         maxWt = 1000.0f;
