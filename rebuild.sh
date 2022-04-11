@@ -1,1 +1,1 @@
-make distclean && make && ./gc_can
+make clean && make && ./hello_world

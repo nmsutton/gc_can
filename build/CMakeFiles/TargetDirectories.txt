@@ -1,7 +1,0 @@
-/comp_neuro/Software/CARLsim6/projects/hello_world/build/CMakeFiles/install/strip.dir
-/comp_neuro/Software/CARLsim6/projects/hello_world/build/CMakeFiles/install/local.dir
-/comp_neuro/Software/CARLsim6/projects/hello_world/build/CMakeFiles/install.dir
-/comp_neuro/Software/CARLsim6/projects/hello_world/build/CMakeFiles/list_install_components.dir
-/comp_neuro/Software/CARLsim6/projects/hello_world/build/CMakeFiles/rebuild_cache.dir
-/comp_neuro/Software/CARLsim6/projects/hello_world/build/CMakeFiles/edit_cache.dir
-/comp_neuro/Software/CARLsim6/projects/hello_world/build/CMakeFiles/hello_world.dir
