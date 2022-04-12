@@ -155,26 +155,51 @@ int main() {
 	sim.setSTP(ginh, true, 0.15f*m1, 750.0f*m2, 50.0f*m3);
 	sim.setSTP(gpcs, true, 0.45f*m1, 50.0f*m2, 750.0f*m3);
 	*/
-	/*
-	sim.setSTP(gedr, true, 0.15f, 750.0f, 50.0f);
-	sim.setSTP(gexc, true, 0.15f, 750.0f, 50.0f);
-	sim.setSTP(ginh, true, 0.45f, 50.0f, 750.0f);
-	sim.setSTP(gpcs, true, 0.15f, 750.0f, 50.0f);
-	*/
-	/*
-	sim.setSTP(gedr, false, 0.15f, 750.0f, 50.0f);
-	sim.setSTP(gexc, false, 0.15f, 750.0f, 50.0f);
-	sim.setSTP(ginh, false, 0.45f, 50.0f, 750.0f);
-	sim.setSTP(gpcs, false, 0.15f, 750.0f, 50.0f);
-	*/
-	static const float m1 = .00001;//0.0001; // 0-1 range
-	static const float m2 = .1;//1000;
-	static const float m3 = 1000;//1000;//0.0001;
+
+	static const float m1 = 0.003;//0.0001; // 0-1 range
+	static const float m2 = 40;//1000;
+	static const float m3 = 400;//1000;//0.0001;
 	static const float m4 = 1;//100000;//.0001;//0.0001; 
 	static const float m5 = m4;//100000;//.0001;//1000;
 	static const float m6 = m4;//100000;//.0001;//1000;//0.0001;
 	static const float m7 = m4;//100000;//.0001;//0.0001; 
-	/*sim.setSTP(gedr, gexc, true, STPu(0.2232f*m1, 0.0f),
+	sim.setSTP(gedr, gexc, true, STPu(m1, 0.0f),
+                                         STPtauU(m2, 0.0f),
+                                         STPtauX(m3, 0.0f),
+                                         STPtdAMPA(5.0f*m4, 0.0f),
+                                         STPtdNMDA(150.0f*m5, 0.0f),
+                                         STPtdGABAa(6.0f*m6, 0.0f),
+                                         STPtdGABAb(150.0f*m7, 0.0f),
+                                         STPtrNMDA(0.0f, 0.0f),
+                                         STPtrGABAb(0.0f, 0.0f));
+	sim.setSTP(gexc, ginh, true, STPu(m1, 0.0f),
+                                         STPtauU(m2, 0.0f),
+                                         STPtauX(m3, 0.0f),
+                                         STPtdAMPA(5.0f*m4, 0.0f),
+                                         STPtdNMDA(150.0f*m5, 0.0f),
+                                         STPtdGABAa(6.0f*m6, 0.0f),
+                                         STPtdGABAb(150.0f*m7, 0.0f),
+                                         STPtrNMDA(0.0f, 0.0f),
+                                         STPtrGABAb(0.0f, 0.0f));
+	sim.setSTP(ginh, gexc, true, STPu(m1, 0.0f),
+                                         STPtauU(400, 0.0f),
+                                         STPtauX(40, 0.0f),
+                                         STPtdAMPA(5.0f*m4, 0.0f),
+                                         STPtdNMDA(150.0f*m5, 0.0f),
+                                         STPtdGABAa(6.0f*m6, 0.0f),
+                                         STPtdGABAb(150.0f*m7, 0.0f),
+                                         STPtrNMDA(0.0f, 0.0f),
+                                         STPtrGABAb(0.0f, 0.0f));
+	sim.setSTP(gpcs, gexc, true, STPu(m1, 0.0f),
+                                         STPtauU(m2, 0.0f),
+                                         STPtauX(m3, 0.0f),
+                                         STPtdAMPA(5.0f*m4, 0.0f),
+                                         STPtdNMDA(150.0f*m5, 0.0f),
+                                         STPtdGABAa(6.0f*m6, 0.0f),
+                                         STPtdGABAb(150.0f*m7, 0.0f),
+                                         STPtrNMDA(0.0f, 0.0f),
+                                         STPtrGABAb(0.0f, 0.0f));
+		/*sim.setSTP(gedr, gexc, true, STPu(0.2232f*m1, 0.0f),
                                          STPtauU(31.12f*m2, 0.0f),
                                          STPtauX(449.8f*m3, 0.0f),
                                          STPtdAMPA(4.777f, 0.0f),
@@ -210,42 +235,6 @@ int main() {
                                          STPtdGABAb(150.0f, 0.0f),
                                          STPtrNMDA(0.0f, 0.0f),
                                          STPtrGABAb(0.0f, 0.0f));*/
-	sim.setSTP(gedr, gexc, true, STPu(0.3f*m1, 0.0f),
-                                         STPtauU(400.0f*m2, 0.0f),
-                                         STPtauX(400.0f*m3, 0.0f),
-                                         STPtdAMPA(5.0f*m4, 0.0f),
-                                         STPtdNMDA(150.0f*m5, 0.0f),
-                                         STPtdGABAa(6.0f*m6, 0.0f),
-                                         STPtdGABAb(150.0f*m7, 0.0f),
-                                         STPtrNMDA(0.0f, 0.0f),
-                                         STPtrGABAb(0.0f, 0.0f));
-	sim.setSTP(gexc, ginh, true, STPu(0.3f*m1, 0.0f),
-                                         STPtauU(400.0f*m2, 0.0f),
-                                         STPtauX(400.0f*m3, 0.0f),
-                                         STPtdAMPA(5.0f*m4, 0.0f),
-                                         STPtdNMDA(150.0f*m5, 0.0f),
-                                         STPtdGABAa(6.0f*m6, 0.0f),
-                                         STPtdGABAb(150.0f*m7, 0.0f),
-                                         STPtrNMDA(0.0f, 0.0f),
-                                         STPtrGABAb(0.0f, 0.0f));
-	sim.setSTP(ginh, gexc, true, STPu(0.3f*m1, 0.0f),
-                                         STPtauU(400.0f*m2, 0.0f),
-                                         STPtauX(400.0f*m3, 0.0f),
-                                         STPtdAMPA(5.0f*m4, 0.0f),
-                                         STPtdNMDA(150.0f*m5, 0.0f),
-                                         STPtdGABAa(6.0f*m6, 0.0f),
-                                         STPtdGABAb(150.0f*m7, 0.0f),
-                                         STPtrNMDA(0.0f, 0.0f),
-                                         STPtrGABAb(0.0f, 0.0f));
-	sim.setSTP(gpcs, gexc, true, STPu(0.3f*m1, 0.0f),
-                                         STPtauU(400.0f*m2, 0.0f),
-                                         STPtauX(400.0f*m3, 0.0f),
-                                         STPtdAMPA(5.0f*m4, 0.0f),
-                                         STPtdNMDA(150.0f*m5, 0.0f),
-                                         STPtdGABAa(6.0f*m6, 0.0f),
-                                         STPtdGABAb(150.0f*m7, 0.0f),
-                                         STPtrNMDA(0.0f, 0.0f),
-                                         STPtrGABAb(0.0f, 0.0f));
 	
 	//NeuronMonitor* nrn_mon;
 	//NeuronMonitor* nrn_mon = sim.setNeuronMonitor(gexc,"DEFAULT");
