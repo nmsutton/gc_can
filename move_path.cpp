@@ -147,7 +147,7 @@ void move_path3(CARLsim* sim, P* p) {
 	vector<char> moves;
 	for (int i = 0; i < 34; i++) {
 		for (int j = 0; j < 60; j++) {
-			moves.push_back('r');
+			moves.push_back('l');
 		}
 		moves.push_back('d');
 		moves.push_back('d');

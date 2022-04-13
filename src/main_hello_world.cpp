@@ -136,14 +136,15 @@ int main() {
 	sim.connect(gpcs, gexc, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.0f, 0.0f); // 3 PCs
 	*/
 	//sim.connect(gedr, gexc, "one-to-one", 1.0f, 1.0f); // 0 DIR
-	sim.connect(gedr, gexc, "one-to-one", 30.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.086f, 0.0f); // 0 DIR
+	static const float new_g = 25; //1.086 //1.217
+	sim.connect(gedr, gexc, "one-to-one", 30.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, new_g, 0.0f); // 0 DIR
 	//sim.connect(gexc, ginh, "one-to-one", 1.0f, 1.0f); // 1 GC->IN
-	sim.connect(gexc, ginh, "one-to-one", 800.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.086f, 0.0f); // 1 GC->IN
+	sim.connect(gexc, ginh, "one-to-one", 800.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, new_g, 0.0f); // 1 GC->IN
 	//sim.connect(ginh, gexc, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.0f, 0.0f); // 1 GC->IN
 	//sim.connect(ginh, gexc, MexHatConn, SYN_FIXED); // 2 IN->GC one-to-many
-	sim.connect(ginh, gexc, MexHatConn, SYN_FIXED, 1.217f, 0.0f); // 2 IN->GC one-to-many
+	sim.connect(ginh, gexc, MexHatConn, SYN_FIXED, new_g, 0.0f); // 2 IN->GC one-to-many
 	//sim.connect(gpcs, gexc, "one-to-one", 1.0f, 1.0f); // 3 PCs
-	sim.connect(gpcs, gexc, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 1.086f, 0.0f); // 3 PCs
+	sim.connect(gpcs, gexc, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, new_g, 0.0f); // 3 PCs
 	// tau of receptors set to 10 for testing
 	//sim.setConductances(true,10,10,10,10); // COBA mode; setConductances = true
 	//sim.setConductances(true,5,150,6,150); // COBA mode; setConductances = true
@@ -156,9 +157,9 @@ int main() {
 	sim.setSTP(gpcs, true, 0.45f*m1, 50.0f*m2, 750.0f*m3);
 	*/
 
-	static const float m1 = 0.003;//0.0001; // 0-1 range
-	static const float m2 = 40;//1000;
-	static const float m3 = 400;//1000;//0.0001;
+	static const float m1 = 0.1231;//0.0001; // 0-1 range
+	static const float m2 = 31.12;//1000;
+	static const float m3 = 449.8;//1000;//0.0001;
 	static const float m4 = 1;//100000;//.0001;//0.0001; 
 	static const float m5 = m4;//100000;//.0001;//1000;
 	static const float m6 = m4;//100000;//.0001;//1000;//0.0001;
@@ -166,7 +167,7 @@ int main() {
 	sim.setSTP(gedr, gexc, true, STPu(m1, 0.0f),
                                          STPtauU(m2, 0.0f),
                                          STPtauX(m3, 0.0f),
-                                         STPtdAMPA(5.0f*m4, 0.0f),
+                                         STPtdAMPA(4.777f*m4, 0.0f),
                                          STPtdNMDA(150.0f*m5, 0.0f),
                                          STPtdGABAa(6.0f*m6, 0.0f),
                                          STPtdGABAb(150.0f*m7, 0.0f),
@@ -175,25 +176,25 @@ int main() {
 	sim.setSTP(gexc, ginh, true, STPu(m1, 0.0f),
                                          STPtauU(m2, 0.0f),
                                          STPtauX(m3, 0.0f),
-                                         STPtdAMPA(5.0f*m4, 0.0f),
+                                         STPtdAMPA(4.777f*m4, 0.0f),
                                          STPtdNMDA(150.0f*m5, 0.0f),
                                          STPtdGABAa(6.0f*m6, 0.0f),
                                          STPtdGABAb(150.0f*m7, 0.0f),
                                          STPtrNMDA(0.0f, 0.0f),
                                          STPtrGABAb(0.0f, 0.0f));
-	sim.setSTP(ginh, gexc, true, STPu(m1, 0.0f),
-                                         STPtauU(400, 0.0f),
-                                         STPtauX(40, 0.0f),
+	sim.setSTP(ginh, gexc, true, STPu(0.1338, 0.0f),
+                                         STPtauU(19.01, 0.0f),
+                                         STPtauX(629.1, 0.0f),
                                          STPtdAMPA(5.0f*m4, 0.0f),
                                          STPtdNMDA(150.0f*m5, 0.0f),
-                                         STPtdGABAa(6.0f*m6, 0.0f),
+                                         STPtdGABAa(6.438f*m6, 0.0f),
                                          STPtdGABAb(150.0f*m7, 0.0f),
                                          STPtrNMDA(0.0f, 0.0f),
                                          STPtrGABAb(0.0f, 0.0f));
 	sim.setSTP(gpcs, gexc, true, STPu(m1, 0.0f),
                                          STPtauU(m2, 0.0f),
                                          STPtauX(m3, 0.0f),
-                                         STPtdAMPA(5.0f*m4, 0.0f),
+                                         STPtdAMPA(4.777f*m4, 0.0f),
                                          STPtdNMDA(150.0f*m5, 0.0f),
                                          STPtdGABAa(6.0f*m6, 0.0f),
                                          STPtdGABAb(150.0f*m7, 0.0f),
