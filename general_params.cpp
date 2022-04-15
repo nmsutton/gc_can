@@ -50,7 +50,7 @@ struct P {
 	// values for synapse activites
 	double base_ext = 1000;//16000.0;//1020.0;//2000.0;//1020.0;//34680;//1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level
 	double speed_mult = 30;//0.6;//1.2;//1.5;//4.5;//7.5; // starting grid cell input speed level
-	double mex_hat_multi = 300;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
+	double mex_hat_multi = 400;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
 	double dir_init_multi = 100000;//100000000;//10000;//1;//10000;
 	int move_delay = 25;//50; // delay in speed that moves are commanded to occur
 	double dist_thresh = 5; // distance threshold for only local connections

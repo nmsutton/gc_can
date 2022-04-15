@@ -112,15 +112,15 @@ int main() {
 	float C,k,vr,vt,a,b,vpeak,c,d;
 	C=118;k=0.98;vr=-58.53;vt=-43.52;a=0.004;b=11.69;vpeak=7.85;c=-52.78;d=3;
 	sim.setNeuronParameters(gedr, C, 0.0f, k, 0.0f, vr, 0.0f, vt, 0.0f, a, 0.0f, b, 0.0f, vpeak, 0.0f, c, 0.0f, d, 0.0f, 1); // MEC LII Stellate C,k,vr,vt,a,b,vpeak,c,d
-	sim.setNeuronParameters(gexc, 118.0f, 0.0f, 0.62f, 0.0f, -58.53f, 0.0f, -43.52f, 0.0f, 0.005f, 0.0f, 11.69f, 0.0f, 11.48f, 0.0f, -49.52f, 0.0f, 3.0f, 0.0f, 1); // RS // C,k,vr,vt,a,b,vpeak,c,d
+	sim.setNeuronParameters(gexc, C, 0.0f, k, 0.0f, vr, 0.0f, vt, 0.0f, a, 0.0f, b, 0.0f, vpeak, 0.0f, c, 0.0f, d, 0.0f, 1); // C,k,vr,vt,a,b,vpeak,c,d
 	sim.setNeuronParameters(ginh, 115.0f, 0.0f, 2.32f, 0.0f, -57.15f, 0.0f, -50.75f, 0.0f, 0.003f, 0.0f, 12.27f, 0.0f, 2.43f, 0.0f, -60.23f, 0.0f, -2.0f, 0.0f, 1); // MEC LIII Multipolar Interneuron // FS // C,k,vr,vt,a,b,vpeak,c,d
 	sim.setNeuronParameters(gpcs, 334.0f, 0.0f, 1.56f, 0.0f, -69.36f, 0.0f, -53.22f, 0.0f, 0.0f, 0.0f, -17.25f, 0.0f, 25.46f, 0.0f, -60.22f, 0.0f, 16.0f, 0.0f, 1); // RS // C,k,vr,vt,a,b,vpeak,c,d
 	
 	setInExcConns(&sim, &p);
 	MexHatConnection* MexHatConn = new MexHatConnection(&p);	
 	static const float new_g = 4.92; //1.086 //1.217
-	sim.connect(gedr, gexc, "one-to-one", 60.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, new_g, 0.0f); // 0 DIR
-	sim.connect(gexc, ginh, "one-to-one", 1600.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, new_g, 0.0f); // 1 GC->IN
+	sim.connect(gedr, gexc, "one-to-one", 40.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, new_g, 0.0f); // 0 DIR
+	sim.connect(gexc, ginh, "one-to-one", 2000.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, new_g, 0.0f); // 1 GC->IN
 	sim.connect(ginh, gexc, MexHatConn, SYN_FIXED, new_g, 0.0f); // 2 IN->GC one-to-many
 	sim.connect(gpcs, gexc, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, new_g, 0.0f); // 3 PCs
 
