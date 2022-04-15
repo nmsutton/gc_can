@@ -119,8 +119,8 @@ int main() {
 	setInExcConns(&sim, &p);
 	MexHatConnection* MexHatConn = new MexHatConnection(&p);	
 	static const float new_g = 4.92; //1.086 //1.217
-	sim.connect(gedr, gexc, "one-to-one", 30.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, new_g, 0.0f); // 0 DIR
-	sim.connect(gexc, ginh, "one-to-one", 800.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, new_g, 0.0f); // 1 GC->IN
+	sim.connect(gedr, gexc, "one-to-one", 60.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, new_g, 0.0f); // 0 DIR
+	sim.connect(gexc, ginh, "one-to-one", 1600.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, new_g, 0.0f); // 1 GC->IN
 	sim.connect(ginh, gexc, MexHatConn, SYN_FIXED, new_g, 0.0f); // 2 IN->GC one-to-many
 	sim.connect(gpcs, gexc, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, new_g, 0.0f); // 3 PCs
 
