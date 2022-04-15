@@ -100,91 +100,15 @@ int main() {
 	p.ext_dir = temp_vector;
 	p.pc_activity = temp_vector;
 
-	// configure the network
-	Grid3D grid_ext_dir(p.x_size,p.y_size,1); // external dir input
-	Grid3D grid_exc(p.x_size,p.y_size,1); // GCs
-	Grid3D grid_inh(p.x_size,p.y_size,1); // interneurons
-	Grid3D grid_pcs(p.x_size,p.y_size,1); // PCs
-	int gedr=sim.createGroup("ext_dir", grid_ext_dir, EXCITATORY_NEURON);	
-	int gexc=sim.createGroup("gc_exc", grid_exc, EXCITATORY_NEURON);
-	int ginh=sim.createGroup("gc_inh", grid_inh, INHIBITORY_NEURON);
-	int gpcs=sim.createGroup("place", grid_pcs, EXCITATORY_NEURON);
-	float C,k,vr,vt,a,b,vpeak,c,d;
-	C=118;k=0.98;vr=-58.53;vt=-43.52;a=0.004;b=11.69;vpeak=7.85;c=-52.78;d=3;
-	sim.setNeuronParameters(gedr, C, 0.0f, k, 0.0f, vr, 0.0f, vt, 0.0f, a, 0.0f, b, 0.0f, vpeak, 0.0f, c, 0.0f, d, 0.0f, 1); // MEC LII Stellate C,k,vr,vt,a,b,vpeak,c,d
-	sim.setNeuronParameters(gexc, C, 0.0f, k, 0.0f, vr, 0.0f, vt, 0.0f, a, 0.0f, b, 0.0f, vpeak, 0.0f, c, 0.0f, d, 0.0f, 1); // C,k,vr,vt,a,b,vpeak,c,d
-	sim.setNeuronParameters(ginh, 115.0f, 0.0f, 2.32f, 0.0f, -57.15f, 0.0f, -50.75f, 0.0f, 0.003f, 0.0f, 12.27f, 0.0f, 2.43f, 0.0f, -60.23f, 0.0f, -2.0f, 0.0f, 1); // MEC LIII Multipolar Interneuron // FS // C,k,vr,vt,a,b,vpeak,c,d
-	sim.setNeuronParameters(gpcs, 334.0f, 0.0f, 1.56f, 0.0f, -69.36f, 0.0f, -53.22f, 0.0f, 0.0f, 0.0f, -17.25f, 0.0f, 25.46f, 0.0f, -60.22f, 0.0f, 16.0f, 0.0f, 1); // RS // C,k,vr,vt,a,b,vpeak,c,d
-	
-	setInExcConns(&sim, &p);
-	MexHatConnection* MexHatConn = new MexHatConnection(&p);	
-	static const float new_g = 4.92; //1.086 //1.217
-	sim.connect(gedr, gexc, "one-to-one", 40.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, new_g, 0.0f); // 0 DIR
-	sim.connect(gexc, ginh, "one-to-one", 2000.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, new_g, 0.0f); // 1 GC->IN
-	sim.connect(ginh, gexc, MexHatConn, SYN_FIXED, new_g, 0.0f); // 2 IN->GC one-to-many
-	sim.connect(gpcs, gexc, "one-to-one", 1.0f, 1.0f, RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, new_g, 0.0f); // 3 PCs
-
-	static const float m1 = 0.1231;//0.0001; // 0-1 range
-	static const float m2 = 49.71;//1000;
-	static const float m3 = 153.4;//1000;//0.0001;
-	static const float m4 = 6.674;//0.0001; // 0-1 range
-	static const float m5 = 150.0;//1000;
-	static const float m6 = 6.0;//1000;//0.0001;
-	static const float m7 = 150.0;//0.0001; // 0-1 range
-	sim.setSTP(gedr, gexc, true, STPu(m1, 0.0f),
-                                         STPtauU(m2, 0.0f),
-                                         STPtauX(m3, 0.0f),
-                                         STPtdAMPA(m4, 0.0f),
-                                         STPtdNMDA(m5, 0.0f),
-                                         STPtdGABAa(m6, 0.0f),
-                                         STPtdGABAb(m7, 0.0f),
-                                         STPtrNMDA(0.0f, 0.0f),
-                                         STPtrGABAb(0.0f, 0.0f));
-	sim.setSTP(gexc, ginh, true, STPu(m1, 0.0f),
-                                         STPtauU(m2, 0.0f),
-                                         STPtauX(m3, 0.0f),
-                                         STPtdAMPA(m4, 0.0f),
-                                         STPtdNMDA(m5, 0.0f),
-                                         STPtdGABAa(m6, 0.0f),
-                                         STPtdGABAb(m7, 0.0f),
-                                         STPtrNMDA(0.0f, 0.0f),
-                                         STPtrGABAb(0.0f, 0.0f));
-	sim.setSTP(ginh, gexc, true, STPu(0.1278, 0.0f),
-                                         STPtauU(37.06, 0.0f),
-                                         STPtauX(314.1, 0.0f),
-                                         STPtdAMPA(5.0f, 0.0f),
-                                         STPtdNMDA(150.0f, 0.0f),
-                                         STPtdGABAa(9.17f, 0.0f),
-                                         STPtdGABAb(150.0f, 0.0f),
-                                         STPtrNMDA(0.0f, 0.0f),
-                                         STPtrGABAb(0.0f, 0.0f));
-	sim.setSTP(gpcs, gexc, true, STPu(m1, 0.0f),
-                                         STPtauU(m2, 0.0f),
-                                         STPtauX(m3, 0.0f),
-                                         STPtdAMPA(m4, 0.0f),
-                                         STPtdNMDA(m5, 0.0f),
-                                         STPtdGABAa(m6, 0.0f),
-                                         STPtdGABAb(m7, 0.0f),
-                                         STPtrNMDA(0.0f, 0.0f),
-                                         STPtrGABAb(0.0f, 0.0f));
-	
-	//NeuronMonitor* nrn_mon;
-	//NeuronMonitor* nrn_mon = sim.setNeuronMonitor(gexc,"DEFAULT");
-	//nrn_mon->setPersistentData(true);
-	//NeuronMonitor* nrn_mon2;
-	//NeuronMonitor* nrn_mon2 = sim.setNeuronMonitor(ginh,"DEFAULT");
-	//nrn_mon2->setPersistentData(true);
-	//NeuronMonitor* nrn_mon3;
-	//NeuronMonitor* nrn_mon3 = sim.setNeuronMonitor(gpcs,"DEFAULT");
-	//nrn_mon3->setPersistentData(true);
+	#include "../generate_config_state.cpp" // include file that contains generation of groups and their properties
 
 	// ---------------- SETUP STATE -------------------
 	// build the network
 	sim.setupNetwork();
 	// Initial excitatory current to GCs
 	setInitExtDir(&p);
-	sim.setExternalCurrent(gedr, ext_dir_initial);
-	SpikeMonitor* SMexc = sim.setSpikeMonitor(gexc, "DEFAULT");
+	sim.setExternalCurrent(MEC_LII_Stellate_ExtDir, ext_dir_initial);
+	SpikeMonitor* SMexc = sim.setSpikeMonitor(MEC_LII_Stellate, "DEFAULT");
 
 	// ---------------- RUN STATE -------------------
 	SMexc->startRecording();
@@ -201,7 +125,7 @@ int main() {
 		// Disable initial current to GCs settings
 		if (t == 2) {
 			setExtDir(&p,'l',0.04);
-			sim.setExternalCurrent(gedr, p.ext_dir);
+			sim.setExternalCurrent(MEC_LII_Stellate_ExtDir, p.ext_dir);
 		}
 		sim.runNetwork(0,1,false); // run for 1 ms, don't generate run stats
 		SMexc->stopRecording();
