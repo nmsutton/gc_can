@@ -261,9 +261,11 @@ void setInExcConns(CARLsim* sim, P *p) {
 	// assign connectivity
 	for (int i = 0; i < p->layer_size; i++) {
 		for (int j = 0; j < p->layer_size; j++) {
-			if (mex_hat[i][j] != 0.0) {
-			//if ((double) mex_hat[i][j] >= 0.006) {
+			//if (mex_hat[i][j] != 0.0) {
+			if ((double) mex_hat[i][j] >= 0.006) {
+			//if ((double) mex_hat[i][j] >= 0.007) {
 				p->weights_in[i][j] = 1;
+				//printf("i:%d j:%d\n",i,j);
 			}
 		}
 	}

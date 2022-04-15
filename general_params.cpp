@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 10; // size of bins to record firing activity
-	double sim_time = 300*firing_bin; // sim run time in ms
+	double sim_time = 2000*firing_bin; // sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -36,7 +36,7 @@ struct P {
 	bool record_gc_voltage = 0; // record GC voltage trace
 	bool record_in_voltage = 0; // record IN voltage trace
 	bool record_pc_voltage = 0; // record PC voltage trace
-	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
+	bool pc_active = 0; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 	bool pc_to_gc = 0; // place cells to grid cells signaling
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling

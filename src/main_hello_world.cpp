@@ -105,8 +105,7 @@ int main() {
 	// ---------------- SETUP STATE -------------------
 	// build the network
 	sim.setupNetwork();
-	// Initial excitatory current to GCs
-	setInitExtDir(&p);
+	setInitExtDir(&p); // Initial excitatory current to GCs
 	sim.setExternalCurrent(MEC_LII_Stellate_ExtDir, ext_dir_initial);
 	SpikeMonitor* SMexc = sim.setSpikeMonitor(MEC_LII_Stellate, "DEFAULT");
 

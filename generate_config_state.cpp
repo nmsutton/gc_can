@@ -114,3 +114,5 @@ sim.setSTP(CA1_Pyramidal, MEC_LII_Stellate, true, STPu(m1, 0.0f),
 //NeuronMonitor* nrn_mon3;
 //NeuronMonitor* nrn_mon3 = sim.setNeuronMonitor(gpcs,"DEFAULT");
 //nrn_mon3->setPersistentData(true);
+
+//sim.setNeuronMonitor(MEC_LII_Stellate, "DEFAULT");
