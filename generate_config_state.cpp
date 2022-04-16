@@ -1,23 +1,17 @@
 /* configure the network */
 /* neuron groups */
-Grid3D grid_MEC_LII_Stellate_ExtDir(p.x_size,p.y_size,1); // external dir input
-Grid3D grid_MEC_LII_Stellate(p.x_size,p.y_size,1); // GCs
-Grid3D grid_EC_LII_Axo_Axonic(p.x_size,p.y_size,1);
-Grid3D grid_MEC_LII_Basket(p.x_size,p.y_size,1);
-Grid3D grid_EC_LII_Basket_Multipolar(p.x_size,p.y_size,1);
-Grid3D grid_CA1_Pyramidal(p.x_size,p.y_size,1); // PCs
 int MEC_LII_Stellate_ExtDir=sim.createGroup("MEC_LII_Stellate_ExtDir", 
-							grid_MEC_LII_Stellate_ExtDir, EXCITATORY_NEURON, ANY, GPU_CORES);	
+							p.MEC_LII_Stellate_ExtDir_Count, EXCITATORY_NEURON, ANY, GPU_CORES);	
 int MEC_LII_Stellate=sim.createGroup("MEC_LII_Stellate", 
-							grid_MEC_LII_Stellate, EXCITATORY_NEURON, ANY, GPU_CORES);
+							p.MEC_LII_Stellate_Count, EXCITATORY_NEURON, ANY, GPU_CORES);
 int EC_LII_Axo_Axonic=sim.createGroup("EC_LII_Axo_Axonic", 
-							grid_EC_LII_Axo_Axonic, INHIBITORY_NEURON, ANY, GPU_CORES);
+							p.EC_LII_Axo_Axonic_Count, INHIBITORY_NEURON, ANY, GPU_CORES);
 int MEC_LII_Basket=sim.createGroup("MEC_LII_Basket", 
-							grid_MEC_LII_Basket, INHIBITORY_NEURON, ANY, GPU_CORES);
+							p.MEC_LII_Basket_Count, INHIBITORY_NEURON, ANY, GPU_CORES);
 int EC_LII_Basket_Multipolar=sim.createGroup("EC_LII_Basket_Multipolar", 
-							grid_EC_LII_Basket_Multipolar, INHIBITORY_NEURON, ANY, GPU_CORES);
+							p.EC_LII_Basket_Multipolar_Count, INHIBITORY_NEURON, ANY, GPU_CORES);
 int CA1_Pyramidal=sim.createGroup("CA1_Pyramidal", 
-							grid_CA1_Pyramidal, EXCITATORY_NEURON, ANY, GPU_CORES);
+							p.CA1_Pyramidal_Count, EXCITATORY_NEURON, ANY, GPU_CORES);
 
 /* neuron type parameters */
 float s_C,s_k,s_vr,s_vt,s_a,s_b,s_vpeak,s_c,s_d;
@@ -43,19 +37,26 @@ sim.setNeuronParameters(CA1_Pyramidal, 334.0f, 0.0f, 1.56f, 0.0f, -69.36f, 0.0f,
 
 /* neuron connection parameters */
 setInExcConns(&sim, &p);
-MexHatConnection* MexHatConn = new MexHatConnection(&p);	
+MexHatConnection* MexHatConn = new MexHatConnection(&p);
+SomeToSomeConnection* SomeToSomeConn = new SomeToSomeConnection(&p);	
 static const float g_val = 4.92;
 sim.connect(MEC_LII_Stellate_ExtDir, MEC_LII_Stellate, "one-to-one", 40.0f, 1.0f, 
 			RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, g_val, 0.0f); // 0 DIR
-sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, "one-to-one", 2000.0f, 1.0f, 
-			RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, g_val, 0.0f); // 1 GC->IN
-//sim.connect(MEC_LII_Stellate, MEC_LII_Basket, "one-to-one", 2000.0f, 1.0f, 
+p.conn_offset = 0;
+//sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, "one-to-one", 2000.0f, 1.0f, 
 //			RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, g_val, 0.0f); // 1 GC->IN
-//sim.connect(MEC_LII_Stellate, EC_LII_Basket_Multipolar, "one-to-one", 2000.0f, 1.0f, 
-//			RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, g_val, 0.0f); // 1 GC->IN
+sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, SomeToSomeConn, SYN_FIXED, g_val, 0.0f);
 sim.connect(EC_LII_Axo_Axonic, MEC_LII_Stellate, MexHatConn, SYN_FIXED, g_val, 0.0f); // 2 IN->GC one-to-many
-//sim.connect(MEC_LII_Basket, gexc, MexHatConn, SYN_FIXED, g_val, 0.0f); // 2 IN->GC one-to-many
-//sim.connect(EC_LII_Basket_Multipolar, gexc, MexHatConn, SYN_FIXED, g_val, 0.0f); // 2 IN->GC one-to-many
+p.conn_offset = 1;
+MexHatConn = new MexHatConnection(&p);
+SomeToSomeConn = new SomeToSomeConnection(&p);
+sim.connect(MEC_LII_Stellate, MEC_LII_Basket, SomeToSomeConn, SYN_FIXED, g_val, 0.0f);
+sim.connect(MEC_LII_Basket, MEC_LII_Stellate, MexHatConn, SYN_FIXED, g_val, 0.0f); // 2 IN->GC one-to-many
+p.conn_offset = 2;
+MexHatConn = new MexHatConnection(&p);
+SomeToSomeConn = new SomeToSomeConnection(&p);
+sim.connect(MEC_LII_Stellate, EC_LII_Basket_Multipolar, SomeToSomeConn, SYN_FIXED, g_val, 0.0f);
+sim.connect(EC_LII_Basket_Multipolar, MEC_LII_Stellate, MexHatConn, SYN_FIXED, g_val, 0.0f); // 2 IN->GC one-to-many
 sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", 1.0f, 1.0f, 
 			RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, g_val, 0.0f); // 3 PCs
 
@@ -85,7 +86,43 @@ sim.setSTP(MEC_LII_Stellate, EC_LII_Axo_Axonic, true, STPu(m1, 0.0f),
                                      STPtdGABAb(m7, 0.0f),
                                      STPtrNMDA(0.0f, 0.0f),
                                      STPtrGABAb(0.0f, 0.0f));
+sim.setSTP(MEC_LII_Stellate, MEC_LII_Basket, true, STPu(m1, 0.0f),
+                                     STPtauU(m2, 0.0f),
+                                     STPtauX(m3, 0.0f),
+                                     STPtdAMPA(m4, 0.0f),
+                                     STPtdNMDA(m5, 0.0f),
+                                     STPtdGABAa(m6, 0.0f),
+                                     STPtdGABAb(m7, 0.0f),
+                                     STPtrNMDA(0.0f, 0.0f),
+                                     STPtrGABAb(0.0f, 0.0f));
+sim.setSTP(MEC_LII_Stellate, EC_LII_Basket_Multipolar, true, STPu(m1, 0.0f),
+                                     STPtauU(m2, 0.0f),
+                                     STPtauX(m3, 0.0f),
+                                     STPtdAMPA(m4, 0.0f),
+                                     STPtdNMDA(m5, 0.0f),
+                                     STPtdGABAa(m6, 0.0f),
+                                     STPtdGABAb(m7, 0.0f),
+                                     STPtrNMDA(0.0f, 0.0f),
+                                     STPtrGABAb(0.0f, 0.0f));
 sim.setSTP(EC_LII_Axo_Axonic, MEC_LII_Stellate, true, STPu(0.1278, 0.0f),
+                                     STPtauU(37.06, 0.0f),
+                                     STPtauX(314.1, 0.0f),
+                                     STPtdAMPA(5.0f, 0.0f),
+                                     STPtdNMDA(150.0f, 0.0f),
+                                     STPtdGABAa(9.17f, 0.0f),
+                                     STPtdGABAb(150.0f, 0.0f),
+                                     STPtrNMDA(0.0f, 0.0f),
+                                     STPtrGABAb(0.0f, 0.0f));
+sim.setSTP(MEC_LII_Basket, MEC_LII_Stellate, true, STPu(0.1278, 0.0f),
+                                     STPtauU(37.06, 0.0f),
+                                     STPtauX(314.1, 0.0f),
+                                     STPtdAMPA(5.0f, 0.0f),
+                                     STPtdNMDA(150.0f, 0.0f),
+                                     STPtdGABAa(9.17f, 0.0f),
+                                     STPtdGABAb(150.0f, 0.0f),
+                                     STPtrNMDA(0.0f, 0.0f),
+                                     STPtrGABAb(0.0f, 0.0f));
+sim.setSTP(EC_LII_Basket_Multipolar, MEC_LII_Stellate, true, STPu(0.1278, 0.0f),
                                      STPtauU(37.06, 0.0f),
                                      STPtauX(314.1, 0.0f),
                                      STPtdAMPA(5.0f, 0.0f),

@@ -82,5 +82,5 @@ void place_cell_firing(CARLsim* sim, P *p) {
 		}
 	}
 
-	sim->setExternalCurrent(3, p->pc_activity); // apply computed pc current levels
+	sim->setExternalCurrent(5, p->pc_activity); // apply computed pc current levels
 }

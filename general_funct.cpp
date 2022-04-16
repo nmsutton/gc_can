@@ -276,9 +276,12 @@ class MexHatConnection : public ConnectionGenerator {
 public:
     vector<vector<double>> weights_in;
     double mex_hat_multi;
+    int conn_offset, conn_dist;
     MexHatConnection(P *p) {
     	this->weights_in = p->weights_in; // set matrix
     	this->mex_hat_multi = p->mex_hat_multi;
+    	this->conn_offset = p->conn_offset;
+    	this->conn_dist = p->conn_dist;
     }
     ~MexHatConnection() {}
  
@@ -286,15 +289,59 @@ public:
     // note that weight, maxWt, delay, and connected are passed by reference
     void connect(CARLsim* sim, int srcGrp, int i, int destGrp, int j, float& weight, float& maxWt,
             float& delay, bool& connected) {
-    		if (this->weights_in[i][j] == 1.0) {
-    			connected = 1; // only connect where matrix value is 1.0
-    			//printf("%d %d\n",i,j);
+    		// adjust i for multiple neuron types combine into a group
+    		int i_adj = (i * this->conn_dist) + this->conn_offset;
+
+    		// assign connections
+    		//if (this->weights_in[i][j] == 1.0) {
+    		if (this->weights_in[i_adj][j] == 1.0) {
+    			connected = 1; // only connect where matrix value is 1.0 
+    			/*if (i_adj>899) {
+    				printf("i:%d j:%d i_adj:%d\n",i,j,i_adj);
+    			}*/
+    			printf("i:%d j:%d i_adj:%d\n",i,j,i_adj);
     		}
     		else {
     			connected = 0;
     		}
-        weight = mex_hat[i][j]*mex_hat_multi;
-        maxWt = 1000.0f;
+        //weight = mex_hat[i][j]*mex_hat_multi;
+        weight = mex_hat[i_adj][j]*mex_hat_multi;
+        maxWt = 10000.0f;
+        delay = 1; 
+    }
+};
+
+class SomeToSomeConnection : public ConnectionGenerator {
+public:
+    vector<vector<double>> weights_in;
+    double mex_hat_multi;
+    int conn_offset, conn_dist;
+    SomeToSomeConnection(P *p) {
+    	this->weights_in = p->weights_in; // set matrix
+    	this->mex_hat_multi = p->mex_hat_multi;
+    	this->conn_offset = p->conn_offset;
+    	this->conn_dist = p->conn_dist;
+    }
+    ~SomeToSomeConnection() {}
+ 
+    // the pure virtual function inherited from base class
+    // note that weight, maxWt, delay, and connected are passed by reference
+    void connect(CARLsim* sim, int srcGrp, int i, int destGrp, int j, float& weight, float& maxWt,
+            float& delay, bool& connected) {
+    		// adjust i and j for multiple neuron types combine into a group
+    		//int i_adj = (i * this->conn_dist) + this->conn_offset;
+    		//int j_adj = (j * this->conn_dist) + this->conn_offset;
+
+    		// assign connections
+    		if (i == ((j * this->conn_dist) + this->conn_offset)) {
+    			connected = 1;
+    			//printf("i:%d j:%d\n",i,j);
+    		}
+    		else {
+    			connected = 0;
+    		}
+        weight = 2000.0f;
+        maxWt = 10000.0f;
         delay = 1; 
     }
 };

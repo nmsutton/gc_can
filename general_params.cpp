@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 10; // size of bins to record firing activity
-	double sim_time = 2000*firing_bin; // sim run time in ms
+	double sim_time = 600*firing_bin; // sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -15,6 +15,12 @@ struct P {
 	static const int x_size = 30;//26;
 	static const int y_size = 30;//26;
 	static const int layer_size = x_size * y_size;
+	static const int MEC_LII_Stellate_ExtDir_Count = 900;
+	static const int MEC_LII_Stellate_Count = 900;
+	static const int EC_LII_Axo_Axonic_Count = 300;
+	static const int MEC_LII_Basket_Count = 300;
+	static const int EC_LII_Basket_Multipolar_Count = 300;
+	static const int CA1_Pyramidal_Count = 900;
 	double pos[2] = {3,6}; // starting position; {x,y}
 	char dirs[4] = {'u', 'r', 'd', 'l'};
 	char last_dir; // last direction command
@@ -57,6 +63,8 @@ struct P {
 	double const_speed = 0.195;//0.12; // setting for use of a constant virtual animal speed
 	double move_increment = 0.1;//0.5;//0.2634;//0.325;//0.65; // amount to move in position each move command
 	vector<float> ext_dir;
+	int conn_offset = 0; // offset in neuron positions for connections
+	int conn_dist = 3; // distance between neurons in connections
 
 	// speed
 	bool speed_adjustable = 0;
