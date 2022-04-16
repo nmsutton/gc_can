@@ -40,7 +40,7 @@ setInExcConns(&sim, &p);
 MexHatConnection* MexHatConn = new MexHatConnection(&p);
 SomeToSomeConnection* SomeToSomeConn = new SomeToSomeConnection(&p);	
 static const float g_val = 4.92;
-sim.connect(MEC_LII_Stellate_ExtDir, MEC_LII_Stellate, "one-to-one", 40.0f, 1.0f, 
+sim.connect(MEC_LII_Stellate_ExtDir, MEC_LII_Stellate, "one-to-one", p.dir_to_gc_wt, 1.0f, 
 			RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, g_val, 0.0f); // 0 DIR
 p.conn_offset = 0;
 //sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, "one-to-one", 2000.0f, 1.0f, 

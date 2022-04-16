@@ -299,7 +299,7 @@ public:
     			/*if (i_adj>899) {
     				printf("i:%d j:%d i_adj:%d\n",i,j,i_adj);
     			}*/
-    			printf("i:%d j:%d i_adj:%d\n",i,j,i_adj);
+    			//printf("i:%d j:%d i_adj:%d\n",i,j,i_adj);
     		}
     		else {
     			connected = 0;
@@ -316,11 +316,13 @@ public:
     vector<vector<double>> weights_in;
     double mex_hat_multi;
     int conn_offset, conn_dist;
+    float gc_to_in_wt;
     SomeToSomeConnection(P *p) {
     	this->weights_in = p->weights_in; // set matrix
     	this->mex_hat_multi = p->mex_hat_multi;
     	this->conn_offset = p->conn_offset;
     	this->conn_dist = p->conn_dist;
+    	this->gc_to_in_wt = p->gc_to_in_wt;
     }
     ~SomeToSomeConnection() {}
  
@@ -340,7 +342,7 @@ public:
     		else {
     			connected = 0;
     		}
-        weight = 2000.0f;
+        weight = gc_to_in_wt;
         maxWt = 10000.0f;
         delay = 1; 
     }
