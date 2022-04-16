@@ -257,18 +257,21 @@ void RecordLocationPath(P *p, string rec_type) {
 
 void setInExcConns(CARLsim* sim, P *p) {
 	// set inital connection status (0 or 1) in 2d weight matrix for IN->GC connections
+	int counter = 0;
 
 	// assign connectivity
 	for (int i = 0; i < p->layer_size; i++) {
 		for (int j = 0; j < p->layer_size; j++) {
-			if (mex_hat[i][j] != 0.0) {
+			//if (mex_hat[i][j] != 0.0) {
 			//if ((double) mex_hat[i][j] >= 0.006) {
-			//if ((double) mex_hat[i][j] >= 0.007) {
+			if ((double) mex_hat[i][j] >= 0.002) {
 				p->weights_in[i][j] = 1;
 				//printf("i:%d j:%d\n",i,j);
+				counter++;
 			}
 		}
 	}
+	printf("counter:%d\n",counter);
 }
 
 // custom ConnectionGenerator
