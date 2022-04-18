@@ -41,7 +41,7 @@ MexHatConnection* MexHatConn = new MexHatConnection(&p);
 SomeToSomeConnection* SomeToSomeConn = new SomeToSomeConnection(&p);	
 static const float g_val = 4.92;
 sim.connect(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, "one-to-one", p.dir_to_gc_wt, 1.0f, 
-			RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 25.0, 0.0f); // 0 DIR
+			RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 33.082, 0.0f); // 0 DIR
 p.conn_offset = 0;
 sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, SomeToSomeConn, SYN_FIXED, 9.654, 0.0f);
 sim.connect(EC_LII_Axo_Axonic, MEC_LII_Stellate, MexHatConn, SYN_FIXED, 9.654, 0.0f); // 2 IN->GC one-to-many
