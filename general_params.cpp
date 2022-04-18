@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 10; // size of bins to record firing activity
-	double sim_time = 500*firing_bin; // sim run time in ms
+	double sim_time = 1000*firing_bin; // sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -54,11 +54,11 @@ struct P {
 	double noise_addit_freq = 0.0f; // additional spiking frequency added to base external input
 
 	// values for synapse activites
-	double base_ext = 325;//16000.0;//1020.0;//2000.0;//1020.0;//34680;//1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level
-	double speed_mult = 1.25;//0.6;//1.2;//1.5;//4.5;//7.5; // starting grid cell input speed level
-	double mex_hat_multi = 1000;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
-	float gc_to_in_wt = 400.0; // gc to interneurons weight
-	float dir_to_gc_wt = 28.0; // ext_dir to gc weight
+	double base_ext = 245;//16000.0;//1020.0;//2000.0;//1020.0;//34680;//1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level
+	double speed_mult = 1.05;//0.6;//1.2;//1.5;//4.5;//7.5; // starting grid cell input speed level
+	double mex_hat_multi = 1350;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
+	float gc_to_in_wt = 325.0; // gc to interneurons weight
+	float dir_to_gc_wt = 12.0; // ext_dir to gc weight
 	double dir_init_multi = 100000;//100000000;//10000;//1;//10000;
 	int move_delay = 25;//50; // delay in speed that moves are commanded to occur
 	double dist_thresh = 5; // distance threshold for only local connections
