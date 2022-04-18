@@ -1,7 +1,7 @@
 /* configure the network */
 /* neuron groups */
-int MEC_LII_Stellate_ExtDir=sim.createGroup("MEC_LII_Stellate_ExtDir", 
-							p.MEC_LII_Stellate_ExtDir_Count, EXCITATORY_NEURON, ANY, GPU_CORES);	
+int EC_LI_II_Multipolar_Pyramidal=sim.createGroup("EC_LI_II_Multipolar_Pyramidal", 
+							p.EC_LI_II_Multipolar_Pyramidal_Count, EXCITATORY_NEURON, ANY, GPU_CORES);	
 int MEC_LII_Stellate=sim.createGroup("MEC_LII_Stellate", 
 							p.MEC_LII_Stellate_Count, EXCITATORY_NEURON, ANY, GPU_CORES);
 int EC_LII_Axo_Axonic=sim.createGroup("EC_LII_Axo_Axonic", 
@@ -16,7 +16,7 @@ int CA1_Pyramidal=sim.createGroup("CA1_Pyramidal",
 /* neuron type parameters */
 float s_C,s_k,s_vr,s_vt,s_a,s_b,s_vpeak,s_c,s_d;
 s_C=118;s_k=0.98;s_vr=-58.53;s_vt=-43.52;s_a=0.004;s_b=11.69;s_vpeak=7.85;s_c=-52.78;s_d=3;
-sim.setNeuronParameters(MEC_LII_Stellate_ExtDir, s_C, 0.0f, s_k, 0.0f, s_vr, 0.0f, s_vt, 
+sim.setNeuronParameters(EC_LI_II_Multipolar_Pyramidal, s_C, 0.0f, s_k, 0.0f, s_vr, 0.0f, s_vt, 
 								0.0f, s_a, 0.0f, s_b, 0.0f, s_vpeak, 0.0f, s_c, 0.0f, 
 								s_d, 0.0f, 1); // C,k,vr,vt,a,b,vpeak,c,d
 sim.setNeuronParameters(MEC_LII_Stellate, s_C, 0.0f, s_k, 0.0f, s_vr, 0.0f, s_vt, 
@@ -40,21 +40,21 @@ setInExcConns(&sim, &p);
 MexHatConnection* MexHatConn = new MexHatConnection(&p);
 SomeToSomeConnection* SomeToSomeConn = new SomeToSomeConnection(&p);	
 static const float g_val = 4.92;
-sim.connect(MEC_LII_Stellate_ExtDir, MEC_LII_Stellate, "one-to-one", p.dir_to_gc_wt, 1.0f, 
-			RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, g_val, 0.0f); // 0 DIR
+sim.connect(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, "one-to-one", p.dir_to_gc_wt, 1.0f, 
+			RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 9.0, 0.0f); // 0 DIR
 p.conn_offset = 0;
-sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, SomeToSomeConn, SYN_FIXED, g_val, 0.0f);
-sim.connect(EC_LII_Axo_Axonic, MEC_LII_Stellate, MexHatConn, SYN_FIXED, g_val, 0.0f); // 2 IN->GC one-to-many
+sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, SomeToSomeConn, SYN_FIXED, 9.654, 0.0f);
+sim.connect(EC_LII_Axo_Axonic, MEC_LII_Stellate, MexHatConn, SYN_FIXED, 9.654, 0.0f); // 2 IN->GC one-to-many
 p.conn_offset = 1;
 MexHatConn = new MexHatConnection(&p);
 SomeToSomeConn = new SomeToSomeConnection(&p);
-sim.connect(MEC_LII_Stellate, MEC_LII_Basket, SomeToSomeConn, SYN_FIXED, g_val, 0.0f);
-sim.connect(MEC_LII_Basket, MEC_LII_Stellate, MexHatConn, SYN_FIXED, g_val, 0.0f); // 2 IN->GC one-to-many
+sim.connect(MEC_LII_Stellate, MEC_LII_Basket, SomeToSomeConn, SYN_FIXED, 9.654, 0.0f);
+sim.connect(MEC_LII_Basket, MEC_LII_Stellate, MexHatConn, SYN_FIXED, 9.654, 0.0f); // 2 IN->GC one-to-many
 p.conn_offset = 2;
 MexHatConn = new MexHatConnection(&p);
 SomeToSomeConn = new SomeToSomeConnection(&p);
-sim.connect(MEC_LII_Stellate, EC_LII_Basket_Multipolar, SomeToSomeConn, SYN_FIXED, g_val, 0.0f);
-sim.connect(EC_LII_Basket_Multipolar, MEC_LII_Stellate, MexHatConn, SYN_FIXED, g_val, 0.0f); // 2 IN->GC one-to-many
+sim.connect(MEC_LII_Stellate, EC_LII_Basket_Multipolar, SomeToSomeConn, SYN_FIXED, 9.654, 0.0f);
+sim.connect(EC_LII_Basket_Multipolar, MEC_LII_Stellate, MexHatConn, SYN_FIXED, 9.654, 0.0f); // 2 IN->GC one-to-many
 sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", 1.0f, 1.0f, 
 			RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, g_val, 0.0f); // 3 PCs
 
@@ -66,7 +66,7 @@ static const float m4 = 6.674;//0.0001;
 static const float m5 = 150.0;//1000;
 static const float m6 = 6.0;//1000;//0.0001;
 static const float m7 = 150.0;//0.0001; 
-sim.setSTP(MEC_LII_Stellate_ExtDir, MEC_LII_Stellate, true, STPu(m1, 0.0f),
+sim.setSTP(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, true, STPu(m1, 0.0f),
                                      STPtauU(m2, 0.0f),
                                      STPtauX(m3, 0.0f),
                                      STPtdAMPA(m4, 0.0f),

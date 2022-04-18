@@ -106,7 +106,7 @@ int main() {
 	// build the network
 	sim.setupNetwork();
 	setInitExtDir(&p); // Initial excitatory current to GCs
-	sim.setExternalCurrent(MEC_LII_Stellate_ExtDir, ext_dir_initial);
+	sim.setExternalCurrent(EC_LI_II_Multipolar_Pyramidal, ext_dir_initial);
 	SpikeMonitor* SMexc = sim.setSpikeMonitor(MEC_LII_Stellate, "DEFAULT");
 
 	// ---------------- RUN STATE -------------------
@@ -124,7 +124,7 @@ int main() {
 		// Disable initial current to GCs settings
 		if (t == 2) {
 			setExtDir(&p,'l',0.04);
-			sim.setExternalCurrent(MEC_LII_Stellate_ExtDir, p.ext_dir);
+			sim.setExternalCurrent(EC_LI_II_Multipolar_Pyramidal, p.ext_dir);
 		}
 		sim.runNetwork(0,1,false); // run for 1 ms, don't generate run stats
 		SMexc->stopRecording();
