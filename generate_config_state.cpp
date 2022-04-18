@@ -16,12 +16,12 @@ int CA1_Pyramidal=sim.createGroup("CA1_Pyramidal",
 /* neuron type parameters */
 float s_C,s_k,s_vr,s_vt,s_a,s_b,s_vpeak,s_c,s_d;
 s_C=118;s_k=0.98;s_vr=-58.53;s_vt=-43.52;s_a=0.004;s_b=11.69;s_vpeak=7.85;s_c=-52.78;s_d=3;
-sim.setNeuronParameters(EC_LI_II_Multipolar_Pyramidal, s_C, 0.0f, s_k, 0.0f, s_vr, 0.0f, s_vt, 
-								0.0f, s_a, 0.0f, s_b, 0.0f, s_vpeak, 0.0f, s_c, 0.0f, 
-								s_d, 0.0f, 1); // C,k,vr,vt,a,b,vpeak,c,d
-sim.setNeuronParameters(MEC_LII_Stellate, s_C, 0.0f, s_k, 0.0f, s_vr, 0.0f, s_vt, 
-								0.0f, s_a, 0.0f, s_b, 0.0f, s_vpeak, 0.0f, s_c, 0.0f, 
-								s_d, 0.0f, 1);
+sim.setNeuronParameters(EC_LI_II_Multipolar_Pyramidal, 204.0f, 0.0f, 0.37f, 0.0f, -70.53f, 0.0f, -39.99f, 
+								0.0f, 0.001f, 0.0f, 0.01f, 0.0f, 3.96f, 0.0f, -54.95f, 0.0f, 
+								7.0f, 0.0f, 1); // C,k,vr,vt,a,b,vpeak,c,d
+sim.setNeuronParameters(MEC_LII_Stellate, 118.0f, 0.0f, 0.98f, 0.0f, -58.53f, 0.0f, -43.52f, 
+								0.0f, 0.004f, 0.0f, 11.69f, 0.0f, 7.85f, 0.0f, -52.68f, 0.0f, 
+								3.0f, 0.0f, 1);
 sim.setNeuronParameters(EC_LII_Axo_Axonic, 115.0f, 0.0f, 2.32f, 0.0f, -57.15f, 0.0f, 
 								-50.75f, 0.0f, 0.003f, 0.0f, 12.27f, 0.0f, 2.43f, 0.0f, 
 								-60.23f, 0.0f, -2.0f, 0.0f, 1); 
@@ -66,13 +66,13 @@ static const float m4 = 6.674;//0.0001;
 static const float m5 = 150.0;//1000;
 static const float m6 = 6.0;//1000;//0.0001;
 static const float m7 = 150.0;//0.0001; 
-sim.setSTP(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, true, STPu(m1, 0.0f),
-                                     STPtauU(m2, 0.0f),
-                                     STPtauX(m3, 0.0f),
-                                     STPtdAMPA(m4, 0.0f),
-                                     STPtdNMDA(m5, 0.0f),
-                                     STPtdGABAa(m6, 0.0f),
-                                     STPtdGABAb(m7, 0.0f),
+sim.setSTP(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, true, STPu(0.1513, 0.0f),
+                                     STPtauU(45.0, 0.0f),
+                                     STPtauX(140.0, 0.0f),
+                                     STPtdAMPA(6.636, 0.0f),
+                                     STPtdNMDA(150.0, 0.0f),
+                                     STPtdGABAa(6.0, 0.0f),
+                                     STPtdGABAb(150.0, 0.0f),
                                      STPtrNMDA(0.0f, 0.0f),
                                      STPtrGABAb(0.0f, 0.0f));
 sim.setSTP(MEC_LII_Stellate, EC_LII_Axo_Axonic, true, STPu(0.1514, 0.0f),
