@@ -67,8 +67,8 @@ static const float m5 = 150.0;//1000;
 static const float m6 = 6.0;//1000;//0.0001;
 static const float m7 = 150.0;//0.0001; 
 sim.setSTP(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, true, STPu(0.1513, 0.0f),
-                                     STPtauU(45.0, 0.0f),
-                                     STPtauX(140.0, 0.0f),
+                                     STPtauU(69.11, 0.0f),
+                                     STPtauX(98.1, 0.0f),
                                      STPtdAMPA(6.636, 0.0f),
                                      STPtdNMDA(150.0, 0.0f),
                                      STPtdGABAa(6.0, 0.0f),
