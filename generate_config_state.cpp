@@ -39,22 +39,23 @@ sim.setNeuronParameters(CA1_Pyramidal, 334.0f, 0.0f, 1.56f, 0.0f, -69.36f, 0.0f,
 setInExcConns(&sim, &p);
 MexHatConnection* MexHatConn = new MexHatConnection(&p);
 SomeToSomeConnection* SomeToSomeConn = new SomeToSomeConnection(&p);	
-static const float g_val = 30;//4.92;
+static const float g_val = 50;//33.082;
+static const float g_val2 = 50;//4.92;
 sim.connect(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, "one-to-one", p.dir_to_gc_wt, 1.0f, 
-			RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 33.082, 0.0f); // 0 DIR
+			RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, g_val, 0.0f); // 0 DIR
 p.conn_offset = 0;
-sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, SomeToSomeConn, SYN_FIXED, g_val, 0.0f);
-sim.connect(EC_LII_Axo_Axonic, MEC_LII_Stellate, MexHatConn, SYN_FIXED, g_val, 0.0f); // 2 IN->GC one-to-many
+sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, SomeToSomeConn, SYN_FIXED, g_val2, 0.0f);
+sim.connect(EC_LII_Axo_Axonic, MEC_LII_Stellate, MexHatConn, SYN_FIXED, g_val2, 0.0f); // 2 IN->GC one-to-many
 p.conn_offset = 1;
 MexHatConn = new MexHatConnection(&p);
 SomeToSomeConn = new SomeToSomeConnection(&p);
-sim.connect(MEC_LII_Stellate, MEC_LII_Basket, SomeToSomeConn, SYN_FIXED, g_val, 0.0f);
-sim.connect(MEC_LII_Basket, MEC_LII_Stellate, MexHatConn, SYN_FIXED, g_val, 0.0f); // 2 IN->GC one-to-many
+sim.connect(MEC_LII_Stellate, MEC_LII_Basket, SomeToSomeConn, SYN_FIXED, g_val2, 0.0f);
+sim.connect(MEC_LII_Basket, MEC_LII_Stellate, MexHatConn, SYN_FIXED, g_val2, 0.0f); // 2 IN->GC one-to-many
 p.conn_offset = 2;
 MexHatConn = new MexHatConnection(&p);
 SomeToSomeConn = new SomeToSomeConnection(&p);
-sim.connect(MEC_LII_Stellate, EC_LII_Basket_Multipolar, SomeToSomeConn, SYN_FIXED, g_val, 0.0f);
-sim.connect(EC_LII_Basket_Multipolar, MEC_LII_Stellate, MexHatConn, SYN_FIXED, g_val, 0.0f); // 2 IN->GC one-to-many
+sim.connect(MEC_LII_Stellate, EC_LII_Basket_Multipolar, SomeToSomeConn, SYN_FIXED, g_val2, 0.0f);
+sim.connect(EC_LII_Basket_Multipolar, MEC_LII_Stellate, MexHatConn, SYN_FIXED, g_val2, 0.0f); // 2 IN->GC one-to-many
 sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", 1.0f, 1.0f, 
 			RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, g_val, 0.0f); // 3 PCs
 
