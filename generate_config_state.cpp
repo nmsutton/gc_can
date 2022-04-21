@@ -39,8 +39,8 @@ sim.setNeuronParameters(CA1_Pyramidal, 334.0f, 0.0f, 1.56f, 0.0f, -69.36f, 0.0f,
 setInExcConns(&sim, &p);
 MexHatConnection* MexHatConn = new MexHatConnection(&p);
 SomeToSomeConnection* SomeToSomeConn = new SomeToSomeConnection(&p);	
-static const float g_val = 50;//33.082;
-static const float g_val2 = 50;//4.92;
+static const float g_val = 100;//33.082;
+static const float g_val2 = 100;//4.92;
 sim.connect(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, "one-to-one", p.dir_to_gc_wt, 1.0f, 
 			RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, g_val, 0.0f); // 0 DIR
 p.conn_offset = 0;
