@@ -67,7 +67,10 @@ static const float m4 = 6.674;//0.0001;
 static const float m5 = 150.0;//1000;
 static const float m6 = 6.0;//1000;//0.0001;
 static const float m7 = 150.0;//0.0001; 
-sim.setSTP(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, true, STPu(0.1513, 0.0f),
+static const float u_ext = 0.07;
+static const float u1 = 0.025;
+static const float u2 = 0.025;
+sim.setSTP(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, true, STPu(u_ext, 0.0f),
                                      STPtauU(69.11, 0.0f),
                                      STPtauX(98.1, 0.0f),
                                      STPtdAMPA(6.636, 0.0f),
@@ -76,7 +79,7 @@ sim.setSTP(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, true, STPu(0.1513, 0
                                      STPtdGABAb(150.0, 0.0f),
                                      STPtrNMDA(0.0f, 0.0f),
                                      STPtrGABAb(0.0f, 0.0f));
-sim.setSTP(MEC_LII_Stellate, EC_LII_Axo_Axonic, true, STPu(0.1514, 0.0f),
+sim.setSTP(MEC_LII_Stellate, EC_LII_Axo_Axonic, true, STPu(u1, 0.0f),
                                      STPtauU(58.97, 0.0f),
                                      STPtauX(123.7, 0.0f),
                                      STPtdAMPA(6.632, 0.0f),
@@ -85,7 +88,7 @@ sim.setSTP(MEC_LII_Stellate, EC_LII_Axo_Axonic, true, STPu(0.1514, 0.0f),
                                      STPtdGABAb(150.0, 0.0f),
                                      STPtrNMDA(0.0f, 0.0f),
                                      STPtrGABAb(0.0f, 0.0f));
-sim.setSTP(MEC_LII_Stellate, MEC_LII_Basket, true, STPu(0.1638, 0.0f),
+sim.setSTP(MEC_LII_Stellate, MEC_LII_Basket, true, STPu(u1, 0.0f),
                                      STPtauU(57.57, 0.0f),
                                      STPtauX(119, 0.0f),
                                      STPtdAMPA(6.205, 0.0f),
@@ -94,7 +97,7 @@ sim.setSTP(MEC_LII_Stellate, MEC_LII_Basket, true, STPu(0.1638, 0.0f),
                                      STPtdGABAb(150.0, 0.0f),
                                      STPtrNMDA(0.0f, 0.0f),
                                      STPtrGABAb(0.0f, 0.0f));
-sim.setSTP(MEC_LII_Stellate, EC_LII_Basket_Multipolar, true, STPu(0.1638, 0.0f),
+sim.setSTP(MEC_LII_Stellate, EC_LII_Basket_Multipolar, true, STPu(u1, 0.0f),
                                      STPtauU(57.57, 0.0f),
                                      STPtauX(119, 0.0f),
                                      STPtdAMPA(6.205, 0.0f),
@@ -103,7 +106,7 @@ sim.setSTP(MEC_LII_Stellate, EC_LII_Basket_Multipolar, true, STPu(0.1638, 0.0f),
                                      STPtdGABAb(150.0, 0.0f),
                                      STPtrNMDA(0.0f, 0.0f),
                                      STPtrGABAb(0.0f, 0.0f));
-sim.setSTP(EC_LII_Axo_Axonic, MEC_LII_Stellate, true, STPu(0.1100, 0.0f),
+sim.setSTP(EC_LII_Axo_Axonic, MEC_LII_Stellate, true, STPu(u2, 0.0f),
                                      STPtauU(35.53, 0.0f),
                                      STPtauX(355.8, 0.0f),
                                      STPtdAMPA(5.0f, 0.0f),
@@ -112,7 +115,7 @@ sim.setSTP(EC_LII_Axo_Axonic, MEC_LII_Stellate, true, STPu(0.1100, 0.0f),
                                      STPtdGABAb(150.0f, 0.0f),
                                      STPtrNMDA(0.0f, 0.0f),
                                      STPtrGABAb(0.0f, 0.0f));
-sim.setSTP(MEC_LII_Basket, MEC_LII_Stellate, true, STPu(0.1119, 0.0f),
+sim.setSTP(MEC_LII_Basket, MEC_LII_Stellate, true, STPu(u2, 0.0f),
                                      STPtauU(37.29, 0.0f),
                                      STPtauX(346.3, 0.0f),
                                      STPtdAMPA(5.0f, 0.0f),
@@ -121,7 +124,7 @@ sim.setSTP(MEC_LII_Basket, MEC_LII_Stellate, true, STPu(0.1119, 0.0f),
                                      STPtdGABAb(150.0f, 0.0f),
                                      STPtrNMDA(0.0f, 0.0f),
                                      STPtrGABAb(0.0f, 0.0f));
-sim.setSTP(EC_LII_Basket_Multipolar, MEC_LII_Stellate, true, STPu(0.1119, 0.0f),
+sim.setSTP(EC_LII_Basket_Multipolar, MEC_LII_Stellate, true, STPu(u2, 0.0f),
                                      STPtauU(41.94, 0.0f),
                                      STPtauX(311.8, 0.0f),
                                      STPtdAMPA(5.0f, 0.0f),

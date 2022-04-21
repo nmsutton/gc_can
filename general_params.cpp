@@ -55,10 +55,10 @@ struct P {
 
 	// values for synapse activites
 	double base_ext = 300;//16000.0;//1020.0;//2000.0;//1020.0;//34680;//1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level	
-	double speed_mult = 10.0;//0.6;//1.2;//1.5;//4.5;//7.5; // starting grid cell input speed level
-	float dir_to_gc_wt = 1.5; // ext_dir to gc weight
-	double mex_hat_multi = 600;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
-	float gc_to_in_wt = 100.0; // gc to interneurons weight
+	double speed_mult = 20.0;//0.6;//1.2;//1.5;//4.5;//7.5; // starting grid cell input speed level
+	float dir_to_gc_wt = 1.0; // ext_dir to gc weight
+	double mex_hat_multi = 250;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
+	float gc_to_in_wt = 150.0; // gc to interneurons weight
 	double dir_init_multi = 100000;//100000000;//10000;//1;//10000;
 	int move_delay = 25;//50; // delay in speed that moves are commanded to occur
 	double dist_thresh = 5; // distance threshold for only local connections
