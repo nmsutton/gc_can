@@ -309,6 +309,9 @@ public:
     		}
         //weight = mex_hat[i][j]*mex_hat_multi;
         weight = mex_hat[i_adj][j]*mex_hat_multi;
+        weight = weight + 5.0;                
+        //weight = mex_hat[i_adj][j]*mex_hat_multi;
+        //if (weight < 0) {weight = 0;}
         maxWt = 10000.0f;
         delay = 1; 
     }
