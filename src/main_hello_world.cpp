@@ -108,6 +108,8 @@ int main() {
 	setInitExtDir(&p); // Initial excitatory current to GCs
 	sim.setExternalCurrent(EC_LI_II_Multipolar_Pyramidal, ext_dir_initial);
 	SpikeMonitor* SMexc = sim.setSpikeMonitor(MEC_LII_Stellate, "DEFAULT");
+	SpikeMonitor* SMinh = sim.setSpikeMonitor(MEC_LII_Basket, "DEFAULT");
+	SpikeMonitor* SMext = sim.setSpikeMonitor(EC_LI_II_Multipolar_Pyramidal, "DEFAULT");
 
 	// ---------------- RUN STATE -------------------
 	SMexc->startRecording();
@@ -115,6 +117,10 @@ int main() {
 	if (p.record_in_voltage) {nrn_mon2->startRecording();}
 	if (p.record_pc_voltage) {nrn_mon3->startRecording();}*/
 	SMexc->setPersistentData(true); // keep prior firing when recording is stopped and restarted
+	SMinh->startRecording();
+	SMinh->setPersistentData(true);
+	SMext->startRecording();
+	SMext->setPersistentData(true);
 	for (int i = 0; i < p.layer_size; i++) {
 		p.gc_firing[i] = init_firings[i]; // set initial firing
 	}
@@ -127,9 +133,9 @@ int main() {
 			sim.setExternalCurrent(EC_LI_II_Multipolar_Pyramidal, p.ext_dir);
 		}
 		sim.runNetwork(0,1,false); // run for 1 ms, don't generate run stats
-		SMexc->stopRecording();
-		p.nrn_spk = SMexc->getSpikeVector2D(); // store firing in vector
-		SMexc->startRecording();
+		//SMexc->stopRecording();
+		//p.nrn_spk = SMexc->getSpikeVector2D(); // store firing in vector
+		//SMexc->startRecording();
 		//straight_path(&sim, &p); // process movement
 		move_path3(&sim, &p);
 		PrintWeightsAndFiring(&p);
@@ -139,11 +145,15 @@ int main() {
 		if (p.print_time && ((t < 1000 && t % 100 == 0) || (t % 1000 == 0))) {printf("t: %dms\n",t);}
 	}
 	SMexc->stopRecording();
+	SMext->stopRecording();
+	SMinh->stopRecording();
 	/*if (p.record_gc_voltage) {nrn_mon->stopRecording();}
 	if (p.record_in_voltage) {nrn_mon2->stopRecording();}
 	if (p.record_pc_voltage) {nrn_mon3->stopRecording();}*/
 	printf("\n\n");
 	SMexc->print(false); // print firing stats (but not the exact spike times)
+	SMext->print(false);
+	SMinh->print(false);
 
   // save voltage data
   /*if (p.record_gc_voltage) {

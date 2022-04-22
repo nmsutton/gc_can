@@ -309,7 +309,7 @@ public:
     		}
         //weight = mex_hat[i][j]*mex_hat_multi;
         weight = mex_hat[i_adj][j]*mex_hat_multi;
-        weight = weight + 5.0;                
+        weight = weight + 0.0;                
         //weight = mex_hat[i_adj][j]*mex_hat_multi;
         //if (weight < 0) {weight = 0;}
         maxWt = 10000.0f;
@@ -380,7 +380,7 @@ void EISignal(char direction, CARLsim* sim, P* p) {
 	*/	
 	double noise;
 
-	count_firing(p, p->gc_firing_bin, p->nrn_spk);
+	//count_firing(p, p->gc_firing_bin, p->nrn_spk);
 	set_pos(p, direction); 
 	if (p->print_move) {cout << "\n";}
 
