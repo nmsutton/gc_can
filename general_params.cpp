@@ -55,7 +55,7 @@ struct P {
 
 	// values for synapse activites
 	double base_ext = 300;//300;//1100;//16000.0;//1020.0;//2000.0;//1020.0;//34680;//1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level	
-	double speed_mult = 3;//1.0;//35.0;//0.6;//1.2;//1.5;//4.5;//7.5; // starting grid cell input speed level
+	double speed_mult = 10;//1.0;//35.0;//0.6;//1.2;//1.5;//4.5;//7.5; // starting grid cell input speed level
 	float dir_to_gc_wt = 1.5;//1.5;//5.5; // ext_dir to gc weight
 	double mex_hat_multi = 140;//50;//30;//50;//800;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
 	float gc_to_in_wt = 1;//25;//700.0; // gc to interneurons weight
