@@ -59,13 +59,6 @@ sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", 1.0f, 1.0f,
 			RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, g_val, 0.0f); // 3 PCs
 
 /* STP parameters */
-/*static const float m1 = 0.1231;//0.0001; // 0-1 range
-static const float m2 = 49.71;//1000;
-static const float m3 = 153.4;//1000;//0.0001;
-static const float m4 = 6.674;//0.0001; 
-static const float m5 = 150.0;//1000;
-static const float m6 = 6.0;//1000;//0.0001;
-static const float m7 = 150.0;//0.0001; */
 sim.setSTP(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, true, STPu(0.1513, 0.0f),
                                      STPtauU(69.11, 0.0f),
                                      STPtauX(98.1, 0.0f),
