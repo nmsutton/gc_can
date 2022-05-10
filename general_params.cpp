@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 10; // size of bins to record firing activity
-	double sim_time = 5000*firing_bin; // sim run time in ms
+	double sim_time = 10000*firing_bin; // sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -63,7 +63,7 @@ struct P {
 	double dir_init_multi = 100000;//100000000;//10000;//1;//10000;
 	int move_delay = 25;//50; // delay in speed that moves are commanded to occur
 	double dist_thresh = 5; // distance threshold for only local connections
-	double move_increment = 0.658;//0.1;//0.5;//0.2634;//0.325;//0.65; // amount to move in position each move command
+	double move_increment = 0.64;//0.658;//0.1;//0.5;//0.2634;//0.325;//0.65; // amount to move in position each move command
 	vector<float> ext_dir;
 	int conn_offset = 0; // offset in neuron positions for connections
 	int conn_dist = 3; // distance between neurons in connections
