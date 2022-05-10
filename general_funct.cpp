@@ -96,10 +96,10 @@ void set_pos(P *p, char direction) {
 	else if (direction == 'd') {
 		p->pos[1] = p->pos[1] + p->move_increment; 
 	}
-	else if (direction == 'r') {
+	else if (direction == 'l') {
 		p->pos[0] = p->pos[0] + p->move_increment; 
 	}
-	else if (direction == 'l') {
+	else if (direction == 'r') {
 		p->pos[0] = p->pos[0] - p->move_increment; 
 	}
 
