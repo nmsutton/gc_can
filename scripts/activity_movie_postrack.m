@@ -9,7 +9,7 @@ clear all;
 clc;
 input_folder = "pos_track";
 %input_folder = "firing_vs_loc";
-time=49900; % time steps, use (end frame - 1) = time
+time=19900; % time steps, use (end frame - 1) = time
 bin_size = 10; % time in ms that bins spiking
 t=[0:(1/bin_size):(time*(1/bin_size))];
 hFigure = figure;
@@ -36,7 +36,8 @@ custom_colormap = load('animal_location_colormap.mat');
 %[A,map,alpha] = imread('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/media/grid.png');
 %A = imread('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/media/grid.png');
 
-for frameIndex = 1 : numberOfFrames
+%for frameIndex = 1 : numberOfFrames
+for frameIndex = (numberOfFrames-30) : (numberOfFrames - 10)
   filename = strcat('../output/',input_folder,'/firing_t',int2str(frameIndex*bin_size),'.csv');
   [imgfile,delimiterOut]=importdata(filename);
   cla reset;

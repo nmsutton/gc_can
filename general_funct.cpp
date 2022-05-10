@@ -222,8 +222,9 @@ void RecordNeuronVsLocation(CARLsim* sim, P* p) {
 	//if (p->gc_firing[p->selected_neuron] > 0) {
 	if (p->gc_firing_bin[p->selected_neuron] > 0) {
 		// get index from position
-		i_d = (p->pos[1] * p->x_size) + p->pos[0];
-		i = floor(i_d);
+		//i_d = (p->pos[1] * p->x_size) + p->pos[0];
+		//i = floor(i_d);
+		i = (floor(p->pos[1]) * p->x_size) + floor(p->pos[0]);
 		p->firing_positions[i] = p->firing_positions[i] + p->fvp_act_lvl;
 	}
 
@@ -380,7 +381,7 @@ void EISignal(char direction, CARLsim* sim, P* p) {
 	*/	
 	double noise;
 
-	//count_firing(p, p->gc_firing_bin, p->nrn_spk);
+	count_firing(p, p->gc_firing_bin, p->nrn_spk);
 	set_pos(p, direction); 
 	if (p->print_move) {cout << "\n";}
 
