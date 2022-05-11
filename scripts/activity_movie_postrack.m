@@ -9,7 +9,7 @@ clear all;
 clc;
 input_folder = "pos_track";
 %input_folder = "firing_vs_loc";
-time=19900; % time steps, use (end frame - 1) = time
+time=199900; % time steps, use (end frame - 1) = time
 bin_size = 10; % time in ms that bins spiking
 t=[0:(1/bin_size):(time*(1/bin_size))];
 hFigure = figure;
@@ -67,7 +67,7 @@ for frameIndex = (numberOfFrames-30) : (numberOfFrames - 10)
 end
 close(hFigure);
 myMovie(1) = []; % remove first frame causing issues due to wrong size
-v = VideoWriter('animal_postrack.avi'); % Create a VideoWriter object to write the video out to a new, different file.
+v = VideoWriter('videos/animal_postrack.avi'); % Create a VideoWriter object to write the video out to a new, different file.
 open(v)
 writeVideo(v,myMovie) % Write the movie object to a new video file.
 close(v)

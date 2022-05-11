@@ -9,7 +9,7 @@ clear all;
 clc;
 %input_folder = "pos_track";
 input_folder = "firing_vs_loc";
-time=149900; % time steps, use (end frame - 1) = time. 1 = 10ms.
+time=20;%199900; % time steps, use (end frame - 1) = time. 1 = 10ms.
 bin_size = 10; % time in ms that bins spiking
 t=[0:(1/bin_size):(time*(1/bin_size))];
 hFigure = figure;
@@ -35,8 +35,8 @@ caxis manual;          % allow subsequent plots to use the same color limits
 %[A,map,alpha] = imread('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/media/grid.png');
 %A = imread('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/media/grid.png');
 
-%for frameIndex = 1 : numberOfFrames
-for frameIndex = (numberOfFrames-30) : (numberOfFrames - 10)
+for frameIndex = 1 : numberOfFrames
+%for frameIndex = (numberOfFrames-30) : (numberOfFrames - 10)
   filename = strcat('../output/',input_folder,'/firing_t',int2str(frameIndex*bin_size),'.csv');
   [imgfile,delimiterOut]=importdata(filename);
   cla reset;
@@ -65,7 +65,7 @@ for frameIndex = (numberOfFrames-30) : (numberOfFrames - 10)
 end
 close(hFigure);
 myMovie(1) = []; % remove first frame causing issues due to wrong size
-v = VideoWriter('firing_physical_space.avi'); % Create a VideoWriter object to write the video out to a new, different file.
+v = VideoWriter('videos/firing_physical_space.avi'); % Create a VideoWriter object to write the video out to a new, different file.
 open(v)
 writeVideo(v,myMovie) % Write the movie object to a new video file.
 close(v)
