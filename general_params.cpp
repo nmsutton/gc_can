@@ -57,13 +57,13 @@ struct P {
 	double base_ext = 800;//800;//300;//300;//300;//1100;//16000.0;//1020.0;//2000.0;//1020.0;//34680;//1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level	
 	double const_speed = 0.195;//0.12; // setting for use of a constant virtual animal speed
 	double speed_mult = 2;//10;//1.0;//35.0;//0.6;//1.2;//1.5;//4.5;//7.5; // starting grid cell input speed level
-	float dir_to_gc_wt = 1.5;//1.6;//1.5;//1.5;//5.5; // ext_dir to gc weight
+	float dir_to_gc_wt = 1.6;//1.5;//1.6;//1.5;//1.5;//5.5; // ext_dir to gc weight
 	double mex_hat_multi = 170;//220;//180;//180;//300;//250;//140;//50;//30;//50;//800;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
 	float gc_to_in_wt = 1;//1;//0.45;//1;//25;//700.0; // gc to interneurons weight
 	double dir_init_multi = 100000;//100000000;//10000;//1;//10000;
 	int move_delay = 25;//50; // delay in speed that moves are commanded to occur
 	double dist_thresh = 5; // distance threshold for only local connections
-	double move_increment = 0.55;//0.5312;//0.664;//0.665;//0.658;//0.64;//0.658;//0.1;//0.5;//0.2634;//0.325;//0.65; // amount to move in position each move command
+	double move_increment = 0.664;//0.55;//0.5312;//0.664;//0.665;//0.658;//0.64;//0.658;//0.1;//0.5;//0.2634;//0.325;//0.65; // amount to move in position each move command
 	vector<float> ext_dir;
 	int conn_offset = 0; // offset in neuron positions for connections
 	int conn_dist = 3; // distance between neurons in connections
@@ -79,7 +79,7 @@ struct P {
 	double ala_act_lvl = 0.1; // amount of activity level added for each visit with animal location all plot.
 
 	// place cell parameters
-	float pc_to_gc_wt = 3;//0.5;//10; // pc to gc synaptic weight
+	float pc_to_gc_wt = 0.5;//3;//0.5;//10; // pc to gc synaptic weight
 	double pc_sig = 1.5;//4.0;//1.0;//0.25; // sigma symbol; width of the place feild
 	double pc_level = 1000.0;//1000.0;//5.5;//7.5;//5.0; //14.0; // place cell firing level
 	vector<float> pc_activity;
