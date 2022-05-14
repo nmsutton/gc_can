@@ -49,6 +49,9 @@ double pc_rate(int p_x, int p_y, int b_x, int b_y, P *p) {
 
 	if (d < p->dist_thresh) { // skip calculation for too distant neurons for computational efficiency
 		rate = p->pc_level * exp(-((pow(d,2))/(2*pow(p->pc_sig,2))));
+		/*if (d == 1) {
+			printf("t:%d r:%f\n",p->t,rate);
+		}*/
 	}
 
 	return rate;

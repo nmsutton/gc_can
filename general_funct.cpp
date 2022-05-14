@@ -299,7 +299,7 @@ public:
     		// assign connections
     		//if (this->weights_in[i][j] == 1.0) {
     		if (this->weights_in[i_adj][j] == 1.0) {
-    			connected = 1; // only connect where matrix value is 1.0 
+    			connected = 0;//1; // only connect where matrix value is 1.0 
     			/*if (i_adj>899) {
     				printf("i:%d j:%d i_adj:%d\n",i,j,i_adj);
     			}*/

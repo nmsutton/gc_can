@@ -18,8 +18,8 @@ initOAT;
 %spk_data = SpikeReader('/comp_neuro/Software/CARLsim6/.build/projects/hello_world/results/spk_MEC_LII_Stellate.dat', false, 'silent');
 %SpikeReader('/comp_neuro/Software/CARLsim4_dgx_hc_09_18_21/projects/hello_world2/results/spk_MEC_LII_Stellate.dat', false, 'silent');
 %spk_data = SpikeReader('/comp_neuro/Software/CARLsim4_dgx_hc_09_18_21/projects/hello_world2/results/spk_MEC_LII_Stellate.dat', false, 'silent');
-SpikeReader('/comp_neuro/Software/CARLsim4_dgx_hc_09_18_21/projects/hello_world/results/spk_MEC_LII_Stellate.dat', false, 'silent');
-spk_data = SpikeReader('/comp_neuro/Software/CARLsim4_dgx_hc_09_18_21/projects/hello_world/results/spk_MEC_LII_Stellate.dat', false, 'silent');
+SpikeReader('/comp_neuro/PhD/gmu/research/simulation/code/gc_can/results/spk_MEC_LII_Stellate.dat', false, 'silent');
+spk_data = SpikeReader('/comp_neuro/PhD/gmu/research/simulation/code/gc_can/results/spk_MEC_LII_Stellate.dat', false, 'silent');
 %SpikeReader('/comp_neuro/Software/CARLsim6-feat-ca3net/.build/projects/hello_world/results/spk_gc_exc.dat', false, 'silent');
 %spk_data = SpikeReader('/comp_neuro/Software/CARLsim6-feat-ca3net/.build/projects/hello_world/results/spk_gc_exc.dat', false, 'silent');
 %SpikeReader('/comp_neuro/Software/CARLsim6/.build/projects/hello_world/results/spk_gc_exc.dat', false, 'silent');
@@ -52,8 +52,8 @@ set(gcf, 'renderer', 'zbuffer');
 caxis manual; % allow subsequent plots to use the same color limits
 custom_colormap = load('neuron_space_colormap.mat');
 
-%for frameIndex = 1 : numberOfFrames
-for frameIndex = (numberOfFrames-30) : (numberOfFrames - 10)
+for frameIndex = 1 : numberOfFrames
+%for frameIndex = (numberOfFrames-100) : (numberOfFrames - 10)
   imgfile = reshape(spk_window(ceil(frameIndex/bin_size),:),[x_size,y_size])';
   if delay_frames == false
       imgfile = reshape(spk_window(frameIndex,:),[x_size,y_size])';
@@ -81,7 +81,7 @@ for frameIndex = (numberOfFrames-30) : (numberOfFrames - 10)
 end
 close(hFigure);
 myMovie(1) = []; % remove first frame causing issues due to wrong size
-v = VideoWriter('videos/firing_neuron_space.avi'); % Create a VideoWriter object to write the video out to a new, different file.
+v = VideoWriter('./videos/firing_neuron_space.avi'); % Create a VideoWriter object to write the video out to a new, different file.
 open(v)
 writeVideo(v,myMovie) % Write the movie object to a new video file.
 close(v)
