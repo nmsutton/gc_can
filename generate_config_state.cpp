@@ -14,8 +14,6 @@ int CA1_Pyramidal=sim.createGroup("CA1_Pyramidal",
 							p.CA1_Pyramidal_Count, EXCITATORY_NEURON, ANY, GPU_CORES);
 
 /* neuron type parameters */
-float s_C,s_k,s_vr,s_vt,s_a,s_b,s_vpeak,s_c,s_d;
-s_C=118;s_k=0.98;s_vr=-58.53;s_vt=-43.52;s_a=0.004;s_b=11.69;s_vpeak=7.85;s_c=-52.78;s_d=3;
 sim.setNeuronParameters(EC_LI_II_Multipolar_Pyramidal, 204.0f, 0.0f, 0.37f, 0.0f, -70.53f, 0.0f, -39.99f, 
 								0.0f, 0.001f, 0.0f, 0.01f, 0.0f, 3.96f, 0.0f, -54.95f, 0.0f, 
 								7.0f, 0.0f, 1); // C,k,vr,vt,a,b,vpeak,c,d
@@ -31,12 +29,6 @@ sim.setNeuronParameters(MEC_LII_Basket, 20.0f, 0.0f,  1.0f, 0.0f, -55.0f, 0.0f,
 sim.setNeuronParameters(EC_LII_Basket_Multipolar, 20.0f, 0.0f,  1.0f, 0.0f, -55.0f, 0.0f, 
 								-40.0f, 0.0f, 0.15f, 0.0f, 8.0f, 0.0f, 25.0f, 0.0f, 
 								-55.0f, 0.0f, 200.0f, 0.0f, 1); 
-/*sim.setNeuronParameters(CA1_Pyramidal, 334.0f, 0.0f, 1.56f, 0.0f, -69.36f, 0.0f, -53.22f, 
-								0.0f, 0.0f, 0.0f, -17.25f, 0.0f, 25.46f, 0.0f, -60.22f, 
-								0.0f, 16.0f, 0.0f, 1);*/
-/*sim.setNeuronParameters(CA1_Pyramidal, 204.0f, 0.0f, 0.37f, 0.0f, -70.53f, 0.0f, -39.99f, 
-                                0.0f, 0.001f, 0.0f, 0.01f, 0.0f, 3.96f, 0.0f, -54.95f, 0.0f, 
-                                7.0f, 0.0f, 1); // C,k,vr,vt,a,b,vpeak,c,d*/
 sim.setNeuronParameters(CA1_Pyramidal, 204.0f, 0.0f, 0.76f, 0.0f, -69.36f, 0.0f, -39.99f, 
                                 0.0f, 0.001f, 0.0f, 0.01f, 0.0f, 25.46f, 0.0f, -54.95f, 
                                 0.0f, 16.0f, 0.0f, 1);
@@ -62,8 +54,6 @@ sim.connect(MEC_LII_Stellate, EC_LII_Basket_Multipolar, SomeToSomeConn, SYN_FIXE
 sim.connect(EC_LII_Basket_Multipolar, MEC_LII_Stellate, MexHatConn, SYN_FIXED, 9.654, 0.0f); // 2 IN->GC one-to-many
 sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
 			RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 67.165, 0.0f); // 3 PCs
-//sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
-//          RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 9.0, 0.0f); // 3 PCs
 
 /* STP parameters */
 sim.setSTP(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, true, STPu(0.1513, 0.0f),
