@@ -58,8 +58,8 @@ struct P {
 	double const_speed = 0.195;//0.12; // setting for use of a constant virtual animal speed
 	double speed_mult = 1;//2;//0.5;//1;//2;//10;//1.0;//35.0;//0.6;//1.2;//1.5;//4.5;//7.5; // starting grid cell input speed level
 	float dir_to_gc_wt = 1.6;//1.6;//1.5;//1.6;//1.5;//1.5;//5.5; // ext_dir to gc weight
-	double mex_hat_multi = 140;//170;//200;//170;//170;//220;//180;//180;//300;//250;//140;//50;//30;//50;//800;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
-	float gc_to_in_wt = 2.5;//1;//1;//0.45;//1;//25;//700.0; // gc to interneurons weight
+	double mex_hat_multi = 100;//140;//170;//200;//170;//170;//220;//180;//180;//300;//250;//140;//50;//30;//50;//800;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
+	float gc_to_in_wt = 5.5;//2.5;//1;//1;//0.45;//1;//25;//700.0; // gc to interneurons weight
 	double dir_init_multi = 100000;//100000000;//10000;//1;//10000;
 	int move_delay = 25;//50; // delay in speed that moves are commanded to occur
 	double dist_thresh = 5; // distance threshold for only local connections
