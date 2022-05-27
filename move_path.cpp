@@ -2,25 +2,25 @@
 	movement sequences
 */
 
-char rand_move() {
+string rand_move() {
 	int num_directions = 5;
 	int rand_val = rand() % num_directions + 1;
-	char direction;
+	string direction;
 
 	if (rand_val == 1) {
-		direction = 'u';
+		direction = "u";
 	}
 	else if (rand_val == 2) {
-		direction = 'r';
+		direction = "r";
 	}
 	else if (rand_val == 3) {
-		direction = 'd';
+		direction = "d";
 	}
 	else if (rand_val == 4) {
-		direction = 'l';
+		direction = "l";
 	}
 	else if (rand_val == 5) {
-		direction = 'n'; // stopped
+		direction = "n"; // stopped
 	}
 
 	return direction;
@@ -39,9 +39,9 @@ double rand_speed(P *p) {
 	return (double) rand_val * scale;
 }
 
-void EISignal(char direction, CARLsim* sim, P* p);
+void EISignal(string direction, CARLsim* sim, P* p);
 
-void run_path(vector<char> *moves, double *speeds, int *speed_times, int num_moves, int num_speeds, CARLsim* sim, P *p) {
+void run_path(vector<string> *moves, double *speeds, int *speed_times, int num_moves, int num_speeds, CARLsim* sim, P *p) {
 	/*
 		Run movements through a path.
 	*/
@@ -67,7 +67,7 @@ void run_path(vector<char> *moves, double *speeds, int *speed_times, int num_mov
 
 void straight_path(CARLsim* sim, P* p) {
 	// stright line path
-	EISignal('r', sim, p);
+	EISignal("ur", sim, p);
 }
 
 void rand_path(CARLsim* sim, P* p) {
@@ -83,15 +83,15 @@ void rand_path(CARLsim* sim, P* p) {
 void move_path_bound_test(CARLsim* sim, P* p) {
 	// movement path
 
-	vector<char> moves{'u','l','l','u','r','r','l','r','r','r','r','u','u','u','l','l','u','r','r','r','u','l',
-	'd','r','d','r','l','l','u','r','r','r','l','l','l','l','u','r','l','d','r','d','d','u','d','u','d','u',
-	'u','r','d','l','l','l','r','u','u','u','r','r','u','r','r','r','r','r','u','r','r','r','r','d','u','r',
-	'l','u','r','u','d','r','l','l','r','u','r','r','r','l','d','r','d','r','l','d','r','d','d','u','r','d',
-	'r','l','l','u','r','r','l','l','u','l','u','u','r','r','u','r','r','r','r','r','r','r','r','r','r','d',
-	'u','r','l','u','r','u','d','r','l','l','u','r','r','r','l','d','r','d','r','l','d','r','d','d','u','d',
-	'r','l','l','u','r','r','l','l','u','l','l','u','r','r','u','n','n','n','n','n','n','r','r','r','d','u',
-	'r','l','u','r','u','d','r','l','l','r','u','r','r','r','l','d','r','d','r','l','d','r','d','d','u','d',
-	'r','l','l','u','r','r','l','l','u','l','l','r','l','l','u','u','l','l'};
+	vector<string> moves{"u","l","l","u","r","r","l","r","r","r","r","u","u","u","l","l","u","r","r","r","u","l",
+	"d","r","d","r","l","l","u","r","r","r","l","l","l","l","u","r","l","d","r","d","d","u","d","u","d","u",
+	"u","r","d","l","l","l","r","u","u","u","r","r","u","r","r","r","r","r","u","r","r","r","r","d","u","r",
+	"l","u","r","u","d","r","l","l","r","u","r","r","r","l","d","r","d","r","l","d","r","d","d","u","r","d",
+	"r","l","l","u","r","r","l","l","u","l","u","u","r","r","u","r","r","r","r","r","r","r","r","r","r","d",
+	"u","r","l","u","r","u","d","r","l","l","u","r","r","r","l","d","r","d","r","l","d","r","d","d","u","d",
+	"r","l","l","u","r","r","l","l","u","l","l","u","r","r","u","n","n","n","n","n","n","r","r","r","d","u",
+	"r","l","u","r","u","d","r","l","l","r","u","r","r","r","l","d","r","d","r","l","d","r","d","d","u","d",
+	"r","l","l","u","r","r","l","l","u","l","l","r","l","l","u","u","l","l"};
 	double speeds[] {0.25,0.5,1.0,0.2,0.33,0.5,1.0,0.2,1.0,0.25,0.5,0.33,1.0,0.5,0.25};
 	int speed_times[] {1,10,20,30,60,90,120,150,180,210,300,350,400,491,499};
 	int num_moves = moves.size();
@@ -103,22 +103,22 @@ void move_path_bound_test(CARLsim* sim, P* p) {
 void move_path(CARLsim* sim, P* p) {
 	// movement path
 
-	vector<char> moves{'u','r','d','r','d','l','r','u','r','l','r','l','r','u','r','l','r','l','r','u','r','d',
-	'r','u','r','r','r','d','d','l','u','u','r','r','u','u','l','l','d','r','r','d','d','r','r','l','l','d',
-	'l','r','u','d','r','u','r','d','r','r','l','l','d','l','r','u','d','r','r','r','l','l','d','l','r','u',
-	'd','r','d','r','u','r','d','r','r','l','l','d','l','r','u','d','r','r','r','l','d','l','l','u','u','l',
-	'l','u','u','u','r','r','r','r','u','r','r','l','r','u','r','l','r','l','r','u','r','d','r','u','r','r',
-	'r','d','d','l','u','d','r','r','l','l','u','u','r','u','u','r','d','r','r','l','l','d','l','r','u','d',
-	'r','u','r','d','r','r','l','l','d','l','r','u','d','r','r','r','l','l','d','l','r','u','d','r','d','r',
-	'u','r','d','r','r','l','l','d','l','r','u','d','r','r','r','l','d','l','l','u','u','l','l','u','u','u',
-	'r','r','r','r','u','r','r','l','r','u','r','l','r','l','r','u','r','d','r','u','r','r','r','d','d','l',
-	'u','d','r','r','l','l','u','u','r','u','u','r','d','r','r','l','l','d','l','r','u','d','r','u','r','d',
-	'r','r','l','l','d','l','r','u','d','r','r','r','l','l','d','l','r','u','d','r','d','r','u','r','d','r',
-	'r','l','l','d','l','r','u','d','r','r','r','l','d','l','l','u','u','l','l','u','u','u','r','r','r','r',
-	'u','r','n','n','n','u','n','n','n','n','n','n','n','d','r','u','r','r','r','d','d','l','u','d','r','r',
-	'l','l','u','u','r','u','u','r','d','r','r','l','l','d','l','r','u','d','r','u','r','d','r','r','l','l',
-	'd','l','r','u','d','r','r','r','l','l','d','l','r','u','d','r','d','r','u','r','d','r','r','l','l','d',
-	'l','r','u','d','r','r','r','l','d','l','l','u','u','l','l','r','r','l','d','l','l','u','u','l','l',};
+	vector<string> moves{"u","r","d","r","d","l","r","u","r","l","r","l","r","u","r","l","r","l","r","u","r","d",
+	"r","u","r","r","r","d","d","l","u","u","r","r","u","u","l","l","d","r","r","d","d","r","r","l","l","d",
+	"l","r","u","d","r","u","r","d","r","r","l","l","d","l","r","u","d","r","r","r","l","l","d","l","r","u",
+	"d","r","d","r","u","r","d","r","r","l","l","d","l","r","u","d","r","r","r","l","d","l","l","u","u","l",
+	"l","u","u","u","r","r","r","r","u","r","r","l","r","u","r","l","r","l","r","u","r","d","r","u","r","r",
+	"r","d","d","l","u","d","r","r","l","l","u","u","r","u","u","r","d","r","r","l","l","d","l","r","u","d",
+	"r","u","r","d","r","r","l","l","d","l","r","u","d","r","r","r","l","l","d","l","r","u","d","r","d","r",
+	"u","r","d","r","r","l","l","d","l","r","u","d","r","r","r","l","d","l","l","u","u","l","l","u","u","u",
+	"r","r","r","r","u","r","r","l","r","u","r","l","r","l","r","u","r","d","r","u","r","r","r","d","d","l",
+	"u","d","r","r","l","l","u","u","r","u","u","r","d","r","r","l","l","d","l","r","u","d","r","u","r","d",
+	"r","r","l","l","d","l","r","u","d","r","r","r","l","l","d","l","r","u","d","r","d","r","u","r","d","r",
+	"r","l","l","d","l","r","u","d","r","r","r","l","d","l","l","u","u","l","l","u","u","u","r","r","r","r",
+	"u","r","n","n","n","u","n","n","n","n","n","n","n","d","r","u","r","r","r","d","d","l","u","d","r","r",
+	"l","l","u","u","r","u","u","r","d","r","r","l","l","d","l","r","u","d","r","u","r","d","r","r","l","l",
+	"d","l","r","u","d","r","r","r","l","l","d","l","r","u","d","r","d","r","u","r","d","r","r","l","l","d",
+	"l","r","u","d","r","r","r","l","d","l","l","u","u","l","l","r","r","l","d","l","l","u","u","l","l"};
 	double speeds[] = {1.0};
 	int speed_times[] = {1};
 	int num_moves = moves.size();
@@ -130,9 +130,9 @@ void move_path(CARLsim* sim, P* p) {
 void move_path2(CARLsim* sim, P* p) {
 	// movement path
 
-	vector<char> moves{'n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n',
-	'n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n','n',
-	'n','n','n',};
+	vector<string> moves{"n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n",
+	"n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n","n",
+	"n","n","n"};
 	double speeds[] = {1.0};
 	int speed_times[] = {1};
 	int num_moves = moves.size();
@@ -144,13 +144,13 @@ void move_path2(CARLsim* sim, P* p) {
 void move_path3(CARLsim* sim, P* p) {
 	// movement path
 
-	vector<char> moves;
+	vector<string> moves;
 	for (int i = 0; i < 34*25; i++) {
 		for (int j = 0; j < 60; j++) {
-			moves.push_back('l');
+			moves.push_back("l");
 		}
-		moves.push_back('d');
-		moves.push_back('d');
+		moves.push_back("d");
+		moves.push_back("d");
 	}
 
 	double speeds[] = {1.0};

@@ -129,15 +129,15 @@ int main() {
 		p.t = t;
 		// Disable initial current to GCs settings
 		if (t == 2) {
-			setExtDir(&p,'l',0.04);
+			setExtDir(&p,"l",0.04);
 			sim.setExternalCurrent(EC_LI_II_Multipolar_Pyramidal, p.ext_dir);
 		}
 		sim.runNetwork(0,1,false); // run for 1 ms, don't generate run stats
 		SMexc->stopRecording();
 		p.nrn_spk = SMexc->getSpikeVector2D(); // store firing in vector
 		SMexc->startRecording();
-		//straight_path(&sim, &p); // process movement
-		move_path3(&sim, &p);
+		straight_path(&sim, &p); // process movement
+		//move_path3(&sim, &p);
 		PrintWeightsAndFiring(&p);
 		if (p.record_fire_vs_pos) {RecordNeuronVsLocation(&sim, &p);}
 		if (p.record_pos_track) {RecordLocationPath(&p, "current");}

@@ -54,53 +54,57 @@ void PrintWeightsAndFiring(P *p) {
 	}
 }
 
-char get_pd(int i, P *p) {	
-	char pd = 'n';
+string get_pd(int i, P *p) {	
+	string pd = "n";
 	int x = i % p->x_size;
 	int y = i / p->x_size;
 
 	if (y % 2 == 0) {
-		if (x % 2 == 0) {pd = 'd';}
-		else {pd = 'u';}
+		if (x % 2 == 0) {pd = "d";}
+		else {pd = "u";}
 	}
 	else {
-		if (x % 2 == 0) {pd = 'r';}
-		else {pd = 'l';}		
+		if (x % 2 == 0) {pd = "r";}
+		else {pd = "l";}		
 	}
 
 	return pd;
 }
 
-char get_opp_pd(int i, P *p) {	
+string get_opp_pd(int i, P *p) {	
 	/* returns opposite preferred direction */
-	char pd;
+	string pd;
 	int x = i % p->x_size;
 	int y = i / p->x_size;
 
 	if (y % 2 == 0) {
-		if (x % 2 == 0) {pd = 'u';}
-		else {pd = 'd';}
+		if (x % 2 == 0) {pd = "u";}
+		else {pd = "d";}
 	}
 	else {
-		if (x % 2 == 0) {pd = 'l';}
-		else {pd = 'r';}		
+		if (x % 2 == 0) {pd = "l";}
+		else {pd = "r";}		
 	}
 
 	return pd;
 }
 
-void set_pos(P *p, char direction) {
-	if (direction == 'u') {
+void set_pos(P *p, string direction) {
+	if (direction == "u") {
 		p->pos[1] = p->pos[1] - p->move_increment; 
 	}
-	else if (direction == 'd') {
+	else if (direction == "d") {
 		p->pos[1] = p->pos[1] + p->move_increment; 
 	}
-	else if (direction == 'l') {
+	else if (direction == "l") {
 		p->pos[0] = p->pos[0] + p->move_increment; 
 	}
-	else if (direction == 'r') {
+	else if (direction == "r") {
 		p->pos[0] = p->pos[0] - p->move_increment; 
+	}
+	else if (direction == "ur") {
+		p->pos[1] = p->pos[1] + p->move_increment; 
+		p->pos[0] = p->pos[0] - p->move_increment;
 	}
 
 	if (p->pos[0] >= p->x_size) {
@@ -117,7 +121,7 @@ void set_pos(P *p, char direction) {
 		p->pos[1] = (p->y_size - 1);
 	}
 
-	if (p->print_move == true && direction != 'n') {
+	if (p->print_move == true && direction != "n") {
 		cout << " move: " << direction << " " << p->pos[0] << " " << p->pos[1] << " t: " << p->t;
 	}
 
@@ -361,7 +365,7 @@ void setInitExtDir(P* p) {
 	}
 }
 
-void setExtDir(P* p, char dir, double speed) {
+void setExtDir(P* p, string dir, double speed) {
 	for (int i = 0; i < p->layer_size; i++) {
 		if (get_pd(i, p) == dir) {
 			p->ext_dir[i] = p->base_ext*pow((1+speed),p->speed_mult);
@@ -369,13 +373,17 @@ void setExtDir(P* p, char dir, double speed) {
 		//else if (get_opp_pd(i, p) == dir) {
 		//	p->ext_dir[i] = p->base_ext*pow((1-speed),p->speed_mult);
 		//}
+		//if (get_pd(i-1, p) == dir) {
+			// this condition is for testing purposes
+			//p->ext_dir[i-1] = p->base_ext*pow((1+speed),p->speed_mult);
+		//}
 		else {
 			p->ext_dir[i] = p->base_ext;
 		}
 	}
 }
 
-void EISignal(char direction, CARLsim* sim, P* p) {
+void EISignal(string direction, CARLsim* sim, P* p) {
 	/*
 		Apply external input
 	*/	
