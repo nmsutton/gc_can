@@ -129,7 +129,7 @@ int main() {
 		p.t = t;
 		// Disable initial current to GCs settings
 		if (t == 2) {
-			setExtDir(&p,"l",0.04);
+			setExtDir(&p,270,0.04);
 			sim.setExternalCurrent(EC_LI_II_Multipolar_Pyramidal, p.ext_dir);
 		}
 		sim.runNetwork(0,1,false); // run for 1 ms, don't generate run stats

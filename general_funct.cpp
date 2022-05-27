@@ -54,79 +54,89 @@ void PrintWeightsAndFiring(P *p) {
 	}
 }
 
-string get_pd(int i, P *p) {	
-	string pd = "n";
+double get_pd(int i, P *p) {	
+	double pd = 0;
 	int x = i % p->x_size;
 	int y = i / p->x_size;
 
 	if (y % 2 == 0) {
-		if (x % 2 == 0) {pd = "d";}
-		else {pd = "u";}
+		if (x % 2 == 0) {pd = 180;}
+		else {pd = 0;}
 	}
 	else {
-		if (x % 2 == 0) {pd = "r";}
-		else {pd = "l";}		
+		if (x % 2 == 0) {pd = 90;}
+		else {pd = 270;}		
 	}
 
 	return pd;
 }
 
-string get_opp_pd(int i, P *p) {	
+double get_opp_pd(int i, P *p) {	
 	/* returns opposite preferred direction */
-	string pd;
+	double pd;
 	int x = i % p->x_size;
 	int y = i / p->x_size;
 
 	if (y % 2 == 0) {
-		if (x % 2 == 0) {pd = "u";}
-		else {pd = "d";}
+		if (x % 2 == 0) {pd = 0;}
+		else {pd = 180;}
 	}
 	else {
-		if (x % 2 == 0) {pd = "l";}
-		else {pd = "r";}		
+		if (x % 2 == 0) {pd = 270;}
+		else {pd = 90;}		
 	}
 
 	return pd;
 }
 
-void set_pos(P *p, string direction) {
-	if (direction == "u") {
-		p->pos[1] = p->pos[1] - p->move_increment; 
+void set_pos(P *p, double angle) {
+	/*
+		Angle should be between 0-360 degrees.
+	*/
+	double ver, hor, ang_adj;
+	if (angle < 90) {
+		ang_adj = 90 - angle;
+		ver = ang_adj;
+		hor = 90 - ang_adj;
 	}
-	else if (direction == "d") {
-		p->pos[1] = p->pos[1] + p->move_increment; 
+	else if (angle >= 90 and angle < 180) {
+		ang_adj = angle - 90;
+		ver = -ang_adj;
+		hor = 90 - ang_adj;
 	}
-	else if (direction == "l") {
-		p->pos[0] = p->pos[0] + p->move_increment; 
+	else if (angle >= 180 and angle < 270) {
+		ang_adj = angle - 180;
+		ver = -90 + ang_adj;
+		hor = -ang_adj;
 	}
-	else if (direction == "r") {
-		p->pos[0] = p->pos[0] - p->move_increment; 
-	}
-	else if (direction == "ur") {
-		p->pos[1] = p->pos[1] - p->move_increment; 
-		//p->pos[0] = p->pos[0] - p->move_increment;
-		p->pos[0] = p->pos[0] + p->move_increment;
+	else if (angle >= 270 and angle <= 360) {
+		ang_adj = angle - 270;
+		ver = ang_adj;
+		hor = -90 + ang_adj;
 	}
 
+	ver = -(ver/90) * p->move_increment;
+	hor = (hor/90) * p->move_increment;
+	p->pos[0] = p->pos[0] + hor;
+	p->pos[1] = p->pos[1] + ver;
+
+	// wrap around twisted taurus
 	if (p->pos[0] >= p->x_size) {
-		p->pos[0] = 0;
-		//printf("%f >= %d\n",p->pos[0],p->x_size);
+		p->pos[0] = p->x_size - p->pos[0];
 	}
 	else if (p->pos[0] < 0) {
-		p->pos[0] = (p->x_size - 1);
+		p->pos[0] = p->x_size + p->pos[0];
 	}
 	if (p->pos[1] >= p->y_size) {
-		p->pos[1] = 0;
+		p->pos[1] = p->y_size - p->pos[1];
 	}
 	else if (p->pos[1] < 0) {
-		p->pos[1] = (p->y_size - 1);
+		p->pos[1] = p->y_size + p->pos[1];
 	}
 
-	if (p->print_move == true && direction != "n") {
-		cout << " move: " << direction << " " << p->pos[0] << " " << p->pos[1] << " t: " << p->t;
+	if (p->print_move == true) {
+		cout << " move: " << angle << " " << p->pos[0] << " " << p->pos[1] << " t: " << p->t;
 	}
-
-	p->last_dir=direction;
 }
 
 double get_noise(P *p) {
@@ -366,17 +376,17 @@ void setInitExtDir(P* p) {
 	}
 }
 
-void setExtDir(P* p, string dir, double speed) {
+void setExtDir(P* p, double angle, double speed) {
 	for (int i = 0; i < p->layer_size; i++) {
-		if (get_pd(i, p) == dir) {
+		if (get_pd(i, p) == angle) {
 			p->ext_dir[i] = p->base_ext*pow((1+speed),p->speed_mult);
 		}
 		//else if (get_opp_pd(i, p) == dir) {
 		//	p->ext_dir[i] = p->base_ext*pow((1-speed),p->speed_mult);
 		//}
-		if (get_pd(i-1, p) == dir) {
+		if (get_pd(i-1, p) == angle) {
 			// this condition is for testing purposes
-			p->ext_dir[i-1] = p->base_ext*pow((1+speed),p->speed_mult);
+			//p->ext_dir[i-1] = p->base_ext*pow((1+speed),p->speed_mult);
 		}
 		else {
 			p->ext_dir[i] = p->base_ext;
@@ -384,19 +394,19 @@ void setExtDir(P* p, string dir, double speed) {
 	}
 }
 
-void EISignal(string direction, CARLsim* sim, P* p) {
+void EISignal(double angle, CARLsim* sim, P* p) {
 	/*
 		Apply external input
 	*/	
 	double noise;
 
 	count_firing(p, p->gc_firing_bin, p->nrn_spk);
-	set_pos(p, direction); 
+	set_pos(p, angle); 
 	if (p->print_move) {cout << "\n";}
 
 	// set velocity of movement
 	if (p->t > 2) {
-		setExtDir(p,direction,p->const_speed);//0.20);
+		setExtDir(p,angle,p->const_speed);//0.20);
 		sim->setExternalCurrent(0, p->ext_dir);
 	}	
 

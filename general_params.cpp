@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 10; // size of bins to record firing activity
-	double sim_time = 2000*firing_bin; // sim run time in ms
+	double sim_time = 500*firing_bin; // sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -22,8 +22,7 @@ struct P {
 	static const int EC_LII_Basket_Multipolar_Count = 300;
 	static const int CA1_Pyramidal_Count = 900;
 	double pos[2] = {3,6}; // starting position; {x,y}
-	string dirs[4] = {"u", "r", "d", "l"};
-	string last_dir; // last direction command
+	double dirs[4] = {0, 90, 180, 270};
 	double mi = 0; // move list index
 	vector<vector<int>> nrn_spk; // for total firing recording
 	vector<vector<double>> weights_in; // IN-GC weights
@@ -79,7 +78,7 @@ struct P {
 	double ala_act_lvl = 0.1; // amount of activity level added for each visit with animal location all plot.
 
 	// place cell parameters
-	float pc_to_gc_wt = 0.5;//3;//0.5;//10; // pc to gc synaptic weight
+	float pc_to_gc_wt = 3;//0.5;//10; // pc to gc synaptic weight
 	double pc_sig = 1.5;//4.0;//1.0;//0.25; // sigma symbol; width of the place feild
 	double pc_level = 1000.0;//1000.0;//5.5;//7.5;//5.0; //14.0; // place cell firing level
 	vector<float> pc_activity;
