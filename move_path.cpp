@@ -64,7 +64,7 @@ void run_path(vector<double> *moves, double *speeds, int *speed_times, int num_m
 
 void straight_path(CARLsim* sim, P* p) {
 	// stright line path
-	EISignal(315, sim, p);
+	EISignal(45, sim, p);
 }
 
 void rand_path(CARLsim* sim, P* p) {

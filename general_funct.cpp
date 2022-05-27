@@ -89,10 +89,12 @@ double get_opp_pd(int i, P *p) {
 	return pd;
 }
 
-void set_pos(P *p, double angle) {
+vector<double> find_ver_hor(double angle) {
 	/*
-		Angle should be between 0-360 degrees.
+		Translate angle into proportion of horizonal and vertical movement
+		needed to create movement in the direction of the angle.
 	*/
+	vector<double> ver_hor;
 	double ver, hor, ang_adj;
 	if (angle < 90) {
 		ang_adj = 90 - angle;
@@ -115,10 +117,21 @@ void set_pos(P *p, double angle) {
 		hor = -90 + ang_adj;
 	}
 
-	ver = -(ver/90) * p->move_increment;
-	hor = (hor/90) * p->move_increment;
-	p->pos[0] = p->pos[0] + hor;
-	p->pos[1] = p->pos[1] + ver;
+	ver = -(ver/90);
+	hor = (hor/90);
+	ver_hor.push_back(ver);
+	ver_hor.push_back(hor);
+
+	return ver_hor;
+}
+
+void set_pos(P *p, double angle) {
+	/*
+		Angle should be between 0-360 degrees.
+	*/
+	vector<double> ver_hor = find_ver_hor(angle);
+	p->pos[0] = p->pos[0] + (ver_hor[1] * p->move_increment);
+	p->pos[1] = p->pos[1] + (ver_hor[0] * p->move_increment);
 
 	// wrap around twisted taurus
 	if (p->pos[0] >= p->x_size) {
@@ -376,20 +389,51 @@ void setInitExtDir(P* p) {
 	}
 }
 
+vector<double> directional_speeds(P* p, double angle, double speed) {
+	/*
+		This function translates an angle and speed into what speed in 
+		4 compass directions (N,E,S,W) can create that movement.
+	*/
+	vector<double> ver_hor = find_ver_hor(angle);
+	double ver = ver_hor[0];
+	double hor = ver_hor[1];
+	double N,E,S,W;N=1;E=1;S=1;W=1;
+	double speed_adj = pow((1+speed),p->speed_mult);
+
+	if (ver >= 0) {
+		N += abs(ver)*speed_adj;
+	}
+	else {
+		S += abs(ver)*speed_adj;
+	}
+	if (hor >= 0) {
+		//E += abs(hor)*speed_adj;
+		W += abs(hor)*speed_adj;
+	}
+	else {
+		//W += abs(hor)*speed_adj;
+		E += abs(hor)*speed_adj;
+	}
+	vector<double> speeds = {N,E,S,W};
+
+	return speeds;
+}
+
 void setExtDir(P* p, double angle, double speed) {
+	vector<double> speeds = directional_speeds(p, angle, speed);
+
 	for (int i = 0; i < p->layer_size; i++) {
-		if (get_pd(i, p) == angle) {
-			p->ext_dir[i] = p->base_ext*pow((1+speed),p->speed_mult);
+		if (get_pd(i, p) == 0) {
+			p->ext_dir[i] = p->base_ext*speeds[0];
 		}
-		//else if (get_opp_pd(i, p) == dir) {
-		//	p->ext_dir[i] = p->base_ext*pow((1-speed),p->speed_mult);
-		//}
-		if (get_pd(i-1, p) == angle) {
-			// this condition is for testing purposes
-			//p->ext_dir[i-1] = p->base_ext*pow((1+speed),p->speed_mult);
+		else if (get_pd(i, p) == 90) {
+			p->ext_dir[i] = p->base_ext*speeds[1];
 		}
-		else {
-			p->ext_dir[i] = p->base_ext;
+		else if (get_pd(i, p) == 180) {
+			p->ext_dir[i] = p->base_ext*speeds[2];
+		}
+		else if (get_pd(i, p) == 270) {
+			p->ext_dir[i] = p->base_ext*speeds[3];
 		}
 	}
 }
