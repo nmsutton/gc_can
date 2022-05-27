@@ -103,8 +103,9 @@ void set_pos(P *p, string direction) {
 		p->pos[0] = p->pos[0] - p->move_increment; 
 	}
 	else if (direction == "ur") {
-		p->pos[1] = p->pos[1] + p->move_increment; 
-		p->pos[0] = p->pos[0] - p->move_increment;
+		p->pos[1] = p->pos[1] - p->move_increment; 
+		//p->pos[0] = p->pos[0] - p->move_increment;
+		p->pos[0] = p->pos[0] + p->move_increment;
 	}
 
 	if (p->pos[0] >= p->x_size) {
@@ -373,10 +374,10 @@ void setExtDir(P* p, string dir, double speed) {
 		//else if (get_opp_pd(i, p) == dir) {
 		//	p->ext_dir[i] = p->base_ext*pow((1-speed),p->speed_mult);
 		//}
-		//if (get_pd(i-1, p) == dir) {
+		if (get_pd(i-1, p) == dir) {
 			// this condition is for testing purposes
-			//p->ext_dir[i-1] = p->base_ext*pow((1+speed),p->speed_mult);
-		//}
+			p->ext_dir[i-1] = p->base_ext*pow((1+speed),p->speed_mult);
+		}
 		else {
 			p->ext_dir[i] = p->base_ext;
 		}
