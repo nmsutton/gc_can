@@ -35,6 +35,7 @@ struct P {
 	#define import_animal_data 1 // 1 for import and 0 for no import
 	int animal_timesteps = 29416;
 	int animal_ts = 20; // timestep in ms
+	double pc_move_scale = 0.1/1.773;//0.01/1.773;
 
 	// common parameters that can vary per each run
 	bool print_move = 0; // print each move's direction

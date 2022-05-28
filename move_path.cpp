@@ -36,6 +36,11 @@ double rand_speed(P *p) {
 	return (double) rand_val * scale;
 }
 
+void control_speed(double speed, P* p) {
+	p->move_increment = speed * p->pc_move_scale;
+	//p->speed_mult
+}
+
 void EISignal(double angle, CARLsim* sim, P* p);
 
 void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_times, int num_moves, int num_speeds, CARLsim* sim, P *p) {
@@ -50,6 +55,7 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 					p->base_ext = speeds[i];
 				}
 			}*/
+			control_speed((*speeds)[(int) floor(p->mi)], p);
 			EISignal((*moves)[(int) floor(p->mi)], sim, p);
 		}
 		else {
@@ -70,8 +76,8 @@ void straight_path(CARLsim* sim, P* p) {
 void rand_path(CARLsim* sim, P* p) {
 	// random move
 
-	if (p->t % 50 == 0) {
-		p->base_ext = rand_speed(p);
+	if (p->t % 20 == 0) {
+		//p->base_ext = rand_speed(p);
 		//printf("speed: %f\n",p->base_ext);
 	}
 	EISignal(rand_move(), sim, p);
