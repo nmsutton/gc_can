@@ -406,13 +406,11 @@ vector<double> directional_speeds(P* p, double angle, double speed) {
 	else {
 		S += abs(ver)*speed_adj;
 	}
-	if (hor >= 0) {
-		//E += abs(hor)*speed_adj;
-		W += abs(hor)*speed_adj;
+	if (hor <= 0) {
+		E += abs(hor)*speed_adj;
 	}
 	else {
-		//W += abs(hor)*speed_adj;
-		E += abs(hor)*speed_adj;
+		W += abs(hor)*speed_adj;
 	}
 	vector<double> speeds = {N,E,S,W};
 

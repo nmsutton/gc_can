@@ -38,7 +38,7 @@ double rand_speed(P *p) {
 
 void EISignal(double angle, CARLsim* sim, P* p);
 
-void run_path(vector<double> *moves, double *speeds, int *speed_times, int num_moves, int num_speeds, CARLsim* sim, P *p) {
+void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_times, int num_moves, int num_speeds, CARLsim* sim, P *p) {
 	/*
 		Run movements through a path.
 	*/
@@ -64,7 +64,7 @@ void run_path(vector<double> *moves, double *speeds, int *speed_times, int num_m
 
 void straight_path(CARLsim* sim, P* p) {
 	// stright line path
-	EISignal(45, sim, p);
+	EISignal(180, sim, p);
 }
 
 void rand_path(CARLsim* sim, P* p) {
@@ -89,12 +89,12 @@ void move_path_bound_test(CARLsim* sim, P* p) {
 	90,270,270,0,90,90,270,270,0,270,270,0,90,90,0,0,0,0,0,0,0,90,90,90,180,0,
 	90,270,0,90,0,180,90,270,270,90,0,90,90,90,270,180,90,180,90,270,180,90,180,180,0,180,
 	90,270,270,0,90,90,270,270,0,270,270,90,270,270,0,0,270,270};
-	double speeds[] {0.25,0.5,1.0,0.2,0.33,0.5,1.0,0.2,1.0,0.25,0.5,0.33,1.0,0.5,0.25};
-	int speed_times[] {1,10,20,30,60,90,120,150,180,210,300,350,400,491,499};
+	vector<double> speeds = {0.25,0.5,1.0,0.2,0.33,0.5,1.0,0.2,1.0,0.25,0.5,0.33,1.0,0.5,0.25};
+	vector<int> speed_times = {1,10,20,30,60,90,120,150,180,210,300,350,400,491,499};
 	int num_moves = moves.size();
-	int num_speeds = sizeof(speeds) / sizeof(double);
+	int num_speeds = speeds.size();
 
-	run_path(&moves, speeds, speed_times, num_moves, num_speeds, sim, p);
+	run_path(&moves, &speeds, &speed_times, num_moves, num_speeds, sim, p);
 }
 
 void move_path(CARLsim* sim, P* p) {
@@ -116,25 +116,25 @@ void move_path(CARLsim* sim, P* p) {
 	270,270,0,0,90,0,0,90,180,90,90,270,270,180,270,90,0,180,90,0,90,180,90,90,270,270,
 	180,270,90,0,180,90,90,90,270,270,180,270,90,0,180,90,180,90,0,90,180,90,90,270,270,180,
 	270,90,0,180,90,90,90,270,180,270,270,0,0,270,270,90,90,270,180,270,270,0,0,270,270};
-	double speeds[] = {1.0};
-	int speed_times[] = {1};
+	vector<double> speeds = {1.0};
+	vector<int> speed_times = {1};
 	int num_moves = moves.size();
-	int num_speeds = sizeof(speeds);
+	int num_speeds = speeds.size();
 
-	run_path(&moves, speeds, speed_times, num_moves, num_speeds, sim, p);
+	run_path(&moves, &speeds, &speed_times, num_moves, num_speeds, sim, p);
 }
 
 void move_path2(CARLsim* sim, P* p) {
 	// movement path
 
-	vector<double> moves{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	vector<double> moves = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-	double speeds[] = {1.0};
-	int speed_times[] = {1};
+	vector<double> speeds = {1.0};
+	vector<int> speed_times = {1};
 	int num_moves = moves.size();
-	int num_speeds = sizeof(speeds);
+	int num_speeds = speeds.size();
 
-	run_path(&moves, speeds, speed_times, num_moves, num_speeds, sim, p);
+	run_path(&moves, &speeds, &speed_times, num_moves, num_speeds, sim, p);
 }
 
 void move_path3(CARLsim* sim, P* p) {
@@ -149,10 +149,31 @@ void move_path3(CARLsim* sim, P* p) {
 		moves.push_back(180);
 	}
 
-	double speeds[] = {1.0};
-	int speed_times[] = {1};
+	vector<double> speeds = {1.0};
+	vector<int> speed_times = {1};
 	int num_moves = moves.size();
-	int num_speeds = sizeof(speeds);
+	int num_speeds = speeds.size();
 
-	run_path(&moves, speeds, speed_times, num_moves, num_speeds, sim, p);
+	run_path(&moves, &speeds, &speed_times, num_moves, num_speeds, sim, p);
+}
+
+void move_animal(CARLsim* sim, P* p) {
+	/*
+		Movement data from real animal recordings.
+	*/
+	#if import_animal_data
+		#include "data/anim_angles.cpp"
+		#include "data/anim_speeds.cpp"
+	#endif
+
+	vector<int> speed_times;
+
+	for (int i = 0; i < p->animal_timesteps; i++) {
+		speed_times.push_back(i*p->animal_ts);
+	}
+
+	int num_moves = anim_angles.size();
+	int num_speeds = anim_speeds.size();
+
+	run_path(&anim_angles, &anim_speeds, &speed_times, num_moves, num_speeds, sim, p);	
 }

@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 10; // size of bins to record firing activity
-	double sim_time = 500*firing_bin; // sim run time in ms
+	double sim_time = 1000*firing_bin; // sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -29,6 +29,12 @@ struct P {
 	vector<vector<float>> inec_weights;
 	double gc_firing[layer_size]; // gc spiking amount
 	double gc_firing_bin[layer_size]; // gc spiking amount in time bins
+
+	// animal data parameters
+	string anim_rec_file = "../../moves_analysis/src/reformatted_moves.txt";
+	#define import_animal_data 1 // 1 for import and 0 for no import
+	int animal_timesteps = 29416;
+	int animal_ts = 20; // timestep in ms
 
 	// common parameters that can vary per each run
 	bool print_move = 0; // print each move's direction
@@ -60,9 +66,9 @@ struct P {
 	double mex_hat_multi = 70;//85;//100;//70;//60;//60;//70;//90;//100;//140;//170;//200;//170;//170;//220;//180;//180;//300;//250;//140;//50;//30;//50;//800;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
 	float gc_to_in_wt = 8.5;//12;//5.5;//18.5;//16.5;//15.5;//13.5;//11.5;//5.5;//2.5;//1;//1;//0.45;//1;//25;//700.0; // gc to interneurons weight
 	double dir_init_multi = 100000;//100000000;//10000;//1;//10000;
-	int move_delay = 25;//50; // delay in speed that moves are commanded to occur
+	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
 	double dist_thresh = 5; // distance threshold for only local connections
-	double move_increment = 0.005;//0.2;//0.05;//0.01;//0.266;//0.1;//0.03;//0.05;//0.12;//0.133;//0.664;//0.55;//0.5312;//0.664;//0.665;//0.658;//0.64;//0.658;//0.1;//0.5;//0.2634;//0.325;//0.65; // amount to move in position each move command
+	double move_increment = 0.01;//0.005;//0.2;//0.05;//0.01;//0.266;//0.1;//0.03;//0.05;//0.12;//0.133;//0.664;//0.55;//0.5312;//0.664;//0.665;//0.658;//0.64;//0.658;//0.1;//0.5;//0.2634;//0.325;//0.65; // amount to move in position each move command
 	vector<float> ext_dir;
 	int conn_offset = 0; // offset in neuron positions for connections
 	int conn_dist = 3; // distance between neurons in connections

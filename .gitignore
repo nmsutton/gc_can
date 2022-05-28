@@ -5,3 +5,5 @@ scripts/*.avi
 scripts/*.mp4
 output/
 src/data/
+data/anim_angles.cpp
+data/anim_speeds.cpp
