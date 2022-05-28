@@ -398,7 +398,7 @@ vector<double> directional_speeds(P* p, double angle, double speed) {
 	double ver = ver_hor[0];
 	double hor = ver_hor[1];
 	double N,E,S,W;N=1;E=1;S=1;W=1;
-	double speed_adj = pow((1+speed),p->speed_mult);
+	double speed_adj = pow(speed,p->speed_mult);
 
 	if (ver >= 0) {
 		N += abs(ver)*speed_adj;

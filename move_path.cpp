@@ -38,7 +38,8 @@ double rand_speed(P *p) {
 
 void control_speed(double speed, P* p) {
 	p->move_increment = speed * p->pc_move_scale;
-	//p->speed_mult
+	p->const_speed = speed * p->cs_scale;
+	p->speed_mult = speed * p->sm_scale;
 }
 
 void EISignal(double angle, CARLsim* sim, P* p);
@@ -70,7 +71,8 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 
 void straight_path(CARLsim* sim, P* p) {
 	// stright line path
-	EISignal(180, sim, p);
+	EISignal(90, sim, p);
+	control_speed(0.1,p);
 }
 
 void rand_path(CARLsim* sim, P* p) {
