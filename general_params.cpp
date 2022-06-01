@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 10; // size of bins to record firing activity
-	double sim_time = 2000*firing_bin; // sim run time in ms
+	double sim_time = 800*firing_bin; // sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -35,7 +35,7 @@ struct P {
 	#define import_animal_data 1 // 1 for import and 0 for no import
 	int animal_timesteps = 29416;
 	int animal_ts = 20; // timestep in ms
-	double pc_move_scale = 0.00005/1.773;//0.00025/1.773;//0.03/1.773;//0.01/1.773; // PC movement control scale
+	double pc_move_scale = 0.0002/1.773;//0.0001/1.773;//0.00025/1.773;//0.03/1.773;//0.01/1.773; // PC movement control scale
 	//double pc_multi = 0.1; // PC movement multiplier
 	double cs_scale = 0.05/1.773; // baseline speed control scale
 	double sm_scale = 20/1.773;//20/1.773;//0.1/1.773; // speed control multiplier scale
@@ -68,7 +68,7 @@ struct P {
 	double speed_mult = 0.5;//1;//0.0;//1;//5;//0.5;//0;//0.1;//0.5;//1;//2;//0.5;//1;//2;//10;//1.0;//35.0;//0.6;//1.2;//1.5;//4.5;//7.5; // starting grid cell input speed level
 	float dir_to_gc_wt = 1.6;//1.6;//1.5;//1.6;//1.5;//1.5;//5.5; // ext_dir to gc weight
 	double mex_hat_multi = 70;//85;//40;//85;//70;//85;//100;//70;//60;//60;//70;//90;//100;//140;//170;//200;//170;//170;//220;//180;//180;//300;//250;//140;//50;//30;//50;//800;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
-	float gc_to_in_wt = 18.5;//13.5;//10;//8.5;//12;//5.5;//18.5;//16.5;//15.5;//13.5;//11.5;//5.5;//2.5;//1;//1;//0.45;//1;//25;//700.0; // gc to interneurons weight
+	float gc_to_in_wt = 11.5;//18.5;//13.5;//10;//8.5;//12;//5.5;//18.5;//16.5;//15.5;//13.5;//11.5;//5.5;//2.5;//1;//1;//0.45;//1;//25;//700.0; // gc to interneurons weight
 	double dir_init_multi = 100000;//100000000;//10000;//1;//10000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
 	double dist_thresh = 5; // distance threshold for only local connections
