@@ -398,25 +398,29 @@ vector<double> directional_speeds(P* p, double angle, double speed) {
 	double ver = ver_hor[0];
 	double hor = ver_hor[1];
 	double N,E,S,W;N=1;E=1;S=1;W=1;
-	//double speed_adj = pow(speed,p->speed_mult);
+	double speed_adj = pow(speed,p->speed_mult);
+	if (speed == 0 && p->speed_mult == 0) {
+		speed_adj = 0; // avoid pow(0,0) when result of 0 is wanted
+	}
 
 	if (ver >= 0) {
-		//N += abs(ver)*speed_adj;
-		N += pow(abs(ver),p->speed_mult)*speed;
+		N += abs(ver)*speed_adj;
+		//N += pow(abs(ver),p->speed_mult)*speed;
 	}
 	else {
-		//S += abs(ver)*speed_adj;
-		S += pow(abs(ver),p->speed_mult)*speed;
+		S += abs(ver)*speed_adj;
+		//S += pow(abs(ver),p->speed_mult)*speed;
 	}
 	if (hor <= 0) {
-		//E += abs(hor)*speed_adj;
-		E += pow(abs(hor),p->speed_mult)*speed;
+		E += abs(hor)*speed_adj;
+		//E += pow(abs(hor),p->speed_mult)*speed;
 	}
 	else {
-		//W += abs(hor)*speed_adj;
-		W += pow(abs(hor),p->speed_mult)*speed;
+		W += abs(hor)*speed_adj;
+		//W += pow(abs(hor),p->speed_mult)*speed;
 	}
 	vector<double> speeds = {N,E,S,W};
+	//printf("t:%d N:%f E:%f S:%f W:%f h:%f v:%f sm:%f s:%f p:%f r:%f\n",p->t,N,E,S,W,hor,ver,p->speed_mult,speed,pow(abs(hor),p->speed_mult),speed_adj);
 
 	return speeds;
 }
