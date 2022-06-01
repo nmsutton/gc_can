@@ -56,8 +56,9 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 					p->base_ext = speeds[i];
 				}
 			}*/
-			control_speed((*speeds)[(int) floor(p->mi)], p);
+			control_speed((*speeds)[(int) floor(p->mi)]*400, p);
 			EISignal((*moves)[(int) floor(p->mi)], sim, p);
+			//printf("t: %d; speed: %f; angle: %f\n",p->t,(*speeds)[(int) floor(p->mi)]*200,(*moves)[(int) floor(p->mi)]);
 		}
 		else {
 			/*if (p->t % (50*p->firing_bin) == 0) {
@@ -72,7 +73,8 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 void straight_path(CARLsim* sim, P* p) {
 	// stright line path
 	EISignal(90, sim, p);
-	control_speed(0.2,p);
+	//control_speed(50,p);
+	control_speed(35,p);
 }
 
 void rand_path(CARLsim* sim, P* p) {

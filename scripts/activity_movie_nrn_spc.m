@@ -25,8 +25,8 @@ spk_data = SpikeReader('/comp_neuro/PhD/gmu/research/simulation/code/gc_can/resu
 %SpikeReader('/comp_neuro/Software/CARLsim6/.build/projects/hello_world/results/spk_gc_exc.dat', false, 'silent');
 %spk_data = SpikeReader('/comp_neuro/Software/CARLsim6/.build/projects/hello_world/results/spk_gc_exc.dat', false, 'silent');
 delay_frames = false;%true;
-time=5000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
-bin_size=200; % size of firing bin in ms
+time=20000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
+bin_size=400; % size of firing bin in ms
 t=[0:(1/bin_size):(time*(1/bin_size))];
 x_size = 30; % size of network on x-axis
 y_size = 30; % size of network on y-axis
@@ -68,7 +68,8 @@ for frameIndex = 1 : numberOfFrames
   ylabel('neuron position on y axis')
   shading interp;
   %caxis([0 5.5])
-  caxis([0 8.0])
+  %caxis([0 8.0])
+  caxis([0 5.5])
   cb = colorbar;
   set(cb, 'ylim', [0 11.0]); % set colorbar range
   caption = sprintf('Neuron space grid cell firing amounts, t = %.0f ms', (frameIndex*bin_size));
