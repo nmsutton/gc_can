@@ -445,21 +445,9 @@ void setExtDir(P* p, double angle, double speed) {
 	//printf("t:%d n:%f e:%f s:%f w:%f\n",p->t,speeds[0],speeds[1],speeds[2],speeds[3]);
 }
 
-void EISignal(double angle, CARLsim* sim, P* p) {
-	/*
-		Apply external input
-	*/	
+void general_input(double angle, CARLsim* sim, P* p) {
 	double noise;
-
-	count_firing(p, p->gc_firing_bin, p->nrn_spk);
-	set_pos(p, angle); 
-	if (p->print_move) {cout << "\n";}
-
-	// set velocity of movement
-	if (p->t > 2) {
-		setExtDir(p,angle,p->const_speed);//0.20);
-		sim->setExternalCurrent(0, p->ext_dir);
-	}	
+	set_pos(p, angle);
 
 	// place cell input
 	place_cell_firing(sim, p);
@@ -470,5 +458,19 @@ void EISignal(double angle, CARLsim* sim, P* p) {
 			noise = get_noise(p); // add random noise for realism
 			//sim->setWeight(0,i,i,noise,true);
 		}
-	}
+	} 
+}
+
+void EISignal(double angle, CARLsim* sim, P* p) {
+	/*
+		Apply external input
+	*/	
+	count_firing(p, p->gc_firing_bin, p->nrn_spk);
+	if (p->print_move) {cout << "\n";}
+
+	// set velocity of movement
+	if (p->t > 2) {
+		setExtDir(p,angle,p->const_speed);//0.20);
+		sim->setExternalCurrent(0, p->ext_dir);
+	}	
 }

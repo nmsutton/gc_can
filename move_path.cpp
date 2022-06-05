@@ -48,16 +48,15 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 	/*
 		Run movements through a path.
 	*/
+	double angle = (*moves)[(int) floor(p->mi)];
+
+	general_input(angle, sim, p);
 
 	if (p->t % p->move_delay == 0) {
 		if (p->mi < num_moves) {
-			/*for (int i = 0; i < num_speeds; i++) {
-				if (p->t == speed_times[i]*p->firing_bin) {
-					p->base_ext = speeds[i];
-				}
-			}*/
 			control_speed((*speeds)[(int) floor(p->mi)]*400, p);
-			EISignal((*moves)[(int) floor(p->mi)], sim, p);
+			//printf("%f %d\n",(*speeds)[(int) floor(p->mi)]*400,p->mi);
+			EISignal(angle, sim, p);
 			//printf("t: %d; speed: %f; angle: %f\n",p->t,(*speeds)[(int) floor(p->mi)]*200,(*moves)[(int) floor(p->mi)]);
 		}
 		else {
@@ -73,8 +72,12 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 void straight_path(CARLsim* sim, P* p) {
 	// stright line path
 	//control_speed(50,p);
-	control_speed(34.35,p);	
-	EISignal(90, sim, p);
+	double angle = 90;
+	general_input(angle, sim, p);
+	if (p->t % p->move_delay == 0) {
+		control_speed(34.9,p);	
+		EISignal(angle, sim, p);
+	}
 }
 
 void rand_path(CARLsim* sim, P* p) {
@@ -186,4 +189,40 @@ void move_animal(CARLsim* sim, P* p) {
 	int num_speeds = anim_speeds.size();
 
 	run_path(&anim_angles, &anim_speeds, &speed_times, num_moves, num_speeds, sim, p);	
+}
+
+void move_circles(CARLsim* sim, P* p) {
+	// movement path
+
+	//vector<double> moves = {0,90,180,270,0,0,90,90,180,180,270,270,0,0,0,90,90,90,180,180,180,
+	//270,270,270,0,0,0,0,90,90,90,90,180,180,180,180,270,270,270,270,0,0,0,0,0,90,90,90,90,90,
+	//180,180,180,180,180,270,270,270,270,270};
+	vector<double> moves;
+	for (int i = 0; i < 500; i++) {
+		if (i >= 0 && i < 100) {
+			moves.push_back(90);
+		}
+		else if (i >= 100 && i < 200) {
+			moves.push_back(180);
+		}
+		else if (i >= 200 && i < 300) {
+			moves.push_back(270);	
+		}
+		else if (i >= 300 && i < 400) {
+			moves.push_back(0);
+		}
+		else if (i >= 400 && i < 500) {
+			moves.push_back(90);
+		}
+	}
+	vector<double> speeds;
+	vector<int> speed_times;
+	for (int i = 0; i < moves.size(); i++) {
+		speeds.push_back(34.9/400);
+		speed_times.push_back(i*20);
+	}
+	int num_moves = moves.size();
+	int num_speeds = speeds.size();
+
+	run_path(&moves, &speeds, &speed_times, num_moves, num_speeds, sim, p);
 }
