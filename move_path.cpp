@@ -75,7 +75,8 @@ void straight_path(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(34.9,p);	
+		control_speed(35.45,p);	
+		//control_speed(0.0,p);	
 		EISignal(angle, sim, p);
 	}
 }
@@ -198,8 +199,16 @@ void move_circles(CARLsim* sim, P* p) {
 	//270,270,270,0,0,0,0,90,90,90,90,180,180,180,180,270,270,270,270,0,0,0,0,0,90,90,90,90,90,
 	//180,180,180,180,180,270,270,270,270,270};
 	vector<double> moves;
-	for (int i = 0; i < 500; i++) {
-		if (i >= 0 && i < 100) {
+	double angle = 90;
+	for (int i = 0; i < (p->sim_time/p->animal_ts); i++) {
+		if (i % 10 == 0) {
+			angle += 90;
+		}
+		if (angle == 360) {
+			angle = 0;
+		}
+		moves.push_back(angle);
+		/*if (i >= 0 && i < 100) {
 			moves.push_back(90);
 		}
 		else if (i >= 100 && i < 200) {
@@ -213,12 +222,12 @@ void move_circles(CARLsim* sim, P* p) {
 		}
 		else if (i >= 400 && i < 500) {
 			moves.push_back(90);
-		}
+		}*/
 	}
 	vector<double> speeds;
 	vector<int> speed_times;
 	for (int i = 0; i < moves.size(); i++) {
-		speeds.push_back(34.9/400);
+		speeds.push_back(35.4/400);
 		speed_times.push_back(i*20);
 	}
 	int num_moves = moves.size();
