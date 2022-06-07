@@ -75,7 +75,8 @@ void straight_path(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(35.75,p);	
+		//control_speed(35.75,p);	
+		control_speed(35.5,p);	
 		//control_speed(0.0,p);	
 		EISignal(angle, sim, p);
 	}
@@ -155,16 +156,31 @@ void move_path3(CARLsim* sim, P* p) {
 	// movement path
 
 	vector<double> moves;
-	for (int i = 0; i < 34*25; i++) {
-		for (int j = 0; j < 60; j++) {
-			moves.push_back(270);
-		}
-		moves.push_back(180);
-		moves.push_back(180);
+	double angle;
+	double h_a = 90; // horizontal movement angle
+	int h_m = 70*3; // indices for horizontal movement
+	vector<int> m_d_i; // move down indices
+	for (int i = 0; i < 6; i++) {
+		m_d_i.push_back(h_m+i);
 	}
-
-	vector<double> speeds = {1.0};
-	vector<int> speed_times = {1};
+	for (int i = 0; i < (h_m+m_d_i.size())*140; i++) {
+		angle = -1; // clear angle
+		for (int j = 0; j < m_d_i.size(); j++) { // process indices for down move
+			if (i % m_d_i[j] == 0) {
+				angle = 180;
+			}
+		}
+		if (angle == -1) {
+			angle = h_a;
+		}
+		moves.push_back(angle);
+	}
+	vector<double> speeds;
+	vector<int> speed_times;
+	for (int i = 0; i < moves.size(); i++) {
+		speeds.push_back(35.5/400);
+		speed_times.push_back(i*20);
+	}
 	int num_moves = moves.size();
 	int num_speeds = speeds.size();
 
@@ -195,9 +211,6 @@ void move_animal(CARLsim* sim, P* p) {
 void move_circles(CARLsim* sim, P* p) {
 	// movement path
 
-	//vector<double> moves = {0,90,180,270,0,0,90,90,180,180,270,270,0,0,0,90,90,90,180,180,180,
-	//270,270,270,0,0,0,0,90,90,90,90,180,180,180,180,270,270,270,270,0,0,0,0,0,90,90,90,90,90,
-	//180,180,180,180,180,270,270,270,270,270};
 	vector<double> moves;
 	double angle = 90;
 	for (int i = 0; i < (p->sim_time/p->animal_ts); i++) {
@@ -208,26 +221,12 @@ void move_circles(CARLsim* sim, P* p) {
 			angle = 0;
 		}
 		moves.push_back(angle);
-		/*if (i >= 0 && i < 100) {
-			moves.push_back(90);
-		}
-		else if (i >= 100 && i < 200) {
-			moves.push_back(180);
-		}
-		else if (i >= 200 && i < 300) {
-			moves.push_back(270);	
-		}
-		else if (i >= 300 && i < 400) {
-			moves.push_back(0);
-		}
-		else if (i >= 400 && i < 500) {
-			moves.push_back(90);
-		}*/
 	}
 	vector<double> speeds;
 	vector<int> speed_times;
 	for (int i = 0; i < moves.size(); i++) {
-		speeds.push_back(35.4/400);
+		//speeds.push_back(35.4/400);
+		speeds.push_back(35.5/400);
 		speed_times.push_back(i*20);
 	}
 	int num_moves = moves.size();

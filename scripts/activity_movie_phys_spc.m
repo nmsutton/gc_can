@@ -9,7 +9,7 @@ clear all;
 clc;
 %input_folder = "pos_track";
 input_folder = "firing_vs_loc";
-time=600000;%199900; % time steps, use (end frame - 1) = time. 1 = 10ms.
+time=480000;%199900; % time steps, use (end frame - 1) = time. 1 = 10ms.
 %% 
 bin_size = 10; % time in ms that bins spiking
 t=[0:(1/bin_size):(time*(1/bin_size))];
@@ -37,7 +37,7 @@ caxis manual;          % allow subsequent plots to use the same color limits
 %A = imread('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/media/grid.png');
 
 %for frameIndex = 1 : numberOfFrames
-for frameIndex = (numberOfFrames-30) : (numberOfFrames - 10)
+for frameIndex = (numberOfFrames-200) : (numberOfFrames - 10)
   filename = strcat('../output/',input_folder,'/firing_t',int2str(frameIndex*bin_size),'.csv');
   [imgfile,delimiterOut]=importdata(filename);
   cla reset;
@@ -50,8 +50,8 @@ for frameIndex = (numberOfFrames-30) : (numberOfFrames - 10)
   ylabel('animal position on y axis')
   shading interp;
   %caxis([0 3.5])
-  %caxis([0 40])
-  caxis([0 150])
+  caxis([0 40])
+  %caxis([0 150])
   cb = colorbar;
   %set(cb, 'ylim', [0 4]); % set colorbar range
   %set(cb, 'ylim', [0 5.5]); % set colorbar range
