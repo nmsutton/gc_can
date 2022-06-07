@@ -158,12 +158,12 @@ void move_path3(CARLsim* sim, P* p) {
 	vector<double> moves;
 	double angle;
 	double h_a = 90; // horizontal movement angle
-	int h_m = 70*3; // indices for horizontal movement
+	int h_m = 55*15; // indices for horizontal movement
 	vector<int> m_d_i; // move down indices
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 15; i++) {
 		m_d_i.push_back(h_m+i);
 	}
-	for (int i = 0; i < (h_m+m_d_i.size())*140; i++) {
+	for (int i = 0; i < (h_m+m_d_i.size())*40; i++) {
 		angle = -1; // clear angle
 		for (int j = 0; j < m_d_i.size(); j++) { // process indices for down move
 			if (i % m_d_i[j] == 0) {
@@ -178,7 +178,7 @@ void move_path3(CARLsim* sim, P* p) {
 	vector<double> speeds;
 	vector<int> speed_times;
 	for (int i = 0; i < moves.size(); i++) {
-		speeds.push_back(35.5/400);
+		speeds.push_back(34.4/400);
 		speed_times.push_back(i*20);
 	}
 	int num_moves = moves.size();
