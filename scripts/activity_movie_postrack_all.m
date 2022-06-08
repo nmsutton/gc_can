@@ -10,7 +10,7 @@ clc;
 input_folder = "pos_track_all";
 %input_folder = "firing_vs_loc";
 %time=89900; % time steps, use (end frame - 1) = time
-time=100000; % time steps, use (end frame - 1) = time
+time=50000; % time steps, use (end frame - 1) = time
 bin_size = 10; % time in ms that bins spiking
 t=[0:(1/bin_size):(time*(1/bin_size))];
 hFigure = figure;
@@ -52,10 +52,10 @@ for frameIndex = (numberOfFrames-200) : (numberOfFrames - 10)
   ylabel('animal position on y axis')
   shading interp;
   %caxis([0 3.5])
-  caxis([0 11])
+  %caxis([0 11])
   cb = colorbar;
   %set(cb, 'ylim', [0 4]); % set colorbar range
-  set(cb, 'ylim', [0 5.5]); % set colorbar range
+  %set(cb, 'ylim', [0 5.5]); % set colorbar range
   %zlim([0, 1]);
   caption = sprintf('Cumulative animal locations, t = %.0f ms', (frameIndex*bin_size));
   title(caption, 'FontSize', 15);
@@ -68,7 +68,7 @@ for frameIndex = (numberOfFrames-200) : (numberOfFrames - 10)
 end
 close(hFigure);
 myMovie(1) = []; % remove first frame causing issues due to wrong size
-v = VideoWriter('videos/animal_postrack_all.avi'); % Create a VideoWriter object to write the video out to a new, different file.
+v = VideoWriter('./videos/animal_postrack_all.avi'); % Create a VideoWriter object to write the video out to a new, different file.
 open(v)
 writeVideo(v,myMovie) % Write the movie object to a new video file.
 close(v)

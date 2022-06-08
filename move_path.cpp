@@ -37,7 +37,31 @@ double rand_speed(P *p) {
 }
 
 void control_speed(double speed, P* p) {
-	p->move_increment = speed * p->pc_move_scale;
+	/*
+		pc_move_scale parameter is automatically adjusted based on a polynomial regression 
+		data fit to parameters observed through testing to produce desired
+		physical space plots.
+
+		speed parameter is automatically adjusted based on a linear regression data fit.
+
+		references:https://arachnoid.com/polysolve/
+		The tool is a JavaScript version of PolySolve
+		https://www.socscistatistics.com/tests/regression/default.aspx
+	*/
+	double pc_move_scale;
+	if (true) {
+		//pc_move_scale = (0.00013405696690311282-0.000031797731974814752*speed+0.00000762939453125*pow(speed,2))/1.773;
+		pc_move_scale = ((48.19647*speed+5.33001)*0.000001)/1.773;
+		//speed = 11.679458401285473+14.224291658672298*speed-1.34375*pow(speed,2);
+		if (speed==0) {pc_move_scale=0;} // correcting zero instead of small number
+		speed = 0.13507*speed+34.35188;
+		//printf("%f %f\n",pc_move_scale,speed);
+	}
+	else {
+		pc_move_scale = p->pc_move_scale;
+	}
+	p->move_increment = speed * pc_move_scale;//0.00006197892243;
+	//printf("%f %f\n",p->move_increment,speed);
 	p->const_speed = speed * p->cs_scale;
 	p->speed_mult = speed * p->sm_scale;
 }
@@ -54,7 +78,7 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 
 	if (p->t % p->move_delay == 0) {
 		if (p->mi < num_moves) {
-			control_speed((*speeds)[(int) floor(p->mi)]*400, p);
+			control_speed((*speeds)[(int) floor(p->mi)], p);
 			//printf("%f %d\n",(*speeds)[(int) floor(p->mi)]*400,p->mi);
 			EISignal(angle, sim, p);
 			//printf("t: %d; speed: %f; angle: %f\n",p->t,(*speeds)[(int) floor(p->mi)]*200,(*moves)[(int) floor(p->mi)]);
@@ -158,7 +182,7 @@ void move_path3(CARLsim* sim, P* p) {
 	vector<double> moves;
 	double angle;
 	double h_a = 90; // horizontal movement angle
-	int h_m = 200;//55*15; // indices for horizontal movement
+	int h_m = 55*15; // indices for horizontal movement
 	vector<int> m_d_i; // move down indices
 	for (int i = 0; i < 25; i++) {
 		m_d_i.push_back(h_m+i);
@@ -178,7 +202,7 @@ void move_path3(CARLsim* sim, P* p) {
 	vector<double> speeds;
 	vector<int> speed_times;
 	for (int i = 0; i < moves.size(); i++) {
-		speeds.push_back(34.62/400);
+		speeds.push_back(1.0);
 		speed_times.push_back(i*20);
 	}
 	int num_moves = moves.size();
@@ -197,15 +221,19 @@ void move_animal(CARLsim* sim, P* p) {
 	#endif
 
 	vector<int> speed_times;
+	vector<double> speeds;
 
 	for (int i = 0; i < p->animal_timesteps; i++) {
+		speeds.push_back(8.5);
 		speed_times.push_back(i*p->animal_ts);
+		//anim_speeds[i] = anim_speeds[i] * 4;//(30/180); // GC layer size conversion factor
 	}
 
 	int num_moves = anim_angles.size();
 	int num_speeds = anim_speeds.size();
 
-	run_path(&anim_angles, &anim_speeds, &speed_times, num_moves, num_speeds, sim, p);	
+	//run_path(&anim_angles, &anim_speeds, &speed_times, num_moves, num_speeds, sim, p);	
+	run_path(&anim_angles, &speeds, &speed_times, num_moves, num_speeds, sim, p);	
 }
 
 void move_circles(CARLsim* sim, P* p) {
