@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 10; // size of bins to record firing activity
-	double sim_time = 29416*20;//60000*firing_bin; // sim run time in ms
+	double sim_time = 500*firing_bin;//29416*20;//60000*firing_bin; // sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -57,9 +57,9 @@ struct P {
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 
 	// noise parameters
-	bool noise_active = 0; // activate noise
+	bool noise_active = 1; // activate noise
 	double noise_rand_max = 100; // 0 - rand_max is range of random number gen
-	double noise_scale = 0.001;//0.01;//0.005; // scale to desired size for firing
+	double noise_scale = 0.03;//0.01;//0.005; // scale to desired size for firing
 	double noise_addit_freq = 0.0f; // additional spiking frequency added to base external input
 
 	// values for synapse activites

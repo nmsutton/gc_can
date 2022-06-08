@@ -155,12 +155,12 @@ void set_pos(P *p, double angle) {
 double get_noise(P *p) {
 	int rand_max = p->noise_rand_max;
 	double scale = p->noise_scale;
-	double base_input_weight = 1.0;
+	double centered_val = 1.0; // value to center random value around
 
 	double rand_val = rand() % rand_max; // rand number up to rand_max
 	rand_val = rand_val * scale; // scale to desired size
 	rand_val = ((rand_max*scale)/2)-rand_val; // rand val centered at 0	
-	rand_val = rand_val + base_input_weight; // rand val centered at base_input_weight
+	rand_val = rand_val + centered_val; // rand val centered at centered_val
 	if (rand_val < 0) {rand_val = 0;}
 
 	return rand_val;
@@ -426,6 +426,7 @@ vector<double> directional_speeds(P* p, double angle, double speed) {
 }
 
 void setExtDir(P* p, double angle, double speed) {
+	double noise;	
 	vector<double> speeds = directional_speeds(p, angle, speed);
 
 	for (int i = 0; i < p->layer_size; i++) {
@@ -442,23 +443,23 @@ void setExtDir(P* p, double angle, double speed) {
 			p->ext_dir[i] = p->base_ext*speeds[3];
 		}
 	}
-	//printf("t:%d n:%f e:%f s:%f w:%f\n",p->t,speeds[0],speeds[1],speeds[2],speeds[3]);
-}
-
-void general_input(double angle, CARLsim* sim, P* p) {
-	double noise;
-	set_pos(p, angle);
-
-	// place cell input
-	place_cell_firing(sim, p);
 
 	// noise
 	if (p->noise_active) {
 		for (int i = 0; i < p->layer_size; i++) {		
 			noise = get_noise(p); // add random noise for realism
-			//sim->setWeight(0,i,i,noise,true);
+			p->ext_dir[i] = p->ext_dir[i]*noise; // change external input by noise value
 		}
 	} 
+	
+	//printf("t:%d n:%f e:%f s:%f w:%f\n",p->t,speeds[0],speeds[1],speeds[2],speeds[3]);
+}
+
+void general_input(double angle, CARLsim* sim, P* p) {
+	set_pos(p, angle);
+
+	// place cell input
+	place_cell_firing(sim, p);
 }
 
 void EISignal(double angle, CARLsim* sim, P* p) {
