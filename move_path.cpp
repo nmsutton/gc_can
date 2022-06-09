@@ -49,7 +49,7 @@ void control_speed(double speed, P* p) {
 		https://www.socscistatistics.com/tests/regression/default.aspx
 	*/
 	double pc_move_scale;
-	if (true) {
+	if (false) {
 		//pc_move_scale = (0.00013405696690311282-0.000031797731974814752*speed+0.00000762939453125*pow(speed,2))/1.773;
 		pc_move_scale = ((48.19647*speed+5.33001)*0.000001)/1.773;
 		//speed = 11.679458401285473+14.224291658672298*speed-1.34375*pow(speed,2);
@@ -62,8 +62,8 @@ void control_speed(double speed, P* p) {
 	}
 	p->move_increment = speed * pc_move_scale;//0.00006197892243;
 	//printf("%f %f\n",p->move_increment,speed);
-	p->const_speed = speed * p->cs_scale;
-	p->speed_mult = speed * p->sm_scale;
+	//p->const_speed = speed * p->cs_scale;
+	//p->speed_mult = speed * p->sm_scale;
 }
 
 void EISignal(double angle, CARLsim* sim, P* p);
@@ -96,11 +96,11 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 void straight_path(CARLsim* sim, P* p) {
 	// stright line path
 	//control_speed(50,p);
-	double angle = 90;
+	double angle = 270;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		//control_speed(35.5,p);	
-		control_speed(8.5,p);	
+		control_speed(34.5,p);	
+		//control_speed(35.2,p);	
 		//control_speed(0.0,p);	
 		EISignal(angle, sim, p);
 	}

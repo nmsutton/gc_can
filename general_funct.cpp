@@ -160,7 +160,7 @@ double get_noise(P *p) {
 	double rand_val = rand() % rand_max; // rand number up to rand_max
 	rand_val = rand_val * scale; // scale to desired size
 	rand_val = ((rand_max*scale)/2)-rand_val; // rand val centered at 0	
-	rand_val = rand_val + centered_val; // rand val centered at centered_val
+	rand_val = centered_val + rand_val; // rand val centered at centered_val
 	if (rand_val < 0) {rand_val = 0;}
 
 	return rand_val;
