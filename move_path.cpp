@@ -23,6 +23,12 @@ double rand_move() {
 	return angle;
 }
 
+double rand_angle() {
+	int num_angles = 360;
+	int angle = rand() % num_angles;
+	return angle;
+}
+
 double rand_speed(P *p) {
 	double scale = 0.01;
 	double max = p->max_speed;
@@ -62,8 +68,8 @@ void control_speed(double speed, P* p) {
 	}
 	p->move_increment = speed * pc_move_scale;//0.00006197892243;
 	//printf("%f %f\n",p->move_increment,speed);
-	//p->const_speed = speed * p->cs_scale;
-	//p->speed_mult = speed * p->sm_scale;
+	p->const_speed = speed * p->cs_scale;
+	p->speed_mult = speed * p->sm_scale;
 }
 
 void EISignal(double angle, CARLsim* sim, P* p);
@@ -78,7 +84,7 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 
 	if (p->t % p->move_delay == 0) {
 		if (p->mi < num_moves) {
-			control_speed((*speeds)[(int) floor(p->mi)], p);
+			//control_speed((*speeds)[(int) floor(p->mi)], p);
 			//printf("%f %d\n",(*speeds)[(int) floor(p->mi)]*400,p->mi);
 			EISignal(angle, sim, p);
 			//printf("t: %d; speed: %f; angle: %f\n",p->t,(*speeds)[(int) floor(p->mi)]*200,(*moves)[(int) floor(p->mi)]);
@@ -96,10 +102,10 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 void straight_path(CARLsim* sim, P* p) {
 	// stright line path
 	//control_speed(50,p);
-	double angle = 270;
+	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(34.5,p);	
+		//control_speed(34.5,p);	
 		//control_speed(35.2,p);	
 		//control_speed(0.0,p);	
 		EISignal(angle, sim, p);
@@ -242,8 +248,9 @@ void move_circles(CARLsim* sim, P* p) {
 	vector<double> moves;
 	double angle = 90;
 	for (int i = 0; i < (p->sim_time/p->animal_ts); i++) {
-		if (i % 10 == 0) {
-			angle += 90;
+		if (i % 20 == 0) {
+			//angle += 90;
+			angle = rand_angle();
 		}
 		if (angle == 360) {
 			angle = 0;
