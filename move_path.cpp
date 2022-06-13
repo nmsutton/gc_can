@@ -23,6 +23,27 @@ double rand_move() {
 	return angle;
 }
 
+double rand_diag() {
+	int num_directions = 4;
+	int rand_val = rand() % num_directions + 1;
+	double angle;
+
+	if (rand_val == 1) {
+		angle = 45;
+	}
+	else if (rand_val == 2) {
+		angle = 135;
+	}
+	else if (rand_val == 3) {
+		angle = 225;
+	}
+	else if (rand_val == 4) {
+		angle = 315;
+	}
+
+	return angle;
+}
+
 double rand_angle() {
 	int num_angles = 360;
 	int angle = rand() % num_angles;
@@ -248,11 +269,13 @@ void move_circles(CARLsim* sim, P* p) {
 	vector<double> moves;
 	double angle = 90;
 	for (int i = 0; i < (p->sim_time/p->animal_ts); i++) {
-		if (i % 20 == 0) {
+		if (i % 40 == 0) {
 			//angle += 90;
-			angle = rand_angle();
+			//angle += 180;
+			//angle = rand_angle();
+			angle = rand_move();
 		}
-		if (angle == 360) {
+		if (angle >= 360) {
 			angle = 0;
 		}
 		moves.push_back(angle);
