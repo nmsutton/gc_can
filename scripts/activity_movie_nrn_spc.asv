@@ -52,12 +52,12 @@ set(gcf, 'renderer', 'zbuffer');
 caxis manual; % allow subsequent plots to use the same color limits
 custom_colormap = load('neuron_space_colormap.mat');
 
-%for frameIndex = 1 : numberOfFrames
+for frameIndex = 1 : numberOfFrames
 %for frameIndex = (numberOfFrames-200) : (numberOfFrames-10)
-for frameIndex = (numberOfFrames+20000) : (numberOfFrames-10)
-  imgfile = reshape(spk_window(ceil(frameIndex/bin_size),:),[x_size,y_size])';
+  start_frame = 1000;
+  imgfile = reshape(spk_window(ceil((frameIndex+start_frame)/bin_size),:),[x_size,y_size])';
   if delay_frames == false
-      imgfile = reshape(spk_window(frameIndex,:),[x_size,y_size])';
+      imgfile = reshape(spk_window((frameIndex+start_frame),:),[x_size,y_size])';
   end
   cla reset;
   hAxes = gca;
@@ -73,9 +73,9 @@ for frameIndex = (numberOfFrames+20000) : (numberOfFrames-10)
   caxis([0 5.5])
   cb = colorbar;
   set(cb, 'ylim', [0 11.0]); % set colorbar range
-  caption = sprintf('Neuron space grid cell firing amounts, t = %.0f ms', (frameIndex*bin_size));
+  caption = sprintf('Neuron space grid cell firing amounts, t = %.0f ms', ((frameIndex+start_frame)*bin_size));
   if delay_frames == true
-      caption = sprintf('Neuron space grid cell firing amounts, t = %.0f ms', ceil(frameIndex/bin_size)*bin_size);
+      caption = sprintf('Neuron space grid cell firing amounts, t = %.0f ms', ceil((frameIndex+start_frame)/bin_size)*bin_size);
   end
   title(caption, 'FontSize', 15);
   thisFrame = getframe(gcf);
