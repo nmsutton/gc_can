@@ -25,7 +25,7 @@ spk_data = SpikeReader('/comp_neuro/PhD/gmu/research/simulation/code/gc_can/resu
 %SpikeReader('/comp_neuro/Software/CARLsim6/.build/projects/hello_world/results/spk_gc_exc.dat', false, 'silent');
 %spk_data = SpikeReader('/comp_neuro/Software/CARLsim6/.build/projects/hello_world/results/spk_gc_exc.dat', false, 'silent');
 delay_frames = false;%true;
-time=10000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
+time=100000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
 bin_size=400; % size of firing bin in ms
 t=[0:(1/bin_size):(time*(1/bin_size))];
 x_size = 30; % size of network on x-axis
@@ -54,9 +54,10 @@ custom_colormap = load('neuron_space_colormap.mat');
 
 for frameIndex = 1 : numberOfFrames
 %for frameIndex = (numberOfFrames-200) : (numberOfFrames-10)
-  imgfile = reshape(spk_window(ceil(frameIndex/bin_size),:),[x_size,y_size])';
+  start_frame = 1250;
+  imgfile = reshape(spk_window(ceil((frameIndex+start_frame)/bin_size),:),[x_size,y_size])';
   if delay_frames == false
-      imgfile = reshape(spk_window(frameIndex,:),[x_size,y_size])';
+      imgfile = reshape(spk_window((frameIndex+start_frame),:),[x_size,y_size])';
   end
   cla reset;
   hAxes = gca;
@@ -72,9 +73,9 @@ for frameIndex = 1 : numberOfFrames
   caxis([0 5.5])
   cb = colorbar;
   set(cb, 'ylim', [0 11.0]); % set colorbar range
-  caption = sprintf('Neuron space grid cell firing amounts, t = %.0f ms', (frameIndex*bin_size));
+  caption = sprintf('Neuron space grid cell firing amounts, t = %.0f ms', ((frameIndex+start_frame)*bin_size));
   if delay_frames == true
-      caption = sprintf('Neuron space grid cell firing amounts, t = %.0f ms', ceil(frameIndex/bin_size)*bin_size);
+      caption = sprintf('Neuron space grid cell firing amounts, t = %.0f ms', ceil((frameIndex+start_frame)/bin_size)*bin_size);
   end
   title(caption, 'FontSize', 15);
   thisFrame = getframe(gcf);

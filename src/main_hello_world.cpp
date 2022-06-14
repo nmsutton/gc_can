@@ -138,8 +138,8 @@ int main() {
 		SMexc->startRecording();
 		//straight_path(&sim, &p); // process movement
 		//move_path3(&sim, &p);
-		//move_animal(&sim, &p);
-		move_circles(&sim, &p);
+		move_animal(&sim, &p);
+		//move_circles(&sim, &p);
 		//rand_path(&sim, &p);
 		PrintWeightsAndFiring(&p);
 		if (p.record_fire_vs_pos) {RecordNeuronVsLocation(&sim, &p);}
