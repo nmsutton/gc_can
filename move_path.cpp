@@ -52,8 +52,8 @@ double rand_angle() {
 
 double rand_speed(P *p) {
 	double scale = 0.01;
-	double max = p->max_speed;
-	double min = p->min_speed;
+	double max = p->max_rand_speed;
+	double min = p->min_rand_speed;
 	int rand_val = (min*(1/scale));
 	int addit_sig = (max-min)*(1/scale); // additional speed signal
 	if (addit_sig > 0) {
@@ -65,32 +65,20 @@ double rand_speed(P *p) {
 
 void control_speed(double speed, P* p) {
 	/*
-		pc_move_scale parameter is automatically adjusted based on a polynomial regression 
-		data fit to parameters observed through testing to produce desired
-		physical space plots.
+		parameters are automatically adjusted based on a regression 
+		data fit to parameters observed through testing to produce 
+		desired	physical space plots.
 
-		speed parameter is automatically adjusted based on a linear regression data fit.
-
-		references:https://arachnoid.com/polysolve/
-		The tool is a JavaScript version of PolySolve
+		references: https://arachnoid.com/polysolve/ (The tool is a JavaScript version of PolySolve)
 		https://www.socscistatistics.com/tests/regression/default.aspx
 	*/
-	double pc_move_scale;
-	if (false) {
-		//pc_move_scale = (0.00013405696690311282-0.000031797731974814752*speed+0.00000762939453125*pow(speed,2))/1.773;
-		pc_move_scale = ((48.19647*speed+5.33001)*0.000001)/1.773;
-		//speed = 11.679458401285473+14.224291658672298*speed-1.34375*pow(speed,2);
-		if (speed==0) {pc_move_scale=0;} // correcting zero instead of small number
-		speed = 0.13507*speed+34.35188;
-		//printf("%f %f\n",pc_move_scale,speed);
+	//if (speed > p->max_speed) {speed = p->max_speed;} // speed limit
+	if (true) {
+		p->move_increment = (0.00096*speed)-0.00012;
+		p->const_speed = (0.1287571596*speed)-(0.1143442859*pow(speed,2))+(0.03852298736*pow(speed,3))-(0.003102176404*pow(speed,4));
+		p->speed_mult = (0*speed)+0.5;
+		//printf("%f %f\n",p->move_increment,speed);
 	}
-	else {
-		pc_move_scale = p->pc_move_scale;
-	}
-	p->move_increment = speed * pc_move_scale;//0.00006197892243;
-	//printf("%f %f\n",p->move_increment,speed);
-	p->const_speed = speed * p->cs_scale;
-	p->speed_mult = speed * p->sm_scale;
 }
 
 void EISignal(double angle, CARLsim* sim, P* p);
@@ -105,7 +93,7 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 
 	if (p->t % p->move_delay == 0) {
 		if (p->mi < num_moves) {
-			//control_speed((*speeds)[(int) floor(p->mi)], p);
+			control_speed((*speeds)[(int) floor(p->mi)], p);
 			//printf("%f %d\n",(*speeds)[(int) floor(p->mi)]*400,p->mi);
 			EISignal(angle, sim, p);
 			//printf("t: %d; speed: %f; angle: %f\n",p->t,(*speeds)[(int) floor(p->mi)]*200,(*moves)[(int) floor(p->mi)]);
@@ -126,9 +114,7 @@ void straight_path(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		//control_speed(34.5,p);	
-		//control_speed(35.2,p);	
-		//control_speed(0.0,p);	
+		control_speed(3.587,p);	
 		EISignal(angle, sim, p);
 	}
 }
@@ -243,24 +229,26 @@ void move_animal(CARLsim* sim, P* p) {
 		Movement data from real animal recordings.
 	*/
 	#if import_animal_data
-		#include "data/anim_angles.cpp"
-		#include "data/anim_speeds.cpp"
+		//#include "data/anim_angles.cpp"
+		//#include "data/anim_speeds.cpp"
+		#include "data/anim_angles_180815_S1_S2_lightVSdarkness_merged.cpp"
+		#include "data/anim_speeds_180815_S1_S2_lightVSdarkness_merged.cpp"
 	#endif
 
 	vector<int> speed_times;
 	vector<double> speeds;
 
 	for (int i = 0; i < p->animal_timesteps; i++) {
-		speeds.push_back(8.5);
+		//speeds.push_back(8.5);
 		speed_times.push_back(i*p->animal_ts);
-		//anim_speeds[i] = anim_speeds[i] * 4;//(30/180); // GC layer size conversion factor
+		anim_speeds[i] = anim_speeds[i] * 2;//(30/180); // GC layer size conversion factor
 	}
 
 	int num_moves = anim_angles.size();
 	int num_speeds = anim_speeds.size();
 
-	//run_path(&anim_angles, &anim_speeds, &speed_times, num_moves, num_speeds, sim, p);	
-	run_path(&anim_angles, &speeds, &speed_times, num_moves, num_speeds, sim, p);	
+	run_path(&anim_angles, &anim_speeds, &speed_times, num_moves, num_speeds, sim, p);	
+	//run_path(&anim_angles, &speeds, &speed_times, num_moves, num_speeds, sim, p);	
 }
 
 void move_circles(CARLsim* sim, P* p) {

@@ -166,6 +166,20 @@ double get_noise(P *p) {
 	return rand_val;
 }
 
+void write_spikes(P* p, int i) {
+	/*
+		Write spikes to file
+	*/
+	int x = i % p->x_size;
+	int y = i / p->x_size;
+	p->spikes_output_file << p->t;
+	p->spikes_output_file << ",";
+	p->spikes_output_file << x;
+	p->spikes_output_file << ",";
+	p->spikes_output_file << y;
+	p->spikes_output_file << "\n";
+}
+
 void count_firing(P* p, double *firing_matrix, vector<vector<int>> spike_recorder) {
 	int nrn_size, s_num, spk_time, tot;
 	for (int i = 0; i < (p->layer_size); i++) {
@@ -253,7 +267,10 @@ void RecordNeuronVsLocation(CARLsim* sim, P* p) {
 		//i_d = (p->pos[1] * p->x_size) + p->pos[0];
 		//i = floor(i_d);
 		i = (floor(p->pos[1]) * p->x_size) + floor(p->pos[0]);
-		p->firing_positions[i] = p->firing_positions[i] + p->fvp_act_lvl;
+		p->firing_positions[i] = p->firing_positions[i] + p->fvp_act_lvl;		
+		if (p->record_spikes_file) {
+			write_spikes(p, i);
+		}
 	}
 
 	write_firing(p->firing_positions, "firing_vs_loc", p);

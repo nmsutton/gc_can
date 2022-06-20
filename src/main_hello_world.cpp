@@ -110,6 +110,7 @@ int main() {
 	SpikeMonitor* SMexc = sim.setSpikeMonitor(MEC_LII_Stellate, "DEFAULT");
 	SpikeMonitor* SMinh = sim.setSpikeMonitor(MEC_LII_Basket, "DEFAULT");
 	SpikeMonitor* SMext = sim.setSpikeMonitor(EC_LI_II_Multipolar_Pyramidal, "DEFAULT");
+	if (p.record_spikes_file) {p.spikes_output_file.open(p.spikes_output_filepath);}
 
 	// ---------------- RUN STATE -------------------
 	SMexc->startRecording();
@@ -136,9 +137,9 @@ int main() {
 		SMexc->stopRecording();
 		p.nrn_spk = SMexc->getSpikeVector2D(); // store firing in vector
 		SMexc->startRecording();
-		straight_path(&sim, &p); // process movement
+		//straight_path(&sim, &p); // process movement
 		//move_path3(&sim, &p);
-		//move_animal(&sim, &p);
+		move_animal(&sim, &p);
 		//move_circles(&sim, &p);
 		//rand_path(&sim, &p);
 		PrintWeightsAndFiring(&p);
@@ -189,6 +190,8 @@ int main() {
 	  }
 	  pc_volt_out_file.close();
 	}*/
+
+	if (p.record_spikes_file) {p.spikes_output_file.close();}
 
 	return 0;
 }
