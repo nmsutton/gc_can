@@ -8,8 +8,8 @@ import CMBHOME.Utils.*
 [root c_ts] = load_spike_times();
 
 use_carlsim_spikes = 1;
-alt_heatmap = 0;
-use_smoothing = 1;
+alt_heatmap = 1;
+use_smoothing = 0;
 
 if use_carlsim_spikes
 	grid_size = 30; % sqrt of grid size
@@ -44,13 +44,9 @@ end
 if alt_heatmap
 	if use_carlsim_spikes
 		for i = 1:size(carlsim_spikes,1)
-			x = floor(spike_x(i))+1;
-			y = floor(spike_y(i));
-            if x > grid_size
-                x = grid_size; % fix anomalous value error
-            elseif x < 0
-                x = 1;
-            end
+			x = (grid_size+1) - floor(spike_x(i)+1)
+			y = (grid_size) - floor(spike_y(i)) -1
+            if x > 
 			i2 = (y * grid_size) + x;
 			heat_map(i2) = heat_map(i2) + 1;
 		end
