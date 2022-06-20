@@ -2,6 +2,9 @@
 %% Create phys space plot with smoothing using methods
 %% from the CMBHome software
 %%
+%% Todo: something seems wrong with the alt_heatmap
+%% so original heatmap should be used for now
+%%
 
 import CMBHOME.Utils.*
 
@@ -34,10 +37,13 @@ if use_carlsim_spikes
 		spike_x = carlsim_spikes(1:end,2);
 		spike_y = carlsim_spikes(1:end,3);
 	else
-		%spike_x = carlsim_spikes(1:end,2)*(360/30);
-		%spike_y = carlsim_spikes(1:end,3)*(360/30);
-		spike_x = carlsim_spikes(1:end,2);
-		spike_y = carlsim_spikes(1:end,3);
+		if use_carlsim_spikes
+			spike_x = carlsim_spikes(1:end,2);
+			spike_y = carlsim_spikes(1:end,3);
+		else
+			spike_x = carlsim_spikes(1:end,2)*(360/30);
+			spike_y = carlsim_spikes(1:end,3)*(360/30);
+		end
 	end
 end
 
@@ -58,16 +64,24 @@ if alt_heatmap
 		for i = 1:c_ts(end)
 			x = floor(spike_x(i)*conversion_factor);
 			y = floor(spike_y(i)*conversion_factor);
-			i2 = (y * grid_size) + (grid_size - x);
-			%i2 = ((grid_size - (y+1)) * (grid_size-1)) + x + 1
+			i2 = (y * grid_size) + x;
 			heat_map(i2) = heat_map(i2) + 1;
 		end
 	end
 end
 
-%heat_map2 = hist3([spike_x, spike_y2], 'Edges', {xdim, ydim});
 if alt_heatmap
-	heat_map = reshape(heat_map,grid_size,grid_size);
+	if use_carlsim_spikes
+		heat_map = reshape(heat_map,grid_size,grid_size);
+		if use_smoothing
+			heat_map = SmoothMat(heat_map, [5*std_smooth_kernel/binside, 5*std_smooth_kernel/binside], std_smooth_kernel/binside); % smooth the spikes and occupancy with a 5x5 bin gaussian with std=1
+		end
+	else
+		heat_map = reshape(heat_map,grid_size,grid_size);
+		if use_smoothing
+			heat_map = SmoothMat(heat_map, [5*std_smooth_kernel/binside, 5*std_smooth_kernel/binside], std_smooth_kernel/binside); % smooth the spikes and occupancy with a 5x5 bin gaussian with std=1
+		end
+	end
 else
 	if use_carlsim_spikes
 		xdim = linspace(0,29,30);%xdim * 30/360;
@@ -77,15 +91,13 @@ else
 			heat_map = SmoothMat(heat_map, [5*std_smooth_kernel/binside, 5*std_smooth_kernel/binside], std_smooth_kernel/binside); % smooth the spikes and occupancy with a 5x5 bin gaussian with std=1
 		end
 	else
-		%xdim = linspace(0,32,33);%xdim * 30/360;
-		%ydim2 = linspace(0,32,33);%ydim2 * 30/360;
-		%xdim = linspace(0,29,30);%xdim * 30/360;
-		%ydim2 = linspace(0,29,30);%ydim2 * 30/360;
 		[occupancy, xdim, ydim] = root.Occupancy(xdim, ydim, continuize_epochs, binside);
 		ydim2 = ydim - resize_factor;
-		heat_map2 = hist3([spike_x, spike_y], 'Edges', {xdim, ydim2});
-		%heat_map3 = SmoothMat(heat_map2, [5*std_smooth_kernel/binside, 5*std_smooth_kernel/binside], std_smooth_kernel/binside)./SmoothMat(occupancy, [5*std_smooth_kernel/binside, 5*std_smooth_kernel/binside], std_smooth_kernel/binside); % smooth the spikes and occupancy with a 5x5 bin gaussian with std=1
-		heat_map3 = SmoothMat(heat_map2, [5*std_smooth_kernel/binside, 5*std_smooth_kernel/binside], std_smooth_kernel/binside); % smooth the spikes and occupancy with a 5x5 bin gaussian with std=1
+		heat_map = hist3([spike_x, spike_y], 'Edges', {xdim, ydim2});
+		if use_smoothing
+			%heat_map = SmoothMat(heat_map, [5*std_smooth_kernel/binside, 5*std_smooth_kernel/binside], std_smooth_kernel/binside)./SmoothMat(occupancy, [5*std_smooth_kernel/binside, 5*std_smooth_kernel/binside], std_smooth_kernel/binside); % smooth the spikes and occupancy with a 5x5 bin gaussian with std=1
+			heat_map = SmoothMat(heat_map, [5*std_smooth_kernel/binside, 5*std_smooth_kernel/binside], std_smooth_kernel/binside); % smooth the spikes and occupancy with a 5x5 bin gaussian with std=1
+		end
 	end		
 end
 
@@ -95,8 +107,11 @@ axis('tight')
 xlabel('animal position on x axis') 
 ylabel('animal position on y axis')
 cb = colorbar;
-caxis([0 120])
-%caxis([0 25])
-%caption = sprintf('Physical space grid cell firing, total t = %.0f ms', c_ts(end)*1000);
-caption = sprintf('Physical space grid cell firing, total t = %.0f ms', carlsim_spikes(end,1));
+if use_carlsim_spikes
+	caxis([0 120])
+	caption = sprintf('Physical space grid cell firing, total t = %.0f ms', carlsim_spikes(end,1));
+else
+	caxis([0 25])
+	caption = sprintf('Physical space grid cell firing, total t = %.0f ms', c_ts(end)*1000);
+end
 title(caption, 'FontSize', 15);
