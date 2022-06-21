@@ -1,0 +1,5 @@
+e = exp(1);
+t = 0:pi/50:10*pi;
+st = ones(length(t));%sin(t);
+ct = ln^(-315*t^2)-ln^(-300*t^2);%cos(t);
+plot3(st,ct,t)

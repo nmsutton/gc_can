@@ -10,9 +10,9 @@ import CMBHOME.Utils.*
 
 [root c_ts] = load_spike_times();
 
-use_carlsim_spikes = 1;
+use_carlsim_spikes = 0;
 alt_heatmap = 0;
-use_smoothing = 1;
+use_smoothing = 0;
 
 if use_carlsim_spikes
 	grid_size = 30; % sqrt of grid size
