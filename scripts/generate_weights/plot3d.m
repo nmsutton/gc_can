@@ -4,22 +4,18 @@
 show_plot = 1;
 write_to_file = 1;
 create_matrix = 1;
+
 output_filename = "synapse_weights.cpp";
 grid_size = 30.0;
 iter = 3; % iterations to run function
 x_shift = 28;%15.0;
 y_shift = 30;%15.0;
-p1=.68;p2=2;p3=2;p4=70;p5=p3;p6=p4;p7=0.1;
-p8=.135;p9=2;p10=2;p11=2;p12=70;p13=p11;p14=p11;p15=p12;p16=0.6;
+p1=.68;p2=2;p3=2;p4=70;p5=p3;p6=p4;p7=0.19;
+p8=.135;p9=2;p10=2;p11=2;p12=70;p13=p11;p14=p11;p15=p12;p16=1.08;p17=0.0055;
 synapse_weights=[];
 
 % plot
 if show_plot
-	%X=ones(grid_size);
-	%X=X.*[1:grid_size];
-	%Y=X;
-
-	%[x,y]=meshgrid(X,Y);
 	[X,Y] = meshgrid(1:1:grid_size);
 	Z=[];
 	for x=1:grid_size
@@ -30,7 +26,7 @@ if show_plot
 					x_shift2 = (-grid_size+i*grid_size)+x_shift;
 					y_shift2 = (-grid_size+j*grid_size)+y_shift;
 					z=z+cent_surr(x,y,x_shift2,y_shift2,p1,p2,p3,p4,p5, ...
-					        p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16);
+					        p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17);
 				end
 			end
 			Z = [z, Z];
@@ -55,7 +51,7 @@ if write_to_file || create_matrix
 					x_shift2 = (-grid_size+i*grid_size)+x_shift;
 					y_shift2 = (-grid_size+j*grid_size)+y_shift;
 					z=z+cent_surr(x,y,x_shift2,y_shift2,p1,p2,p3,p4,p5, ...
-					        p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16);
+					        p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17);
 				end
 			end
 			if write_to_file
@@ -78,13 +74,13 @@ if create_matrix
 end
 
 function z=cent_surr(x,y,x_shift,y_shift,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11, ...
-					 p12,p13,p14,p15,p16)
+					 p12,p13,p14,p15,p16,p17)
 	% center-surround function
 	x=(x-x_shift);
 	y=(y-y_shift);
-	z=(p1/sqrt(p2*pi).*exp(-(x.^p3/p4) ...
+	z=((p1/sqrt(p2*pi).*exp(-(x.^p3/p4) ...
 		-(y.^p5/p6)))*p7-(p8/sqrt(p9*pi) ...
-		.*exp(-(p10*x.^p11/p12)-(p13*y.^p14/p15)))*p16;
+		.*exp(-(p10*x.^p11/p12)-(p13*y.^p14/p15)))*p16)-p17;
 	%z = x;
 	if z < 0
 		z = 0;
