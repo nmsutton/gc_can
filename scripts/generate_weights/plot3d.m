@@ -78,15 +78,28 @@ function z=cent_surr(x,y,x_shift,y_shift,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11, ...
 	% center-surround function
 	x=(x-x_shift);
 	y=(y-y_shift);
+	% difference of gaussians function creates the center-surround
 	z=((p1/sqrt(p2*pi).*exp(-(x.^p3/p4) ...
 		-(y.^p5/p6)))*p7-(p8/sqrt(p9*pi) ...
 		.*exp(-(p10*x.^p11/p12)-(p13*y.^p14/p15)))*p16)-p17;
-	%z = x;
 	if z < 0
-		z = 0;
+		z = 0; % negative values rectifier
 	end
-	%z=((3.4/sqrt(3*3.14)) * exp(-(6*x2.^2)-(6*y2.^2)/30))*4;
-	%x2=(x+x_shift);
-	%y2=(y+y_shift);
-	%z=z+((3.4/sqrt(3*3.14)) * exp(-(6*x2.^2)-(6*y2.^2)/30))*4;
+end
+
+function pd = get_pd(x, y)
+    % find neuron preferred direction
+	if (mod(y,2) == 0)
+		if (mod(x,2) == 0)
+			pd = 'd';
+		else 
+			pd = 'r';
+        end
+    else
+		if (mod(x,2) == 0)
+			pd = 'l';
+        else
+			pd = 'u';	
+        end
+    end
 end
