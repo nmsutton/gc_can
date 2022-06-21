@@ -20,15 +20,8 @@ if show_plot
 	Z=[];
 	for x=1:grid_size
 		for y=1:grid_size
-			z=0;
-			for i=0:(iter-1)
-				for j=0:(iter-1)
-					x_shift2 = (-grid_size+i*grid_size)+x_shift;
-					y_shift2 = (-grid_size+j*grid_size)+y_shift;
-					z=z+cent_surr(x,y,x_shift2,y_shift2,p1,p2,p3,p4,p5, ...
-					        p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17);
-				end
-			end
+			z=cent_surr_tile(x,y,x_shift,y_shift,p1,p2,p3,p4,p5, ...
+				p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,grid_size,iter);
 			Z = [z, Z];
 		end
 	end
@@ -45,15 +38,8 @@ if write_to_file || create_matrix
 	end
 	for x=1:grid_size
 		for y=1:grid_size
-			z=0;
-			for i=0:(iter-1)
-				for j=0:(iter-1)
-					x_shift2 = (-grid_size+i*grid_size)+x_shift;
-					y_shift2 = (-grid_size+j*grid_size)+y_shift;
-					z=z+cent_surr(x,y,x_shift2,y_shift2,p1,p2,p3,p4,p5, ...
-					        p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17);
-				end
-			end
+			z=cent_surr_tile(x,y,x_shift,y_shift,p1,p2,p3,p4,p5, ...
+			        p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,grid_size,iter);
 			if write_to_file
 				fprintf(output_file,'%f',z);
 				if x ~= grid_size && y ~= grid_size
@@ -71,6 +57,22 @@ if write_to_file || create_matrix
 end
 if create_matrix
 	synapse_weights = reshape(synapse_weights,30,30);
+end
+
+function z=cent_surr_tile(x,y,x_shift,y_shift,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11, ...
+					 p12,p13,p14,p15,p16,p17,grid_size,iter)
+	% tiles center-surround distributions
+	% generate <inter> number of tiled center surround functions
+	% for the synaptic weight distribution
+	z=0;
+	for i=0:(iter-1)
+		for j=0:(iter-1)
+			x_shift2 = (-grid_size+i*grid_size)+x_shift;
+			y_shift2 = (-grid_size+j*grid_size)+y_shift;
+			z=z+cent_surr(x,y,x_shift2,y_shift2,p1,p2,p3,p4,p5, ...
+			        p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17);
+		end
+	end
 end
 
 function z=cent_surr(x,y,x_shift,y_shift,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11, ...
