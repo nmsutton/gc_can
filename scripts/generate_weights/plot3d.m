@@ -1,9 +1,9 @@
 % reference: https://www.mathworks.com/matlabcentral/answers/180778-plotting-a-3d-gaussian-function-using-surf
 
 % params
-show_plot = 1;
+show_plot = 0;
 write_to_file = 1;
-create_matrix = 1;
+sample_matrix = 1;
 
 output_filename = "synapse_weights.cpp";
 if write_to_file
@@ -16,8 +16,7 @@ y_shift = 28;%15.0;
 p1=.68;p2=2;p3=2;p4=70;p5=p3;p6=p4;p7=0.19;
 p8=.135;p9=2;p10=2;p11=2;p12=70;p13=p11;p14=p11;p15=p12;p16=1.08;p17=0.0055;
 p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
-synapse_weights=[];
-po=[show_plot,write_to_file,create_matrix,output_file,grid_size,iter];
+po=[show_plot,write_to_file,sample_matrix,output_file,grid_size,iter];
 
 % plot
 if show_plot
@@ -36,26 +35,25 @@ if show_plot
 end
 
 % write to file and create matrix
-if write_to_file || create_matrix
-	%{
-	for x=1:grid_size
-		for y=1:grid_size
-			z=cent_surr_tile(x,y,x_shift,y_shift,p,po);
-			if write_to_file
-				fprintf(output_file,'%f',z);
-				if x ~= grid_size && y ~= grid_size
-					fprintf(output_file,',');
-				end
-			end
-			if create_matrix
-				synapse_weights = [z, synapse_weights];
-			end
+total_nrns = 100;%(grid_size^2); % total neurons
+if write_to_file
+	fprintf(output_file,'static const vector<vector<double>> mex_hat{{');
+	for i=1:total_nrns
+		synapse_weights=nrn_syn_wts(x,y,x_shift,y_shift,p,po);
+		if i ~= total_nrns
+			fprintf(output_file,'},\n{');
 		end
-	end	
-	%}
-	synapse_weights=nrn_syn_wts(x,y,x_shift,y_shift,p,po,synapse_weights);
+		if (mod(i,grid_size)==0)
+			fprintf("%.3g%% completed\n",i/total_nrns*100);
+		end
+	end
+	fprintf(output_file,'}};');
 end
-if create_matrix
+if sample_matrix
+	po(2)=0; % turn off file writing for sample
+	x_shift = 28;
+	y_shift = 28;
+	synapse_weights=nrn_syn_wts(x,y,x_shift,y_shift,p,po);
 	synapse_weights = reshape(synapse_weights,30,30);
 end
 
@@ -66,19 +64,21 @@ end
 function synapse_weights=nrn_syn_wts(x,y,x_shift,y_shift,p,po,synapse_weights);
 	% generate all synapse weights for one neuron
 
-	write_to_file=po(2);create_matrix=po(3);output_file=po(4);
-   	grid_size=po(5);iter=po(6);
+	write_to_file=po(2);sample_matrix=po(3);output_file=po(4);
+   	grid_size=po(5);iter=po(6);synapse_weights=[];
 
 	for x=1:grid_size
 		for y=1:grid_size
-			z=cent_surr_tile(x,y,x_shift,y_shift,p,po)
+			z=cent_surr_tile(x,y,x_shift,y_shift,p,po);
 			if write_to_file
 				fprintf(output_file,'%f',z);
-				if x ~= grid_size && y ~= grid_size
+				if x == grid_size && y == grid_size
+					% skip
+				else
 					fprintf(output_file,',');
 				end
 			end
-			if create_matrix
+			if sample_matrix
 				synapse_weights = [z, synapse_weights];
 			end
 		end
