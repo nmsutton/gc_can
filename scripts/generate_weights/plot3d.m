@@ -11,8 +11,8 @@ if write_to_file
 end
 grid_size = 30.0;
 iter = 3; % iterations to run function
-start_x_shift = 0;%28;
-start_y_shift = -2;%-4;%28;
+start_x_shift = 5;%28;
+start_y_shift = 1;%-4;%28;
 p1=.68;p2=2;p3=2;p4=70;p5=p3;p6=p4;p7=0.19;
 p8=.135;p9=2;p10=2;p11=2;p12=70;p13=p11;p14=p11;p15=p12;p16=1.08;p17=0.0055;
 p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
@@ -36,9 +36,8 @@ if show_plot
 end
 
 % write to file and create matrix
-total_nrns = (grid_size^2); % total neurons
+total_nrns = (grid_size^2);%35;%(grid_size^2);% total neurons
 if write_to_file
-	fprintf(output_file,'static const vector<vector<double>> mex_hat{{');
 	for i=0:(total_nrns-1)
 		pdx = mod(i,grid_size);
 		pdy = floor(i/grid_size);
@@ -47,23 +46,37 @@ if write_to_file
 		x_pd_bias = 0;
 		y_pd_bias = 0;
 		if pd=='u'
-			x_pd_bias=-3;%1;
-		elseif pd=='d'
-			x_pd_bias=3;%-1;
-		elseif pd=='l'
 			y_pd_bias=-3;
-		elseif pd=='r'
+		elseif pd=='d'
 			y_pd_bias=3;
+		elseif pd=='l'
+			x_pd_bias=-2;%1;
+		elseif pd=='r'
+			x_pd_bias=2;%-1;
 		end
 		y_shift=start_x_shift+pdy+x_pd_bias; % x and y values are intentially flipped
 		x_shift=start_y_shift+pdx+y_pd_bias; % here for an orientation fix
 
-		synapse_weights=nrn_syn_wts(x,y,x_shift,y_shift,p,po);
-		comb_syn_wts=[synapse_weights; comb_syn_wts];
+		synapse_weights=nrn_syn_wts(x_shift,y_shift,p,po);
+		comb_syn_wts=[comb_syn_wts; synapse_weights];
+
+		if (mod(i,grid_size*3)==0)
+			fprintf("%.3g%% completed\n",i/total_nrns*100);
+		end
+	end
+	disp("writing to file");
+	fprintf(output_file,'static const vector<vector<double>> mex_hat{{');
+	for i=0:(total_nrns-1)
+		for j=1:length(comb_syn_wts)
+			fprintf(output_file,'%f',comb_syn_wts(i+1,j));
+			if j ~= length(comb_syn_wts)
+				fprintf(output_file,',');
+			end
+		end
 		if i ~= (total_nrns-1)
 			fprintf(output_file,'},\n{');
-		end
-		if (mod(i,grid_size)==0)
+		end	
+		if (mod(i,grid_size*3)==0)
 			fprintf("%.3g%% completed\n",i/total_nrns*100);
 		end
 	end
@@ -81,7 +94,7 @@ if write_to_file
 	fclose(output_file);
 end
 
-function synapse_weights=nrn_syn_wts(x,y,x_shift,y_shift,p,po,synapse_weights);
+function synapse_weights=nrn_syn_wts(x_shift,y_shift,p,po,synapse_weights);
 	% generate all synapse weights for one neuron
 
 	write_to_file=po(2);sample_matrix=po(3);output_file=po(4);
@@ -90,15 +103,7 @@ function synapse_weights=nrn_syn_wts(x,y,x_shift,y_shift,p,po,synapse_weights);
 	for y=1:grid_size
 		for x=1:grid_size
 			z=cent_surr_tile(x,y,x_shift,y_shift,p,po);
-			if write_to_file
-				fprintf(output_file,'%f',z);
-				if x == grid_size && y == grid_size
-					% skip
-				else
-					fprintf(output_file,',');
-				end
-			end
-			synapse_weights = [z, synapse_weights];
+			synapse_weights = [synapse_weights,z];
 		end
 	end	
 end
