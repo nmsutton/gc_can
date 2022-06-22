@@ -68,7 +68,7 @@ using namespace std;
 #include "../data/ext_dir_initial.cpp"
 #include "../data/ext_dir.cpp"
 #include "../data/init_firings.cpp"
-#include "../data/mex_hat.cpp"
+#include "../data/synapse_weights.cpp"
 #include "../general_params.cpp"
 #include "../place_cells.cpp"
 #include "../general_funct.cpp"
