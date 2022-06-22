@@ -3,7 +3,7 @@
 % params
 show_plot = 0;
 write_to_file = 1;
-sample_matrix = 1;
+sample_matrix = 0;
 
 output_filename = "synapse_weights.cpp";
 if write_to_file
@@ -11,12 +11,13 @@ if write_to_file
 end
 grid_size = 30.0;
 iter = 3; % iterations to run function
-x_shift = 28;%15.0;
-y_shift = 28;%15.0;
+start_x_shift = 0;%28;
+start_y_shift = -4;%28;
 p1=.68;p2=2;p3=2;p4=70;p5=p3;p6=p4;p7=0.19;
 p8=.135;p9=2;p10=2;p11=2;p12=70;p13=p11;p14=p11;p15=p12;p16=1.08;p17=0.0055;
 p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
 po=[show_plot,write_to_file,sample_matrix,output_file,grid_size,iter];
+comb_syn_wts=[];
 
 % plot
 if show_plot
@@ -35,12 +36,30 @@ if show_plot
 end
 
 % write to file and create matrix
-total_nrns = 100;%(grid_size^2); % total neurons
+total_nrns = 31;%(grid_size^2); % total neurons
 if write_to_file
 	fprintf(output_file,'static const vector<vector<double>> mex_hat{{');
-	for i=1:total_nrns
+	for i=0:(total_nrns-1)
+		pdx = mod(i,grid_size);
+		pdy = floor(i/grid_size);
+		pd=get_pd(pdx,pdy);
+		x_pd_bias = 0;
+		y_pd_bias = 0;
+		if pd=='u'
+			y_pd_bias=0;%1;
+		elseif pd=='d'
+			y_pd_bias=0;%-1;
+		elseif pd=='l'
+			x_pd_bias=0;%1;
+		elseif pd=='r'
+			x_pd_bias=0;%-1;
+		end
+		y_shift=start_x_shift+pdx+x_pd_bias; % x and y values are intentially flipped
+		x_shift=start_y_shift+pdy+y_pd_bias; % here for an orientation fix
+
 		synapse_weights=nrn_syn_wts(x,y,x_shift,y_shift,p,po);
-		if i ~= total_nrns
+		comb_syn_wts=[synapse_weights; comb_syn_wts];
+		if i ~= (total_nrns-1)
 			fprintf(output_file,'},\n{');
 		end
 		if (mod(i,grid_size)==0)
@@ -67,8 +86,8 @@ function synapse_weights=nrn_syn_wts(x,y,x_shift,y_shift,p,po,synapse_weights);
 	write_to_file=po(2);sample_matrix=po(3);output_file=po(4);
    	grid_size=po(5);iter=po(6);synapse_weights=[];
 
-	for x=1:grid_size
-		for y=1:grid_size
+	for y=1:grid_size
+		for x=1:grid_size
 			z=cent_surr_tile(x,y,x_shift,y_shift,p,po);
 			if write_to_file
 				fprintf(output_file,'%f',z);
@@ -78,9 +97,7 @@ function synapse_weights=nrn_syn_wts(x,y,x_shift,y_shift,p,po,synapse_weights);
 					fprintf(output_file,',');
 				end
 			end
-			if sample_matrix
-				synapse_weights = [z, synapse_weights];
-			end
+			synapse_weights = [z, synapse_weights];
 		end
 	end	
 end

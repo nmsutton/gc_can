@@ -7,6 +7,6 @@ output/
 src/data/
 data/anim_angles*.cpp
 data/anim_speeds*.cpp
-scripts/generate_weights/neuron*.mat
+scripts/generate_weights/examples
 scripts/generate_weights/*.jpg
 scripts/generate_weights/synapse_weights.cpp
