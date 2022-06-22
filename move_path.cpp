@@ -114,8 +114,8 @@ void straight_path(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		//control_speed(3.587,p);	
-		control_speed(0.0,p);	
+		control_speed(3.587,p);	
+		//control_speed(0.0,p);	
 		EISignal(angle, sim, p);
 	}
 }

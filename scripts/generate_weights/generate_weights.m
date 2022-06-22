@@ -11,7 +11,7 @@ if write_to_file
 end
 grid_size = 30.0;
 iter = 3; % iterations to run function
-start_x_shift = 5;%28;
+start_x_shift = 1;%28;
 start_y_shift = 1;%-4;%28;
 p1=.68;p2=2;p3=2;p4=70;p5=p3;p6=p4;p7=0.20;
 p8=.135;p9=2;p10=2;p11=2;p12=70;p13=p11;p14=p11;p15=p12;p16=1.08;p17=0.0058;
@@ -50,9 +50,9 @@ if write_to_file
 		elseif pd=='d'
 			y_pd_bias=-3;
 		elseif pd=='l'
-			x_pd_bias=-2;%1;
+			x_pd_bias=2;%1;
 		elseif pd=='r'
-			x_pd_bias=2;%-1;
+			x_pd_bias=-2;%-1;
 		end
 		y_shift=start_x_shift+pdy+x_pd_bias; % x and y values are intentially flipped
 		x_shift=start_y_shift+pdx+y_pd_bias; % here for an orientation fix
