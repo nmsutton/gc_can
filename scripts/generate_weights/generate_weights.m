@@ -46,9 +46,9 @@ if write_to_file
 		x_pd_bias = 0;
 		y_pd_bias = 0;
 		if pd=='u'
-			y_pd_bias=3;
+			y_pd_bias=2;
 		elseif pd=='d'
-			y_pd_bias=-3;
+			y_pd_bias=-2;
 		elseif pd=='l'
 			x_pd_bias=2;%1;
 		elseif pd=='r'
