@@ -14,10 +14,11 @@ if write_to_file
 	output_file = fopen(output_filename,'w');
 end
 grid_size = 90.0;
+grid_size_target = 30; % target grid size for neuron weights
 total_nrns = (grid_size^2);%35;%(grid_size^2);% total neurons
 iter = 5; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
-start_x_shift = 1;%28;
-start_y_shift = 1;%-4;%28;
+start_x_shift = grid_size/2 + 1;%1;%28;
+start_y_shift = grid_size/2 + 1;%1;%-4;%28;
 p1=.68;p2=2;p3=2;p4=30;p5=p3;p6=p4;p7=0.20;
 p8=.135;p9=2;p10=2;p11=2;p12=30;p13=p11;p14=p11;p15=p12;p16=1.08;p17=0.0058;
 p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
@@ -27,7 +28,8 @@ comb_syn_wts=[];
 [X,Y] = meshgrid(1:1:grid_size);
 Z=zeros(grid_size);
 % rotation variables
-a=pi/2; % angle
+a=45; % angle
+a=a/360 * pi*2; % convert to radians
 Rx = [1 0 0; 0 cos(a) -sin(a); 0 sin(a) cos(a)];
 Ry = [cos(a) 0 sin(a); 0 1 0; -sin(a) 0 cos(a)];
 Rz = [cos(a) -sin(a) 0; sin(a) cos(a) 0; 0 0 1];
@@ -104,11 +106,25 @@ if sample_matrix
             center_of_rot=grid_size/2;
             r_x_shift = x - center_of_rot;
             r_y_shift = y - center_of_rot;         
-            %rv = Rz*[x;y;z];
             rv = Rz*[r_x_shift;r_y_shift;z];
             rv(1)=rv(1)+center_of_rot;
             rv(2)=rv(2)+center_of_rot;
             X(i)=rv(1);Y(i)=rv(2);Z(i)=rv(3);
+            if floor(rv(1)) > 0 && floor(rv(1)) < grid_size && ...
+               floor(rv(2)) > 0 && floor(rv(2)) < grid_size
+            	synapse_weights2(floor(rv(1)),floor(rv(2)))=rv(3);
+        	end
+        end
+    end
+    target_offset = grid_size_target/grid_size*grid_size;
+    synapse_weights3=zeros(grid_size_target);
+    for y=1:grid_size_target
+        for x=1:grid_size_target
+        	x2 = target_offset + x;
+        	y2 = target_offset + y;
+        	i=((y2-1)*grid_size)+x2; % larger grid index
+        	i2=((y-1)*grid_size_target)+x; % target smaller grid index
+        	synapse_weights3(i2)=synapse_weights2(i);
         end
     end
 end
