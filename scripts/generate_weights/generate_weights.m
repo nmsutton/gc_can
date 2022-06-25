@@ -2,8 +2,8 @@
 
 % run options
 show_plot = 0;
-write_to_file = 1;
-sample_matrix = 0;
+write_to_file = 0;
+sample_matrix = 1;
 
 % params
 output_filename = "synapse_weights.cpp";
@@ -87,8 +87,42 @@ if write_to_file
 end
 if sample_matrix
 	po(2)=0; % turn off file writing for sample
-	synapse_weights = nrn_syn_wts(x,y,start_x_shift,start_y_shift,p,po);
-	synapse_weights = reshape(synapse_weights,30,30);
+	synapse_weights = nrn_syn_wts(start_x_shift,start_y_shift,p,po);
+	synapse_weights = reshape(synapse_weights,grid_size,grid_size);
+    synapse_weights2 = zeros(grid_size);
+    for y=1:grid_size
+        for x=1:grid_size
+            i=((y-1)*grid_size)+x;
+            z=synapse_weights(i);
+            a=pi/2; % angle
+            Rx = [1 0 0; 0 cos(a) -sin(a); 0 sin(a) cos(a)];
+            Ry = [cos(a) 0 sin(a); 0 1 0; -sin(a) 0 cos(a)];
+            Rz = [cos(a) -sin(a) 0; sin(a) cos(a) 0; 0 0 1];
+            x2 = x;
+            y2 = y;%y*cos(theta) - z*sin(theta);
+            z2 = z;%y*sin(theta) + z*cos(theta);
+            
+            %rv = Rx*[x;y;z];
+            rv = Rz*[x;y;z];
+            X(i)=rv(1);Y(i)=rv(2);Z(i)=rv(3);
+            
+            %{
+            if floor(rv(1)) > 0 && floor(rv(1)) < 31 && ...
+               floor(rv(2)) > 0 && floor(rv(2)) < 31 && ...
+               floor(rv(3)) > 0 && floor(rv(3)) < 31
+            	synapse_weights2(floor(rv(1)),floor(rv(2)))=rv(3);
+        	end
+            %}
+            %{
+            if floor(x2) > 0 && floor(x2) < 31 && ...
+               floor(y2) > 0 && floor(y2) < 31
+                synapse_weights2(floor(y2),floor(x2))=z2;
+                %synapse_weights2(x,y)=z;
+            end
+            %}
+            %synapse_weights2(x,y)=z;
+        end
+    end
 end
 
 if write_to_file

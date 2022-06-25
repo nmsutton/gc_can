@@ -1,13 +1,13 @@
 % reference: https://www.mathworks.com/matlabcentral/answers/180778-plotting-a-3d-gaussian-function-using-surf
 
 % run options
-show_plot = 1;
+show_plot = 0;
 write_to_file = 0;
-sample_matrix = 0;
+sample_matrix = 1;
 
 % params
 output_filename = "synapse_weights.cpp";
-output_file = "default.txt";
+output_file = 0;
 if write_to_file
 	output_file = fopen(output_filename,'w');
 end
@@ -46,7 +46,6 @@ if write_to_file
 		pdx = mod(i,grid_size);
 		pdy = floor(i/grid_size);
 		pd=get_pd(pdx,pdy);
-		%fprintf("n:%d pd:%c\n",i,pd);
 		x_pd_bias = 0;
 		y_pd_bias = 0;
 		if pd=='u'
@@ -88,8 +87,34 @@ if write_to_file
 end
 if sample_matrix
 	po(2)=0; % turn off file writing for sample
-	synapse_weights = nrn_syn_wts(x,y,start_x_shift,start_y_shift,p,po);
-	synapse_weights = reshape(synapse_weights,30,30);
+	synapse_weights = nrn_syn_wts(start_x_shift,start_y_shift,p,po);
+	synapse_weights = reshape(synapse_weights,grid_size,grid_size);
+    synapse_weights2 = zeros(grid_size);
+    for y=1:grid_size
+        for x=1:grid_size
+            i=(mod(y,grid_size))+x;
+            z=synapse_weights(i);
+            theta=0; % angle
+            Rx = [1 0 0; 0 cos(a) -sin(a); 0 sin(a) cos(a)];
+            Ry = [cos(a) 0 sin(a); 0 1 0; -sin(a) 0 cos(a)];
+            Rz = [cos(a) -sin(a) 0; sin(a) cos(a) 0; 0 0 1];
+            x2 = x;%x*cos(theta) + z*sin(theta);
+            y2 = y;
+            z2 = z;%z*cos(theta) - x*sin(theta);
+            %{
+            rv = Rx*[x;y;z];
+            if floor(rv(1)) > 0 && floor(rv(1)) < 31 && ...
+               floor(rv(2)) > 0 && floor(rv(2)) < 31 && ...
+               floor(rv(3)) > 0 && floor(rv(3)) < 31
+            	synapse_weights2(floor(rv(1)),floor(rv(2)))=rv(3);
+        	end
+            %}
+            if floor(x2) > 0 && floor(x2) < 31 && ...
+               floor(y2) > 0 && floor(y2) < 31
+                synapse_weights2(floor(y2),floor(y2))=z2;
+            end
+        end
+    end
 end
 
 if write_to_file
@@ -99,9 +124,7 @@ end
 function synapse_weights=nrn_syn_wts(x_shift,y_shift,p,po,synapse_weights);
 	% generate all synapse weights for one neuron
 
-	write_to_file=po(2);sample_matrix=po(3);output_file=po(4);
    	grid_size=po(5);iter=po(6);synapse_weights=[];
-
 	for y=1:grid_size
 		for x=1:grid_size
 			z=cent_surr_tile(x,y,x_shift,y_shift,p,po);
@@ -115,9 +138,7 @@ function z=cent_surr_tile(x,y,x_shift,y_shift,p,po)
 	% generate <inter> number of tiled center surround functions
 	% for the synaptic weight distribution
 
-	grid_size=po(5);iter=str2double(po(6))
-	tf=po(7); %tiling fraction
-	z=0;
+	grid_size=po(5);iter=po(6);tf=po(7);z=0;
 	for i=0:(iter-1)
 		for j=0:(iter-1)
             tv=(iter-1)/2; % tiling variable
