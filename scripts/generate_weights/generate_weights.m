@@ -1,4 +1,6 @@
-% reference: https://www.mathworks.com/matlabcentral/answers/180778-plotting-a-3d-gaussian-function-using-surf
+% references: https://www.mathworks.com/matlabcentral/answers/180778-plotting-a-3d-gaussian-function-using-surf
+% https://www.mathworks.com/help/symbolic/rotation-matrix-and-transformation-matrix.html
+% https://www.mathworks.com/matlabcentral/answers/430093-rotation-about-a-point
 
 % run options
 show_plot = 0;
@@ -11,7 +13,7 @@ output_file = 0;
 if write_to_file
 	output_file = fopen(output_filename,'w');
 end
-grid_size = 30.0;
+grid_size = 90.0;
 total_nrns = (grid_size^2);%35;%(grid_size^2);% total neurons
 iter = 5; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
 start_x_shift = 1;%28;
@@ -19,21 +21,26 @@ start_y_shift = 1;%-4;%28;
 p1=.68;p2=2;p3=2;p4=30;p5=p3;p6=p4;p7=0.20;
 p8=.135;p9=2;p10=2;p11=2;p12=30;p13=p11;p14=p11;p15=p12;p16=1.08;p17=0.0058;
 p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
-tiling_fraction=0.5; % fraction of standard tiling distance between bumps
+tiling_fraction=0.2;%0.5; % fraction of standard tiling distance between bumps
 po=[show_plot,write_to_file,sample_matrix,output_file,grid_size,iter,tiling_fraction];
 comb_syn_wts=[];
+[X,Y] = meshgrid(1:1:grid_size);
+Z=zeros(grid_size);
+% rotation variables
+a=pi/2; % angle
+Rx = [1 0 0; 0 cos(a) -sin(a); 0 sin(a) cos(a)];
+Ry = [cos(a) 0 sin(a); 0 1 0; -sin(a) 0 cos(a)];
+Rz = [cos(a) -sin(a) 0; sin(a) cos(a) 0; 0 0 1];
 
 % plot
 if show_plot
-	[X,Y] = meshgrid(1:1:grid_size);
-	Z=[];
 	for x=1:grid_size
 		for y=1:grid_size
 			z=cent_surr_tile(x,y,start_x_shift,start_y_shift,p,po);
 			Z = [z, Z];
 		end
 	end
-	Z = reshape(Z,30,30);
+	Z = reshape(Z,grid_size,grid_size);
 	surf(X,Y,Z);
 	shading interp
 	axis tight
@@ -93,34 +100,15 @@ if sample_matrix
     for y=1:grid_size
         for x=1:grid_size
             i=((y-1)*grid_size)+x;
-            z=synapse_weights(i);
-            a=pi/2; % angle
-            Rx = [1 0 0; 0 cos(a) -sin(a); 0 sin(a) cos(a)];
-            Ry = [cos(a) 0 sin(a); 0 1 0; -sin(a) 0 cos(a)];
-            Rz = [cos(a) -sin(a) 0; sin(a) cos(a) 0; 0 0 1];
-            x2 = x;
-            y2 = y;%y*cos(theta) - z*sin(theta);
-            z2 = z;%y*sin(theta) + z*cos(theta);
-            
-            %rv = Rx*[x;y;z];
-            rv = Rz*[x;y;z];
+            z=synapse_weights(i); 
+            center_of_rot=grid_size/2;
+            r_x_shift = x - center_of_rot;
+            r_y_shift = y - center_of_rot;         
+            %rv = Rz*[x;y;z];
+            rv = Rz*[r_x_shift;r_y_shift;z];
+            rv(1)=rv(1)+center_of_rot;
+            rv(2)=rv(2)+center_of_rot;
             X(i)=rv(1);Y(i)=rv(2);Z(i)=rv(3);
-            
-            %{
-            if floor(rv(1)) > 0 && floor(rv(1)) < 31 && ...
-               floor(rv(2)) > 0 && floor(rv(2)) < 31 && ...
-               floor(rv(3)) > 0 && floor(rv(3)) < 31
-            	synapse_weights2(floor(rv(1)),floor(rv(2)))=rv(3);
-        	end
-            %}
-            %{
-            if floor(x2) > 0 && floor(x2) < 31 && ...
-               floor(y2) > 0 && floor(y2) < 31
-                synapse_weights2(floor(y2),floor(x2))=z2;
-                %synapse_weights2(x,y)=z;
-            end
-            %}
-            %synapse_weights2(x,y)=z;
         end
     end
 end
