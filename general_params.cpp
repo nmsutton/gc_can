@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 10; // size of bins to record firing activity
-	double sim_time = 500*firing_bin;//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 120000*firing_bin;//29416*20;//60000*firing_bin;// sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -81,7 +81,7 @@ struct P {
 	int conn_dist = 3; // distance between neurons in connections
 
 	// speed
-	bool speed_adjustable = 0;
+	bool auto_speed_control = 1;
 	double max_speed = 6.0; // max movement speed
 	double min_rand_speed = 0.25; // minimum speed for random speed generator. note: signal applied even when stopped.
 	double max_rand_speed = 1.0; // maximum speed for random speed generator

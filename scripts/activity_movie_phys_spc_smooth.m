@@ -10,12 +10,14 @@ import CMBHOME.Utils.*
 
 [root c_ts] = load_spike_times();
 
-use_carlsim_spikes = 0;
+use_carlsim_spikes = 1;
 alt_heatmap = 0;
-use_smoothing = 0;
+use_smoothing = 1;
 
 if use_carlsim_spikes
 	grid_size = 30; % sqrt of grid size
+	binside = 3;
+	std_smooth_kernel = 3;
 else
 	grid_size = 32;
 	spike_x = root.cel_x{1,1};
@@ -108,7 +110,8 @@ xlabel('animal position on x axis')
 ylabel('animal position on y axis')
 cb = colorbar;
 if use_carlsim_spikes
-	caxis([0 120])
+	%caxis([0 120])
+    caxis([0 40])
 	caption = sprintf('Physical space grid cell firing, total t = %.0f ms', carlsim_spikes(end,1));
 else
 	caxis([0 25])

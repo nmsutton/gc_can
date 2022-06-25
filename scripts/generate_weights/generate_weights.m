@@ -1,22 +1,26 @@
 % reference: https://www.mathworks.com/matlabcentral/answers/180778-plotting-a-3d-gaussian-function-using-surf
 
-% params
+% run options
 show_plot = 0;
 write_to_file = 1;
 sample_matrix = 0;
 
+% params
 output_filename = "synapse_weights.cpp";
+output_file = 0;
 if write_to_file
 	output_file = fopen(output_filename,'w');
 end
 grid_size = 30.0;
-iter = 3; % iterations to run function
+total_nrns = (grid_size^2);%35;%(grid_size^2);% total neurons
+iter = 5; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
 start_x_shift = 1;%28;
 start_y_shift = 1;%-4;%28;
-p1=.68;p2=2;p3=2;p4=70;p5=p3;p6=p4;p7=0.20;
-p8=.135;p9=2;p10=2;p11=2;p12=70;p13=p11;p14=p11;p15=p12;p16=1.08;p17=0.0058;
+p1=.68;p2=2;p3=2;p4=30;p5=p3;p6=p4;p7=0.20;
+p8=.135;p9=2;p10=2;p11=2;p12=30;p13=p11;p14=p11;p15=p12;p16=1.08;p17=0.0058;
 p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
-po=[show_plot,write_to_file,sample_matrix,output_file,grid_size,iter];
+tiling_fraction=0.5; % fraction of standard tiling distance between bumps
+po=[show_plot,write_to_file,sample_matrix,output_file,grid_size,iter,tiling_fraction];
 comb_syn_wts=[];
 
 % plot
@@ -25,7 +29,7 @@ if show_plot
 	Z=[];
 	for x=1:grid_size
 		for y=1:grid_size
-			z=cent_surr_tile(x,y,x_shift,y_shift,p,po);
+			z=cent_surr_tile(x,y,start_x_shift,start_y_shift,p,po);
 			Z = [z, Z];
 		end
 	end
@@ -33,16 +37,15 @@ if show_plot
 	surf(X,Y,Z);
 	shading interp
 	axis tight
+    view(2) % 2d plot instead of 3d
 end
 
 % write to file and create matrix
-total_nrns = (grid_size^2);%35;%(grid_size^2);% total neurons
 if write_to_file
 	for i=0:(total_nrns-1)
 		pdx = mod(i,grid_size);
 		pdy = floor(i/grid_size);
 		pd=get_pd(pdx,pdy);
-		%fprintf("n:%d pd:%c\n",i,pd);
 		x_pd_bias = 0;
 		y_pd_bias = 0;
 		if pd=='u'
@@ -84,9 +87,7 @@ if write_to_file
 end
 if sample_matrix
 	po(2)=0; % turn off file writing for sample
-	x_shift = 28;
-	y_shift = 28;
-	synapse_weights=nrn_syn_wts(x,y,x_shift,y_shift,p,po);
+	synapse_weights = nrn_syn_wts(x,y,start_x_shift,start_y_shift,p,po);
 	synapse_weights = reshape(synapse_weights,30,30);
 end
 
@@ -97,9 +98,7 @@ end
 function synapse_weights=nrn_syn_wts(x_shift,y_shift,p,po,synapse_weights);
 	% generate all synapse weights for one neuron
 
-	write_to_file=po(2);sample_matrix=po(3);output_file=po(4);
    	grid_size=po(5);iter=po(6);synapse_weights=[];
-
 	for y=1:grid_size
 		for x=1:grid_size
 			z=cent_surr_tile(x,y,x_shift,y_shift,p,po);
@@ -113,12 +112,12 @@ function z=cent_surr_tile(x,y,x_shift,y_shift,p,po)
 	% generate <inter> number of tiled center surround functions
 	% for the synaptic weight distribution
 
-	grid_size=po(5);iter=po(6);
-	z=0;
+	grid_size=po(5);iter=po(6);tf=po(7);z=0;
 	for i=0:(iter-1)
 		for j=0:(iter-1)
-			x_shift2 = (-grid_size+i*grid_size)+x_shift;
-			y_shift2 = (-grid_size+j*grid_size)+y_shift;
+            tv=(iter-1)/2; % tiling variable
+			x_shift2 = (-(grid_size*tv*tf)+i*(grid_size*tf))+x_shift;
+			y_shift2 = (-(grid_size*tv*tf)+j*(grid_size*tf))+y_shift;
 			z=z+cent_surr(x,y,x_shift2,y_shift2,p);
 		end
 	end

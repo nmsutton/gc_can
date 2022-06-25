@@ -73,7 +73,7 @@ void control_speed(double speed, P* p) {
 		https://www.socscistatistics.com/tests/regression/default.aspx
 	*/
 	//if (speed > p->max_speed) {speed = p->max_speed;} // speed limit
-	if (true) {
+	if (p->auto_speed_control) {
 		p->move_increment = (0.00096*speed)-0.00012;
 		p->const_speed = (0.1287571596*speed)-(0.1143442859*pow(speed,2))+(0.03852298736*pow(speed,3))-(0.003102176404*pow(speed,4));
 		p->speed_mult = (0*speed)+0.5;
@@ -258,9 +258,9 @@ void move_circles(CARLsim* sim, P* p) {
 	vector<double> moves;
 	double angle = 90;
 	for (int i = 0; i < (p->sim_time/p->animal_ts); i++) {
-		if (i % 10 == 0) {
-			//angle += 90;
-			angle += 135;
+		if (i % 20 == 0) {
+			angle += 45;
+			//angle += 135;
 			//angle = rand_angle();
 			//angle = rand_move();
 		}
@@ -273,7 +273,7 @@ void move_circles(CARLsim* sim, P* p) {
 	vector<int> speed_times;
 	for (int i = 0; i < moves.size(); i++) {
 		//speeds.push_back(35.4/400);
-		speeds.push_back(35.6/400);
+		speeds.push_back(3.587);
 		speed_times.push_back(i*20);
 	}
 	int num_moves = moves.size();
