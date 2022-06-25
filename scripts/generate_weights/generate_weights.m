@@ -28,7 +28,7 @@ comb_syn_wts=[];
 [X,Y] = meshgrid(1:1:grid_size);
 Z=zeros(grid_size);
 % rotation variables
-a=45; % angle
+a=5; % angle
 a=a/360 * pi*2; % convert to radians
 Rx = [1 0 0; 0 cos(a) -sin(a); 0 sin(a) cos(a)];
 Ry = [cos(a) 0 sin(a); 0 1 0; -sin(a) 0 cos(a)];
@@ -110,9 +110,44 @@ if sample_matrix
             rv(1)=rv(1)+center_of_rot;
             rv(2)=rv(2)+center_of_rot;
             X(i)=rv(1);Y(i)=rv(2);Z(i)=rv(3);
+            %{
             if floor(rv(1)) > 0 && floor(rv(1)) < grid_size && ...
                floor(rv(2)) > 0 && floor(rv(2)) < grid_size
             	synapse_weights2(floor(rv(1)),floor(rv(2)))=rv(3);
+        	end
+        	%}
+        	%% convert fractions to whole number indicies and values
+        	%% split values across indicies according to their fractions
+       	    x_max=ceil(rv(1));
+       	    x_min=floor(rv(1));
+       	    y_max=ceil(rv(2));
+       	    y_min=floor(rv(2));
+        	for x2=1:2
+        		for y2=1:2
+	        		if x_min > 0 && x_min < grid_size && ...
+	               	   y_min > 0 && y_min < grid_size
+	               	   if x2==1 && y2 ==1
+	               	   	 synapse_weights2(x_min,y_min)= ...
+	               	   	 synapse_weights2(x_min,y_min)+rv(3)* ...
+	               	   	 (1-mod(rv(1),1)+1-mod(rv(2),1))/2;
+	               	   end
+	               	   if x2==2 && y2 ==1
+	               	   	 synapse_weights2(x_max,y_min)= ...
+	               	   	 synapse_weights2(x_max,y_min)+rv(3)* ...
+	               	   	 (mod(rv(1),1)+1-mod(rv(2),1))/2;
+	               	   end
+	               	   if x2==1 && y2 ==2
+	               	   	 synapse_weights2(x_min,y_max)= ...
+	               	   	 synapse_weights2(x_min,y_max)+rv(3)* ...
+	               	   	 (1-mod(rv(1),1)+mod(rv(2),1))/2;
+	               	   end
+	               	   if x2==2 && y2 ==2
+	               	   	 synapse_weights2(x_max,y_max)= ...
+	               	   	 synapse_weights2(x_max,y_max)+rv(3)* ...
+	               	   	 (mod(rv(1),1)+mod(rv(2),1))/2;
+	               	   end
+	               	end
+	            end
         	end
         end
     end
