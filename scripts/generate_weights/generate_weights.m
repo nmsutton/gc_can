@@ -15,7 +15,7 @@ if write_to_file
 end
 grid_size = 30;%90.0;
 grid_size_target = 30; % target grid size for neuron weights
-total_nrns = (grid_size_target^2);%35;%(grid_size^2);% total neurons
+total_nrns = 2;%(grid_size_target^2);%35;%(grid_size^2);% total neurons
 iter = 5; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
 start_x_shift = grid_size/2 + 16;%1;%28;
 start_y_shift = grid_size/2 + 16;%1;%-4;%28;
@@ -157,11 +157,11 @@ function [synapse_weights2, synapse_weights3]=rotate_weights(po,Rz,synapse_weigh
         	end
         end
     end
-    target_offset = grid_size_target/grid_size*grid_size;
+    target_offset = (grid_size-grid_size_target)/2;%grid_size_target/grid_size*grid_size;
     for y=1:grid_size_target
         for x=1:grid_size_target
-        	x2 = x;%target_offset + x;
-        	y2 = y;%target_offset + y;
+        	x2 = target_offset + x;
+        	y2 = target_offset + y;
         	i=((y2-1)*grid_size)+x2; % larger grid index
         	i2=((y-1)*grid_size_target)+x; % target smaller grid index
         	synapse_weights3(i2)=synapse_weights2(i);
