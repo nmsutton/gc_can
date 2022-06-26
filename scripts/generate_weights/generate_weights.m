@@ -17,8 +17,8 @@ grid_size = 90.0;
 grid_size_target = 30; % target grid size for neuron weights
 total_nrns = (grid_size_target^2);%35;%(grid_size^2);% total neurons
 iter = 5; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
-start_x_shift = grid_size/2 - 44;%1;%28;
-start_y_shift = grid_size/2 - 44;%1;%-4;%28;
+start_x_shift = grid_size/2 - 45;%1;%28;
+start_y_shift = grid_size/2 - 45;%1;%-4;%28;
 p1=.68;p2=2;p3=2;p4=70;p5=p3;p6=p4;p7=0.20;
 p8=.135;p9=2;p10=2;p11=2;p12=70;p13=p11;p14=p11;p15=p12;p16=1.08;p17=0.0058;
 p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
@@ -28,7 +28,7 @@ comb_syn_wts=[];
 [X,Y] = meshgrid(1:1:grid_size);
 Z=zeros(grid_size);
 % rotation variables
-a=0; % angle
+a=180; % angle
 a=a/360 * pi*2; % convert to radians
 %Rx = [1 0 0; 0 cos(a) -sin(a); 0 sin(a) cos(a)];
 %Ry = [cos(a) 0 sin(a); 0 1 0; -sin(a) 0 cos(a)];
@@ -49,19 +49,19 @@ end
 % write to file and create matrix
 if write_to_file
 	for i=0:(total_nrns-1)
-		pdx = mod(i,grid_size_target);
-		pdy = floor(i/grid_size_target);
+		pdx = (grid_size_target-1)-mod(i,grid_size_target);
+		pdy = (grid_size_target-1)-floor(i/grid_size_target);
 		pd=get_pd(pdx,pdy);
 		x_pd_bias = 0;
 		y_pd_bias = 0;
 		if pd=='u'
-			y_pd_bias=2;
+			x_pd_bias=2;%y_pd_bias=-2;%2;
 		elseif pd=='d'
-			y_pd_bias=-2;
+			x_pd_bias=-2;%y_pd_bias=2;%-2;
 		elseif pd=='l'
-			x_pd_bias=2;%1;
+			y_pd_bias=2;%x_pd_bias=-2;%2;%1;
 		elseif pd=='r'
-			x_pd_bias=-2;%-1;
+			y_pd_bias=-2;%x_pd_bias=2;%-2;%-1;
 		end
 		y_shift=start_x_shift+pdy+x_pd_bias; % x and y values are intentially flipped
 		x_shift=start_y_shift+pdx+y_pd_bias; % here for an orientation fix
