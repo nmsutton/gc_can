@@ -13,16 +13,16 @@ output_file = 0;
 if write_to_file
 	output_file = fopen(output_filename,'w');
 end
-grid_size = 30;%90.0;
+grid_size = 90.0;
 grid_size_target = 30; % target grid size for neuron weights
-total_nrns = 2;%(grid_size_target^2);%35;%(grid_size^2);% total neurons
+total_nrns = (grid_size_target^2);%35;%(grid_size^2);% total neurons
 iter = 5; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
-start_x_shift = grid_size/2 + 16;%1;%28;
-start_y_shift = grid_size/2 + 16;%1;%-4;%28;
+start_x_shift = grid_size/2 - 44;%1;%28;
+start_y_shift = grid_size/2 - 44;%1;%-4;%28;
 p1=.68;p2=2;p3=2;p4=70;p5=p3;p6=p4;p7=0.20;
 p8=.135;p9=2;p10=2;p11=2;p12=70;p13=p11;p14=p11;p15=p12;p16=1.08;p17=0.0058;
 p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
-tiling_fraction=1;%0.33;%0.5; % fraction of standard tiling distance between bumps
+tiling_fraction=0.33333333333;%1;%0.33;%0.5; % fraction of standard tiling distance between bumps
 po=[show_plot,write_to_file,sample_matrix,output_file,grid_size,iter,tiling_fraction,grid_size_target];
 comb_syn_wts=[];
 [X,Y] = meshgrid(1:1:grid_size);
@@ -49,8 +49,8 @@ end
 % write to file and create matrix
 if write_to_file
 	for i=0:(total_nrns-1)
-		pdx = mod(i,grid_size);
-		pdy = floor(i/grid_size);
+		pdx = mod(i,grid_size_target);
+		pdy = floor(i/grid_size_target);
 		pd=get_pd(pdx,pdy);
 		x_pd_bias = 0;
 		y_pd_bias = 0;
@@ -94,6 +94,7 @@ if write_to_file
 end
 if sample_matrix
 	po(2)=0; % turn off file writing for sample
+    start_y_shift = start_y_shift + 2;
 	synapse_weights = nrn_syn_wts(start_x_shift,start_y_shift,p,po);
 	[synapse_weights2, synapse_weights3]=rotate_weights(po,Rz,synapse_weights);
     imagesc(synapse_weights3);
@@ -157,7 +158,7 @@ function [synapse_weights2, synapse_weights3]=rotate_weights(po,Rz,synapse_weigh
         	end
         end
     end
-    target_offset = (grid_size-grid_size_target)/2;%grid_size_target/grid_size*grid_size;
+    target_offset = (grid_size-grid_size_target)/2;
     for y=1:grid_size_target
         for x=1:grid_size_target
         	x2 = target_offset + x;
