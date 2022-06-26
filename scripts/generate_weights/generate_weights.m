@@ -17,22 +17,21 @@ grid_size = 90.0;
 grid_size_target = 30; % target grid size for neuron weights
 total_nrns = (grid_size_target^2);%35;%(grid_size^2);% total neurons
 iter = 5; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
-start_x_shift = grid_size/2 - 45;%1;%28;
-start_y_shift = grid_size/2 - 45;%1;%-4;%28;
+start_x_shift = (grid_size/2) - 44;%1;%28;
+start_y_shift = (grid_size/2) - 44;%1;%-4;%28;
 p1=.68;p2=2;p3=2;p4=70;p5=p3;p6=p4;p7=0.20;
 p8=.135;p9=2;p10=2;p11=2;p12=70;p13=p11;p14=p11;p15=p12;p16=1.08;p17=0.0058;
 p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
 tiling_fraction=0.33333333333;%1;%0.33;%0.5; % fraction of standard tiling distance between bumps
-po=[show_plot,write_to_file,sample_matrix,output_file,grid_size,iter,tiling_fraction,grid_size_target];
+po=[show_plot,write_to_file,sample_matrix,output_file,grid_size,iter,tiling_fraction, ...
+    grid_size_target,start_x_shift,start_y_shift];
 comb_syn_wts=[];
 [X,Y] = meshgrid(1:1:grid_size);
 Z=zeros(grid_size);
 % rotation variables
-a=180; % angle
+a=0; % angle
 a=a/360 * pi*2; % convert to radians
-%Rx = [1 0 0; 0 cos(a) -sin(a); 0 sin(a) cos(a)];
-%Ry = [cos(a) 0 sin(a); 0 1 0; -sin(a) 0 cos(a)];
-Rz = [cos(a) -sin(a) 0; sin(a) cos(a) 0; 0 0 1];
+Rz = [cos(a) -sin(a) 0; sin(a) cos(a) 0; 0 0 1]; % rotate along Z axis. See references for other axis code if wanted.
 
 % plot
 if show_plot
@@ -48,27 +47,32 @@ end
 
 % write to file and create matrix
 if write_to_file
+	synapse_weights=nrn_syn_wts(start_x_shift,start_y_shift,p,po);
 	for i=0:(total_nrns-1)
-		pdx = (grid_size_target-1)-mod(i,grid_size_target);
-		pdy = (grid_size_target-1)-floor(i/grid_size_target);
+		%{
+		pdx = mod(i,grid_size_target);
+		pdy = floor(i/grid_size_target);
 		pd=get_pd(pdx,pdy);
 		x_pd_bias = 0;
 		y_pd_bias = 0;
 		if pd=='u'
-			x_pd_bias=2;%y_pd_bias=-2;%2;
+			y_pd_bias=2;
 		elseif pd=='d'
-			x_pd_bias=-2;%y_pd_bias=2;%-2;
+			y_pd_bias=-2;
 		elseif pd=='l'
-			y_pd_bias=2;%x_pd_bias=-2;%2;%1;
+			x_pd_bias=2;
 		elseif pd=='r'
-			y_pd_bias=-2;%x_pd_bias=2;%-2;%-1;
+			x_pd_bias=-2;
 		end
 		y_shift=start_x_shift+pdy+x_pd_bias; % x and y values are intentially flipped
 		x_shift=start_y_shift+pdx+y_pd_bias; % here for an orientation fix
+		%}
 
-		synapse_weights=nrn_syn_wts(x_shift,y_shift,p,po);
-		[synapse_weights2, synapse_weights3]=rotate_weights(po,Rz,synapse_weights);
-		comb_syn_wts=[comb_syn_wts; reshape(synapse_weights3,1,grid_size_target^2)];
+		%synapse_weights=nrn_syn_wts(x_shift,y_shift,p,po);
+		synapse_weights2=rotate_weights(po,Rz,synapse_weights);
+		synapse_weights3=shift_weights(po,i,synapse_weights2);
+		synapse_weights4=crop_weights(po,synapse_weights3);
+		comb_syn_wts=[comb_syn_wts; reshape(synapse_weights4,1,grid_size_target^2)];
 
 		if (mod(i,grid_size_target*3)==0)
 			fprintf("%.3g%% completed\n",i/total_nrns*100);
@@ -104,14 +108,14 @@ if write_to_file
 	fclose(output_file);
 end
 
-function [synapse_weights2, synapse_weights3]=rotate_weights(po,Rz,synapse_weights)
-	% apply rotation and cropping to synapse weights matrix
+function synapse_weights2=rotate_weights(po,Rz,synapse_weights)
+	% apply rotation to synapse weights matrix
 
 	grid_size=po(5);grid_size_target=po(8);
 
+	% create rotation
 	synapse_weights = reshape(synapse_weights,grid_size,grid_size);
     synapse_weights2 = zeros(grid_size);
-    synapse_weights3 = zeros(grid_size_target);
     for y=1:grid_size
         for x=1:grid_size
             i=((y-1)*grid_size)+x;
@@ -158,14 +162,65 @@ function [synapse_weights2, synapse_weights3]=rotate_weights(po,Rz,synapse_weigh
         	end
         end
     end
+end
+
+function synapse_weights3=shift_weights(po,i,synapse_weights2)
+	% apply rotation to synapse weights matrix
+
+	grid_size=po(5);grid_size_target=po(8);synapse_weights3=zeros(grid_size);
+	start_x_shift=po(9);start_y_shift=po(10);
+
+	pdx = mod(i,grid_size_target);
+	pdy = floor(i/grid_size_target);
+	pd=get_pd(pdx,pdy);
+	x_pd_bias = 0;
+	y_pd_bias = 0;
+	if pd=='u'
+		y_pd_bias=2;
+	elseif pd=='d'
+		y_pd_bias=-2;
+	elseif pd=='l'
+		x_pd_bias=2;
+	elseif pd=='r'
+		x_pd_bias=-2;
+	end
+	y_shift=pdy+x_pd_bias; % x and y values are intentially flipped
+	x_shift=pdx+y_pd_bias; % here for an orientation fix
+
+	ti = (grid_size^2)-1;
+	for i2=0:ti
+		x = mod(i2,grid_size)+1;
+		y = floor(i2/grid_size)+1;
+		x2 = x + x_shift;
+		y2 = y + y_shift;
+
+		if x2 > ti
+			x2 = x2 - ti;
+		elseif x2 < 1
+			x2 = x2 + ti;
+		end
+		if y2 > ti
+			y2 = y2 - ti;
+		elseif y2 < 1
+			y2 = y2 + ti;
+		end
+
+		synapse_weights3(x2,y2)=synapse_weights2(x,y);
+	end
+end
+
+function synapse_weights4=crop_weights(po,synapse_weights3)
+	% apply rotation to synapse weights matrix
+
+	grid_size=po(5);grid_size_target=po(8);synapse_weights4=zeros(grid_size_target);
+
+    %% crop larger distribution into smaller target sized one
     target_offset = (grid_size-grid_size_target)/2;
     for y=1:grid_size_target
         for x=1:grid_size_target
         	x2 = target_offset + x;
         	y2 = target_offset + y;
-        	i=((y2-1)*grid_size)+x2; % larger grid index
-        	i2=((y-1)*grid_size_target)+x; % target smaller grid index
-        	synapse_weights3(i2)=synapse_weights2(i);
+        	synapse_weights4(x,y)=synapse_weights3(x2,y2);
         end
     end
 end
