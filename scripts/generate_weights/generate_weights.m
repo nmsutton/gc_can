@@ -29,7 +29,7 @@ comb_syn_wts=[];
 [X,Y] = meshgrid(1:1:grid_size);
 Z=zeros(grid_size);
 % rotation variables
-a=0; % angle
+a=180; % angle
 a=a/360 * pi*2; % convert to radians
 Rz = [cos(a) -sin(a) 0; sin(a) cos(a) 0; 0 0 1]; % rotate along Z axis. See references for other axis code if wanted.
 
