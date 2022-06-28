@@ -437,6 +437,7 @@ vector<double> directional_speeds(P* p, double angle, double speed) {
 		//W += pow(abs(hor),p->speed_mult)*speed;
 	}
 	vector<double> speeds = {N,E,S,W};
+	//vector<double> speeds = {E,N,W,S};
 	//printf("t:%d N:%f E:%f S:%f W:%f h:%f v:%f sm:%f s:%f p:%f r:%f\n",p->t,N,E,S,W,hor,ver,p->speed_mult,speed,pow(abs(hor),p->speed_mult),speed_adj);
 
 	return speeds;

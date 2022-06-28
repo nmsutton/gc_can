@@ -54,8 +54,8 @@ struct P {
 	bool record_gc_voltage = 0; // record GC voltage trace
 	bool record_in_voltage = 0; // record IN voltage trace
 	bool record_pc_voltage = 0; // record PC voltage trace
-	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
-	bool pc_to_gc = 1; // place cells to grid cells signaling
+	bool pc_active = 0; // pc signaling active. bc->pc->gc can still work even if this is disabled.
+	bool pc_to_gc = 0; // place cells to grid cells signaling
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 

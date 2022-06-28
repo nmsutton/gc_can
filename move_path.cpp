@@ -111,10 +111,12 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 void straight_path(CARLsim* sim, P* p) {
 	// stright line path
 	//control_speed(50,p);
-	double angle = 90;
+	double angle = 0;//90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
 		control_speed(3.587,p);	
+		//control_speed(0.1,p);	
+		//control_speed(0.0,p);	
 		//control_speed(0.0,p);	
 		EISignal(angle, sim, p);
 	}
@@ -244,6 +246,14 @@ void move_animal(CARLsim* sim, P* p) {
 		speed_times.push_back(i*p->animal_ts);
 		anim_speeds[i] = anim_speeds[i] * 2;//(30/180); // GC layer size conversion factor
 	}
+
+	// rotate angles
+	/*for (int i = 0; i < p->animal_timesteps; i++) {
+		anim_angles[i] = anim_angles[i] + 90;
+		if (anim_angles[i] > 360) {
+			anim_angles[i] = anim_angles[i] - 360;
+		}
+	}*/
 
 	int num_moves = anim_angles.size();
 	int num_speeds = anim_speeds.size();

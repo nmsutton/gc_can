@@ -13,23 +13,23 @@ output_file = 0;
 if write_to_file
 	output_file = fopen(output_filename,'w');
 end
-grid_size = 90.0;
+grid_size = 150.0;%90.0;
 grid_size_target = 30; % target grid size for neuron weights
 total_nrns = (grid_size_target^2);%35;%(grid_size^2);% total neurons
-iter = 5; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
-start_x_shift = (grid_size/2) + 44;%- 44;%1;%28;
-start_y_shift = (grid_size/2) + 44;%- 44;%1;%-4;%28;
-p1=.68;p2=2;p3=2;p4=70;p5=p3;p6=p4;p7=0.20;
-p8=.135;p9=2;p10=2;p11=2;p12=70;p13=p11;p14=p11;p15=p12;p16=1.08;p17=0.0058;
+iter = 13; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
+start_x_shift = (grid_size/2) - 45;%- 44;%1;%28; -2 = 2 down
+start_y_shift = (grid_size/2) - 50;%- 44;%1;%-4;%28; +2 = 2 left
+p1=.68;p2=2;p3=2;p4=30;p5=p3;p6=p4;p7=0.20;
+p8=.135;p9=2;p10=2;p11=2;p12=30;p13=p11;p14=p11;p15=p12;p16=1.08;p17=0.0058;
 p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
-tiling_fraction=0.33333333333;%1;%0.33;%0.5; % fraction of standard tiling distance between bumps
+tiling_fraction=0.1;%0.33333333333;%1;%0.33;%0.5; % fraction of standard tiling distance between bumps
 po=[show_plot,write_to_file,sample_matrix,output_file,grid_size,iter,tiling_fraction, ...
     grid_size_target,start_x_shift,start_y_shift];
 comb_syn_wts=[];
 [X,Y] = meshgrid(1:1:grid_size);
 Z=zeros(grid_size);
 % rotation variables
-a=180; % angle
+a=315; % angle
 a=a/360 * pi*2; % convert to radians
 Rz = [cos(a) -sin(a) 0; sin(a) cos(a) 0; 0 0 1]; % rotate along Z axis. See references for other axis code if wanted.
 
@@ -78,8 +78,8 @@ if write_to_file
 end
 if sample_matrix
 	po(2)=0; % turn off file writing for sample
-    start_y_shift = start_y_shift + 2;
-    start_x_shift = start_x_shift + 5;
+    start_y_shift = start_y_shift + 4;
+    start_x_shift = start_x_shift + 0;
 	synapse_weights=nrn_syn_wts(start_x_shift,start_y_shift,p,po);
 	synapse_weights2=rotate_weights(po,Rz,synapse_weights);
 	synapse_weights3=shift_weights(po,i,synapse_weights2);
@@ -110,8 +110,16 @@ function synapse_weights2=rotate_weights(po,Rz,synapse_weights)
             rv(1)=rv(1)+center_of_rot;
             rv(2)=rv(2)+center_of_rot;
             X(i)=rv(1);Y(i)=rv(2);Z(i)=rv(3);
+            %fprintf("x:%d y:%d\n",floor(rv(1))+1,floor(rv(2)));
+            %{
+            if floor(rv(1)) > 0 && floor(rv(1)) <= grid_size && ...
+               floor(rv(2)) > 0 && floor(rv(2)) <= grid_size
+            	synapse_weights2(x,y)=synapse_weights(floor(rv(1)),floor(rv(2)));
+            end
+            %}
         	%% convert fractions to whole number indicies and values
         	%% split values across indicies according to their fractions
+        	
        	    x_max=ceil(rv(1));
        	    x_min=floor(rv(1));
        	    y_max=ceil(rv(2));
@@ -143,12 +151,13 @@ function synapse_weights2=rotate_weights(po,Rz,synapse_weights)
 	               	end
 	            end
         	end
+        	
         end
     end
 end
 
 function synapse_weights3=shift_weights(po,i,synapse_weights2)
-	% apply rotation to synapse weights matrix
+	% apply pd-based shifting to synapse weights matrix
 
 	grid_size=po(5);grid_size_target=po(8);synapse_weights3=zeros(grid_size);
 	start_x_shift=po(9);start_y_shift=po(10);
@@ -160,12 +169,16 @@ function synapse_weights3=shift_weights(po,i,synapse_weights2)
 	y_pd_bias = 0;
 	if pd=='u'
 		y_pd_bias=2;
+		x_pd_bias=2;
 	elseif pd=='d'
 		y_pd_bias=-2;
+		x_pd_bias=-2;
 	elseif pd=='l'
 		x_pd_bias=2;
+		y_pd_bias=-2;
 	elseif pd=='r'
 		x_pd_bias=-2;
+		y_pd_bias=2;
 	end
 	y_shift=pdy+x_pd_bias; % x and y values are intentially flipped
 	x_shift=pdx+y_pd_bias; % here for an orientation fix
