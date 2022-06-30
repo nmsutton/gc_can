@@ -12,20 +12,23 @@
 clear all;
 clc;
 initOAT;
+%SpikeReader('/comp_neuro/PhD/gmu/research/simulation/code/gc_can/results/spk_MEC_LII_Stellate.dat', false, 'silent');
+%spk_data = SpikeReader('/comp_neuro/PhD/gmu/research/simulation/code/gc_can/results/spk_MEC_LII_Stellate.dat', false, 'silent');
+SpikeReader('/mnt/hopper_scratch/gc_sim/results/spk_MEC_LII_Stellate.dat', false, 'silent');
+spk_data = SpikeReader('/mnt/hopper_scratch/gc_sim/results/spk_MEC_LII_Stellate.dat', false, 'silent');
+
 %SpikeReader('/comp_neuro/Software/CARLsim4/projects/hello_world/results/spk_MEC_LII_Stellate.dat', false, 'silent');
 %spk_data = SpikeReader('/comp_neuro/Software/CARLsim4/projects/hello_world/results/spk_MEC_LII_Stellate.dat', false, 'silent');
 %SpikeReader('/comp_neuro/Software/CARLsim6/.build/projects/hello_world/results/spk_MEC_LII_Stellate.dat', false, 'silent');
 %spk_data = SpikeReader('/comp_neuro/Software/CARLsim6/.build/projects/hello_world/results/spk_MEC_LII_Stellate.dat', false, 'silent');
 %SpikeReader('/comp_neuro/Software/CARLsim4_dgx_hc_09_18_21/projects/hello_world2/results/spk_MEC_LII_Stellate.dat', false, 'silent');
 %spk_data = SpikeReader('/comp_neuro/Software/CARLsim4_dgx_hc_09_18_21/projects/hello_world2/results/spk_MEC_LII_Stellate.dat', false, 'silent');
-SpikeReader('/comp_neuro/PhD/gmu/research/simulation/code/gc_can/results/spk_MEC_LII_Stellate.dat', false, 'silent');
-spk_data = SpikeReader('/comp_neuro/PhD/gmu/research/simulation/code/gc_can/results/spk_MEC_LII_Stellate.dat', false, 'silent');
 %SpikeReader('/comp_neuro/Software/CARLsim6-feat-ca3net/.build/projects/hello_world/results/spk_gc_exc.dat', false, 'silent');
 %spk_data = SpikeReader('/comp_neuro/Software/CARLsim6-feat-ca3net/.build/projects/hello_world/results/spk_gc_exc.dat', false, 'silent');
 %SpikeReader('/comp_neuro/Software/CARLsim6/.build/projects/hello_world/results/spk_gc_exc.dat', false, 'silent');
 %spk_data = SpikeReader('/comp_neuro/Software/CARLsim6/.build/projects/hello_world/results/spk_gc_exc.dat', false, 'silent');
 delay_frames = false;%true;
-time=10000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
+time=1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
 bin_size=400; % size of firing bin in ms
 t=[0:(1/bin_size):(time*(1/bin_size))];
 x_size = 30; % size of network on x-axis

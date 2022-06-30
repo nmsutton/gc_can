@@ -34,17 +34,18 @@ end
 heat_map = zeros(1,grid_size*grid_size);
 
 if use_carlsim_spikes
-	carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv');
+	%carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv');
+    carlsim_spikes = readmatrix('/mnt/hopper_scratch/gc_sim/spikes/spikes_recorded.csv');
 	if alt_heatmap
-		spike_x = carlsim_spikes(1:end,2);
-		spike_y = carlsim_spikes(1:end,3);
+		spike_x = carlsim_spikes(1:end,3); % matlab indices are (y,x) not (x,y)
+		spike_y = carlsim_spikes(1:end,2);
 	else
 		if use_carlsim_spikes
-			spike_x = carlsim_spikes(1:end,2);
-			spike_y = carlsim_spikes(1:end,3);
+			spike_x = carlsim_spikes(1:end,3);
+			spike_y = carlsim_spikes(1:end,2);
 		else
-			spike_x = carlsim_spikes(1:end,2)*(360/30);
-			spike_y = carlsim_spikes(1:end,3)*(360/30);
+			spike_x = carlsim_spikes(1:end,3)*(360/30);
+			spike_y = carlsim_spikes(1:end,2)*(360/30);
 		end
 	end
 end
@@ -111,7 +112,7 @@ ylabel('animal position on y axis')
 cb = colorbar;
 if use_carlsim_spikes
 	%caxis([0 120])
-    caxis([0 40])
+    caxis([0 80])
 	caption = sprintf('Physical space grid cell firing, total t = %.0f ms', carlsim_spikes(end,1));
 else
 	caxis([0 25])

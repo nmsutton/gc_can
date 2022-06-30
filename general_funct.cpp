@@ -226,7 +226,8 @@ void find_spikes(P* p, double *firing_matrix, vector<vector<int>> spike_recorder
 void write_firing(double *firing_matrix, string output_folder, P *p) {
 	ofstream output_file;
 	//string filename = "output/" + output_folder + "/firing_t" + int_to_string(p->t) + ".csv";
-	string filename = "/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/output/" + output_folder + "/firing_t" + int_to_string(p->t) + ".csv";
+	//string filename = "/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/output/" + output_folder + "/firing_t" + int_to_string(p->t) + ".csv";
+	string filename = "output/" + output_folder + "/firing_t" + int_to_string(p->t) + ".csv";
 	output_file.open(filename);
 
 	int i_f = 0; // firing index
