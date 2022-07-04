@@ -8,20 +8,20 @@ output_file = fopen(output_filename,'w');
 grid_size = 90.0;
 grid_size_target = 30; % target grid size for neuron weights
 iter = 13; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
-start_x_shift = (grid_size/2) - 45; %- 44;%1;%28; -2 = 2 down
-start_y_shift = (grid_size/2) + 77; %- 44;%1;%-4;%28; +2 = 2 left
+start_x_shift = (grid_size/2) - 48; %- 44;%1;%28; -2 = 2 down
+start_y_shift = (grid_size/2) + 52; %- 44;%1;%-4;%28; +2 = 2 left
 p1=.68;p2=2;p3=2;p4=20;p5=p3;p6=p4;
-p7=0.04; % bump width
+p7=0.1; % bump width
 p8=0.0058; % y-intercept shift
-htf = 0.28; % horizonal tiling factor
-vtf = 0.4; % vertical tiling factor
-tiling_fraction=0.24;%0.29;%0.33333333333;%0.1;%0.33333333333;%1;%0.33;%0.5; % fraction of standard tiling distance between bumps
+htf = .25;%0.28; % horizonal tiling factor
+vtf = .45;%0.4; % vertical tiling factor
+tiling_fraction=0.3;%0.24;%0.29;%0.33333333333;%0.1;%0.33333333333;%1;%0.33;%0.5; % fraction of standard tiling distance between bumps
 fsf = 60/0.0212; % firing scaling factor
 p=[p1,p2,p3,p4,p5,p6,p7,p8,fsf];
 po=[1,1,1,output_file,grid_size,iter,tiling_fraction, ...
     grid_size_target,start_x_shift,start_y_shift,htf,vtf,fsf];
 % rotation variables
-a=0; % angle
+a=350; % angle
 a=a/360 * pi*2; % convert to radians
 Rz = [cos(a) -sin(a) 0; sin(a) cos(a) 0; 0 0 1]; % rotate along Z axis. See references for other axis code if wanted.
 
@@ -150,13 +150,13 @@ function ext_dir_initial=nrn_syn_wts(x_shift,y_shift,p,po,ext_dir_initial);
    	grid_size=po(5);iter=po(6);ext_dir_initial=[];
 	for y=1:grid_size
 		for x=1:grid_size
-			z=cent_surr_tile(x,y,x_shift,y_shift,p,po);
+			z=field_tile(x,y,x_shift,y_shift,p,po);
 			ext_dir_initial = [ext_dir_initial,z];
 		end
 	end	
 end
 
-function z=cent_surr_tile(x,y,x_shift,y_shift,p,po)
+function z=field_tile(x,y,x_shift,y_shift,p,po)
 	% tiles bump distributions
 	% generate <inter> number of tiled bump functions
 
@@ -173,12 +173,12 @@ function z=cent_surr_tile(x,y,x_shift,y_shift,p,po)
 				x_shift2 = x_shift2 + grid_size_target*vtf;
 			end
 			
-			z=z+cent_surr(x,y,x_shift2,y_shift2,p);
+			z=z+field(x,y,x_shift2,y_shift2,p);
 		end
 	end
 end
 
-function z=cent_surr(x,y,x_shift,y_shift,p)
+function z=field(x,y,x_shift,y_shift,p)
 	% firing bumps function
 	x=(x-x_shift);
 	y=(y-y_shift);

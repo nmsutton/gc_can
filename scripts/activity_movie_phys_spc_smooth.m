@@ -35,7 +35,7 @@ heat_map = zeros(1,grid_size*grid_size);
 
 if use_carlsim_spikes
 	%carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv');
-    carlsim_spikes = readmatrix('/mnt/hopper_scratch/gc_sim/1/spikes/spikes_recorded.csv');
+    carlsim_spikes = readmatrix('/mnt/hopper_scratch/gc_sim/5/spikes/spikes_recorded.csv');
 	if alt_heatmap
 		spike_x = carlsim_spikes(1:end,3); % matlab indices are (y,x) not (x,y)
 		spike_y = carlsim_spikes(1:end,2);
@@ -113,6 +113,7 @@ cb = colorbar;
 if use_carlsim_spikes
 	%caxis([0 120])
     caxis([0 80])
+    %caxis([0 30])
 	caption = sprintf('Physical space grid cell firing, total t = %.0f ms', carlsim_spikes(end,1));
 else
 	caxis([0 25])

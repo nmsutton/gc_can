@@ -9,7 +9,7 @@ clear all;
 clc;
 %input_folder = "pos_track";
 input_folder = "firing_vs_loc";
-time=1200000;%199900; % time steps, use (end frame - 1) = time. 1 = 10ms.
+time=1200000;%400000;%1200000;%199900; % time steps, use (end frame - 1) = time. 1 = 10ms.
 %% 
 bin_size = 10; % time in ms that bins spiking
 t=[0:(1/bin_size):(time*(1/bin_size))];
@@ -39,7 +39,7 @@ caxis manual;          % allow subsequent plots to use the same color limits
 %for frameIndex = 1 : numberOfFrames
 for frameIndex = (numberOfFrames-200) : (numberOfFrames - 10)
   %filename = strcat('../output/',input_folder,'/firing_t',int2str(frameIndex*bin_size),'.csv');
-  filename = strcat('/mnt/hopper_scratch/gc_sim/1/',input_folder,'/firing_t',int2str(frameIndex*bin_size),'.csv');
+  filename = strcat('/mnt/hopper_scratch/gc_sim/5/',input_folder,'/firing_t',int2str(frameIndex*bin_size),'.csv');
   [imgfile,delimiterOut]=importdata(filename);
   cla reset;
   % Enlarge figure to full screen.

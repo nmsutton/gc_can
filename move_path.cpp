@@ -111,7 +111,7 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 void straight_path(CARLsim* sim, P* p) {
 	// stright line path
 	//control_speed(50,p);
-	double angle = 180;
+	double angle = 0;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
 		control_speed(3.587,p);	
@@ -198,12 +198,12 @@ void move_path3(CARLsim* sim, P* p) {
 	vector<double> moves;
 	double angle;
 	double h_a = 90; // horizontal movement angle
-	int h_m = 55*15; // indices for horizontal movement
+	int h_m = 10*50; // indices for horizontal movement
 	vector<int> m_d_i; // move down indices
-	for (int i = 0; i < 25; i++) {
+	for (int i = 0; i < 15; i++) {
 		m_d_i.push_back(h_m+i);
 	}
-	for (int i = 0; i < (h_m+m_d_i.size())*40; i++) {
+	for (int i = 0; i < (h_m+m_d_i.size())*150; i++) {
 		angle = -1; // clear angle
 		for (int j = 0; j < m_d_i.size(); j++) { // process indices for down move
 			if (i % m_d_i[j] == 0) {
@@ -218,7 +218,7 @@ void move_path3(CARLsim* sim, P* p) {
 	vector<double> speeds;
 	vector<int> speed_times;
 	for (int i = 0; i < moves.size(); i++) {
-		speeds.push_back(1.0);
+		speeds.push_back(3.587);
 		speed_times.push_back(i*20);
 	}
 	int num_moves = moves.size();
@@ -268,8 +268,8 @@ void move_circles(CARLsim* sim, P* p) {
 	vector<double> moves;
 	double angle = 90;
 	for (int i = 0; i < (p->sim_time/p->animal_ts); i++) {
-		if (i % 120 == 0) {
-			angle += 90;
+		if (i % 40 == 0) {
+			angle += 45;
 			//angle += 135;
 			//angle = rand_angle();
 			//angle = rand_move();

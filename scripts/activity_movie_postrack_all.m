@@ -10,7 +10,7 @@ clc;
 input_folder = "pos_track_all";
 %input_folder = "firing_vs_loc";
 %time=89900; % time steps, use (end frame - 1) = time
-time=600000; % time steps, use (end frame - 1) = time
+time=110000; % time steps, use (end frame - 1) = time
 bin_size = 10; % time in ms that bins spiking
 t=[0:(1/bin_size):(time*(1/bin_size))];
 hFigure = figure;
@@ -39,7 +39,8 @@ custom_colormap = load('animal_location_colormap.mat');
 
 %for frameIndex = 1 : numberOfFrames
 for frameIndex = (numberOfFrames-200) : (numberOfFrames - 10)
-  filename = strcat('../output/',input_folder,'/firing_t',int2str(frameIndex*bin_size),'.csv');
+  %filename = strcat('../output/',input_folder,'/firing_t',int2str(frameIndex*bin_size),'.csv');
+  filename = strcat('/mnt/hopper_scratch/gc_sim/3/',input_folder,'/firing_t',int2str(frameIndex*bin_size),'.csv');
   [imgfile,delimiterOut]=importdata(filename);
   cla reset;
   % Enlarge figure to full screen.
