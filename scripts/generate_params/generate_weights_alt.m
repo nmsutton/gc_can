@@ -4,16 +4,14 @@
 % https://stackoverflow.com/questions/19343863/find-new-coordinate-x-y-given-x-y-theta-and-velocity
 
 % run options
-sample_matrix = 0;
-write_to_file = 1;
-show_2d_plot = 0;
-show_3d_plot = 0;
+show_full_matrix = 0;
 
 % params
 grid_size = 90.0;
 grid_size_target = 30; % target grid size for neuron weights
-p1=.68;p2=2;p3=2;
-p4=30; % bump width
+p1=20;%.68;
+p2=2;p3=2;
+p4=40; % bump width
 p5=p3;p6=p4;p7=1;
 p8=0.0058; % y-intercept shift
 wsf = 1;%1.005; % weights scaling factor
@@ -26,17 +24,19 @@ synapse_weights=ones(grid_size);
 
 cx=0; % init feild center x
 cy=0; % init field center y
-cx_sft=-10; % x-axis shift
-cy_sft=-10; % y-axis shift
-d=5; % spacing along axis that is tiled
-a=90; % angle of movement
-a=a/360 * pi*2; % convert to radians
+cx_sft=-30; % x-axis shift
+cy_sft=-30; % y-axis shift
 tiles=25;
 t_shifts=15; % tile shifts
-t_sft_x=10; % x-axis tile shift distance
+% spacing control
+d=15/2; % spacing along axis that is tiled
+t_sft_x=15; % x-axis tile shift distance
 t_sft_y=0; % y-axis tile shift distance
-stag_x=t_sft_x/2; % x-axis tile stagger distance
+stag_x=t_sft_x/2; %0; %t_sft_x/2; % x-axis tile stagger distance
 stag_y=0; % y-axis tile stagger distance
+% rotations
+a=90;%90-18; % angle of movement
+a=a/360 * pi*2; % convert to radians
 
 for i=1:t_shifts
     cx_sft=cx_sft+t_sft_x; % x-axis shifts
@@ -58,7 +58,11 @@ synapse_weights=synapse_weights*(high_weight/max_v);
 
 synapse_weights_crop=crop_weights(po2,synapse_weights);
 
-plt = imagesc(synapse_weights_crop);
+if show_full_matrix
+    plt = imagesc(synapse_weights);
+else
+    plt = imagesc(synapse_weights_crop);
+end
 
 function [synapse_weights,cx,cy]=tile_rot(po2,grid_size,p,synapse_weights)
     cx=po2(1);cy=po2(2);cx_sft=po2(3);cy_sft=po2(4);d=po2(5);a=po2(6);

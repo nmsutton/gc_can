@@ -10,7 +10,9 @@ grid_size_target = 30; % target grid size for neuron weights
 iter = 13; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
 start_x_shift = (grid_size/2) - 48; %- 44;%1;%28; -2 = 2 down
 start_y_shift = (grid_size/2) + 52; %- 44;%1;%-4;%28; +2 = 2 left
-p1=.68;p2=2;p3=2;p4=20;p5=p3;p6=p4;
+p1=.68;p2=2;p3=2;
+p4=20;
+p5=p3;p6=p4;
 p7=0.1; % bump width
 p8=0.0058; % y-intercept shift
 htf = .25;%0.28; % horizonal tiling factor
@@ -21,7 +23,7 @@ p=[p1,p2,p3,p4,p5,p6,p7,p8,fsf];
 po=[1,1,1,output_file,grid_size,iter,tiling_fraction, ...
     grid_size_target,start_x_shift,start_y_shift,htf,vtf,fsf];
 % rotation variables
-a=350; % angle
+a=(45/2); % angle
 a=a/360 * pi*2; % convert to radians
 Rz = [cos(a) -sin(a) 0; sin(a) cos(a) 0; 0 0 1]; % rotate along Z axis. See references for other axis code if wanted.
 
