@@ -1,4 +1,4 @@
-% references: https://www.mathworks.com/matlabcentral/answers/180778-plotting-a-3d-gaussian-function-using-surf
+    % references: https://www.mathworks.com/matlabcentral/answers/180778-plotting-a-3d-gaussian-function-using-surf
 % https://www.mathworks.com/help/symbolic/rotation-matrix-and-transformation-matrix.html
 % https://www.mathworks.com/matlabcentral/answers/430093-rotation-about-a-point
 % https://stackoverflow.com/questions/19343863/find-new-coordinate-x-y-given-x-y-theta-and-velocity
@@ -18,7 +18,7 @@ p=[p1,p2,p3,p4,p5,p6,p7,p8];
 po=[1,1,1,1,grid_size,1,1,grid_size_target,1,1,1,1];
 high_weight=0.00681312463724531; % highest inhib synapse weight
 % tile spacing control
-cx_sft=-41;%-29; % x-axis shift
+cx_sft=-40;%-29; % x-axis shift
 cy_sft=-4;%-27; % y-axis shift
 y_tiles=12;%4;%25;
 x_tiles=17;%4;%15; % x-axis tiling
@@ -67,26 +67,30 @@ function [synapse_weights,tempx,tempy]=tile_rot(po2,grid_size,p,synapse_weights,
     for i=1:y_tiles+1
         x_shift = cx+cx_sft;
         y_shift = cy+cy_sft;
-        for j=1:(grid_size_target)^2 % assume (grid_size_target)^2 covers enough area for field values
+        for j=1:(grid_size_target*1)^2 % assume (grid_size_target)^2 covers enough area for field values
             % x,y for field values calc
-            y=((j-1)/grid_size_target) - (grid_size_target/2);
-            x=mod((j-1),grid_size_target) - (grid_size_target/2);
-            %y=floor(y);x=floor(x); % make whole numbers for indices                   
-            z=field(x,y,0,0,p,po2,i);
+            %if i == 1
+            y=floor((j-1)/grid_size_target) - ((grid_size_target*1)/2);
+            x=mod((j-1),grid_size_target) - ((grid_size_target*1)/2);
+            y=floor(y);x=floor(x); % make whole numbers for indices                   
+            z=field(x,y,p,po2,i);
             % x,y for 2d plane position calc
-            y=y_shift-y; x=x_shift-x;
+            y2=y_shift-y; x2=x_shift-x;
+            y2=floor(y2);x2=floor(x2);
             %{
             if x_wrap && x > grid_size x=grid_size-x; end
             if x_wrap && x < 1 x=grid_size+x; end
             if y_wrap && y > grid_size y=grid_size-y; end
             if y_wrap && y < 1 y=grid_size+y; end
-            %}
-            %j2=((x-1)*grid_size)+y; % -1 is due to matlab index starting at 1 
-            %if x > 0 && x <= grid_size && y > 0 && y <= grid_size
-            %    synapse_weights(j2)=synapse_weights(j2)-z;
-            %end                         
-            synapse_weights=add_weight(synapse_weights,x,y,z,grid_size);
-            tempx=[tempx x];tempy=[tempy y];                 
+            %}                       
+            if x > -4 && x < 4 && y > -4 && y < 4
+                %synapse_weights=add_weight(synapse_weights,x2,y2,z,grid_size);
+                if x2 > 0 && y2 > 0 && x2 < grid_size && y2 < grid_size
+                    synapse_weights(y2,x2)=-z;
+                    tempx=[tempx x2];tempy=[tempy y2];
+                end
+            end   
+            %end              
         end
         cx=cos(a)*y_t_space+cx; cy=sin(a)*y_t_space+cy;        
         %tempx=[tempx x_shift];tempy=[tempy y_shift]; 
@@ -109,9 +113,9 @@ function synapse_weights2=crop_weights(po2,synapse_weights)
     end
 end
 
-function z=field(x,y,x_shift,y_shift,p,po2,i)
-    stag_x=po2(8);stag_y=po2(9); % stagger x and y
-    if mod((i-1),2)==0 x=x+stag_x; y=y+stag_y; end
+function z=field(x,y,p,po2,i)
+    %stag_x=po2(8);stag_y=po2(9); % stagger x and y
+    %if mod((i-1),2)==0 x=x+stag_x; y=y+stag_y; end
     p1=p(1);p2=p(2);p3=p(3);p4=p(4);p5=p(5);p6=p(6);p7=p(7);p8=p(8);
     z=((p1/sqrt(p2*pi).*exp(-(x.^p3/p4)-(y.^p5/p6)))*p7)-p8; % gaussian function
     %fprintf("%d %d %d\n",x,y,z);
