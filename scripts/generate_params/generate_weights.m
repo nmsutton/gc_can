@@ -5,7 +5,7 @@
 % run options
 sample_matrix = 0;
 write_to_file = 1;
-show_2d_plot = 0;
+show_2d_plot = 1;
 show_3d_plot = 0;
 alt_weights = 1; % use alt synapse_weights matrix
 
@@ -88,8 +88,8 @@ if write_to_file
 end
 if sample_matrix
 	po(2)=0; % turn off file writing for sample
-    start_y_shift = start_y_shift + 4;
-    start_x_shift = start_x_shift + 0;
+    start_y_shift = start_y_shift;% + 4;
+    start_x_shift = start_x_shift;% + 0;
 	synapse_weights=nrn_syn_wts(start_x_shift,start_y_shift,p,po);
 	synapse_weights2=rotate_weights(po,Rz,synapse_weights);
 	synapse_weights3=shift_weights(po,1,synapse_weights2);
