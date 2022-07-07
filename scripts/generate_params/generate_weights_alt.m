@@ -5,7 +5,7 @@
 % https://www.omnicalculator.com/math/right-triangle-side-angle#:~:text=If%20you%20have%20an%20angle,side%20adjacent%20to%20the%20angle.
 
 % run options
-grid_size = 90.0;
+grid_size = 120.0;
 grid_size_target = 30; % target grid size for neuron weights
 synapse_weights=ones(grid_size);
 % field params
@@ -18,18 +18,18 @@ p=[p1,p2,p3,p4,p5,p6,p7,p8];
 po=[1,1,1,1,grid_size,1,1,grid_size_target,1,1,1,1];
 high_weight=0.00681312463724531; % highest inhib synapse weight
 % tile spacing control
-cx_sft=-9;%-29; % x-axis shift
-cy_sft=1;%-27; % y-axis shift
-y_tiles=7;%4;%25;
-x_tiles=8;%4;%15; % x-axis tiling
-y_t_space=10; % spacing of tiling along y-axis
+cx_sft=-41;%-29; % x-axis shift
+cy_sft=-4;%-27; % y-axis shift
+y_tiles=12;%4;%25;
+x_tiles=17;%4;%15; % x-axis tiling
+y_t_space=10.54; % spacing of tiling along y-axis
 x_t_space=10; % spacing of tiling along x-axis
 stag_x=0; %x_t_space/2; % x-axis tile stagger distance
 stag_y=0; % y-axis tile stagger distance
 x_wrap=0; % wrap around values on x-axis
 y_wrap=0; % wrap around values on y-axis
 % rotations
-a=70;%90-18.435;%90-18; % angle of movement
+a=90-18.435;%90-18; % angle of movement
 a=a/360 * pi*2; % convert to radians
 
 cx=0; cy=0; % init feild centers
@@ -41,19 +41,22 @@ for i=1:x_tiles
     %cy_sft=cy_sft+y_t_space; % x-axis shifts
 end
 
-synapse_weights=rescale(synapse_weights,high_weight);
 synapse_weights_crop=crop_weights(po2,synapse_weights);
+[synapse_weights,synapse_weights_crop]=rescale(synapse_weights,synapse_weights_crop,high_weight);
 
 plt = imagesc(synapse_weights_crop);
 
-function synapse_weights=rescale(synapse_weights,high_weight)
+function [synapse_weights,synapse_weights_crop]=rescale(synapse_weights,synapse_weights_crop,high_weight)
     % rescale to desired value ranges
+    % set it relative to cropped region
     % set min
-    max_v=max(synapse_weights); max_v=max(max_v);
-    min_v=min(synapse_weights); min_v=min(min_v);
+    max_v=max(synapse_weights_crop); max_v=max(max_v);
+    min_v=min(synapse_weights_crop); min_v=min(min_v);
+    synapse_weights_crop=synapse_weights_crop-min_v;
     synapse_weights=synapse_weights-min_v;
     % set max
-    max_v=max(synapse_weights); max_v=max(max_v);
+    max_v=max(synapse_weights_crop); max_v=max(max_v);
+    synapse_weights_crop=synapse_weights_crop*(high_weight/max_v);
     synapse_weights=synapse_weights*(high_weight/max_v);
 end
 

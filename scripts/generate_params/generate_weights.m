@@ -5,7 +5,7 @@
 % run options
 sample_matrix = 0;
 write_to_file = 1;
-show_2d_plot = 1;
+show_2d_plot = 0;
 show_3d_plot = 0;
 alt_weights = 1; % use alt synapse_weights matrix
 
@@ -15,7 +15,7 @@ output_file = 0;
 if write_to_file
 	output_file = fopen(output_filename,'w');
 end
-grid_size = 90.0;
+grid_size = 120.0;
 grid_size_target = 30; % target grid size for neuron weights
 total_nrns = (grid_size_target^2);%35;%(grid_size^2);% total neurons
 if show_2d_plot
