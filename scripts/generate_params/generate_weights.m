@@ -24,17 +24,17 @@ end
 iter = 13; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
 start_x_shift = (grid_size/2) - 44;%- 44;%1;%28; -2 = 2 down
 start_y_shift = (grid_size/2) - 44;%- 44;%1;%-4;%28; +2 = 2 left
-p1=.68;p2=2;p3=2;p4=50;p5=p3;p6=p4;p7=0.20;
-p8=.135;p9=2;p10=2;p11=2;p12=50;p13=p11;p14=p11;p15=p12;p16=1.08;p17=0.0058;
+p1=.68;p2=2;p3=2;p4=30;p5=p3;p6=p4;p7=0.20;
+p8=.135;p9=2;p10=2;p11=2;p12=30;p13=p11;p14=p11;p15=p12;p16=1.08;p17=0.0058;
 p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
-tiling_fraction=0.33333333333;%0.1666666667;%0.164;%0.33333333333;%0.1;%0.33333333333;%1;%0.33;%0.5; % fraction of standard tiling distance between bumps
+tiling_fraction=0.1666666667;%0.33333333333;%0.1666666667;%0.164;%0.33333333333;%0.1;%0.33333333333;%1;%0.33;%0.5; % fraction of standard tiling distance between bumps
 po=[show_3d_plot,write_to_file,sample_matrix,output_file,grid_size,iter,tiling_fraction, ...
     grid_size_target,start_x_shift,start_y_shift];
 comb_syn_wts=[];
 [X,Y] = meshgrid(1:1:grid_size);
 Z=zeros(grid_size);
 % rotation variables
-a=0; % angle
+a=0;%125; % angle
 a=a/360 * pi*2; % convert to radians
 Rz = [cos(a) -sin(a) 0; sin(a) cos(a) 0; 0 0 1]; % rotate along Z axis. See references for other axis code if wanted.
 
