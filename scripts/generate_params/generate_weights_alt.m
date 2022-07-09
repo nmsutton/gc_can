@@ -11,7 +11,7 @@
 % https://www.mathworks.com/matlabcentral/answers/323483-how-to-rotate-points-on-2d-coordinate-systems
 
 % run options
-limited_fields=1; % create inhibition pattern that targets limited fields
+limited_fields=0; % create inhibition pattern that targets limited fields
 
 grid_size = 120.0;
 grid_size_target = 30; % target grid size for neuron weights
@@ -33,6 +33,8 @@ else
     p=[p1,p2,p3,p4,p5,p6,p7,p8];
 end
 high_weight=0.00681312463724531; % highest inhib synapse weight
+rect=0; % rectify weights to high weight when reaching threshold
+rect_thresh=0.001;
 % tile spacing control
 cx_sft=-40;%-29; % x-axis shift
 cy_sft=-3;%-27; % y-axis shift
@@ -40,28 +42,29 @@ y_tiles=12;%4;%25;
 x_tiles=17;%4;%15; % x-axis tiling
 y_t_space=10.54; % spacing of tiling along y-axis
 x_t_space=10; % spacing of tiling along x-axis
-f_area = 7;%4;%5;%6; % sqrt of area each field contributes values to
-stag_x=2;%x_t_space/2; % x-axis tile stagger distance
+s_mult = 1; % spacing multipler
+f_area = 5;%4;%5;%6; % sqrt of area each field contributes values to
+stag_x=0;%x_t_space/2; % x-axis tile stagger distance
 stag_y=0; % y-axis tile stagger distance
 x_wrap=0; % wrap around values on x-axis
 y_wrap=0; % wrap around values on y-axis
 % rotations
-a=10;%10;%90-18.435;%90-18; % angle of movement
+a=90-18.435;%155;%10;%90-18.435;%90-18; % angle of movement
 a=a/360 * pi*2; % convert to radians
 % limited fields params
-centx = []; % x-axis values of centroids
-centy = []; % y-axis values of centroids
-center_x = 46;
-center_y = 46;
+centx = []; centy = []; % x- and y-axis values of centroids
+center_x = 46; center_y = 46;
+%select_cent=[1,4,7]; % centroid indicies to duplicate
+select_cent=[3,4,5];
 
 cx=0; cy=0; % init feild centers
 tempx=[]; tempy=[];
 if limited_fields==1
     po2=[x_wrap,y_wrap,cx_sft,cy_sft,y_t_space,a,y_tiles,stag_x,stag_y,grid_size,grid_size_target,f_area];
     synapse_weights=zeros(grid_size);
-    [centx,centy]=init_hex(centx,centy,center_x,center_y,x_t_space,y_t_space);
+    [centx,centy]=init_hex(centx,centy,center_x,center_y,x_t_space,y_t_space,s_mult);
     [centx,centy]=rot_hex(centx,centy,a,center_x,center_y);
-    [centx,centy]=dup_cent(centx,centy);
+    [centx,centy]=dup_cent(centx,centy,select_cent);
     synapse_weights=feilds_from_cents(po2,grid_size,p,synapse_weights,centx,centy);
 else
     for i=1:x_tiles
@@ -72,12 +75,12 @@ else
 end
 
 synapse_weights_crop=crop_weights(po2,synapse_weights);
-[synapse_weights,synapse_weights_crop]=rescale(synapse_weights,synapse_weights_crop,high_weight);
-
+[synapse_weights,synapse_weights_crop]=rescale(synapse_weights, ...
+    synapse_weights_crop,high_weight,rect,rect_thresh);
 plt = imagesc(synapse_weights_crop);
 
-function [centx, centy]=init_hex(centx,centy,center_x,center_y,x_t_space,y_t_space)
-    m=1.00; % multiplier;
+function [centx, centy]=init_hex(centx,centy,center_x,center_y,x_t_space,y_t_space,s_mult)
+    m=s_mult;
     % initial hexagon
     centx=[centx, center_x-((x_t_space/2)*m)];
     centy=[centy, center_y-(y_t_space*m)];
@@ -109,18 +112,21 @@ function [centx,centy]=rot_hex(centx,centy,a,center_x,center_y)
     end
 end
 
-function [centx,centy]=dup_cent(centx,centy)
-    for i=3:5
-        centx=[centx,centx(i)];
-        centy=[centy,centy(i)-30];
+function [centx,centy]=dup_cent(centx,centy,select_cent)
+    for i=1:3
+        i2=select_cent(i);
+        centx=[centx,centx(i2)];
+        centy=[centy,centy(i2)-30];
     end
-    for i=3:5
-        centx=[centx,centx(i)];
-        centy=[centy,centy(i)+30];
+    for i=1:3
+        i2=select_cent(i);
+        centx=[centx,centx(i2)];
+        centy=[centy,centy(i2)+30];
     end
 end
 
-function [synapse_weights,synapse_weights_crop]=rescale(synapse_weights,synapse_weights_crop,high_weight)
+function [synapse_weights,synapse_weights_crop]=rescale(synapse_weights, ...
+          synapse_weights_crop,high_weight,rect,rect_thresh)
     % rescale to desired value ranges
     % set it relative to cropped region
     % set min
@@ -133,8 +139,10 @@ function [synapse_weights,synapse_weights_crop]=rescale(synapse_weights,synapse_
     synapse_weights_crop=synapse_weights_crop*(high_weight/max_v);
     synapse_weights=synapse_weights*(high_weight/max_v);
     % rectify all weights above a threshold
-    synapse_weights_crop(find(synapse_weights_crop(:)>0.001))=0.0068;
-    synapse_weights(find(synapse_weights(:)>0.001))=0.0068;
+    if rect
+        synapse_weights_crop(find(synapse_weights_crop(:)>rect_thresh))=high_weight;
+        synapse_weights(find(synapse_weights(:)>rect_thresh))=high_weight;
+    end
 end
 
 function synapse_weights=feilds_from_cents(po2,grid_size,p,synapse_weights,centx,centy)
@@ -152,17 +160,12 @@ function synapse_weights=feilds_from_cents(po2,grid_size,p,synapse_weights,centx
             % x,y for 2d plane position calc
             y3=centy(i)+y2; x3=centx(i)+x2;
             %y3=floor(y3);x3=floor(x3);
-            %if true
             if square_dist(x2,y2,fa)
             %if circle_dist(x2,y2,fa)
-                %synapse_weights=add_weight(synapse_weights,x3,y3,z,grid_size);
                 if x3 > 0 && y3 > 0 && x3 < grid_size && y3 < grid_size
                     %synapse_weights(y3,x3)=synapse_weights(y3,x3)+z;
                     synapse_weights=add_weight(synapse_weights,x3,y3,z,grid_size);
                     max_v=0.03;
-                    %if synapse_weights(y3,x3) > max_v
-                    %    synapse_weights(y3,x3) = max_v;
-                    %end
                     %tempx=[tempx x];tempy=[tempy y];
                 end
             end 
@@ -188,12 +191,7 @@ function [synapse_weights,tempx,tempy]=tile_rot(po2,grid_size,p,synapse_weights,
             % x,y for 2d plane position calc
             y3=y_cent-y2; x3=x_cent-x2;
             y3=floor(y3);x3=floor(x3);
-            %{
-            if x_wrap && x > grid_size x=grid_size-x; end
-            if x_wrap && x < 1 x=grid_size+x; end
-            if y_wrap && y > grid_size y=grid_size-y; end
-            if y_wrap && y < 1 y=grid_size+y; end
-            %}                       
+            [x3,y3]=wrap_around(x_wrap,y_wrap,x3,y3,grid_size);
             if square_dist(x2,y2,fa)
             %if circle_dist(x,y,fa)
                 %synapse_weights=add_weight(synapse_weights,x3,y3,z,grid_size);
@@ -206,6 +204,13 @@ function [synapse_weights,tempx,tempy]=tile_rot(po2,grid_size,p,synapse_weights,
         cx=cos(a)*y_t_space+cx; cy=sin(a)*y_t_space+cy;        
         %tempx=[tempx x_cent];tempy=[tempy y_cent]; 
     end
+end
+
+function [x,y]=wrap_around(x_wrap,y_wrap,x,y,grid_size)
+    if x_wrap && x > grid_size x=grid_size-x; end
+    if x_wrap && x < 1 x=grid_size+x; end
+    if y_wrap && y > grid_size y=grid_size-y; end
+    if y_wrap && y < 1 y=grid_size+y; end
 end
 
 function synapse_weights2=crop_weights(po2,synapse_weights)

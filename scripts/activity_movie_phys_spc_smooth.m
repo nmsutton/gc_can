@@ -35,7 +35,7 @@ heat_map = zeros(1,grid_size*grid_size);
 
 if use_carlsim_spikes
 	%carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv');
-    carlsim_spikes = readmatrix('/mnt/hopper_scratch/gc_sim/5/spikes/spikes_recorded.csv');
+    carlsim_spikes = readmatrix('/mnt/hopper_scratch/gc_sim/6/spikes/spikes_recorded.csv');
 	if alt_heatmap
 		spike_x = carlsim_spikes(1:end,3); % matlab indices are (y,x) not (x,y)
 		spike_y = carlsim_spikes(1:end,2);
