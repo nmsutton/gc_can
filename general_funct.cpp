@@ -277,6 +277,13 @@ void RecordNeuronVsLocation(CARLsim* sim, P* p) {
 	write_firing(p->firing_positions, "firing_vs_loc", p);
 }
 
+void HighResTraj(CARLsim* sim, P* p) {
+	// write pos x,y. to be removed when real traj is in sync.
+	if (p->gc_firing_bin[p->selected_neuron] > 0) {
+		// write spike x,y
+	}
+}
+
 void RecordLocationPath(P *p, string rec_type) {
 	double pos_i = (floor(p->pos[1]) * p->x_size) + floor(p->pos[0]);
 
