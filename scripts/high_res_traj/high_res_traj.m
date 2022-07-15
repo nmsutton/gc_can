@@ -12,7 +12,9 @@ timestep = 20;
 % load spike times
 carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv');
 
-x = 0; y = 0;
+%x = 0; y = 0;
+x = pos(1,1); % use pos from reformatted positions file used in moves_analysis.m
+y = pos(2,1);
 for i=1:length(animal_speeds)
 %for i=1:5000
 	t=i*timestep; % in ms
