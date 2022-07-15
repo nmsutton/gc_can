@@ -268,7 +268,7 @@ void move_circles(CARLsim* sim, P* p) {
 	vector<double> moves;
 	double angle = 90;
 	for (int i = 0; i < (p->sim_time/p->animal_ts); i++) {
-		if (i % 40 == 0) {
+		if (i % 20 == 0) {
 			angle += 45;
 			//angle += 135;
 			//angle = rand_angle();

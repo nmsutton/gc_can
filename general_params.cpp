@@ -48,7 +48,7 @@ struct P {
 	bool print_time = 1; // print time after processing
 	bool print_in_weights = 0;
 	bool print_gc_firing = 0;
-	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
+	bool record_fire_vs_pos = 1; // write files for firing vs position plotting
 	bool record_pos_track = 0; // write files for animal position tracking plotting
 	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
 	bool record_spikes_file = 0; // write file for spike times and neuron positions
@@ -94,7 +94,7 @@ struct P {
 
 	// place cell parameters
 	float pc_to_gc_wt = 0.5;//0.5;//3;//0.5;//10; // pc to gc synaptic weight
-	double pc_sig = 1.5;//4.0;//1.0;//0.25; // sigma symbol; width of the place feild
+	double pc_sig = 2;//1.5;//4.0;//1.0;//0.25; // sigma symbol; width of the place feild
 	double pc_level = 1000.0;//1000.0;//5.5;//7.5;//5.0; //14.0; // place cell firing level
 	vector<float> pc_activity;
 

@@ -9,6 +9,8 @@ data/anim_angles*.cpp
 data/anim_speeds*.cpp
 data/anim_angles_180815_S1_S2_lightVSdarkness_merged.cpp
 data/anim_speeds_180815_S1_S2_lightVSdarkness_merged.cpp
+data/anim_angles_180815_S1_S2_lightVSdarkness_merged_40min.cpp
+data/anim_speeds_180815_S1_S2_lightVSdarkness_merged_40min.cpp
 scripts/generate_weights/examples
 scripts/generate_weights/*.jpg
 scripts/generate_weights/synapse_weights.cpp

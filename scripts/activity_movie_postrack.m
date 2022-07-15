@@ -38,7 +38,8 @@ custom_colormap = load('animal_location_colormap.mat');
 
 for frameIndex = 1 : numberOfFrames
 %for frameIndex = (numberOfFrames-30) : (numberOfFrames - 10)
-  filename = strcat('../output/',input_folder,'/firing_t',int2str(frameIndex*bin_size),'.csv');
+  %filename = strcat('../output/',input_folder,'/firing_t',int2str(frameIndex*bin_size),'.csv');
+  filename = strcat('/mnt/hopper_scratch/gc_sim/4/',input_folder,'/firing_t',int2str(frameIndex*bin_size),'.csv');
   [imgfile,delimiterOut]=importdata(filename);
   cla reset;
   % Enlarge figure to full screen.

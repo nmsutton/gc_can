@@ -11,7 +11,7 @@
 % https://www.mathworks.com/matlabcentral/answers/323483-how-to-rotate-points-on-2d-coordinate-systems
 
 % run options
-limited_fields=0; % create inhibition pattern that targets limited fields
+limited_fields=1; % create inhibition pattern that targets limited fields
 
 grid_size = 120.0;
 grid_size_target = 30; % target grid size for neuron weights
@@ -19,9 +19,11 @@ synapse_weights=ones(grid_size);
 % field params
 if limited_fields
     p1=20;%.68;
-    p2=2;p3=2;p4=10;p5=p3;p6=p4;p7=0.20*2;
+    p2=2;p3=2;
+    p4=8; % bump width
+    p5=p3;p6=p4;p7=0.20;
     p8=30;%.135;
-    p9=2;p10=2;p11=2;p12=10;p13=p11;p14=p11;p15=p12;p16=1.08*2;
+    p9=2;p10=2;p11=2;p12=p4;p13=p11;p14=p11;p15=p12;p16=1.08;
     p17=0.0058;
     p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
 else
@@ -33,7 +35,7 @@ else
     p=[p1,p2,p3,p4,p5,p6,p7,p8];
 end
 high_weight=0.00681312463724531; % highest inhib synapse weight
-rect=0; % rectify weights to high weight when reaching threshold
+rect=1; % rectify weights to high weight when reaching threshold
 rect_thresh=0.001;
 % tile spacing control
 cx_sft=-40;%-29; % x-axis shift
@@ -41,28 +43,28 @@ cy_sft=-3;%-27; % y-axis shift
 y_tiles=12;%4;%25;
 x_tiles=17;%4;%15; % x-axis tiling
 y_t_space=10.54; % spacing of tiling along y-axis
-x_t_space=10; % spacing of tiling along x-axis
-s_mult = 1; % spacing multipler
-f_area = 5;%4;%5;%6; % sqrt of area each field contributes values to
+x_t_space=12;%10; % spacing of tiling along x-axis
+s_mult = 1;%1.15;%1.3;%1.15;%1.3; % spacing multipler
+f_area = 9;%4;%5;%6; % sqrt of area each field contributes values to
 stag_x=0;%x_t_space/2; % x-axis tile stagger distance
 stag_y=0; % y-axis tile stagger distance
 x_wrap=0; % wrap around values on x-axis
 y_wrap=0; % wrap around values on y-axis
 % rotations
-a=90-18.435;%155;%10;%90-18.435;%90-18; % angle of movement
+a=345;%10;%90-18.435;%90-18; % angle of movement
 a=a/360 * pi*2; % convert to radians
 % limited fields params
+seven_fields=1; % choose between 7 or 4 field in initial shape
 centx = []; centy = []; % x- and y-axis values of centroids
 center_x = 46; center_y = 46;
-%select_cent=[1,4,7]; % centroid indicies to duplicate
-select_cent=[3,4,5];
+select_cent=[3,4,5];%[1,4,7];%[1,2,3];%[1,4,7];%[3,4,5];% centroid indicies to duplicate
 
 cx=0; cy=0; % init feild centers
 tempx=[]; tempy=[];
 if limited_fields==1
     po2=[x_wrap,y_wrap,cx_sft,cy_sft,y_t_space,a,y_tiles,stag_x,stag_y,grid_size,grid_size_target,f_area];
     synapse_weights=zeros(grid_size);
-    [centx,centy]=init_hex(centx,centy,center_x,center_y,x_t_space,y_t_space,s_mult);
+    [centx,centy]=init_hex(centx,centy,center_x,center_y,x_t_space,y_t_space,s_mult,seven_fields);
     [centx,centy]=rot_hex(centx,centy,a,center_x,center_y);
     [centx,centy]=dup_cent(centx,centy,select_cent);
     synapse_weights=feilds_from_cents(po2,grid_size,p,synapse_weights,centx,centy);
@@ -79,23 +81,27 @@ synapse_weights_crop=crop_weights(po2,synapse_weights);
     synapse_weights_crop,high_weight,rect,rect_thresh);
 plt = imagesc(synapse_weights_crop);
 
-function [centx, centy]=init_hex(centx,centy,center_x,center_y,x_t_space,y_t_space,s_mult)
+function [centx, centy]=init_hex(centx,centy,center_x,center_y,x_t_space,y_t_space,s_mult,seven_fields)
     m=s_mult;
     % initial hexagon
-    centx=[centx, center_x-((x_t_space/2)*m)];
-    centy=[centy, center_y-(y_t_space*m)];
-    centx=[centx, center_x+((x_t_space/2)*m)];
-    centy=[centy, center_y-(y_t_space*m)];
-    centx=[centx, center_x-(x_t_space*m)];
-    centy=[centy, center_y];    
-    centx=[centx, center_x];
-    centy=[centy, center_y];    
-    centx=[centx, center_x+(x_t_space*m)];
-    centy=[centy, center_y];    
-    centx=[centx, center_x-((x_t_space/2)*m)];
-    centy=[centy, center_y+(y_t_space*m)];
-    centx=[centx, center_x+((x_t_space/2)*m)];
-    centy=[centy, center_y+(y_t_space*m)];
+    if seven_fields
+        centx=[centx, center_x-((x_t_space/2)*m)];
+        centy=[centy, center_y-(y_t_space*m)];
+        centx=[centx, center_x+((x_t_space/2)*m)];
+        centy=[centy, center_y-(y_t_space*m)];
+    end
+        centx=[centx, center_x-(x_t_space*m)];
+        centy=[centy, center_y];    
+        centx=[centx, center_x];
+        centy=[centy, center_y];    
+        centx=[centx, center_x+(x_t_space*m)];
+        centy=[centy, center_y];    
+    if seven_fields
+        centx=[centx, center_x-((x_t_space/2)*m)];
+        centy=[centy, center_y+(y_t_space*m)];
+        centx=[centx, center_x+((x_t_space/2)*m)];
+        centy=[centy, center_y+(y_t_space*m)];           
+    end
 end
 
 function [centx,centy]=rot_hex(centx,centy,a,center_x,center_y)
@@ -113,12 +119,12 @@ function [centx,centy]=rot_hex(centx,centy,a,center_x,center_y)
 end
 
 function [centx,centy]=dup_cent(centx,centy,select_cent)
-    for i=1:3
+    for i=1:length(select_cent)
         i2=select_cent(i);
         centx=[centx,centx(i2)];
         centy=[centy,centy(i2)-30];
     end
-    for i=1:3
+    for i=1:length(select_cent)
         i2=select_cent(i);
         centx=[centx,centx(i2)];
         centy=[centy,centy(i2)+30];

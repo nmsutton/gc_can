@@ -17,7 +17,10 @@ use_smoothing = 1;
 if use_carlsim_spikes
 	grid_size = 30; % sqrt of grid size
 	binside = 3;
-	std_smooth_kernel = 3;
+	std_smooth_kernel = 3.333;
+    hopper_use=1; % enable hopper folder or use local folder
+    hopper_run=1;
+    hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/spikes_recorded.csv']);
 else
 	grid_size = 32;
 	spike_x = root.cel_x{1,1};
@@ -34,8 +37,11 @@ end
 heat_map = zeros(1,grid_size*grid_size);
 
 if use_carlsim_spikes
-	%carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv');
-    carlsim_spikes = readmatrix('/mnt/hopper_scratch/gc_sim/6/spikes/spikes_recorded.csv');
+    if hopper_use
+        carlsim_spikes = readmatrix(hopper_path);
+    else
+	    carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv');
+    end
 	if alt_heatmap
 		spike_x = carlsim_spikes(1:end,3); % matlab indices are (y,x) not (x,y)
 		spike_y = carlsim_spikes(1:end,2);
@@ -59,6 +65,11 @@ if alt_heatmap
                 x = grid_size; % fix anomalous value error
             elseif x < 0
                 x = 1;
+            end
+            if y > grid_size
+                y = grid_size; % fix anomalous value error
+            elseif y < 0
+                y = 1;
             end
 			i2 = (y * grid_size) + x;
 			heat_map(i2) = heat_map(i2) + 1;
@@ -111,9 +122,9 @@ xlabel('animal position on x axis')
 ylabel('animal position on y axis')
 cb = colorbar;
 if use_carlsim_spikes
-	%caxis([0 120])
-    caxis([0 80])
-    %caxis([0 30])
+	%caxis([0 160])
+    %caxis([0 80])
+    caxis([0 30])
 	caption = sprintf('Physical space grid cell firing, total t = %.0f ms', carlsim_spikes(end,1));
 else
 	caxis([0 25])
