@@ -17,3 +17,5 @@ scripts/generate_weights/synapse_weights.cpp
 data/mex_hat_bup.cpp
 data/mex_hat.cpp
 data/synapse_weights.cpp
+scripts/high_res_traj/animal_angles.csv
+scripts/high_res_traj/animal_speeds.csv
