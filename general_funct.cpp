@@ -278,9 +278,40 @@ void RecordNeuronVsLocation(CARLsim* sim, P* p) {
 }
 
 void HighResTraj(CARLsim* sim, P* p) {
-	// write pos x,y. to be removed when real traj is in sync.
-	if (p->gc_firing_bin[p->selected_neuron] > 0) {
+	/* 
+	Record high resolution position data of spikes. Detect if last spike
+	time for a selected cell was the current time and if so write the 
+	current animal location to files.
+	*/
+
+	//if (p->gc_firing_bin[p->selected_neuron] > 0) {
+	//vector<vector<int>> spike_recorder = p->nrn_spk;
+	int i = p->selected_neuron;
+	int j = p->nrn_spk[i].size();
+	/*
+	int tot = 0;
+	for (int k = 0; k < 900; k++) {
+		if (p->nrn_spk[k].size() > 1) {
+			tot++;
+			printf("%d %d\n",k,p->nrn_spk[k][2]);
+		}
+	}
+	//printf("%d\n",tot);
+	*/
+	//if (j > 0) {
+	if (j > 0 && p->nrn_spk[i][j-1] == p->t) {
+		//printf("%d %d\n",p->t,p->nrn_spk[i][j-1]);
+		//printf("%d\n",j);
+	}
+
+	//if (p->nrn_spk[i][j] == p->t) {
+	if (j > 0 && p->nrn_spk[i][j-1] == p->t) {
 		// write spike x,y
+		printf("%d %d\n",p->t,p->nrn_spk[i][j-1]);
+		p->highres_trajx_file << p->pos[0];
+		p->highres_trajx_file << "\n";
+		p->highres_trajy_file << p->pos[1];
+		p->highres_trajy_file << "\n";
 	}
 }
 

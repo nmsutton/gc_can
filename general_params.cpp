@@ -31,7 +31,11 @@ struct P {
 	double gc_firing_bin[layer_size]; // gc spiking amount in time bins
 	//string spikes_output_filepath = "/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv";
 	string spikes_output_filepath = "output/spikes/spikes_recorded.csv";
+	string highres_trajx_filepath = "output/spikes/highres_trajx.csv";
+	string highres_trajy_filepath = "output/spikes/highres_trajy.csv";
 	ofstream spikes_output_file;
+	ofstream highres_trajx_file;
+	ofstream highres_trajy_file;
 
 	// animal data parameters
 	string anim_rec_file = "../../moves_analysis/src/reformatted_moves.txt";
@@ -48,10 +52,11 @@ struct P {
 	bool print_time = 1; // print time after processing
 	bool print_in_weights = 0;
 	bool print_gc_firing = 0;
-	bool record_fire_vs_pos = 1; // write files for firing vs position plotting
+	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
 	bool record_pos_track = 0; // write files for animal position tracking plotting
 	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
 	bool record_spikes_file = 0; // write file for spike times and neuron positions
+	bool record_highrestraj = 1; // write files for high resolution trajectory spike locations
 	bool record_gc_voltage = 0; // record GC voltage trace
 	bool record_in_voltage = 0; // record IN voltage trace
 	bool record_pc_voltage = 0; // record PC voltage trace
@@ -114,7 +119,7 @@ struct P {
 	double bc_sig = 1.0;
 
 	// neuron vs location parameters
-	int selected_neuron = 465;//11;//465;//232;//465;//10;
+	int selected_neuron = 705;//11;//465;//232;//465;//10;
 	double firing_positions[x_size*y_size]; // locations of firing of a neuron
 	double animal_location[x_size*y_size]; // location of animal
 	double animal_location_all[x_size*y_size]; // location of animal

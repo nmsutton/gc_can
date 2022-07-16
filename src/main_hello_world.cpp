@@ -111,6 +111,8 @@ int main() {
 	SpikeMonitor* SMinh = sim.setSpikeMonitor(MEC_LII_Basket, "DEFAULT");
 	SpikeMonitor* SMext = sim.setSpikeMonitor(EC_LI_II_Multipolar_Pyramidal, "DEFAULT");
 	if (p.record_spikes_file) {p.spikes_output_file.open(p.spikes_output_filepath);}
+	if (p.record_highrestraj) {p.highres_trajx_file.open(p.highres_trajx_filepath);}
+	if (p.record_highrestraj) {p.highres_trajy_file.open(p.highres_trajy_filepath);}
 
 	// ---------------- RUN STATE -------------------
 	SMexc->startRecording();
@@ -144,6 +146,7 @@ int main() {
 		//rand_path(&sim, &p);
 		PrintWeightsAndFiring(&p);
 		if (p.record_fire_vs_pos) {RecordNeuronVsLocation(&sim, &p);}
+		if (p.record_highrestraj) {HighResTraj(&sim, &p);}
 		if (p.record_pos_track) {RecordLocationPath(&p, "current");}
 		if (p.record_pos_track_all) {RecordLocationPath(&p, "all");}
 		if (p.print_time && ((t < 1000 && t % 100 == 0) || (t % 1000 == 0))) {printf("t: %dms\n",t);}
@@ -192,6 +195,8 @@ int main() {
 	}*/
 
 	if (p.record_spikes_file) {p.spikes_output_file.close();}
+	if (p.record_highrestraj) {p.highres_trajx_file.close();}
+	if (p.record_highrestraj) {p.highres_trajy_file.close();}
 
 	return 0;
 }
