@@ -113,6 +113,7 @@ int main() {
 	if (p.record_spikes_file) {p.spikes_output_file.open(p.spikes_output_filepath);}
 	if (p.record_highrestraj) {p.highres_trajx_file.open(p.highres_trajx_filepath);}
 	if (p.record_highrestraj) {p.highres_trajy_file.open(p.highres_trajy_filepath);}
+	if (p.record_highrestraj) {p.highres_trajt_file.open(p.highres_trajt_filepath);}
 
 	// ---------------- RUN STATE -------------------
 	SMexc->startRecording();
@@ -139,9 +140,9 @@ int main() {
 		SMexc->stopRecording();
 		p.nrn_spk = SMexc->getSpikeVector2D(); // store firing in vector
 		SMexc->startRecording();
-		straight_path(&sim, &p); // process movement
+		//straight_path(&sim, &p); // process movement
 		//move_path3(&sim, &p);
-		//move_animal(&sim, &p);
+		move_animal(&sim, &p);
 		//move_circles(&sim, &p);
 		//rand_path(&sim, &p);
 		PrintWeightsAndFiring(&p);
@@ -197,6 +198,7 @@ int main() {
 	if (p.record_spikes_file) {p.spikes_output_file.close();}
 	if (p.record_highrestraj) {p.highres_trajx_file.close();}
 	if (p.record_highrestraj) {p.highres_trajy_file.close();}
+	if (p.record_highrestraj) {p.highres_trajt_file.close();}
 
 	return 0;
 }

@@ -5,8 +5,8 @@
 #define PI 3.14159265
 
 struct P {
-	int firing_bin = 10; // size of bins to record firing activity
-	double sim_time = 1000*firing_bin;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	int firing_bin = 20; // size of bins to record firing activity
+	double sim_time = 2400000;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -33,9 +33,11 @@ struct P {
 	string spikes_output_filepath = "output/spikes/spikes_recorded.csv";
 	string highres_trajx_filepath = "output/spikes/highres_trajx.csv";
 	string highres_trajy_filepath = "output/spikes/highres_trajy.csv";
+	string highres_trajt_filepath = "output/spikes/highres_trajt.csv";
 	ofstream spikes_output_file;
 	ofstream highres_trajx_file;
 	ofstream highres_trajy_file;
+	ofstream highres_trajt_file;
 
 	// animal data parameters
 	string anim_rec_file = "../../moves_analysis/src/reformatted_moves.txt";
@@ -52,10 +54,10 @@ struct P {
 	bool print_time = 1; // print time after processing
 	bool print_in_weights = 0;
 	bool print_gc_firing = 0;
-	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
-	bool record_pos_track = 0; // write files for animal position tracking plotting
-	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
-	bool record_spikes_file = 0; // write file for spike times and neuron positions
+	bool record_fire_vs_pos = 1; // write files for firing vs position plotting
+	bool record_pos_track = 1; // write files for animal position tracking plotting
+	bool record_pos_track_all = 1; // write files for animal positions with no past posit. clearing
+	bool record_spikes_file = 1; // write file for spike times and neuron positions
 	bool record_highrestraj = 1; // write files for high resolution trajectory spike locations
 	bool record_gc_voltage = 0; // record GC voltage trace
 	bool record_in_voltage = 0; // record IN voltage trace
@@ -99,7 +101,7 @@ struct P {
 
 	// place cell parameters
 	float pc_to_gc_wt = 0.5;//0.5;//3;//0.5;//10; // pc to gc synaptic weight
-	double pc_sig = 2;//1.5;//4.0;//1.0;//0.25; // sigma symbol; width of the place feild
+	double pc_sig = 1.2;//2;//1.5;//4.0;//1.0;//0.25; // sigma symbol; width of the place feild
 	double pc_level = 1000.0;//1000.0;//5.5;//7.5;//5.0; //14.0; // place cell firing level
 	vector<float> pc_activity;
 
@@ -119,7 +121,7 @@ struct P {
 	double bc_sig = 1.0;
 
 	// neuron vs location parameters
-	int selected_neuron = 705;//11;//465;//232;//465;//10;
+	int selected_neuron = 372;//11;//465;//232;//465;//10;
 	double firing_positions[x_size*y_size]; // locations of firing of a neuron
 	double animal_location[x_size*y_size]; // location of animal
 	double animal_location_all[x_size*y_size]; // location of animal

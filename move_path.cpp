@@ -234,8 +234,10 @@ void move_animal(CARLsim* sim, P* p) {
 	#if import_animal_data
 		//#include "data/anim_angles.cpp"
 		//#include "data/anim_speeds.cpp"
-		#include "data/anim_angles_180815_S1_S2_lightVSdarkness_merged.cpp"
-		#include "data/anim_speeds_180815_S1_S2_lightVSdarkness_merged.cpp"
+		//#include "data/anim_angles_180815_S1_S2_lightVSdarkness_merged.cpp"
+		//#include "data/anim_speeds_180815_S1_S2_lightVSdarkness_merged.cpp"
+		#include "data/anim_angles_191108_S1_lightVSdarkness_cells11and12.cpp"
+		#include "data/anim_speeds_191108_S1_lightVSdarkness_cells11and12.cpp"
 	#endif
 
 	vector<int> speed_times;
@@ -244,7 +246,7 @@ void move_animal(CARLsim* sim, P* p) {
 	for (int i = 0; i < p->animal_timesteps; i++) {
 		//speeds.push_back(8.5);
 		speed_times.push_back(i*p->animal_ts);
-		anim_speeds[i] = anim_speeds[i] * 2;//(30/180); // GC layer size conversion factor
+		anim_speeds[i] = anim_speeds[i];// * 2;//(30/180); // GC layer size conversion factor
 	}
 
 	// rotate angles

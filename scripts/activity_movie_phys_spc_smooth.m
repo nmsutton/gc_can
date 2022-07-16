@@ -18,8 +18,8 @@ if use_carlsim_spikes
 	grid_size = 30; % sqrt of grid size
 	binside = 3;
 	std_smooth_kernel = 3.333;
-    hopper_use=1; % enable hopper folder or use local folder
-    hopper_run=1;
+    hopper_use=0; % enable hopper folder or use local folder
+    hopper_run=3;
     hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/spikes_recorded.csv']);
 else
 	grid_size = 32;
