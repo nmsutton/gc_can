@@ -13,6 +13,14 @@ data/anim_angles_180815_S1_S2_lightVSdarkness_merged_40min.cpp
 data/anim_speeds_180815_S1_S2_lightVSdarkness_merged_40min.cpp
 data/anim_angles_191108_S1_lightVSdarkness_cells11and12.cpp
 data/anim_speeds_191108_S1_lightVSdarkness_cells11and12.cpp
+data/test_data_angles.cpp
+data/test_data_speeds.cpp
+scripts/high_res_traj/test_data_angles.cpp
+scripts/high_res_traj/test_data_speeds.cpp
+scripts/high_res_traj/test_data_angles.csv
+scripts/high_res_traj/test_data_speeds.csv
+scripts/high_res_traj/test_data_x.csv
+scripts/high_res_traj/test_data_y.csv
 scripts/generate_weights/examples
 scripts/generate_weights/*.jpg
 scripts/generate_weights/synapse_weights.cpp

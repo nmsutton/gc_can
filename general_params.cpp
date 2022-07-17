@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 20; // size of bins to record firing activity
-	double sim_time = 2400000;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 500000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -34,20 +34,24 @@ struct P {
 	string highres_trajx_filepath = "output/spikes/highres_trajx.csv";
 	string highres_trajy_filepath = "output/spikes/highres_trajy.csv";
 	string highres_trajt_filepath = "output/spikes/highres_trajt.csv";
+	string highres_pos_x_filepath = "output/spikes/highres_pos_x.csv";
+	string highres_pos_y_filepath = "output/spikes/highres_pos_y.csv";
 	ofstream spikes_output_file;
 	ofstream highres_trajx_file;
 	ofstream highres_trajy_file;
 	ofstream highres_trajt_file;
+	ofstream highres_pos_x_file;
+	ofstream highres_pos_y_file;
 
 	// animal data parameters
-	string anim_rec_file = "../../moves_analysis/src/reformatted_moves.txt";
+	//string anim_rec_file = "../../moves_analysis/src/reformatted_moves.txt";
 	#define import_animal_data 1 // 1 for import and 0 for no import
-	int animal_timesteps = 29416;
+	//int animal_timesteps = 29416;
 	int animal_ts = 20; // timestep in ms
-	double pc_move_scale = 0.000139/1.773;//0.00019/1.773;//0.0001/1.773;//0.00025/1.773;//0.03/1.773;//0.01/1.773; // PC movement control scale
+	//double pc_move_scale = 0.000139/1.773;//0.00019/1.773;//0.0001/1.773;//0.00025/1.773;//0.03/1.773;//0.01/1.773; // PC movement control scale
 	//double pc_multi = 0.1; // PC movement multiplier
-	double cs_scale = 0.05/1.773; // baseline speed control scale
-	double sm_scale = 20/1.773;//20/1.773;//0.1/1.773; // speed control multiplier scale
+	//double cs_scale = 0.05/1.773; // baseline speed control scale
+	//double sm_scale = 20/1.773;//20/1.773;//0.1/1.773; // speed control multiplier scale
 
 	// common parameters that can vary per each run
 	bool print_move = 0; // print each move's direction
@@ -121,7 +125,7 @@ struct P {
 	double bc_sig = 1.0;
 
 	// neuron vs location parameters
-	int selected_neuron = 372;//11;//465;//232;//465;//10;
+	int selected_neuron = 465;//372;//11;//465;//232;//465;//10;
 	double firing_positions[x_size*y_size]; // locations of firing of a neuron
 	double animal_location[x_size*y_size]; // location of animal
 	double animal_location_all[x_size*y_size]; // location of animal

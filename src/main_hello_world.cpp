@@ -114,6 +114,8 @@ int main() {
 	if (p.record_highrestraj) {p.highres_trajx_file.open(p.highres_trajx_filepath);}
 	if (p.record_highrestraj) {p.highres_trajy_file.open(p.highres_trajy_filepath);}
 	if (p.record_highrestraj) {p.highres_trajt_file.open(p.highres_trajt_filepath);}
+	if (p.record_highrestraj) {p.highres_pos_x_file.open(p.highres_pos_x_filepath);}
+	if (p.record_highrestraj) {p.highres_pos_y_file.open(p.highres_pos_y_filepath);}
 
 	// ---------------- RUN STATE -------------------
 	SMexc->startRecording();
@@ -199,6 +201,8 @@ int main() {
 	if (p.record_highrestraj) {p.highres_trajx_file.close();}
 	if (p.record_highrestraj) {p.highres_trajy_file.close();}
 	if (p.record_highrestraj) {p.highres_trajt_file.close();}
+	if (p.record_highrestraj) {p.highres_pos_x_file.close();}
+	if (p.record_highrestraj) {p.highres_pos_y_file.close();}
 
 	return 0;
 }
