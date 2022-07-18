@@ -8,7 +8,7 @@ x=0;y=0;
 speed = 5;
 timebin = 20; % each move command lasts this long
 onemovems = 1000/(speed*timebin); % time needed for 1 move
-repetitions = 30;
+repetitions = 60;
 max_i=(repetitions*onemovems); % total y-shifts
 max_j=(repetitions*onemovems); % total x-shifts
 max_k=(1*onemovems);

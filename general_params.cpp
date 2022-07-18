@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 20; // size of bins to record firing activity
-	double sim_time = 500000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 10000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -21,7 +21,7 @@ struct P {
 	static const int MEC_LII_Basket_Count = 300;
 	static const int EC_LII_Basket_Multipolar_Count = 300;
 	static const int CA1_Pyramidal_Count = 900;
-	double pos[2] = {3,6}; // starting position; {x,y}
+	double pos[2] = {15,9}; //{3,6}; // starting position; {x,y}
 	double dirs[4] = {0, 90, 180, 270};
 	double mi = 0; // move list index
 	vector<vector<int>> nrn_spk; // for total firing recording
@@ -46,8 +46,13 @@ struct P {
 	// animal data parameters
 	//string anim_rec_file = "../../moves_analysis/src/reformatted_moves.txt";
 	#define import_animal_data 1 // 1 for import and 0 for no import
-	//int animal_timesteps = 29416;
 	int animal_ts = 20; // timestep in ms
+	vector<double> anim_angles;
+	vector<double> anim_speeds;
+	vector<int> speed_times;
+	vector<double> speeds;
+	int num_moves;
+	int num_speeds;
 	//double pc_move_scale = 0.000139/1.773;//0.00019/1.773;//0.0001/1.773;//0.00025/1.773;//0.03/1.773;//0.01/1.773; // PC movement control scale
 	//double pc_multi = 0.1; // PC movement multiplier
 	//double cs_scale = 0.05/1.773; // baseline speed control scale
@@ -58,11 +63,11 @@ struct P {
 	bool print_time = 1; // print time after processing
 	bool print_in_weights = 0;
 	bool print_gc_firing = 0;
-	bool record_fire_vs_pos = 1; // write files for firing vs position plotting
+	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
 	bool record_pos_track = 1; // write files for animal position tracking plotting
 	bool record_pos_track_all = 1; // write files for animal positions with no past posit. clearing
-	bool record_spikes_file = 1; // write file for spike times and neuron positions
-	bool record_highrestraj = 1; // write files for high resolution trajectory spike locations
+	bool record_spikes_file = 0; // write file for spike times and neuron positions
+	bool record_highrestraj = 0; // write files for high resolution trajectory spike locations
 	bool record_gc_voltage = 0; // record GC voltage trace
 	bool record_in_voltage = 0; // record IN voltage trace
 	bool record_pc_voltage = 0; // record PC voltage trace

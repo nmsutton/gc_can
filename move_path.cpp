@@ -72,7 +72,7 @@ void control_speed(double speed, P* p) {
 		references: https://arachnoid.com/polysolve/ (The tool is a JavaScript version of PolySolve)
 		https://www.socscistatistics.com/tests/regression/default.aspx
 	*/
-	//if (speed > p->max_speed) {speed = p->max_speed;} // speed limit
+	if (speed > p->max_speed) {speed = p->max_speed;} // speed limit
 	if (p->auto_speed_control) {
 		p->move_increment = (0.00096*speed)-0.00012;
 		p->const_speed = (0.1287571596*speed)-(0.1143442859*pow(speed,2))+(0.03852298736*pow(speed,3))-(0.003102176404*pow(speed,4));
@@ -227,10 +227,11 @@ void move_path3(CARLsim* sim, P* p) {
 	run_path(&moves, &speeds, &speed_times, num_moves, num_speeds, sim, p);
 }
 
-void move_animal(CARLsim* sim, P* p) {
+void move_animal(CARLsim* sim, P* p, vector<double> *anim_angles, vector<double> *anim_speeds) {
+	//
+	//	Movement data from real animal recordings.
+	//
 	/*
-		Movement data from real animal recordings.
-	*/
 	#if import_animal_data
 		//#include "data/anim_angles.cpp"
 		//#include "data/anim_speeds.cpp"
@@ -238,8 +239,10 @@ void move_animal(CARLsim* sim, P* p) {
 		//#include "data/anim_speeds_180815_S1_S2_lightVSdarkness_merged.cpp"
 		//#include "data/anim_angles_191108_S1_lightVSdarkness_cells11and12.cpp"
 		//#include "data/anim_speeds_191108_S1_lightVSdarkness_cells11and12.cpp"
-		#include "data/test_data_angles.cpp"
-		#include "data/test_data_speeds.cpp"
+		#include "data/anim_angles_191108_S1_lightVSdarkness_cells11and12_scaleddown.cpp"
+		#include "data/anim_speeds_191108_S1_lightVSdarkness_cells11and12_scaleddown.cpp"
+		//#include "data/test_data_angles.cpp"
+		//#include "data/test_data_speeds.cpp"
 	#endif
 
 	vector<int> speed_times;
@@ -251,18 +254,11 @@ void move_animal(CARLsim* sim, P* p) {
 	for (int i = 0; i < num_speeds; i++) {
 		//speeds.push_back(8.5);
 		speed_times.push_back(i*p->animal_ts);
-		anim_speeds[i] = anim_speeds[i];// * 2;//(30/180); // GC layer size conversion factor
+		anim_speeds[i] = anim_speeds[i] * 25;//(30/180); // GC layer size conversion factor
 	}
+	*/
 
-	// rotate angles
-	/*for (int i = 0; i < p->animal_timesteps; i++) {
-		anim_angles[i] = anim_angles[i] + 90;
-		if (anim_angles[i] > 360) {
-			anim_angles[i] = anim_angles[i] - 360;
-		}
-	}*/
-
-	run_path(&anim_angles, &anim_speeds, &speed_times, num_moves, num_speeds, sim, p);	
+	run_path(anim_angles, anim_speeds, &p->speed_times, p->num_moves, p->num_speeds, sim, p);	
 	//run_path(&anim_angles, &speeds, &speed_times, num_moves, num_speeds, sim, p);	
 }
 
@@ -294,4 +290,28 @@ void move_circles(CARLsim* sim, P* p) {
 	int num_speeds = speeds.size();
 
 	run_path(&moves, &speeds, &speed_times, num_moves, num_speeds, sim, p);
+}
+
+void animal_data_vars(CARLsim* sim, P* p, vector<double> *anim_angles, vector<double> *anim_speeds) {
+	/* create values for animal data variables */
+
+	p->num_moves = anim_angles->size();
+	p->num_speeds = anim_speeds->size();
+
+	for (int i = 0; i < p->num_speeds; i++) {
+		p->speed_times.push_back(i*p->animal_ts);
+		(*anim_speeds)[i] = (*anim_speeds)[i] * 25;//(30/180); // GC layer size conversion factor
+	}
+
+	// rotate angles
+	//for (int i = 0; i < p->num_angles; i++) {
+	//	(*anim_angles)[i] = (*anim_angles)[i] + 90;
+	//	if ((*anim_angles)[i] > 360) {
+	//		(*anim_angles)[i] = (*anim_angles)[i] - 360;
+	//	}
+	//}
+}
+
+void move_test(CARLsim* sim, P* p) {
+
 }

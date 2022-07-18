@@ -75,6 +75,13 @@ using namespace std;
 #include "../move_path.cpp"
 //#include "boundary_cells.cpp"
 
+#if import_animal_data
+	#include "../data/anim_angles_191108_S1_lightVSdarkness_cells11and12_scaleddown.cpp"
+	#include "../data/anim_speeds_191108_S1_lightVSdarkness_cells11and12_scaleddown.cpp"
+	//#include "data/test_data_angles.cpp"
+	//#include "data/test_data_speeds.cpp"
+#endif
+
 int main() {
 	// ---------------- CONFIG STATE -------------------
 	// create a network on GPU
@@ -130,6 +137,11 @@ int main() {
 	for (int i = 0; i < p.layer_size; i++) {
 		p.gc_firing[i] = init_firings[i]; // set initial firing
 	}
+	
+	#if import_animal_data
+		//printf("%f\n",anim_speeds[100]);
+		animal_data_vars(&sim, &p, &anim_angles, &anim_speeds);
+	#endif	
 
 	for (int t=0; t<p.sim_time; t++) {	
 		p.t = t;
@@ -144,9 +156,10 @@ int main() {
 		SMexc->startRecording();
 		//straight_path(&sim, &p); // process movement
 		//move_path3(&sim, &p);
-		move_animal(&sim, &p);
+		move_animal(&sim, &p, &anim_angles, &anim_speeds);
 		//move_circles(&sim, &p);
 		//rand_path(&sim, &p);
+		move_test(&sim, &p);
 		PrintWeightsAndFiring(&p);
 		if (p.record_fire_vs_pos) {RecordNeuronVsLocation(&sim, &p);}
 		if (p.record_highrestraj) {HighResTraj(&sim, &p);}
