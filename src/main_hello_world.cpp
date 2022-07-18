@@ -76,10 +76,12 @@ using namespace std;
 //#include "boundary_cells.cpp"
 
 #if import_animal_data
-	#include "../data/anim_angles_191108_S1_lightVSdarkness_cells11and12_scaleddown.cpp"
-	#include "../data/anim_speeds_191108_S1_lightVSdarkness_cells11and12_scaleddown.cpp"
-	//#include "data/test_data_angles.cpp"
-	//#include "data/test_data_speeds.cpp"
+	//#include "../data/anim_angles_191108_S1_lightVSdarkness_cells11and12_scaleddown.cpp"
+	//#include "../data/anim_speeds_191108_S1_lightVSdarkness_cells11and12_scaleddown.cpp"
+	//#include "../data/test_data_angles.cpp"
+	//#include "../data/test_data_speeds.cpp"
+	#include "../data/anim_angles_limited.cpp"
+	#include "../data/anim_speeds_limited.cpp"
 #endif
 
 int main() {
@@ -159,7 +161,7 @@ int main() {
 		move_animal(&sim, &p, &anim_angles, &anim_speeds);
 		//move_circles(&sim, &p);
 		//rand_path(&sim, &p);
-		move_test(&sim, &p);
+		//move_test(&sim, &p, &anim_angles, &anim_speeds);
 		PrintWeightsAndFiring(&p);
 		if (p.record_fire_vs_pos) {RecordNeuronVsLocation(&sim, &p);}
 		if (p.record_highrestraj) {HighResTraj(&sim, &p);}

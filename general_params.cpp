@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 20; // size of bins to record firing activity
-	double sim_time = 10000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 2400000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -21,7 +21,7 @@ struct P {
 	static const int MEC_LII_Basket_Count = 300;
 	static const int EC_LII_Basket_Multipolar_Count = 300;
 	static const int CA1_Pyramidal_Count = 900;
-	double pos[2] = {15,9}; //{3,6}; // starting position; {x,y}
+	double pos[2] = {9,17}; //{3,6}; // starting position; {x,y}
 	double dirs[4] = {0, 90, 180, 270};
 	double mi = 0; // move list index
 	vector<vector<int>> nrn_spk; // for total firing recording
@@ -63,11 +63,11 @@ struct P {
 	bool print_time = 1; // print time after processing
 	bool print_in_weights = 0;
 	bool print_gc_firing = 0;
-	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
+	bool record_fire_vs_pos = 1; // write files for firing vs position plotting
 	bool record_pos_track = 1; // write files for animal position tracking plotting
 	bool record_pos_track_all = 1; // write files for animal positions with no past posit. clearing
-	bool record_spikes_file = 0; // write file for spike times and neuron positions
-	bool record_highrestraj = 0; // write files for high resolution trajectory spike locations
+	bool record_spikes_file = 1; // write file for spike times and neuron positions
+	bool record_highrestraj = 1; // write files for high resolution trajectory spike locations
 	bool record_gc_voltage = 0; // record GC voltage trace
 	bool record_in_voltage = 0; // record IN voltage trace
 	bool record_pc_voltage = 0; // record PC voltage trace
@@ -99,7 +99,7 @@ struct P {
 
 	// speed
 	bool auto_speed_control = 1;
-	double max_speed = 6.0; // max movement speed
+	double max_speed = 7.0; // max movement speed
 	double min_rand_speed = 0.25; // minimum speed for random speed generator. note: signal applied even when stopped.
 	double max_rand_speed = 1.0; // maximum speed for random speed generator
 

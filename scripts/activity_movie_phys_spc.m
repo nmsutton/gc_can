@@ -9,7 +9,7 @@ clear all;
 clc;
 %input_folder = "pos_track";
 input_folder = "firing_vs_loc";
-time=1008000;%400000;%1200000;%199900; % time steps, use (end frame - 1) = time. 1 = 10ms.
+time=60000;%400000;%1200000;%199900; % time steps, use (end frame - 1) = time. 1 = 10ms.
 hopper_use=0; % enable hopper folder or use local folder
 hopper_run=3;
 %% 

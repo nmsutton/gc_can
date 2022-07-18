@@ -10,10 +10,12 @@ clc;
 input_folder = "pos_track_all";
 %input_folder = "firing_vs_loc";
 %time=89900; % time steps, use (end frame - 1) = time
-time=2400000; % time steps, use (end frame - 1) = time
-hopper_use=1; % enable hopper folder or use local folder
+time=60000; % time steps, use (end frame - 1) = time
+hopper_use=0; % enable hopper folder or use local folder
 hopper_run=4;
 bin_size = 10; % time in ms that bins spiking
+skip_ahead=1;
+time_skip=floor(time/bin_size)-200-1;
 t=[0:(1/bin_size):(time*(1/bin_size))];
 hFigure = figure;
 numberOfFrames = (length(t)-1)*(1/bin_size);
@@ -39,8 +41,12 @@ custom_colormap = load('animal_location_colormap.mat');
 %[A,map,alpha] = imread('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/media/grid.png');
 %A = imread('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/media/grid.png');
 
-%for frameIndex = 1 : numberOfFrames
-for frameIndex = (numberOfFrames-200) : (numberOfFrames - 10)
+if skip_ahead == 0
+    start_time = 1; end_time = numberOfFrames;
+else
+    start_time = (numberOfFrames-200); end_time = numberOfFrames;
+end
+for frameIndex = start_time : end_time
   %filename = strcat('../output/',input_folder,'/firing_t',int2str(frameIndex*bin_size),'.csv');
   %filename = strcat('/mnt/hopper_scratch/gc_sim/1/',input_folder,'/firing_t',int2str(frameIndex*bin_size),'.csv');
   if hopper_use
@@ -73,7 +79,11 @@ for frameIndex = (numberOfFrames-200) : (numberOfFrames - 10)
   %hb = imshow(A);
   %hb.AlphaData = alpha;
   thisFrame = getframe(gcf);
-  myMovie(frameIndex) = thisFrame;
+  if skip_ahead
+    myMovie(frameIndex-time_skip) = thisFrame;
+  else
+    myMovie(frameIndex) = thisFrame;
+  end
 end
 close(hFigure);
 myMovie(1) = []; % remove first frame causing issues due to wrong size

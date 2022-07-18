@@ -79,6 +79,9 @@ void control_speed(double speed, P* p) {
 		p->speed_mult = (0*speed)+0.5;
 		//printf("%f %f\n",p->move_increment,speed);
 	}
+	else {
+
+	}
 }
 
 void EISignal(double angle, CARLsim* sim, P* p);
@@ -87,24 +90,23 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 	/*
 		Run movements through a path.
 	*/
-	double angle = (*moves)[(int) floor(p->mi)];
-
-	general_input(angle, sim, p);
+	double angle;
 
 	if (p->t % p->move_delay == 0) {
 		if (p->mi < num_moves) {
+			angle = (*moves)[(int) floor(p->mi)];
 			control_speed((*speeds)[(int) floor(p->mi)], p);
 			//printf("%f %d\n",(*speeds)[(int) floor(p->mi)]*400,p->mi);
 			EISignal(angle, sim, p);
 			//printf("t: %d; speed: %f; angle: %f\n",p->t,(*speeds)[(int) floor(p->mi)]*200,(*moves)[(int) floor(p->mi)]);
 		}
-		else {
-			/*if (p->t % (50*p->firing_bin) == 0) {
-				p->base_ext = rand_speed(p);
-			}*/
-			EISignal(rand_move(), sim, p);
-		}
+		else {EISignal(rand_move(), sim, p);}
+		general_input(angle, sim, p);
 		p->mi = p->mi + 1;
+	}
+	else {
+		angle = (*moves)[(int) floor(p->mi)];
+		general_input(angle, sim, p);
 	}
 }
 
@@ -231,35 +233,8 @@ void move_animal(CARLsim* sim, P* p, vector<double> *anim_angles, vector<double>
 	//
 	//	Movement data from real animal recordings.
 	//
-	/*
-	#if import_animal_data
-		//#include "data/anim_angles.cpp"
-		//#include "data/anim_speeds.cpp"
-		//#include "data/anim_angles_180815_S1_S2_lightVSdarkness_merged.cpp"
-		//#include "data/anim_speeds_180815_S1_S2_lightVSdarkness_merged.cpp"
-		//#include "data/anim_angles_191108_S1_lightVSdarkness_cells11and12.cpp"
-		//#include "data/anim_speeds_191108_S1_lightVSdarkness_cells11and12.cpp"
-		#include "data/anim_angles_191108_S1_lightVSdarkness_cells11and12_scaleddown.cpp"
-		#include "data/anim_speeds_191108_S1_lightVSdarkness_cells11and12_scaleddown.cpp"
-		//#include "data/test_data_angles.cpp"
-		//#include "data/test_data_speeds.cpp"
-	#endif
-
-	vector<int> speed_times;
-	vector<double> speeds;
-	int num_moves = anim_angles.size();
-	int num_speeds = anim_speeds.size();	
-
-	//for (int i = 0; i < p->animal_timesteps; i++) {
-	for (int i = 0; i < num_speeds; i++) {
-		//speeds.push_back(8.5);
-		speed_times.push_back(i*p->animal_ts);
-		anim_speeds[i] = anim_speeds[i] * 25;//(30/180); // GC layer size conversion factor
-	}
-	*/
 
 	run_path(anim_angles, anim_speeds, &p->speed_times, p->num_moves, p->num_speeds, sim, p);	
-	//run_path(&anim_angles, &speeds, &speed_times, num_moves, num_speeds, sim, p);	
 }
 
 void move_circles(CARLsim* sim, P* p) {
@@ -300,7 +275,7 @@ void animal_data_vars(CARLsim* sim, P* p, vector<double> *anim_angles, vector<do
 
 	for (int i = 0; i < p->num_speeds; i++) {
 		p->speed_times.push_back(i*p->animal_ts);
-		(*anim_speeds)[i] = (*anim_speeds)[i] * 25;//(30/180); // GC layer size conversion factor
+		//(*anim_speeds)[i] = (*anim_speeds)[i] * 60;//(30/180); // GC layer size conversion factor
 	}
 
 	// rotate angles
@@ -312,6 +287,23 @@ void animal_data_vars(CARLsim* sim, P* p, vector<double> *anim_angles, vector<do
 	//}
 }
 
-void move_test(CARLsim* sim, P* p) {
+void move_test(CARLsim* sim, P* p, vector<double> *anim_angles, vector<double> *anim_speeds) {
+	/* test movement path with no neuron signaling simulation */
 
+	double angle;
+	if (p->t % p->move_delay == 0) {
+		if (p->mi < p->num_moves) {
+			angle = (*anim_angles)[(int) floor(p->mi)];
+			//printf("angle:%f\n",angle);
+			//printf("anim_speed:%f\n",p->move_increment);
+			//control_speed(0.0, p);
+			control_speed((*anim_speeds)[(int) floor(p->mi)], p);
+		}
+		set_pos(p, angle);
+		p->mi = p->mi + 1;
+	}
+	else {
+		angle = (*anim_angles)[(int) floor(p->mi)];
+		set_pos(p, angle);
+	}
 }

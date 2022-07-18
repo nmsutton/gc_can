@@ -132,6 +132,8 @@ void set_pos(P *p, double angle) {
 	vector<double> ver_hor = find_ver_hor(angle);
 	p->pos[0] = p->pos[0] + (ver_hor[1] * p->move_increment);
 	p->pos[1] = p->pos[1] + (ver_hor[0] * p->move_increment);
+	//printf("angle: %f %f ver_hor[1]:%f %f\n",angle,p->pos[0],ver_hor[1],p->move_increment);
+	//printf("%f ver_hor[0]:%f %f\n",p->pos[1],ver_hor[1],p->move_increment);
 
 	// wrap around twisted taurus
 	if (p->pos[0] >= p->x_size) {
@@ -311,6 +313,7 @@ void HighResTraj(CARLsim* sim, P* p) {
 
 void RecordLocationPath(P *p, string rec_type) {
 	double pos_i = (floor(p->pos[1]) * p->x_size) + floor(p->pos[0]);
+	//printf("x:%f y:%f\n",p->pos[0],p->pos[1]);
 
 	for (int i = 0; i < p->layer_size; i++) {
 		if (rec_type != "all") {

@@ -2,11 +2,11 @@
 
 % run parameters
 angles_speeds = 0; % load angles and speeds or x,y position coordinates
-use_hopper = 1;
+use_hopper = 0;
 hopper_run = 3;
 restrict_time = 0;%725000/20;%5000; % 0 for no restriction; in 20ms bins
 timestep = 20;
-orig_xy = 1; % use orig x,y animal positions with no wrapping around or carlsim x,y that wraps around a taurus
+orig_xy = 0; % use orig x,y animal positions with no wrapping around or carlsim x,y that wraps around a taurus
 plot_spikes = 1;
 laptop_data = 0;
 
@@ -90,9 +90,10 @@ end
 if plot_spikes
     for i=1:length(spk_t)
         if restrict_time == 0 
-            disp(i)
-            spk_x=[spk_x,x(floor(spk_t(i)/timestep))];
-	        spk_y=[spk_y,y(floor(spk_t(i)/timestep))];
+            %spk_x=[spk_x,x(floor(spk_t(i)/timestep))];
+	        %spk_y=[spk_y,y(floor(spk_t(i)/timestep))];
+            spk_x=[spk_x,x(spk_t(i))];
+	        spk_y=[spk_y,y(spk_t(i))];
         elseif spk_t(i) < restrict_time
 	        spk_x=[spk_x,x(floor(spk_t(i)/timestep))];
 	        spk_y=[spk_y,y(floor(spk_t(i)/timestep))];
