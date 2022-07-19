@@ -13,12 +13,13 @@ import CMBHOME.Utils.*
 use_carlsim_spikes = 1;
 alt_heatmap = 0;
 use_smoothing = 1;
+use_laptop = 1;
 
 if use_carlsim_spikes
 	grid_size = 30; % sqrt of grid size
 	binside = 3;
 	std_smooth_kernel = 3.333;
-    hopper_use=1; % enable hopper folder or use local folder
+    hopper_use=0; % enable hopper folder or use local folder
     hopper_run=3;
     hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/spikes_recorded.csv']);
 else
@@ -40,7 +41,11 @@ if use_carlsim_spikes
     if hopper_use
         carlsim_spikes = readmatrix(hopper_path);
     else
-	    carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv');
+        if use_laptop == 0
+	        carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv');
+        else
+            carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/spikes_recorded.csv');
+        end
     end
 	if alt_heatmap
 		spike_x = carlsim_spikes(1:end,3); % matlab indices are (y,x) not (x,y)
@@ -124,7 +129,7 @@ cb = colorbar;
 if use_carlsim_spikes
 	%caxis([0 160])
     %caxis([0 80])
-    caxis([0 30])
+    %caxis([0 30])
 	caption = sprintf('Physical space grid cell firing, total t = %.0f ms', carlsim_spikes(end,1));
 else
 	caxis([0 25])

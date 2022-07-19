@@ -275,7 +275,7 @@ void animal_data_vars(CARLsim* sim, P* p, vector<double> *anim_angles, vector<do
 
 	for (int i = 0; i < p->num_speeds; i++) {
 		p->speed_times.push_back(i*p->animal_ts);
-		//(*anim_speeds)[i] = (*anim_speeds)[i] * 60;//(30/180); // GC layer size conversion factor
+		(*anim_speeds)[i] = (*anim_speeds)[i] * 0.8;
 	}
 
 	// rotate angles

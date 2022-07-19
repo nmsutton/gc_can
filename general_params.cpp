@@ -63,10 +63,10 @@ struct P {
 	bool print_time = 1; // print time after processing
 	bool print_in_weights = 0;
 	bool print_gc_firing = 0;
-	bool record_fire_vs_pos = 1; // write files for firing vs position plotting
-	bool record_pos_track = 1; // write files for animal position tracking plotting
-	bool record_pos_track_all = 1; // write files for animal positions with no past posit. clearing
-	bool record_spikes_file = 1; // write file for spike times and neuron positions
+	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
+	bool record_pos_track = 0; // write files for animal position tracking plotting
+	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
+	bool record_spikes_file = 0; // write file for spike times and neuron positions
 	bool record_highrestraj = 1; // write files for high resolution trajectory spike locations
 	bool record_gc_voltage = 0; // record GC voltage trace
 	bool record_in_voltage = 0; // record IN voltage trace
@@ -104,7 +104,7 @@ struct P {
 	double max_rand_speed = 1.0; // maximum speed for random speed generator
 
   	// plotting
-	double fvp_act_lvl = 0.5; // amount of activity level added for each visit with firing vs. position plot.
+	double fvp_act_lvl = 1.0;//0.5; // amount of activity level added for each visit with firing vs. position plot.
 	double al_act_lvl = 5.0; // amount of activity level added for each visit with animal location non-all plot.
 	double ala_act_lvl = 0.1; // amount of activity level added for each visit with animal location all plot.
 
@@ -130,7 +130,7 @@ struct P {
 	double bc_sig = 1.0;
 
 	// neuron vs location parameters
-	int selected_neuron = 465;//372;//11;//465;//232;//465;//10;
+	int selected_neuron = 372;//465;//372;//11;//465;//232;//465;//10;
 	double firing_positions[x_size*y_size]; // locations of firing of a neuron
 	double animal_location[x_size*y_size]; // location of animal
 	double animal_location_all[x_size*y_size]; // location of animal

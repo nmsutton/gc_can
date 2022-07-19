@@ -9,7 +9,7 @@ clear all;
 clc;
 %input_folder = "pos_track";
 input_folder = "firing_vs_loc";
-time=60000;%400000;%1200000;%199900; % time steps, use (end frame - 1) = time. 1 = 10ms.
+time=2400000;%400000;%1200000;%199900; % time steps, use (end frame - 1) = time. 1 = 10ms.
 hopper_use=0; % enable hopper folder or use local folder
 hopper_run=3;
 %% 
@@ -57,7 +57,7 @@ for frameIndex = (numberOfFrames-200) : (numberOfFrames - 10)
   ylabel('animal position on y axis')
   shading interp;
   %caxis([0 3.5])
-  caxis([0 40])
+  %caxis([0 40])
   %caxis([0 150])
   cb = colorbar;
   %set(cb, 'ylim', [0 4]); % set colorbar range

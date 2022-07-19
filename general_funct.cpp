@@ -88,12 +88,46 @@ double get_opp_pd(int i, P *p) {
 
 	return pd;
 }
+vector<double> find_ver_hor(P *p, double angle) {
+	//
+	//	Translate angle and distance into proportion of horizonal and 
+	//  vertical movement needed to create movement in the direction of the angle.
+	//  Distance is hypotenuse of right triangle with ver (vertical rise)
+	//  and hor (horizontal run) as sides. Given angle and hypotenuse the
+	//  sides are found using the Pythagorean theorem.
+	//
+	angle = (angle/360)*2*PI; // convert from degrees to radians
+	double* h = &p->move_increment; // hypotenuse of triangle
+	vector<double> ver_hor; double x, y;
 
+	if (angle < (PI/2)) {
+		x = sin(angle) * *h;
+		y = sqrt(pow(*h,2)-pow(x,2));
+	}
+	else if (angle >= (PI/2) and angle < PI) {
+		x = cos(angle-(PI/2)) * *h;
+		y = sqrt(pow(*h,2)-pow(x,2)) * -1;
+	}
+	else if (angle >= PI and angle < (PI*1.5)) {
+		x = cos((PI*1.5)-angle) * *h * -1;
+		y = sqrt(pow(*h,2)-pow(x,2)) * -1;
+	}
+	else if (angle >= (PI*1.5) and angle <= (PI*2)) {
+		x = cos(angle-(PI*1.5)) * *h * -1;
+		y = sqrt(pow(*h,2)-pow(x,2));
+	}
+
+	ver_hor.push_back(y);
+	ver_hor.push_back(x);
+
+	return ver_hor;
+}
+/*
 vector<double> find_ver_hor(double angle) {
-	/*
-		Translate angle into proportion of horizonal and vertical movement
-		needed to create movement in the direction of the angle.
-	*/
+	//
+	//	Translate angle into proportion of horizonal and vertical movement
+	//	needed to create movement in the direction of the angle.
+	//
 	vector<double> ver_hor;
 	double ver, hor, ang_adj;
 	if (angle < 90) {
@@ -124,18 +158,19 @@ vector<double> find_ver_hor(double angle) {
 
 	return ver_hor;
 }
-
+*/
 void set_pos(P *p, double angle) {
 	/*
 		Angle should be between 0-360 degrees.
 	*/
-	vector<double> ver_hor = find_ver_hor(angle);
+	vector<double> ver_hor = find_ver_hor(p, angle);
 	p->pos[0] = p->pos[0] + (ver_hor[1] * p->move_increment);
 	p->pos[1] = p->pos[1] + (ver_hor[0] * p->move_increment);
 	//printf("angle: %f %f ver_hor[1]:%f %f\n",angle,p->pos[0],ver_hor[1],p->move_increment);
 	//printf("%f ver_hor[0]:%f %f\n",p->pos[1],ver_hor[1],p->move_increment);
 
 	// wrap around twisted taurus
+	/*
 	if (p->pos[0] >= p->x_size) {
 		p->pos[0] = p->x_size - p->pos[0];
 	}
@@ -148,6 +183,7 @@ void set_pos(P *p, double angle) {
 	else if (p->pos[1] < 0) {
 		p->pos[1] = p->y_size + p->pos[1];
 	}
+	*/
 
 	if (p->print_move == true) {
 		cout << " move: " << angle << " " << p->pos[0] << " " << p->pos[1] << " t: " << p->t;
@@ -168,12 +204,12 @@ double get_noise(P *p) {
 	return rand_val;
 }
 
-void write_spikes(P* p, int i) {
+void write_sel_nrn_spks(P* p) {
 	/*
-		Write spikes to file
+		Write to file spikes from selected neuron to monitor
 	*/
-	int x = i % p->x_size;
-	int y = i / p->x_size;
+	int x = (int) floor(p->pos[0]);
+	int y = (int) floor(p->pos[1]);
 	p->spikes_output_file << p->t;
 	p->spikes_output_file << ",";
 	p->spikes_output_file << x;
@@ -225,7 +261,7 @@ void find_spikes(P* p, double *firing_matrix, vector<vector<int>> spike_recorder
 	}
 }
 
-void write_firing(double *firing_matrix, string output_folder, P *p) {
+void write_rate_map(double *firing_matrix, string output_folder, P *p) {
 	ofstream output_file;
 	//string filename = "output/" + output_folder + "/firing_t" + int_to_string(p->t) + ".csv";
 	//string filename = "/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/output/" + output_folder + "/firing_t" + int_to_string(p->t) + ".csv";
@@ -261,22 +297,21 @@ void RecordNeuronVsLocation(CARLsim* sim, P* p) {
 		Detect firing of a selected individual neuron and record the animal's
 		position when the firing occured. Amount of firing is also recorded.
 	*/
-	double i_d;
-	int i;
+	if (p->record_fire_vs_pos || p->record_spikes_file) {
+		int pi; // animal position index in GC layer
+		int i = p->selected_neuron; // neuron selected to record
+		int j = p->nrn_spk[i].size(); // all spikes of selected neuron
 
-	//if (p->gc_firing[p->selected_neuron] > 0) {
-	if (p->gc_firing_bin[p->selected_neuron] > 0) {
-		// get index from position
-		//i_d = (p->pos[1] * p->x_size) + p->pos[0];
-		//i = floor(i_d);
-		i = (floor(p->pos[1]) * p->x_size) + floor(p->pos[0]);
-		p->firing_positions[i] = p->firing_positions[i] + p->fvp_act_lvl;		
-		if (p->record_spikes_file) {
-			write_spikes(p, i);
+		if (j > 0 && p->nrn_spk[i][j-1] == p->t) { // get index from position
+			if (p->record_fire_vs_pos) {
+				pi = (floor(p->pos[1]) * p->x_size) + floor(p->pos[0]);
+				p->firing_positions[pi] = p->firing_positions[pi] + p->fvp_act_lvl;		
+			}
+			if (p->record_spikes_file) {write_sel_nrn_spks(p);}
 		}
 	}
 
-	write_firing(p->firing_positions, "firing_vs_loc", p);
+	if (p->record_fire_vs_pos) {write_rate_map(p->firing_positions, "firing_vs_loc", p);}
 }
 
 void HighResTraj(CARLsim* sim, P* p) {
@@ -330,10 +365,10 @@ void RecordLocationPath(P *p, string rec_type) {
 	}
 
 	if (rec_type != "all") {
-		write_firing(p->animal_location, "pos_track", p);
+		write_rate_map(p->animal_location, "pos_track", p);
 	}
 	else {
-		write_firing(p->animal_location_all, "pos_track_all", p);
+		write_rate_map(p->animal_location_all, "pos_track_all", p);
 	}
 }
 
@@ -447,7 +482,7 @@ vector<double> directional_speeds(P* p, double angle, double speed) {
 		This function translates an angle and speed into what speed in 
 		4 compass directions (N,E,S,W) can create that movement.
 	*/
-	vector<double> ver_hor = find_ver_hor(angle);
+	vector<double> ver_hor = find_ver_hor(p, angle);
 	double ver = ver_hor[0];
 	double hor = ver_hor[1];
 	double N,E,S,W;N=1;E=1;S=1;W=1;

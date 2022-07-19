@@ -10,7 +10,7 @@ clc;
 input_folder = "pos_track_all";
 %input_folder = "firing_vs_loc";
 %time=89900; % time steps, use (end frame - 1) = time
-time=60000; % time steps, use (end frame - 1) = time
+time=200000; % time steps, use (end frame - 1) = time
 hopper_use=0; % enable hopper folder or use local folder
 hopper_run=4;
 bin_size = 10; % time in ms that bins spiking
