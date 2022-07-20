@@ -71,10 +71,15 @@ void control_speed(double speed, P* p) {
 
 		references: https://arachnoid.com/polysolve/ (The tool is a JavaScript version of PolySolve)
 		https://www.socscistatistics.com/tests/regression/default.aspx
+		https://www.mathworks.com/matlabcentral/answers/230107-how-to-force-the-intercept-of-a-regression-line-to-zero
+		dlm = fitlm(X,Y,'Intercept',false); This is linear reg with y-intercept forced at 0. This
+		allows position tracker speed scaling without altering trajectory that changing y-int causes.
 	*/
 	//if (speed > p->max_speed) {speed = p->max_speed;} // speed limit
 	if (p->auto_speed_control) {
-		p->move_increment = (0.00096*speed);//(0.00096*speed)-0.00012;
+		//p->move_increment = (0.00096*speed)-0.00012;
+		p->move_increment = (0.00091794*speed);
+		//p->move_increment = (0.00085*speed);
 		p->const_speed = (0.1287571596*speed)-(0.1143442859*pow(speed,2))+(0.03852298736*pow(speed,3))-(0.003102176404*pow(speed,4));
 		p->speed_mult = (0*speed)+0.5;
 		//printf("%f %f\n",p->move_increment,speed);
@@ -115,7 +120,8 @@ void straight_path(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(3.587,p);	
+		//control_speed(3.587,p);	
+		control_speed(5,p);	
 		//control_speed(0.1,p);	
 		//control_speed(0.0,p);	
 		//control_speed(0.0,p);	

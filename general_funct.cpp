@@ -88,17 +88,18 @@ double get_opp_pd(int i, P *p) {
 
 	return pd;
 }
-vector<double> find_ver_hor(P *p, double angle) {
+vector<double> find_ver_hor(P *p, double angle, double* h) {
 	//
 	//	Translate angle and distance into proportion of horizonal and 
 	//  vertical movement needed to create movement in the direction of the angle.
 	//  Distance is hypotenuse of right triangle with ver (vertical rise)
 	//  and hor (horizontal run) as sides. Given angle and hypotenuse the
-	//  sides are found using the Pythagorean theorem.
+	//  sides are found using the Pythagorean theorem. h = hypotenuse of triangle.
+	//  Reference: https://www.mathsisfun.com/algebra/trig-finding-side-right-triangle.html
 	//
 	angle = (angle/360)*2*PI; // convert from degrees to radians
+	//double* h = &p->move_increment;
 	//angle = ((angle+180)/360)*2*PI; // convert from degrees to radians
-	double* h = &p->move_increment; // hypotenuse of triangle
 	vector<double> ver_hor; double x, y;
 
 	if (angle < (PI/2)) {
@@ -164,16 +165,14 @@ void set_pos(P *p, double angle) {
 	/*
 		Angle should be between 0-360 degrees.
 	*/
-	vector<double> ver_hor = find_ver_hor(p, angle);
-	//p->pos[0] = p->pos[0] + (ver_hor[1] * p->move_increment);
-	//p->pos[1] = p->pos[1] + (ver_hor[0] * p->move_increment);
+	vector<double> ver_hor = find_ver_hor(p, angle, &p->move_increment);
 	p->pos[0] = p->pos[0] + ver_hor[1];
 	p->pos[1] = p->pos[1] + ver_hor[0];
 	//printf("angle: %f %f ver_hor[1]:%f %f\n",angle,p->pos[0],ver_hor[1],p->move_increment);
 	//printf("%f ver_hor[0]:%f %f\n",p->pos[1],ver_hor[1],p->move_increment);
 
 	// wrap around twisted taurus
-	/*
+	/*	
 	if (p->pos[0] >= p->x_size) {
 		p->pos[0] = p->x_size - p->pos[0];
 	}
@@ -213,6 +212,8 @@ void write_sel_nrn_spks(P* p) {
 	*/
 	int x = (int) floor(p->pos[0]);
 	int y = (int) floor(p->pos[1]);
+	p->spikes_output_file.close(); // reload file to save intermediate results
+	p->spikes_output_file.open(p->spikes_output_filepath, std::ios_base::app);
 	p->spikes_output_file << p->t;
 	p->spikes_output_file << ",";
 	p->spikes_output_file << x;
@@ -308,7 +309,7 @@ void RecordNeuronVsLocation(CARLsim* sim, P* p) {
 		if (j > 0 && p->nrn_spk[i][j-1] == p->t) { // get index from position
 			if (p->record_fire_vs_pos) {
 				pi = (floor(p->pos[1]) * p->x_size) + floor(p->pos[0]);
-				p->firing_positions[pi] = p->firing_positions[pi] + p->fvp_act_lvl;		
+				p->firing_positions[pi] = p->firing_positions[pi] + 1;		
 			}
 			if (p->record_spikes_file) {write_sel_nrn_spks(p);}
 		}
@@ -485,30 +486,26 @@ vector<double> directional_speeds(P* p, double angle, double speed) {
 		This function translates an angle and speed into what speed in 
 		4 compass directions (N,E,S,W) can create that movement.
 	*/
-	vector<double> ver_hor = find_ver_hor(p, angle);
-	double ver = ver_hor[0];
-	double hor = ver_hor[1];
-	double N,E,S,W;N=1;E=1;S=1;W=1;
 	double speed_adj = pow(speed,p->speed_mult);
 	if (speed == 0 && p->speed_mult == 0) {
 		speed_adj = 0; // avoid pow(0,0) when result of 0 is wanted
 	}
+	vector<double> ver_hor = find_ver_hor(p, angle, &speed_adj);
+	double ver = ver_hor[0];
+	double hor = ver_hor[1];
+	double N,E,S,W;N=1;E=1;S=1;W=1;
 
 	if (ver >= 0) {
-		N += abs(ver)*speed_adj;
-		//N += pow(abs(ver),p->speed_mult)*speed;
+		N += abs(ver);
 	}
 	else {
-		S += abs(ver)*speed_adj;
-		//S += pow(abs(ver),p->speed_mult)*speed;
+		S += abs(ver);
 	}
 	if (hor <= 0) {
-		E += abs(hor)*speed_adj;
-		//E += pow(abs(hor),p->speed_mult)*speed;
+		E += abs(hor);
 	}
 	else {
-		W += abs(hor)*speed_adj;
-		//W += pow(abs(hor),p->speed_mult)*speed;
+		W += abs(hor);
 	}
 	vector<double> speeds = {N,E,S,W};
 	//vector<double> speeds = {E,N,W,S};
