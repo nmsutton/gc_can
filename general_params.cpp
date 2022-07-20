@@ -63,10 +63,10 @@ struct P {
 	bool print_time = 1; // print time after processing
 	bool print_in_weights = 0;
 	bool print_gc_firing = 0;
-	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
+	bool record_fire_vs_pos = 1; // write files for firing vs position plotting
 	bool record_pos_track = 0; // write files for animal position tracking plotting
 	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
-	bool record_spikes_file = 0; // write file for spike times and neuron positions
+	bool record_spikes_file = 1; // write file for spike times and neuron positions
 	bool record_highrestraj = 1; // write files for high resolution trajectory spike locations
 	bool record_gc_voltage = 0; // record GC voltage trace
 	bool record_in_voltage = 0; // record IN voltage trace
@@ -92,7 +92,7 @@ struct P {
 	double dir_init_multi = 100000;//100000000;//10000;//1;//10000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
 	double dist_thresh = 5; // distance threshold for only local connections
-	double move_increment = 0.0057;//0.0067;//0.002;//0.01;//0.005;//0.2;//0.05;//0.01;//0.266;//0.1;//0.03;//0.05;//0.12;//0.133;//0.664;//0.55;//0.5312;//0.664;//0.665;//0.658;//0.64;//0.658;//0.1;//0.5;//0.2634;//0.325;//0.65; // amount to move in position each move command
+	double move_increment = 0.0000;//0.0057;//0.0067;//0.002;//0.01;//0.005;//0.2;//0.05;//0.01;//0.266;//0.1;//0.03;//0.05;//0.12;//0.133;//0.664;//0.55;//0.5312;//0.664;//0.665;//0.658;//0.64;//0.658;//0.1;//0.5;//0.2634;//0.325;//0.65; // amount to move in position each move command
 	vector<float> ext_dir;
 	int conn_offset = 0; // offset in neuron positions for connections
 	int conn_dist = 3; // distance between neurons in connections

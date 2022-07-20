@@ -72,9 +72,9 @@ void control_speed(double speed, P* p) {
 		references: https://arachnoid.com/polysolve/ (The tool is a JavaScript version of PolySolve)
 		https://www.socscistatistics.com/tests/regression/default.aspx
 	*/
-	if (speed > p->max_speed) {speed = p->max_speed;} // speed limit
+	//if (speed > p->max_speed) {speed = p->max_speed;} // speed limit
 	if (p->auto_speed_control) {
-		p->move_increment = (0.00096*speed)-0.00012;
+		p->move_increment = (0.00096*speed);//(0.00096*speed)-0.00012;
 		p->const_speed = (0.1287571596*speed)-(0.1143442859*pow(speed,2))+(0.03852298736*pow(speed,3))-(0.003102176404*pow(speed,4));
 		p->speed_mult = (0*speed)+0.5;
 		//printf("%f %f\n",p->move_increment,speed);
@@ -92,17 +92,16 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 	*/
 	double angle;
 
-	if (p->t % p->move_delay == 0) {
+	if (p->t % p->move_delay == 0 && p->t != 0) {
+		p->mi = p->mi + 1;
 		if (p->mi < num_moves) {
 			angle = (*moves)[(int) floor(p->mi)];
 			control_speed((*speeds)[(int) floor(p->mi)], p);
-			//printf("%f %d\n",(*speeds)[(int) floor(p->mi)]*400,p->mi);
 			EISignal(angle, sim, p);
-			//printf("t: %d; speed: %f; angle: %f\n",p->t,(*speeds)[(int) floor(p->mi)]*200,(*moves)[(int) floor(p->mi)]);
+			//printf("t: %d; speed: %f; angle: %f\n",p->t,(*speeds)[(int) floor(p->mi)],(*moves)[(int) floor(p->mi)]);
 		}
 		else {EISignal(rand_move(), sim, p);}
 		general_input(angle, sim, p);
-		p->mi = p->mi + 1;
 	}
 	else {
 		angle = (*moves)[(int) floor(p->mi)];
@@ -275,7 +274,7 @@ void animal_data_vars(CARLsim* sim, P* p, vector<double> *anim_angles, vector<do
 
 	for (int i = 0; i < p->num_speeds; i++) {
 		p->speed_times.push_back(i*p->animal_ts);
-		(*anim_speeds)[i] = (*anim_speeds)[i] * 0.8;
+		//(*anim_speeds)[i] = (*anim_speeds)[i] * 2;
 	}
 
 	// rotate angles
@@ -291,16 +290,14 @@ void move_test(CARLsim* sim, P* p, vector<double> *anim_angles, vector<double> *
 	/* test movement path with no neuron signaling simulation */
 
 	double angle;
-	if (p->t % p->move_delay == 0) {
+	if (p->t % p->move_delay == 0 && p->t != 0) {
+		p->mi = p->mi + 1;
 		if (p->mi < p->num_moves) {
 			angle = (*anim_angles)[(int) floor(p->mi)];
-			//printf("angle:%f\n",angle);
-			//printf("anim_speed:%f\n",p->move_increment);
-			//control_speed(0.0, p);
 			control_speed((*anim_speeds)[(int) floor(p->mi)], p);
+			//printf("t: %d; speed: %f; angle: %f\n",p->t,(*anim_speeds)[(int) floor(p->mi)],(*anim_angles)[(int) floor(p->mi)]);
 		}
 		set_pos(p, angle);
-		p->mi = p->mi + 1;
 	}
 	else {
 		angle = (*anim_angles)[(int) floor(p->mi)];

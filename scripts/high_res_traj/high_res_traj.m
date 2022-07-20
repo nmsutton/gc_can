@@ -7,7 +7,7 @@ output_XsYs_file = 0;
 create_plot = 1;
 use_hopper = 0;
 hopper_run = 3;
-restrict_time = 500000;%2400000;%725000/20;%5000; % 0 for no restriction; in 20ms bins
+restrict_time = 0;%725000/20;%5000; % 0 for no restriction; in 20ms bins
 timestep = 20;
 orig_xy = 0; % use orig x,y animal positions with no wrapping around or carlsim x,y that wraps around a taurus
 plot_spikes = 0;
@@ -74,7 +74,7 @@ if plot_spikes
         end
     end
 end
-
+%{
 if angles_speeds == 1 && preloaded_XsYs ~= 1
     x = 0; y = 0;
     %x = pos(1,1); % use pos from reformatted positions file used in moves_analysis.m
@@ -86,6 +86,28 @@ if angles_speeds == 1 && preloaded_XsYs ~= 1
 	    a=a/360*pi*2;
         x=cos(a)*s+x;
 	    y=sin(a)*s+y;
+	    %fprintf("%f %f\n",x2,y2);
+	    Xs=[Xs;x];
+	    Ys=[Ys;y];
+        if mod(i,10000)==0
+            fprintf("i:%d %.1f%% completed\n",i,i/length(animal_speeds)*100);
+        end
+    end
+end
+%}
+
+if angles_speeds == 1 && preloaded_XsYs ~= 1
+    x = 0; y = 0;
+    %x = pos(1,1); % use pos from reformatted positions file used in moves_analysis.m
+    %y = pos(2,1);
+    for i=1:length(animal_speeds)
+	    t=i*timestep; % in ms
+	    a=animal_angles(i);
+	    s=animal_speeds(i);
+	    a=a/360*pi*2;
+        [hor,ver]=hor_ver(a, s);
+        x=x+hor;
+	    y=y+ver;
 	    %fprintf("%f %f\n",x2,y2);
 	    Xs=[Xs;x];
 	    Ys=[Ys;y];
@@ -152,4 +174,21 @@ if create_plot
     cd '/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/holger_data/nate_scripts'
     plot_trajectory_custom
     cd '/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/high_res_traj/'
+end
+
+function [hor,ver]=hor_ver(angle, speed)
+    h = speed;
+    if (angle < (pi/2)) 
+		hor = sin(angle) * h;
+		ver = sqrt(h^2-hor^2);
+    elseif (angle >= (pi/2) && angle < pi) 
+		hor = cos(angle-(pi/2)) * h;
+		ver = sqrt(h^2-hor^2) * -1;
+    elseif (angle >= pi && angle < (pi*1.5)) 
+		hor = cos((pi*1.5)-angle) * h * -1;
+		ver = sqrt(h^2-hor^2) * -1;
+    elseif (angle >= (pi*1.5) && angle <= (pi*2)) 
+		hor = cos(angle-(pi*1.5)) * h * -1;
+		ver = sqrt(h^2-hor^2);
+    end
 end

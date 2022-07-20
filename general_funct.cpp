@@ -97,6 +97,7 @@ vector<double> find_ver_hor(P *p, double angle) {
 	//  sides are found using the Pythagorean theorem.
 	//
 	angle = (angle/360)*2*PI; // convert from degrees to radians
+	//angle = ((angle+180)/360)*2*PI; // convert from degrees to radians
 	double* h = &p->move_increment; // hypotenuse of triangle
 	vector<double> ver_hor; double x, y;
 
@@ -164,8 +165,10 @@ void set_pos(P *p, double angle) {
 		Angle should be between 0-360 degrees.
 	*/
 	vector<double> ver_hor = find_ver_hor(p, angle);
-	p->pos[0] = p->pos[0] + (ver_hor[1] * p->move_increment);
-	p->pos[1] = p->pos[1] + (ver_hor[0] * p->move_increment);
+	//p->pos[0] = p->pos[0] + (ver_hor[1] * p->move_increment);
+	//p->pos[1] = p->pos[1] + (ver_hor[0] * p->move_increment);
+	p->pos[0] = p->pos[0] + ver_hor[1];
+	p->pos[1] = p->pos[1] + ver_hor[0];
 	//printf("angle: %f %f ver_hor[1]:%f %f\n",angle,p->pos[0],ver_hor[1],p->move_increment);
 	//printf("%f ver_hor[0]:%f %f\n",p->pos[1],ver_hor[1],p->move_increment);
 

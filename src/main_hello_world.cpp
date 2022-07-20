@@ -76,6 +76,8 @@ using namespace std;
 //#include "boundary_cells.cpp"
 
 #if import_animal_data
+	//#include "../data/anim_angles_191108_S1_lightVSdarkness_cells11and12.cpp"
+	//#include "../data/anim_speeds_191108_S1_lightVSdarkness_cells11and12.cpp"
 	//#include "../data/anim_angles_191108_S1_lightVSdarkness_cells11and12_scaleddown.cpp"
 	//#include "../data/anim_speeds_191108_S1_lightVSdarkness_cells11and12_scaleddown.cpp"
 	//#include "../data/test_data_angles.cpp"
@@ -152,16 +154,16 @@ int main() {
 			setExtDir(&p,270,0.04);
 			sim.setExternalCurrent(EC_LI_II_Multipolar_Pyramidal, p.ext_dir);
 		}
-		//sim.runNetwork(0,1,false); // run for 1 ms, don't generate run stats
+		sim.runNetwork(0,1,false); // run for 1 ms, don't generate run stats
 		SMexc->stopRecording();
 		p.nrn_spk = SMexc->getSpikeVector2D(); // store firing in vector
 		SMexc->startRecording();
 		//straight_path(&sim, &p); // process movement
 		//move_path3(&sim, &p);
-		//move_animal(&sim, &p, &anim_angles, &anim_speeds);
+		move_animal(&sim, &p, &anim_angles, &anim_speeds);
 		//move_circles(&sim, &p);
 		//rand_path(&sim, &p);
-		move_test(&sim, &p, &anim_angles, &anim_speeds);
+		//move_test(&sim, &p, &anim_angles, &anim_speeds);
 		PrintWeightsAndFiring(&p);
 		RecordNeuronVsLocation(&sim, &p);
 		if (p.record_highrestraj) {HighResTraj(&sim, &p);}
