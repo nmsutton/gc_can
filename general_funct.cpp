@@ -172,7 +172,6 @@ void set_pos(P *p, double angle) {
 	//printf("%f ver_hor[0]:%f %f\n",p->pos[1],ver_hor[1],p->move_increment);
 
 	// wrap around twisted taurus
-	/*	
 	if (p->pos[0] >= p->x_size) {
 		p->pos[0] = p->x_size - p->pos[0];
 	}
@@ -185,7 +184,6 @@ void set_pos(P *p, double angle) {
 	else if (p->pos[1] < 0) {
 		p->pos[1] = p->y_size + p->pos[1];
 	}
-	*/
 
 	if (p->print_move == true) {
 		cout << " move: " << angle << " " << p->pos[0] << " " << p->pos[1] << " t: " << p->t;
