@@ -63,9 +63,9 @@ struct P {
 	bool print_time = 1; // print time after processing
 	bool print_in_weights = 0;
 	bool print_gc_firing = 0;
-	bool record_fire_vs_pos = 1; // write files for firing vs position plotting
+	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
 	bool record_pos_track = 0; // write files for animal position tracking plotting
-	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
+	bool record_pos_track_all = 1; // write files for animal positions with no past posit. clearing
 	bool record_spikes_file = 1; // write file for spike times and neuron positions
 	bool record_highrestraj = 1; // write files for high resolution trajectory spike locations
 	bool record_gc_voltage = 0; // record GC voltage trace

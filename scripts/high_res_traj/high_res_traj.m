@@ -4,18 +4,22 @@
 angles_speeds = 0; % load angles and speeds or x,y position coordinates
 preloaded_XsYs = 0; % use prior loaded Ys and Xs instead of reading them from files
 output_XsYs_file = 0;
+output_spikes_file = 1; % output file that can be used in rate map plot
 create_plot = 1;
 use_hopper = 0;
 hopper_run = 3;
-restrict_time = 1980000;%725000/20;%5000; % 0 for no restriction; in 20ms bins
+restrict_time = 0;%725000/20;%5000; % 0 for no restriction; in 20ms bins
 timestep = 20;
 orig_xy = 0; % use orig x,y animal positions with no wrapping around or carlsim x,y that wraps around a taurus
 plot_spikes = 1;
 laptop_data = 1;
-use_unwrapped_data = 0;
+use_unwrapped_data = 1;
 
 pi=3.1415926535897932384626433832795028841971;
 lines = [];
+if output_spikes_file
+    recspk_file = fopen('highres_spikes.csv','w');
+end
 if output_XsYs_file
     Xs_file = fopen('anim_trajx.csv','w');
     Ys_file = fopen('anim_trajy.csv','w');
@@ -139,7 +143,7 @@ else
     y = Ys;
 end
 
-if plot_spikes
+if plot_spikes || output_spikes_file
     for i=1:length(spk_t)
         if restrict_time == 0 
             if orig_xy || angles_speeds
@@ -158,6 +162,7 @@ if plot_spikes
 	            spk_y=[spk_y,y(spk_t(i))];
             end
         end
+        fprintf(recspk_file,"%f,%f,%f\n",spk_t(i),spk_x(i),spk_y(i));
     end
 end
 
@@ -171,6 +176,9 @@ if output_XsYs_file
     end
     fclose(Xs_file);
     fclose(Ys_file);   
+end
+if output_spikes_file
+    fclose(recspk_file);
 end
 
 % plot
