@@ -55,6 +55,7 @@
 
 // include CARLsim user interface
 #include <carlsim.h>
+#include <neuron_monitor_core.h>
 #include <vector>
 #include <spike_monitor.h>
 #include <math.h> // for sqrt() and other functions
@@ -75,15 +76,14 @@ using namespace std;
 #include "../move_path.cpp"
 //#include "boundary_cells.cpp"
 
-#if import_animal_data
-	//#include "../data/anim_angles_191108_S1_lightVSdarkness_cells11and12.cpp"
-	//#include "../data/anim_speeds_191108_S1_lightVSdarkness_cells11and12.cpp"
-	//#include "../data/anim_angles_191108_S1_lightVSdarkness_cells11and12_scaleddown.cpp"
-	//#include "../data/anim_speeds_191108_S1_lightVSdarkness_cells11and12_scaleddown.cpp"
-	//#include "../data/test_data_angles.cpp"
-	//#include "../data/test_data_speeds.cpp"
-	#include "../data/anim_angles_limited.cpp"
-	#include "../data/anim_speeds_limited.cpp"
+#if hopper_run
+#else
+	#if import_animal_data
+		//#include "../data/anim_angles_191108_S1_lightVSdarkness_cells11and12.cpp"
+		//#include "../data/anim_speeds_191108_S1_lightVSdarkness_cells11and12.cpp"
+		#include "../data/anim_angles.cpp"
+		#include "../data/anim_speeds.cpp"
+	#endif
 #endif
 
 int main() {
@@ -110,6 +110,12 @@ int main() {
 	vector<float> temp_vector(p.layer_size); // set vector size
 	p.ext_dir = temp_vector;
 	p.pc_activity = temp_vector;
+	#if hopper_run
+		#if import_animal_data
+			vector<double> anim_angles = ParseCSV(p.anim_angles_csv);
+			vector<double> anim_speeds = ParseCSV(p.anim_speeds_csv);
+		#endif
+	#endif
 
 	#include "../generate_config_state.cpp" // include file that contains generation of groups and their properties
 
@@ -130,9 +136,6 @@ int main() {
 
 	// ---------------- RUN STATE -------------------
 	SMexc->startRecording();
-	/*if (p.record_gc_voltage) {nrn_mon->startRecording();}
-	if (p.record_in_voltage) {nrn_mon2->startRecording();}
-	if (p.record_pc_voltage) {nrn_mon3->startRecording();}*/
 	SMexc->setPersistentData(true); // keep prior firing when recording is stopped and restarted
 	SMinh->startRecording();
 	SMinh->setPersistentData(true);
@@ -154,16 +157,18 @@ int main() {
 			setExtDir(&p,270,0.04);
 			sim.setExternalCurrent(EC_LI_II_Multipolar_Pyramidal, p.ext_dir);
 		}
-		sim.runNetwork(0,1,false); // run for 1 ms, don't generate run stats
+		if (p.move_test==0) {sim.runNetwork(0,1,false);} // run for 1 ms, don't generate run stats
 		SMexc->stopRecording();
 		p.nrn_spk = SMexc->getSpikeVector2D(); // store firing in vector
 		SMexc->startRecording();
-		//straight_path(&sim, &p); // process movement
-		//move_path3(&sim, &p);
-		move_animal(&sim, &p, &anim_angles, &anim_speeds);
-		//move_circles(&sim, &p);
-		//rand_path(&sim, &p);
-		//move_test(&sim, &p, &anim_angles, &anim_speeds);
+		if (p.move_test==0) {
+			straight_path(&sim, &p); // process movement
+			//move_path3(&sim, &p);
+			//move_animal(&sim, &p, &anim_angles, &anim_speeds);
+			//move_circles(&sim, &p);
+			//rand_path(&sim, &p);
+		}
+		if (p.move_test==1) {move_test(&sim, &p, &anim_angles, &anim_speeds);}
 		PrintWeightsAndFiring(&p);
 		RecordNeuronVsLocation(&sim, &p);
 		if (p.record_highrestraj) {HighResTraj(&sim, &p);}
@@ -174,46 +179,10 @@ int main() {
 	SMexc->stopRecording();
 	SMext->stopRecording();
 	SMinh->stopRecording();
-	/*if (p.record_gc_voltage) {nrn_mon->stopRecording();}
-	if (p.record_in_voltage) {nrn_mon2->stopRecording();}
-	if (p.record_pc_voltage) {nrn_mon3->stopRecording();}*/
 	printf("\n\n");
 	SMexc->print(false); // print firing stats (but not the exact spike times)
 	SMext->print(false);
 	SMinh->print(false);
-
-  // save voltage data
-  /*if (p.record_gc_voltage) {
-  	ofstream gc_volt_out_file;
-  	gc_volt_out_file.open(p.gc_volt_out_path);
-	  vector<vector<float>> v_vec = nrn_mon->getVectorV(); // select spk mon
-	  for (int i=0; i<p.sim_time; i++) {
-	      gc_volt_out_file << v_vec[p.gc_volt_neuron][i];
-	      if (i != (p.sim_time-1)) {gc_volt_out_file << ",";}
-	  }
-	  gc_volt_out_file.close();
-	}
-  if (p.record_in_voltage) {
-  	ofstream in_volt_out_file;
-  	in_volt_out_file.open(p.in_volt_out_path);
-	  vector<vector<float>> v_vec2 = nrn_mon2->getVectorV(); // select spk mon
-	  for (int i=0; i<p.sim_time; i++) {
-	      in_volt_out_file << v_vec2[p.in_volt_neuron][i];
-	      if (i != (p.sim_time-1)) {in_volt_out_file << ",";}
-	  }
-	  in_volt_out_file.close();
-	}
-  if (p.record_pc_voltage) {
-  	ofstream pc_volt_out_file;
-  	pc_volt_out_file.open(p.pc_volt_out_path);
-	  vector<vector<float>> v_vec3 = nrn_mon3->getVectorV(); // select spk mon
-	  for (int i=0; i<p.sim_time; i++) {
-	      pc_volt_out_file << v_vec3[p.pc_volt_neuron][i];
-	      if (i != (p.sim_time-1)) {pc_volt_out_file << ",";}
-	  }
-	  pc_volt_out_file.close();
-	}*/
-
 	if (p.record_spikes_file) {p.spikes_output_file.close();}
 	if (p.record_highrestraj) {p.highres_trajx_file.close();}
 	if (p.record_highrestraj) {p.highres_trajy_file.close();}

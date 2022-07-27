@@ -37,7 +37,6 @@ else
 	continuize_epochs = 1;
 	std_smooth_kernel = 3;
 end
-heat_map = zeros(1,grid_size*grid_size);
 
 if use_carlsim_spikes
     if hopper_use
@@ -66,11 +65,19 @@ if use_carlsim_spikes
 	if max(spike_x)>grid_size || max(spike_y)>grid_size
 		if max(spike_x)>max(spike_y)
 			grid_size=ceil(max(spike_x));
+            if floor(min(spike_x)) < 0
+                grid_size=ceil(max(spike_x))-floor(min(spike_x));
+            end
 		else
 			grid_size=ceil(max(spike_y));
+            if floor(min(spike_y)) < 0
+                grid_size=ceil(max(spike_y))-floor(min(spike_y));
+            end
 		end
-	end
+    end
+    % shift 
 end
+heat_map = zeros(1,grid_size*grid_size);
 
 if alt_heatmap
 	if use_carlsim_spikes

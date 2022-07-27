@@ -1,5 +1,5 @@
 %
-% create autocorrelation plot
+% Create autocorrelation plot
 %
 
 addpath /comp_neuro/Software/Github/CMBHOME_github/

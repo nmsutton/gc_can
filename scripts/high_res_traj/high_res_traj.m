@@ -8,7 +8,7 @@ output_spikes_file = 1; % output file that can be used in rate map plot
 create_plot = 1;
 use_hopper = 0;
 hopper_run = 3;
-restrict_time = 0;%725000/20;%5000; % 0 for no restriction; in 20ms bins
+restrict_time = 0;%2400000;%725000/20;%5000; % 0 for no restriction; in 20ms bins
 timestep = 20;
 orig_xy = 0; % use orig x,y animal positions with no wrapping around or carlsim x,y that wraps around a taurus
 plot_spikes = 1;
@@ -40,10 +40,13 @@ if angles_speeds
 else
     if orig_xy == 0
         if laptop_data == 0
-            Xs = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/highres_pos_x.csv');
-            Ys = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/highres_pos_y.csv');
-            %Xs = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/Xs_unwrapped.csv');
-            %Ys = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/Ys_unwrapped.csv');
+            if use_unwrapped_data == 0
+                Xs = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/highres_pos_x.csv');
+                Ys = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/highres_pos_y.csv');
+            else
+                Xs = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/Xs_unwrapped.csv');
+                Ys = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/Ys_unwrapped.csv');
+            end
         else
             if use_unwrapped_data == 0
                 Xs = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/highres_pos_x.csv');
@@ -76,9 +79,9 @@ if plot_spikes
         %spk_x = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/highres_trajx.csv');
         %spk_y = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/highres_trajy.csv');
         if laptop_data == 0
-            spk_t = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/highres_trajt.csv');
+            spk_t = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv');
         else
-            spk_t = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/highres_trajt.csv');
+            spk_t = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/spikes_recorded.csv');
         end
     end
 end
@@ -153,6 +156,9 @@ if plot_spikes || output_spikes_file
                 spk_x=[spk_x,x(spk_t(i))];
 	            spk_y=[spk_y,y(spk_t(i))];
             end
+            if output_spikes_file
+                fprintf(recspk_file,"%f,%f,%f\n",spk_t(i),spk_x(i),spk_y(i));
+            end
         elseif spk_t(i) < restrict_time
             if orig_xy || angles_speeds
 	            spk_x=[spk_x,x(floor(spk_t(i)/timestep))];
@@ -161,8 +167,10 @@ if plot_spikes || output_spikes_file
                 spk_x=[spk_x,x(spk_t(i))];
 	            spk_y=[spk_y,y(spk_t(i))];
             end
+            if output_spikes_file
+                fprintf(recspk_file,"%f,%f,%f\n",spk_t(i),spk_x(i),spk_y(i));
+            end
         end
-        fprintf(recspk_file,"%f,%f,%f\n",spk_t(i),spk_x(i),spk_y(i));
     end
 end
 

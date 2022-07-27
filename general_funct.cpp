@@ -1,5 +1,7 @@
 /*
 	General functions
+
+	Reference: https://stackoverflow.com/questions/34218040/how-to-read-a-csv-file-data-into-an-array
 */
 
 string to_string(double x);
@@ -208,15 +210,15 @@ void write_sel_nrn_spks(P* p) {
 	/*
 		Write to file spikes from selected neuron to monitor
 	*/
-	int x = (int) floor(p->pos[0]);
-	int y = (int) floor(p->pos[1]);
+	//int x = (int) floor(p->pos[0]);
+	//int y = (int) floor(p->pos[1]);
 	p->spikes_output_file.close(); // reload file to save intermediate results
 	p->spikes_output_file.open(p->spikes_output_filepath, std::ios_base::app);
 	p->spikes_output_file << p->t;
-	p->spikes_output_file << ",";
-	p->spikes_output_file << x;
-	p->spikes_output_file << ",";
-	p->spikes_output_file << y;
+	//p->spikes_output_file << ",";
+	//p->spikes_output_file << x;
+	//p->spikes_output_file << ",";
+	//p->spikes_output_file << y;
 	p->spikes_output_file << "\n";
 }
 
@@ -327,14 +329,14 @@ void HighResTraj(CARLsim* sim, P* p) {
 	int j = p->nrn_spk[i].size();
 	if (j > 0 && p->nrn_spk[i][j-1] == p->t) {
 		// write spike x,y
-		p->highres_trajx_file << p->pos[0];
-		p->highres_trajx_file << "\n";
-		p->highres_trajy_file << p->pos[1];
-		p->highres_trajy_file << "\n";
+		//p->highres_trajx_file << p->pos[0];
+		//p->highres_trajx_file << "\n";
+		//p->highres_trajy_file << p->pos[1];
+		//p->highres_trajy_file << "\n";
 		//p->highres_trajt_file.close(); // reload file to save intermediate results
 		//p->highres_trajt_file.open(p->highres_trajt_filepath, std::ios_base::app);
-		p->highres_trajt_file << p->t;
-		p->highres_trajt_file << "\n";
+		//p->highres_trajt_file << p->t;
+		//p->highres_trajt_file << "\n";
 		//printf("%d %d\n",p->t,p->nrn_spk[i][j-1]);
 	}
 	// write general position data
@@ -484,8 +486,8 @@ vector<double> directional_speeds(P* p, double angle, double speed) {
 		This function translates an angle and speed into what speed in 
 		4 compass directions (N,E,S,W) can create that movement.
 	*/
-	double speed_adj = pow(speed,p->speed_mult);
-	if (speed == 0 && p->speed_mult == 0) {
+	double speed_adj = speed;
+	if (speed == 0) {
 		speed_adj = 0; // avoid pow(0,0) when result of 0 is wanted
 	}
 	vector<double> ver_hor = find_ver_hor(p, angle, &speed_adj);
@@ -558,7 +560,18 @@ void EISignal(double angle, CARLsim* sim, P* p) {
 
 	// set velocity of movement
 	if (p->t > 2) {
-		setExtDir(p,angle,p->const_speed);//0.20);
+		setExtDir(p,angle,p->speed_signaling);//0.20);
 		sim->setExternalCurrent(0, p->ext_dir);
 	}	
 }
+
+vector<double> ParseCSV(string filepath)
+{
+    ifstream data(filepath);
+    string line;
+    vector<double> parsedRow;
+	if(!data.is_open()) {cout << "Failed to open file" << endl;}
+    while(getline(data,line)) {parsedRow.push_back(stod(line));}
+
+    return parsedRow;
+};

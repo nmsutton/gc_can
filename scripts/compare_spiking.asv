@@ -1,0 +1,19 @@
+%
+% Compare simulated spike times to real spike times
+%
+
+animal_spikes = spikes(3,:)';
+sim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/spikes_recorded.csv');
+time_limit_start = 0; % time limit start in ms
+time_limit_end = 50000; 
+limit1_s = find()
+plot_data1 = animal_spikes(1:time_limit)*1000;
+plot_data1(:,2)=ones(1,time_limit);
+plot_data2 = sim_spikes(1:time_limit);
+plot_data2(:,2)=ones(1,time_limit)*2;
+plot_data_comb = [plot_data1;plot_data2];
+
+scatter(plot_data_comb(:,1),plot_data_comb(:,2));
+a = axis;
+a(3) = 0; a(4) = 3;
+axis(a);

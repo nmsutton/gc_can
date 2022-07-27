@@ -17,9 +17,12 @@ int CA1_Pyramidal=sim.createGroup("CA1_Pyramidal",
 sim.setNeuronParameters(EC_LI_II_Multipolar_Pyramidal, 204.0f, 0.0f, 0.37f, 0.0f, -70.53f, 0.0f, -39.99f, 
 								0.0f, 0.001f, 0.0f, 0.01f, 0.0f, 3.96f, 0.0f, -54.95f, 0.0f, 
 								7.0f, 0.0f, 1); // C,k,vr,vt,a,b,vpeak,c,d
+/*sim.setNeuronParameters(MEC_LII_Stellate, 118.0f, 0.0f, 0.98f, 0.0f, -58.53f, 0.0f, -43.52f, 
+                                0.0f, 0.004f, 0.0f, 7.0f, 0.0f, 7.85f, 0.0f, -52.68f, 0.0f, 
+                                65.0f, 0.0f, 1);*/
 sim.setNeuronParameters(MEC_LII_Stellate, 118.0f, 0.0f, 0.98f, 0.0f, -58.53f, 0.0f, -43.52f, 
                                 0.0f, 0.004f, 0.0f, 7.0f, 0.0f, 7.85f, 0.0f, -52.68f, 0.0f, 
-                                65.0f, 0.0f, 1);
+                                119.0f, 0.0f, 1);
 sim.setNeuronParameters(EC_LII_Axo_Axonic, 20.0f, 0.0f,  1.0f, 0.0f, -55.0f, 0.0f, 
 								-40.0f, 0.0f, 0.15f, 0.0f, 8.0f, 0.0f, 25.0f, 0.0f, 
 								-55.0f, 0.0f, 200.0f, 0.0f, 1); 
@@ -130,14 +133,8 @@ sim.setSTP(CA1_Pyramidal, MEC_LII_Stellate, true, STPu(0.1231, 0.0f),
                                      STPtrGABAb(0.0f, 0.0f));
 
 /* neuron monitors */
-//NeuronMonitor* nrn_mon;
-//NeuronMonitor* nrn_mon = sim.setNeuronMonitor(gexc,"DEFAULT");
-//nrn_mon->setPersistentData(true);
-//NeuronMonitor* nrn_mon2;
-//NeuronMonitor* nrn_mon2 = sim.setNeuronMonitor(ginh,"DEFAULT");
-//nrn_mon2->setPersistentData(true);
-//NeuronMonitor* nrn_mon3;
-//NeuronMonitor* nrn_mon3 = sim.setNeuronMonitor(gpcs,"DEFAULT");
-//nrn_mon3->setPersistentData(true);
-
-//sim.setNeuronMonitor(MEC_LII_Stellate, "DEFAULT");
+#if monitor_voltage
+    NeuronMonitor* nrn_mon = sim.setNeuronMonitor(MEC_LII_Stellate,"DEFAULT");
+    NeuronMonitor* nrn_mon2 = sim.setNeuronMonitor(MEC_LII_Basket,"DEFAULT");
+    NeuronMonitor* nrn_mon3 = sim.setNeuronMonitor(CA1_Pyramidal,"DEFAULT");
+#endif

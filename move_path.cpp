@@ -75,17 +75,12 @@ void control_speed(double speed, P* p) {
 		dlm = fitlm(X,Y,'Intercept',false); This is linear reg with y-intercept forced at 0. This
 		allows position tracker speed scaling without altering trajectory that changing y-int causes.
 	*/
-	//if (speed > p->max_speed) {speed = p->max_speed;} // speed limit
+	speed = speed * p->speed_conversion;
+	if (p->speed_limit == 1 && speed > p->max_speed) {speed = p->max_speed;} // speed limit
 	if (p->auto_speed_control) {
-		//p->move_increment = (0.00096*speed)-0.00012;
 		p->move_increment = (0.00091794*speed);
-		//p->move_increment = (0.00085*speed);
-		p->const_speed = (0.1287571596*speed)-(0.1143442859*pow(speed,2))+(0.03852298736*pow(speed,3))-(0.003102176404*pow(speed,4));
-		p->speed_mult = (0*speed)+0.5;
+		p->speed_signaling = 0.007387439378+(0.1785729138*speed)+(0.01100655975*pow(speed,2))-(0.01674290392*pow(speed,3))+(0.002631669156*pow(speed,4));
 		//printf("%f %f\n",p->move_increment,speed);
-	}
-	else {
-
 	}
 }
 
@@ -121,7 +116,7 @@ void straight_path(CARLsim* sim, P* p) {
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
 		//control_speed(3.587,p);	
-		control_speed(5,p);	
+		control_speed(25,p);	
 		//control_speed(0.1,p);	
 		//control_speed(0.0,p);	
 		//control_speed(0.0,p);	

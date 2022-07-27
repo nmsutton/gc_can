@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 20; // size of bins to record firing activity
-	double sim_time = 2400000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 10000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -21,7 +21,7 @@ struct P {
 	static const int MEC_LII_Basket_Count = 300;
 	static const int EC_LII_Basket_Multipolar_Count = 300;
 	static const int CA1_Pyramidal_Count = 900;
-	double pos[2] = {9,17}; //{3,6}; // starting position; {x,y}
+	double pos[2] = {22,8}; //{3,6}; // starting position; {x,y}
 	double dirs[4] = {0, 90, 180, 270};
 	double mi = 0; // move list index
 	vector<vector<int>> nrn_spk; // for total firing recording
@@ -44,7 +44,9 @@ struct P {
 	ofstream highres_pos_y_file;
 
 	// animal data parameters
-	//string anim_rec_file = "../../moves_analysis/src/reformatted_moves.txt";
+	#define hopper_run 1 // import data differently if on hopper
+	string anim_angles_csv = "./data/anim_angles.csv";
+	string anim_speeds_csv = "./data/anim_speeds.csv";
 	#define import_animal_data 1 // 1 for import and 0 for no import
 	int animal_ts = 20; // timestep in ms
 	vector<double> anim_angles;
@@ -53,26 +55,21 @@ struct P {
 	vector<double> speeds;
 	int num_moves;
 	int num_speeds;
-	//double pc_move_scale = 0.000139/1.773;//0.00019/1.773;//0.0001/1.773;//0.00025/1.773;//0.03/1.773;//0.01/1.773; // PC movement control scale
-	//double pc_multi = 0.1; // PC movement multiplier
-	//double cs_scale = 0.05/1.773; // baseline speed control scale
-	//double sm_scale = 20/1.773;//20/1.773;//0.1/1.773; // speed control multiplier scale
 
 	// common parameters that can vary per each run
 	bool print_move = 0; // print each move's direction
 	bool print_time = 1; // print time after processing
 	bool print_in_weights = 0;
 	bool print_gc_firing = 0;
+	bool move_test = 0;
 	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
 	bool record_pos_track = 0; // write files for animal position tracking plotting
-	bool record_pos_track_all = 1; // write files for animal positions with no past posit. clearing
+	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
 	bool record_spikes_file = 1; // write file for spike times and neuron positions
 	bool record_highrestraj = 1; // write files for high resolution trajectory spike locations
-	bool record_gc_voltage = 0; // record GC voltage trace
-	bool record_in_voltage = 0; // record IN voltage trace
-	bool record_pc_voltage = 0; // record PC voltage trace
-	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
-	bool pc_to_gc = 1; // place cells to grid cells signaling
+	#define monitor_voltage 1 // turn voltage monitoring on or off 
+	bool pc_active = 0; // pc signaling active. bc->pc->gc can still work even if this is disabled.
+	bool pc_to_gc = 0; // place cells to grid cells signaling
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 
@@ -83,23 +80,24 @@ struct P {
 	double noise_addit_freq = 0.0f; // additional spiking frequency added to base external input
 
 	// values for synapse activites
-	double base_ext = 300;//400;//270;//400;//600;//400;//400;//800;//600;//800;//800;//300;//300;//300;//1100;//16000.0;//1020.0;//2000.0;//1020.0;//34680;//1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level	
-	double const_speed = 1.8;//0.255;//1.8;//0.255;//0.195;//0.195;//0.5;//0.0;//0.195;//0.12; // setting for use of a constant virtual animal speed
-	double speed_mult = 0.5;//1;//0.0;//1;//5;//0.5;//0;//0.1;//0.5;//1;//2;//0.5;//1;//2;//10;//1.0;//35.0;//0.6;//1.2;//1.5;//4.5;//7.5; // starting grid cell input speed level
+	double base_ext = 300;//800;//300;//400;//270;//400;//600;//400;//400;//800;//600;//800;//800;//300;//300;//300;//1100;//16000.0;//1020.0;//2000.0;//1020.0;//34680;//1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level	
+	double speed_signaling = 1.0;//0.8;//0.195;//1.8;//0.255;//1.8;//0.255;//0.195;//0.195;//0.5;//0.0;//0.195;//0.12; // setting for use of a constant virtual animal speed
 	float dir_to_gc_wt = 1.6;//1.65;//1.6;//1.6;//1.5;//1.6;//1.5;//1.5;//5.5; // ext_dir to gc weight
-	double mex_hat_multi = 70;//180;//70;//70;//55;//60;//70;//85;//40;//85;//70;//85;//100;//70;//60;//60;//70;//90;//100;//140;//170;//200;//170;//170;//220;//180;//180;//300;//250;//140;//50;//30;//50;//800;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
-	float gc_to_in_wt = 14;//9;//18.5;//9;//9.0;//7.5;//6.0;//11.5;//18.5;//13.5;//10;//8.5;//12;//5.5;//18.5;//16.5;//15.5;//13.5;//11.5;//5.5;//2.5;//1;//1;//0.45;//1;//25;//700.0; // gc to interneurons weight
+	double mex_hat_multi = 70;//170;//70;//180;//70;//70;//55;//60;//70;//85;//40;//85;//70;//85;//100;//70;//60;//60;//70;//90;//100;//140;//170;//200;//170;//170;//220;//180;//180;//300;//250;//140;//50;//30;//50;//800;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
+	float gc_to_in_wt = 14;//1;//14;//9;//18.5;//9;//9.0;//7.5;//6.0;//11.5;//18.5;//13.5;//10;//8.5;//12;//5.5;//18.5;//16.5;//15.5;//13.5;//11.5;//5.5;//2.5;//1;//1;//0.45;//1;//25;//700.0; // gc to interneurons weight
 	double dir_init_multi = 100000;//100000000;//10000;//1;//10000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
 	double dist_thresh = 5; // distance threshold for only local connections
-	double move_increment = 0.0057;//0.0035;//0.0000;//0.0057;//0.0067;//0.002;//0.01;//0.005;//0.2;//0.05;//0.01;//0.266;//0.1;//0.03;//0.05;//0.12;//0.133;//0.664;//0.55;//0.5312;//0.664;//0.665;//0.658;//0.64;//0.658;//0.1;//0.5;//0.2634;//0.325;//0.65; // amount to move in position each move command
+	double move_increment = 0.664;//0.0057;//0.0035;//0.0000;//0.0057;//0.0067;//0.002;//0.01;//0.005;//0.2;//0.05;//0.01;//0.266;//0.1;//0.03;//0.05;//0.12;//0.133;//0.664;//0.55;//0.5312;//0.664;//0.665;//0.658;//0.64;//0.658;//0.1;//0.5;//0.2634;//0.325;//0.65; // amount to move in position each move command
 	vector<float> ext_dir;
 	int conn_offset = 0; // offset in neuron positions for connections
 	int conn_dist = 3; // distance between neurons in connections
 
 	// speed
 	bool auto_speed_control = 1;
+	bool speed_limit = 0; // speed limit on or off
 	double max_speed = 7.0; // max movement speed
+	double speed_conversion = 0.2; // convert animal movement speed to bump movement speed
 	double min_rand_speed = 0.25; // minimum speed for random speed generator. note: signal applied even when stopped.
 	double max_rand_speed = 1.0; // maximum speed for random speed generator
 
@@ -133,12 +131,4 @@ struct P {
 	double firing_positions[x_size*y_size]; // locations of firing of a neuron
 	double animal_location[x_size*y_size]; // location of animal
 	double animal_location_all[x_size*y_size]; // location of animal
-
-	// voltage recording parameters
-	string gc_volt_out_path = "gc_voltages.csv";
-	string in_volt_out_path = "in_voltages.csv";
-	string pc_volt_out_path = "pc_voltages.csv";
-	int gc_volt_neuron = 125;
-	int in_volt_neuron = 125;
-	int pc_volt_neuron = 125;
 };
