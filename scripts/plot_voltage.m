@@ -1,17 +1,25 @@
 % plot voltage for article figure
 
 initOAT;
+% read in voltages
 stel_nR = NeuronReader('../results/n_MEC_LII_Stellate.dat');
 bask_nR = NeuronReader('../results/n_MEC_LII_Basket.dat');
 stel_nV = stel_nR.readValues();
 bask_nV = bask_nR.readValues();
 stel_sels = []; bask_sels = [];
-t_start = 5000;
+% read in spikes
+stel_sR = SpikeReader('../results/spk_MEC_LII_Stellate.dat');
+bask_sR = SpikeReader('../results/spk_MEC_LII_Basket.dat');
+stel_nS = stel_sR.readSpikes(1);
+bask_nS = bask_sR.readSpikes(1);
+stel_spk_sels = []; bask_spk_sels = [];
+t_start = 4000;
 t_end = 6500;
-nrns_tot = 10; % number of neurons to plot
+nrns_tot = 5; % number of neurons to plot
+i_start = 0; % starting neuron index
 t_range = linspace(t_start,t_end,(t_end-t_start+1));
 % resize peak params
-rsz_peaks_active = 1; % toggle resizing of peaks
+rsz_peaks_active = 0; % toggle resizing of peaks
 window_size = 50; % size of rolling window
 min_spk_v = -50; % minimum voltage to be detected as a spike
 min_isi = 20; % minimum inter-spike interval
@@ -19,26 +27,15 @@ new_peak = 10; % new peak voltage
 resize_params=[window_size,min_spk_v,min_isi,new_peak];
 
 % extract voltages
-%{
-cell_e = 1;
-cell_i = 1;
-stel_sel = stel_nV.v(cell_e,t_start:t_end);
-bask_sel = bask_nV.v(cell_i,t_start:t_end);
-cell_e = 150;
-cell_i = 150;
-stel_sel2 = stel_nV.v(cell_e,t_start:t_end);
-bask_sel2 = bask_nV.v(cell_i,t_start:t_end);
-cell_e = 75;
-cell_i = 75;
-stel_sel3 = stel_nV.v(cell_e,t_start:t_end);
-bask_sel3 = bask_nV.v(cell_i,t_start:t_end);
-%}
-% extract voltages
 for i=1:nrns_tot
-	stel_sel = stel_nV.v(i,t_start:t_end);
-	bask_sel = bask_nV.v(i,t_start:t_end);
+	stel_sel = stel_nV.v(i+i_start,t_start:t_end);
+	bask_sel = bask_nV.v(i+i_start,t_start:t_end);
+	stel_spk_sel = stel_nS(t_start:t_end,i+i_start);
+	bask_spk_sel = bask_nS(t_start:t_end,i+i_start);
 	stel_sels = [stel_sels; stel_sel];
 	bask_sels = [bask_sels; bask_sel];
+	stel_spk_sels = [stel_spk_sels; stel_spk_sel'];
+	bask_spk_sels = [bask_spk_sels; bask_spk_sel'];
 end
 
 if rsz_peaks_active
@@ -47,11 +44,27 @@ if rsz_peaks_active
 	end
 end
 
+j=0;
 for i=1:nrns_tot
-	s_plot = subplot(nrns_tot, 1, i);
+	j=j+1;
+	s_plot = subplot(nrns_tot*2, 1, j);
 	hold on;
-	plot(s_plot, t_range, stel_sels(i,:));
-	plot(s_plot, t_range, bask_sels(i,:));
+	plot(s_plot, t_range, bask_sels(i,:),'Color','#ff9900','LineWidth',1);
+	plot(s_plot, t_range, stel_sels(i,:),'Color','#80B3FF','LineWidth',2);
+	hold off;
+	j=j+1;
+	s_plot = subplot(nrns_tot*2, 1, j);
+	hold on;
+	spks = find(stel_spk_sels(i,:)==1);
+	spks=spks+t_start; % adjust for start time offset
+	%scatter(s_plot, spks, ones(length(spks),1)*2, 120,'Color','#80B3FF');
+	scatter(s_plot, spks, ones(length(spks),1)*2, 'filled','Color','#80B3FF');
+	xlim([t_start t_end])
+	spks = find(bask_spk_sels(i,:)==1);
+	spks=spks+t_start;
+	scatter(s_plot, spks, ones(length(spks),1), 120,'Color','#ff9900');
+	xlim([t_start t_end])
+	caxis(s_plot,[0 3])
 	hold off;
 end
 
