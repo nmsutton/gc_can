@@ -128,9 +128,6 @@ int main() {
 	SpikeMonitor* SMinh = sim.setSpikeMonitor(MEC_LII_Basket, "DEFAULT");
 	SpikeMonitor* SMext = sim.setSpikeMonitor(EC_LI_II_Multipolar_Pyramidal, "DEFAULT");
 	if (p.record_spikes_file) {p.spikes_output_file.open(p.spikes_output_filepath);}
-	if (p.record_highrestraj) {p.highres_trajx_file.open(p.highres_trajx_filepath);}
-	if (p.record_highrestraj) {p.highres_trajy_file.open(p.highres_trajy_filepath);}
-	if (p.record_highrestraj) {p.highres_trajt_file.open(p.highres_trajt_filepath);}
 	if (p.record_highrestraj) {p.highres_pos_x_file.open(p.highres_pos_x_filepath);}
 	if (p.record_highrestraj) {p.highres_pos_y_file.open(p.highres_pos_y_filepath);}
 
@@ -184,9 +181,6 @@ int main() {
 	SMext->print(false);
 	SMinh->print(false);
 	if (p.record_spikes_file) {p.spikes_output_file.close();}
-	if (p.record_highrestraj) {p.highres_trajx_file.close();}
-	if (p.record_highrestraj) {p.highres_trajy_file.close();}
-	if (p.record_highrestraj) {p.highres_trajt_file.close();}
 	if (p.record_highrestraj) {p.highres_pos_x_file.close();}
 	if (p.record_highrestraj) {p.highres_pos_y_file.close();}
 

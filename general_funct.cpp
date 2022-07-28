@@ -320,32 +320,11 @@ void RecordNeuronVsLocation(CARLsim* sim, P* p) {
 
 void HighResTraj(CARLsim* sim, P* p) {
 	/* 
-	Record high resolution position data of spikes. Detect if last spike
-	time for a selected cell was the current time and if so write the 
-	current animal location to files.
+		Record high resolution position data of spikes. 
 	*/
 
-	int i = p->selected_neuron;
-	int j = p->nrn_spk[i].size();
-	if (j > 0 && p->nrn_spk[i][j-1] == p->t) {
-		// write spike x,y
-		//p->highres_trajx_file << p->pos[0];
-		//p->highres_trajx_file << "\n";
-		//p->highres_trajy_file << p->pos[1];
-		//p->highres_trajy_file << "\n";
-		//p->highres_trajt_file.close(); // reload file to save intermediate results
-		//p->highres_trajt_file.open(p->highres_trajt_filepath, std::ios_base::app);
-		//p->highres_trajt_file << p->t;
-		//p->highres_trajt_file << "\n";
-		//printf("%d %d\n",p->t,p->nrn_spk[i][j-1]);
-	}
-	// write general position data
-	//p->highres_pos_x_file.close();
-	//p->highres_pos_x_file.open(p->highres_pos_x_filepath, std::ios_base::app);
 	p->highres_pos_x_file << p->pos[0];
 	p->highres_pos_x_file << "\n";
-	//p->highres_pos_y_file.close(); // reload file to save intermediate results
-	//p->highres_pos_y_file.open(p->highres_pos_y_filepath, std::ios_base::app);
 	p->highres_pos_y_file << p->pos[1];
 	p->highres_pos_y_file << "\n";	
 }

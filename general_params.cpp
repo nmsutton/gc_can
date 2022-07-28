@@ -31,20 +31,14 @@ struct P {
 	double gc_firing_bin[layer_size]; // gc spiking amount in time bins
 	//string spikes_output_filepath = "/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv";
 	string spikes_output_filepath = "output/spikes/spikes_recorded.csv";
-	string highres_trajx_filepath = "output/spikes/highres_trajx.csv";
-	string highres_trajy_filepath = "output/spikes/highres_trajy.csv";
-	string highres_trajt_filepath = "output/spikes/highres_trajt.csv";
 	string highres_pos_x_filepath = "output/spikes/highres_pos_x.csv";
 	string highres_pos_y_filepath = "output/spikes/highres_pos_y.csv";
 	ofstream spikes_output_file;
-	ofstream highres_trajx_file;
-	ofstream highres_trajy_file;
-	ofstream highres_trajt_file;
 	ofstream highres_pos_x_file;
 	ofstream highres_pos_y_file;
 
 	// animal data parameters
-	#define hopper_run 1 // import data differently if on hopper
+	#define hopper_run 0 // import data differently if on hopper
 	string anim_angles_csv = "./data/anim_angles.csv";
 	string anim_speeds_csv = "./data/anim_speeds.csv";
 	#define import_animal_data 1 // 1 for import and 0 for no import
@@ -64,12 +58,12 @@ struct P {
 	bool move_test = 0;
 	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
 	bool record_pos_track = 0; // write files for animal position tracking plotting
-	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
+	bool record_pos_track_all = 1; // write files for animal positions with no past posit. clearing
 	bool record_spikes_file = 1; // write file for spike times and neuron positions
-	bool record_highrestraj = 1; // write files for high resolution trajectory spike locations
-	#define monitor_voltage 1 // turn voltage monitoring on or off 
-	bool pc_active = 0; // pc signaling active. bc->pc->gc can still work even if this is disabled.
-	bool pc_to_gc = 0; // place cells to grid cells signaling
+	bool record_highrestraj = 1; // write files for high resolution trajectory locations
+	#define monitor_voltage 0 // turn voltage monitoring on or off 
+	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
+	bool pc_to_gc = 1; // place cells to grid cells signaling
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 

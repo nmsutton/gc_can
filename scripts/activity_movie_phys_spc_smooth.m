@@ -14,6 +14,7 @@ use_carlsim_spikes = 1;
 alt_heatmap = 0;
 use_smoothing = 1;
 use_laptop = 1;
+limit_time = 0;
 rot90deg = 0; % rotate matrix 90 degrees clockwise
 flip_vert = 0; % flip matrix vertically
 
@@ -60,7 +61,13 @@ if use_carlsim_spikes
 			spike_x = carlsim_spikes(1:end,3)*(360/30);
 			spike_y = carlsim_spikes(1:end,2)*(360/30);
 		end
-	end
+    end
+    % limit time included if wanted
+    if limit_time ~= 0
+        limit_i_max = find(carlsim_spikes(1:end,1)<limit_time);
+        spike_x=spike_x(1:length(limit_i_max));
+        spike_y=spike_y(1:length(limit_i_max));
+    end
 	% update grid size if larger x or y values are found
 	if max(spike_x)>grid_size || max(spike_y)>grid_size
 		if max(spike_x)>max(spike_y)

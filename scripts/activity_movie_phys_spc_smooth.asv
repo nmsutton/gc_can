@@ -60,7 +60,11 @@ if use_carlsim_spikes
 			spike_x = carlsim_spikes(1:end,3)*(360/30);
 			spike_y = carlsim_spikes(1:end,2)*(360/30);
 		end
-	end
+    end
+    % limit time included if wanted
+    if limit_time
+        spike_x=spike_x(1:limit);
+    end
 	% update grid size if larger x or y values are found
 	if max(spike_x)>grid_size || max(spike_y)>grid_size
 		if max(spike_x)>max(spike_y)
@@ -75,7 +79,13 @@ if use_carlsim_spikes
             end
 		end
     end
-    % shift 
+    % shift matrix to account for negative values
+    if floor(min(spike_x)) < 0
+        spike_x=spike_x-floor(min(spike_x));
+    end
+    if floor(min(spike_y)) < 0
+        spike_y=spike_y-floor(min(spike_y));
+    end
 end
 heat_map = zeros(1,grid_size*grid_size);
 

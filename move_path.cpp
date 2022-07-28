@@ -99,6 +99,8 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 			control_speed((*speeds)[(int) floor(p->mi)], p);
 			EISignal(angle, sim, p);
 			//printf("t: %d; speed: %f; angle: %f\n",p->t,(*speeds)[(int) floor(p->mi)],(*moves)[(int) floor(p->mi)]);
+			//printf("x:%f y:%f\n",p->pos[0],p->pos[1]);
+			//printf("t: %d; speed: %f; angle: %f\n",p->t,(*anim_speeds)[(int) floor(p->mi)],(*anim_angles)[(int) floor(p->mi)]);
 		}
 		else {EISignal(rand_move(), sim, p);}
 		general_input(angle, sim, p);
