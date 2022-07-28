@@ -1,4 +1,7 @@
-% plot voltage for article figure
+% Plot voltage for article figure
+% Note: SpikeReader returns entries with 1 less index then NeuronReader.
+% E.g., length(stel_nV.v) vs. length(stel_nS).
+% Todo: This could be looked into to see if the indices are offset by 1.
 
 initOAT;
 % read in voltages
@@ -10,7 +13,7 @@ stel_sels = []; bask_sels = [];
 % read in spikes
 stel_sR = SpikeReader('../results/spk_MEC_LII_Stellate.dat');
 bask_sR = SpikeReader('../results/spk_MEC_LII_Basket.dat');
-stel_nS = stel_sR.readSpikes(1);
+stel_nS = stel_sR.readSpikes(1); % import spikes with bin of recording size of 1ms
 bask_nS = bask_sR.readSpikes(1);
 stel_spk_sels = []; bask_spk_sels = [];
 t_start = 4000;
