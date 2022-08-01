@@ -21,6 +21,14 @@ struct P {
 	static const int MEC_LII_Basket_Count = 300;
 	static const int EC_LII_Basket_Multipolar_Count = 300;
 	static const int CA1_Pyramidal_Count = 900;
+	static const int MEC_LII_Basket_Speed_Count = 900;		
+	int EC_LI_II_Multipolar_Pyramidal_Group; // group number
+	int MEC_LII_Stellate_Group;
+	int EC_LII_Axo_Axonic_Group;
+	int MEC_LII_Basket_Group;
+	int EC_LII_Basket_Multipolar_Group;
+	int CA1_Pyramidal_Group;
+	int MEC_LII_Basket_Speed_Group;	
 	double pos[2] = {22,8}; //{3,6}; // starting position; {x,y}
 	double dirs[4] = {0, 90, 180, 270};
 	double mi = 0; // move list index
@@ -74,11 +82,11 @@ struct P {
 	double noise_addit_freq = 0.0f; // additional spiking frequency added to base external input
 
 	// values for synapse activites
-	double base_ext = 300;//800;//300;//400;//270;//400;//600;//400;//400;//800;//600;//800;//800;//300;//300;//300;//1100;//16000.0;//1020.0;//2000.0;//1020.0;//34680;//1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level	
+	double base_ext = 800;//300;//400;//270;//400;//600;//400;//400;//800;//600;//800;//800;//300;//300;//300;//1100;//16000.0;//1020.0;//2000.0;//1020.0;//34680;//1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level	
 	double speed_signaling = 1.0;//0.8;//0.195;//1.8;//0.255;//1.8;//0.255;//0.195;//0.195;//0.5;//0.0;//0.195;//0.12; // setting for use of a constant virtual animal speed
 	float dir_to_gc_wt = 1.6;//1.65;//1.6;//1.6;//1.5;//1.6;//1.5;//1.5;//5.5; // ext_dir to gc weight
-	double mex_hat_multi = 70;//170;//70;//180;//70;//70;//55;//60;//70;//85;//40;//85;//70;//85;//100;//70;//60;//60;//70;//90;//100;//140;//170;//200;//170;//170;//220;//180;//180;//300;//250;//140;//50;//30;//50;//800;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
-	float gc_to_in_wt = 14;//1;//14;//9;//18.5;//9;//9.0;//7.5;//6.0;//11.5;//18.5;//13.5;//10;//8.5;//12;//5.5;//18.5;//16.5;//15.5;//13.5;//11.5;//5.5;//2.5;//1;//1;//0.45;//1;//25;//700.0; // gc to interneurons weight
+	double mex_hat_multi = 170;//70;//170;//70;//180;//70;//70;//55;//60;//70;//85;//40;//85;//70;//85;//100;//70;//60;//60;//70;//90;//100;//140;//170;//200;//170;//170;//220;//180;//180;//300;//250;//140;//50;//30;//50;//800;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
+	float gc_to_in_wt = 8.5;//1;//14;//9;//18.5;//9;//9.0;//7.5;//6.0;//11.5;//18.5;//13.5;//10;//8.5;//12;//5.5;//18.5;//16.5;//15.5;//13.5;//11.5;//5.5;//2.5;//1;//1;//0.45;//1;//25;//700.0; // gc to interneurons weight
 	double dir_init_multi = 100000;//100000000;//10000;//1;//10000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
 	double dist_thresh = 5; // distance threshold for only local connections
@@ -91,7 +99,7 @@ struct P {
 	bool auto_speed_control = 1;
 	bool speed_limit = 0; // speed limit on or off
 	double max_speed = 7.0; // max movement speed
-	double speed_conversion = 0.2; // convert animal movement speed to bump movement speed
+	double speed_conversion = 1.0;//0.2; // convert animal movement speed to bump movement speed
 	double min_rand_speed = 0.25; // minimum speed for random speed generator. note: signal applied even when stopped.
 	double max_rand_speed = 1.0; // maximum speed for random speed generator
 

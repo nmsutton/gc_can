@@ -6,13 +6,13 @@
 initOAT;
 % read in voltages
 stel_nR = NeuronReader('../results/n_MEC_LII_Stellate.dat');
-bask_nR = NeuronReader('../results/n_MEC_LII_Basket.dat');
+bask_nR = NeuronReader('../results/n_MEC_LII_Basket_Speed.dat');
 stel_nV = stel_nR.readValues();
 bask_nV = bask_nR.readValues();
 stel_sels = []; bask_sels = [];
 % read in spikes
 stel_sR = SpikeReader('../results/spk_MEC_LII_Stellate.dat');
-bask_sR = SpikeReader('../results/spk_MEC_LII_Basket.dat');
+bask_sR = SpikeReader('../results/spk_MEC_LII_Basket_Speed.dat');
 stel_nS = stel_sR.readSpikes(1); % import spikes with bin of recording size of 1ms
 bask_nS = bask_sR.readSpikes(1);
 stel_spk_sels = []; bask_spk_sels = [];

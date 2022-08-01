@@ -11,7 +11,7 @@ hopper_run = 3;
 restrict_time = 0;%2400000;%725000/20;%5000; % 0 for no restriction; in 20ms bins
 timestep = 20;
 orig_xy = 0; % use orig x,y animal positions with no wrapping around or carlsim x,y that wraps around a taurus
-plot_spikes = 1;
+plot_spikes = 1;  
 laptop_data = 1;
 use_unwrapped_data = 1;
 

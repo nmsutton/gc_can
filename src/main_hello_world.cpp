@@ -124,9 +124,11 @@ int main() {
 	sim.setupNetwork();
 	setInitExtDir(&p); // Initial excitatory current to GCs
 	sim.setExternalCurrent(EC_LI_II_Multipolar_Pyramidal, ext_dir_initial);
+	//sim.setExternalCurrent(MEC_LII_Basket_Speed, ext_dir_initial);
 	SpikeMonitor* SMexc = sim.setSpikeMonitor(MEC_LII_Stellate, "DEFAULT");
 	SpikeMonitor* SMinh = sim.setSpikeMonitor(MEC_LII_Basket, "DEFAULT");
 	SpikeMonitor* SMext = sim.setSpikeMonitor(EC_LI_II_Multipolar_Pyramidal, "DEFAULT");
+	SpikeMonitor* SMspe = sim.setSpikeMonitor(MEC_LII_Basket_Speed, "DEFAULT");
 	if (p.record_spikes_file) {p.spikes_output_file.open(p.spikes_output_filepath);}
 	if (p.record_highrestraj) {p.highres_pos_x_file.open(p.highres_pos_x_filepath);}
 	if (p.record_highrestraj) {p.highres_pos_y_file.open(p.highres_pos_y_filepath);}
@@ -138,6 +140,8 @@ int main() {
 	SMinh->setPersistentData(true);
 	SMext->startRecording();
 	SMext->setPersistentData(true);
+	SMspe->startRecording();
+	SMspe->setPersistentData(true);
 	for (int i = 0; i < p.layer_size; i++) {
 		p.gc_firing[i] = init_firings[i]; // set initial firing
 	}
@@ -151,8 +155,10 @@ int main() {
 		p.t = t;
 		// Disable initial current to GCs settings
 		if (t == 2) {
-			setExtDir(&p,270,0.04);
+			setExtDir(&p,270,0.04,0);
 			sim.setExternalCurrent(EC_LI_II_Multipolar_Pyramidal, p.ext_dir);
+			//setExtDir(&p,270,0.04,1);
+			//sim.setExternalCurrent(MEC_LII_Basket_Speed, p.ext_dir);
 		}
 		if (p.move_test==0) {sim.runNetwork(0,1,false);} // run for 1 ms, don't generate run stats
 		SMexc->stopRecording();
@@ -176,10 +182,12 @@ int main() {
 	SMexc->stopRecording();
 	SMext->stopRecording();
 	SMinh->stopRecording();
+	SMspe->stopRecording();
 	printf("\n\n");
 	SMexc->print(false); // print firing stats (but not the exact spike times)
 	SMext->print(false);
 	SMinh->print(false);
+	SMspe->print(false);
 	if (p.record_spikes_file) {p.spikes_output_file.close();}
 	if (p.record_highrestraj) {p.highres_pos_x_file.close();}
 	if (p.record_highrestraj) {p.highres_pos_y_file.close();}

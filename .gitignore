@@ -35,6 +35,7 @@ scripts/high_res_traj/highres_spikes.csv
 scripts/generate_weights/examples
 scripts/generate_weights/*.jpg
 scripts/generate_weights/synapse_weights.cpp
+scripts/generate_params/*.cpp
 data/mex_hat_bup.cpp
 data/mex_hat.cpp
 data/synapse_weights.cpp
