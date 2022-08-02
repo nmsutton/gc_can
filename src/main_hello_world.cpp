@@ -126,9 +126,11 @@ int main() {
 	sim.setExternalCurrent(EC_LI_II_Multipolar_Pyramidal, ext_dir_initial);
 	//sim.setExternalCurrent(MEC_LII_Basket_Speed, ext_dir_initial);
 	SpikeMonitor* SMexc = sim.setSpikeMonitor(MEC_LII_Stellate, "DEFAULT");
-	SpikeMonitor* SMinh = sim.setSpikeMonitor(MEC_LII_Basket, "DEFAULT");
-	SpikeMonitor* SMext = sim.setSpikeMonitor(EC_LI_II_Multipolar_Pyramidal, "DEFAULT");
-	SpikeMonitor* SMspe = sim.setSpikeMonitor(MEC_LII_Basket_Speed, "DEFAULT");
+	#if additional_spk_mon
+		SpikeMonitor* SMinh = sim.setSpikeMonitor(MEC_LII_Basket, "DEFAULT");
+		SpikeMonitor* SMext = sim.setSpikeMonitor(EC_LI_II_Multipolar_Pyramidal, "DEFAULT");
+		SpikeMonitor* SMspe = sim.setSpikeMonitor(MEC_LII_Basket_Speed, "DEFAULT");
+	#endif
 	if (p.record_spikes_file) {p.spikes_output_file.open(p.spikes_output_filepath);}
 	if (p.record_highrestraj) {p.highres_pos_x_file.open(p.highres_pos_x_filepath);}
 	if (p.record_highrestraj) {p.highres_pos_y_file.open(p.highres_pos_y_filepath);}
@@ -136,12 +138,14 @@ int main() {
 	// ---------------- RUN STATE -------------------
 	SMexc->startRecording();
 	SMexc->setPersistentData(true); // keep prior firing when recording is stopped and restarted
-	SMinh->startRecording();
-	SMinh->setPersistentData(true);
-	SMext->startRecording();
-	SMext->setPersistentData(true);
-	SMspe->startRecording();
-	SMspe->setPersistentData(true);
+	#if additional_spk_mon
+		SMinh->startRecording();
+		SMinh->setPersistentData(true);
+		SMext->startRecording();
+		SMext->setPersistentData(true);
+		SMspe->startRecording();
+		SMspe->setPersistentData(true);
+	#endif
 	for (int i = 0; i < p.layer_size; i++) {
 		p.gc_firing[i] = init_firings[i]; // set initial firing
 	}
@@ -161,11 +165,11 @@ int main() {
 			//sim.setExternalCurrent(MEC_LII_Basket_Speed, p.ext_dir);
 		}
 		if (p.move_test==0) {sim.runNetwork(0,1,false);} // run for 1 ms, don't generate run stats
-		/*
-		SMexc->stopRecording();
-		p.nrn_spk = SMexc->getSpikeVector2D(); // store firing in vector
-		SMexc->startRecording();
-		*/
+		if (p.record_fire_vs_pos || p.record_spikes_file || p.print_in_weights || p.print_gc_firing) {
+			SMexc->stopRecording();
+			p.nrn_spk = SMexc->getSpikeVector2D(); // store firing in vector
+			SMexc->startRecording();
+		}
 		if (p.move_test==0) {
 			straight_path(&sim, &p); // process movement
 			//move_path3(&sim, &p);
@@ -182,14 +186,16 @@ int main() {
 		if (p.print_time && ((t < 1000 && t % 100 == 0) || (t % 1000 == 0))) {printf("t: %dms\n",t);}
 	}
 	SMexc->stopRecording();
-	SMext->stopRecording();
-	SMinh->stopRecording();
-	SMspe->stopRecording();
 	printf("\n\n");
-	SMexc->print(false); // print firing stats (but not the exact spike times)
-	SMext->print(false);
-	SMinh->print(false);
-	SMspe->print(false);
+	SMexc->print(false); // print firing stats (but not the exact spike times)	
+	#if additional_spk_mon
+		SMext->stopRecording();
+		SMinh->stopRecording();
+		SMspe->stopRecording();
+		SMext->print(false);
+		SMinh->print(false);
+		SMspe->print(false);
+	#endif
 	if (p.record_spikes_file) {p.spikes_output_file.close();}
 	if (p.record_highrestraj) {p.highres_pos_x_file.close();}
 	if (p.record_highrestraj) {p.highres_pos_y_file.close();}

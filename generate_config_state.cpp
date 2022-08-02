@@ -52,7 +52,7 @@ sim.setNeuronParameters(CA1_Pyramidal, 204.0f, 0.0f, 0.76f, 0.0f, -69.36f, 0.0f,
 /* neuron connection parameters */
 setInExcConns(&sim, &p);
 double gc2inwt = p.gc_to_in_wt;
-double spd2inwt = 1.0;//0.3;
+double spd2inwt = 3.0;//0.3;
 MexHatConnection* MexHatConn;
 SomeToSomeConnection* SomeToSomeConn;    
 sim.connect(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, "one-to-one", p.dir_to_gc_wt, 1.0f, 

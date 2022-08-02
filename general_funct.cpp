@@ -100,7 +100,6 @@ vector<double> find_ver_hor(P *p, double angle, double* h) {
 	//  Reference: https://www.mathsisfun.com/algebra/trig-finding-side-right-triangle.html
 	//
 	angle = (angle/360)*2*PI; // convert from degrees to radians
-	//double* h = &p->move_increment;
 	//angle = ((angle+180)/360)*2*PI; // convert from degrees to radians
 	vector<double> ver_hor; double x, y;
 
@@ -126,43 +125,7 @@ vector<double> find_ver_hor(P *p, double angle, double* h) {
 
 	return ver_hor;
 }
-/*
-vector<double> find_ver_hor(double angle) {
-	//
-	//	Translate angle into proportion of horizonal and vertical movement
-	//	needed to create movement in the direction of the angle.
-	//
-	vector<double> ver_hor;
-	double ver, hor, ang_adj;
-	if (angle < 90) {
-		ang_adj = 90 - angle;
-		ver = ang_adj;
-		hor = 90 - ang_adj;
-	}
-	else if (angle >= 90 and angle < 180) {
-		ang_adj = angle - 90;
-		ver = -ang_adj;
-		hor = 90 - ang_adj;
-	}
-	else if (angle >= 180 and angle < 270) {
-		ang_adj = angle - 180;
-		ver = -90 + ang_adj;
-		hor = -ang_adj;
-	}
-	else if (angle >= 270 and angle <= 360) {
-		ang_adj = angle - 270;
-		ver = ang_adj;
-		hor = -90 + ang_adj;
-	}
 
-	ver = -(ver/90);
-	hor = (hor/90);
-	ver_hor.push_back(ver);
-	ver_hor.push_back(hor);
-
-	return ver_hor;
-}
-*/
 void set_pos(P *p, double angle) {
 	/*
 		Angle should be between 0-360 degrees.
@@ -500,6 +463,9 @@ void setExtDir(P* p, double angle, double speed, bool sc) {
 	if (sc == true) {
 	//	speeds[0]=1000;speeds[1]=1000;speeds[2]=1000;speeds[3]=0;
 	}
+	//speeds[0]=2;speeds[1]=2;speeds[2]=2;speeds[3]=2;
+	//if (sc == true) {for (int i = 0; i < 4; i++) {speeds[i]--;}}
+	//if (sc == true) {speeds[0]=0.01;speeds[1]=0.01;speeds[2]=0.01;speeds[3]=0.01;}
 
 	for (int i = 0; i < p->layer_size; i++) {
 		if (get_pd(i, p) == 0) {
@@ -547,7 +513,7 @@ void EISignal(double angle, CARLsim* sim, P* p) {
 		setExtDir(p,angle,p->speed_signaling,0);//0.20);
 		sim->setExternalCurrent(p->EC_LI_II_Multipolar_Pyramidal_Group, p->ext_dir);
 		//printf("speed cells\n");
-		setExtDir(p,angle,0.45,1);//0.075,1);//0.20);
+		setExtDir(p,angle,0.0,1);//0.075,1);//0.20);
 		//setExtDir(p,angle,0,1);//0.20);
 		//setExtDir(p,angle,0.0,1);//0.20);
 		sim->setExternalCurrent(p->MEC_LII_Basket_Speed_Group, p->ext_dir);
