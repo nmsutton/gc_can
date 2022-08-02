@@ -161,9 +161,11 @@ int main() {
 			//sim.setExternalCurrent(MEC_LII_Basket_Speed, p.ext_dir);
 		}
 		if (p.move_test==0) {sim.runNetwork(0,1,false);} // run for 1 ms, don't generate run stats
+		/*
 		SMexc->stopRecording();
 		p.nrn_spk = SMexc->getSpikeVector2D(); // store firing in vector
 		SMexc->startRecording();
+		*/
 		if (p.move_test==0) {
 			straight_path(&sim, &p); // process movement
 			//move_path3(&sim, &p);

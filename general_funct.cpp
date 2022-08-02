@@ -496,7 +496,7 @@ vector<double> directional_speeds(P* p, double angle, double speed) {
 void setExtDir(P* p, double angle, double speed, bool sc) {
 	double noise;	
 	vector<double> speeds = directional_speeds(p, angle, speed);
-	//if (sc == true) {for (int i = 0; i < 4; i++) {speeds[i]--;}}
+	if (sc == true) {for (int i = 0; i < 4; i++) {speeds[i]--;}}
 	if (sc == true) {
 	//	speeds[0]=1000;speeds[1]=1000;speeds[2]=1000;speeds[3]=0;
 	}
@@ -547,7 +547,7 @@ void EISignal(double angle, CARLsim* sim, P* p) {
 		setExtDir(p,angle,p->speed_signaling,0);//0.20);
 		sim->setExternalCurrent(p->EC_LI_II_Multipolar_Pyramidal_Group, p->ext_dir);
 		//printf("speed cells\n");
-		setExtDir(p,angle,0.1,1);//0.20);
+		setExtDir(p,angle,0.45,1);//0.075,1);//0.20);
 		//setExtDir(p,angle,0,1);//0.20);
 		//setExtDir(p,angle,0.0,1);//0.20);
 		sim->setExternalCurrent(p->MEC_LII_Basket_Speed_Group, p->ext_dir);
