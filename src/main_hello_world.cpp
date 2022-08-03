@@ -177,7 +177,9 @@ int main() {
 			//move_circles(&sim, &p);
 			//rand_path(&sim, &p);
 		}
-		if (p.move_test==1) {move_test(&sim, &p, &anim_angles, &anim_speeds);}
+		#if import_animal_data
+			if (p.move_test==1) {move_test(&sim, &p, &anim_angles, &anim_speeds);}
+		#endif
 		PrintWeightsAndFiring(&p);
 		RecordNeuronVsLocation(&sim, &p);
 		if (p.record_highrestraj) {HighResTraj(&sim, &p);}

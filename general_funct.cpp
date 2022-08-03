@@ -513,10 +513,12 @@ void EISignal(double angle, CARLsim* sim, P* p) {
 		setExtDir(p,angle,p->speed_signaling,0);//0.20);
 		sim->setExternalCurrent(p->EC_LI_II_Multipolar_Pyramidal_Group, p->ext_dir);
 		//printf("speed cells\n");
-		setExtDir(p,angle,0.0,1);//0.075,1);//0.20);
-		//setExtDir(p,angle,0,1);//0.20);
-		//setExtDir(p,angle,0.0,1);//0.20);
-		sim->setExternalCurrent(p->MEC_LII_Basket_Speed_Group, p->ext_dir);
+		if (p->sp_active) {
+			setExtDir(p,angle,p->spdin_curr,1);//100.0,1);//0.075,1);//0.20);
+			sim->setExternalCurrent(p->MEC_LII_Basket_Speed_Group, p->ext_dir);
+			setExtDir(p,angle,p->spdex_curr,1);//100.0,1);//0.075,1);//0.20);
+			sim->setExternalCurrent(p->MEC_LII_Stellate_Speed_Group, p->ext_dir);
+		}
 	}	
 }
 

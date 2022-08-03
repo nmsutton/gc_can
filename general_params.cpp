@@ -22,13 +22,10 @@ struct P {
 	static const int EC_LII_Basket_Multipolar_Count = 300;
 	static const int CA1_Pyramidal_Count = 900;
 	static const int MEC_LII_Basket_Speed_Count = 900;		
-	int EC_LI_II_Multipolar_Pyramidal_Group; // group number
-	int MEC_LII_Stellate_Group;
-	int EC_LII_Axo_Axonic_Group;
-	int MEC_LII_Basket_Group;
-	int EC_LII_Basket_Multipolar_Group;
-	int CA1_Pyramidal_Group;
-	int MEC_LII_Basket_Speed_Group;	
+	static const int MEC_LII_Stellate_Speed_Count = 900;	
+	int EC_LI_II_Multipolar_Pyramidal_Group, MEC_LII_Stellate_Group, EC_LII_Axo_Axonic_Group,
+	MEC_LII_Basket_Group, EC_LII_Basket_Multipolar_Group, CA1_Pyramidal_Group, MEC_LII_Basket_Speed_Group,
+	MEC_LII_Stellate_Speed_Group;	
 	double pos[2] = {22,8}; //{3,6}; // starting position; {x,y}
 	double dirs[4] = {0, 90, 180, 270};
 	double mi = 0; // move list index
@@ -73,6 +70,7 @@ struct P {
 	#define monitor_voltage 0 // turn voltage monitoring on or off 
 	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 	bool pc_to_gc = 1; // place cells to grid cells signaling
+	bool sp_active = 1; // speed cells active.	
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 
@@ -83,15 +81,19 @@ struct P {
 	double noise_addit_freq = 0.0f; // additional spiking frequency added to base external input
 
 	// values for synapse activites
-	double base_ext = 175;//800;//300;//400;//270;//400;//600;//400;//400;//800;//600;//800;//800;//300;//300;//300;//1100;//16000.0;//1020.0;//2000.0;//1020.0;//34680;//1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level	
-	double speed_signaling = 0;//50.0;//0.8;//0.195;//1.8;//0.255;//1.8;//0.255;//0.195;//0.195;//0.5;//0.0;//0.195;//0.12; // setting for use of a constant virtual animal speed
+	double base_ext = 400;//300;//150;//300;//400;//270;//400;//600;//400;//400;//800;//600;//800;//800;//300;//300;//300;//1100;//16000.0;//1020.0;//2000.0;//1020.0;//34680;//1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level	
+	double speed_signaling = 0.1;//0.1;//200.0;//0;//50.0;//0.8;//0.195;//1.8;//0.255;//1.8;//0.255;//0.195;//0.195;//0.5;//0.0;//0.195;//0.12; // setting for use of a constant virtual animal speed
 	float dir_to_gc_wt = 1.6;//1.65;//1.6;//1.6;//1.5;//1.6;//1.5;//1.5;//5.5; // ext_dir to gc weight
-	double mex_hat_multi = 170;//170;//70;//170;//70;//180;//70;//70;//55;//60;//70;//85;//40;//85;//70;//85;//100;//70;//60;//60;//70;//90;//100;//140;//170;//200;//170;//170;//220;//180;//180;//300;//250;//140;//50;//30;//50;//800;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
-	float gc_to_in_wt = 20;//10;//1;//14;//9;//18.5;//9;//9.0;//7.5;//6.0;//11.5;//18.5;//13.5;//10;//8.5;//12;//5.5;//18.5;//16.5;//15.5;//13.5;//11.5;//5.5;//2.5;//1;//1;//0.45;//1;//25;//700.0; // gc to interneurons weight
+	double mex_hat_multi = 50;//150;//170;//70;//170;//70;//180;//70;//70;//55;//60;//70;//85;//40;//85;//70;//85;//100;//70;//60;//60;//70;//90;//100;//140;//170;//200;//170;//170;//220;//180;//180;//300;//250;//140;//50;//30;//50;//800;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
+	float gc_to_in_wt = 200;//45;//14;//10;//1;//14;//9;//18.5;//9;//9.0;//7.5;//6.0;//11.5;//18.5;//13.5;//10;//8.5;//12;//5.5;//18.5;//16.5;//15.5;//13.5;//11.5;//5.5;//2.5;//1;//1;//0.45;//1;//25;//700.0; // gc to interneurons weight
+	double spdin2inwt = 2.0;//3.0;//0.3;
+	double spdex2inwt = 2.0;
+	double spdin_curr = 0;//100;//0.0;
+	double spdex_curr = 0.5;//0;//1.0;
 	double dir_init_multi = 100000;//100000000;//10000;//1;//10000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
 	double dist_thresh = 5; // distance threshold for only local connections
-	double move_increment = 0.0;//0.015;// 0.01 = 10mps //0.664;//0.0057;//0.0035;//0.0000;//0.0057;//0.0067;//0.002;//0.01;//0.005;//0.2;//0.05;//0.01;//0.266;//0.1;//0.03;//0.05;//0.12;//0.133;//0.664;//0.55;//0.5312;//0.664;//0.665;//0.658;//0.64;//0.658;//0.1;//0.5;//0.2634;//0.325;//0.65; // amount to move in position each move command
+	double move_increment = 0.001;//0.015;//0.001;//0.025;// 0.01 = 10mps //0.664;//0.0057;//0.0035;//0.0000;//0.0057;//0.0067;//0.002;//0.01;//0.005;//0.2;//0.05;//0.01;//0.266;//0.1;//0.03;//0.05;//0.12;//0.133;//0.664;//0.55;//0.5312;//0.664;//0.665;//0.658;//0.64;//0.658;//0.1;//0.5;//0.2634;//0.325;//0.65; // amount to move in position each move command
 	vector<float> ext_dir;
 	int conn_offset = 0; // offset in neuron positions for connections
 	int conn_dist = 3; // distance between neurons in connections
@@ -109,7 +111,7 @@ struct P {
 	double ala_act_lvl = 0.1; // amount of activity level added for each visit with animal location all plot.
 
 	// place cell parameters
-	float pc_to_gc_wt = 1.1;//0.5;//3;//0.5;//10; // pc to gc synaptic weight
+	float pc_to_gc_wt = 1;//0.5;//3;//0.5;//10; // pc to gc synaptic weight
 	double pc_sig = 1.2;//2;//1.5;//4.0;//1.0;//0.25; // sigma symbol; width of the place feild
 	double pc_level = 1000.0;//1000.0;//5.5;//7.5;//5.0; //14.0; // place cell firing level
 	vector<float> pc_activity;
