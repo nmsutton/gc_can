@@ -460,8 +460,9 @@ void setExtDir(P* p, double angle, double speed, bool sc) {
 	double noise;	
 	vector<double> speeds = directional_speeds(p, angle, speed);
 	if (sc == true) {for (int i = 0; i < 4; i++) {speeds[i]--;}}
+	//if (sc == true) {for (int i = 0; i < 4; i++) {speeds[i]=speeds[i]-0.695;}}
 	if (sc == true) {
-	//	speeds[0]=1000;speeds[1]=1000;speeds[2]=1000;speeds[3]=0;
+	//	speeds[0]=speed;speeds[1]=speed;speeds[2]=speed;speeds[3]=speed;
 	}
 	//speeds[0]=2;speeds[1]=2;speeds[2]=2;speeds[3]=2;
 	//if (sc == true) {for (int i = 0; i < 4; i++) {speeds[i]--;}}
@@ -513,10 +514,16 @@ void EISignal(double angle, CARLsim* sim, P* p) {
 		setExtDir(p,angle,p->speed_signaling,0);//0.20);
 		sim->setExternalCurrent(p->EC_LI_II_Multipolar_Pyramidal_Group, p->ext_dir);
 		//printf("speed cells\n");
-		if (p->sp_active) {
-			setExtDir(p,angle,p->spdin_curr,1);//100.0,1);//0.075,1);//0.20);
+		if (p->spin2in_active) {
+			setExtDir(p,angle,p->spdin2in_curr,1);//100.0,1);//0.075,1);//0.20);
 			sim->setExternalCurrent(p->MEC_LII_Basket_Speed_Group, p->ext_dir);
-			setExtDir(p,angle,p->spdex_curr,1);//100.0,1);//0.075,1);//0.20);
+		}
+		if (p->spin2ex_active) {
+			setExtDir(p,angle,p->spdin2ex_curr,1);//100.0,1);//0.075,1);//0.20);
+			sim->setExternalCurrent(p->MEC_LII_Basket_Speed2_Group, p->ext_dir);
+		}
+		if (p->spex2in_active) {	
+			setExtDir(p,angle,p->spdex2in_curr,1);//100.0,1);//0.075,1);//0.20);
 			sim->setExternalCurrent(p->MEC_LII_Stellate_Speed_Group, p->ext_dir);
 		}
 	}	
