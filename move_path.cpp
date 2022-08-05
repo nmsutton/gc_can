@@ -77,7 +77,7 @@ void control_speed(double speed, P* p) {
 	*/
 	speed = speed * p->speed_conversion;
 	if (p->speed_limit == 1 && speed > p->max_speed) {speed = p->max_speed;} // speed limit
-	if (p->auto_speed_control) {
+	if (p->auto_speed_control || p->move_test) {
 		p->move_increment = (0.00091794*speed);
 		p->speed_signaling = 0.007387439378+(0.1785729138*speed)+(0.01100655975*pow(speed,2))-(0.01674290392*pow(speed,3))+(0.002631669156*pow(speed,4));
 		//printf("%f %f\n",p->move_increment,speed);
