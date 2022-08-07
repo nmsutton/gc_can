@@ -5,6 +5,10 @@
 %% Todo: something seems wrong with the alt_heatmap
 %% so original heatmap should be used for now
 %%
+%% Note: this is set to only use highres_spikes.csv from high_res_traj.m
+%% use_hopper and use_laptop options are commented out. high_res_traj.m
+%% needs to be run first to create data for this script.
+%%
 
 import CMBHOME.Utils.*
 
@@ -13,7 +17,7 @@ import CMBHOME.Utils.*
 use_carlsim_spikes = 1;
 alt_heatmap = 0;
 use_smoothing = 1;
-use_laptop = 1;
+%use_laptop = 0;
 limit_time = 0;
 rot90deg = 0; % rotate matrix 90 degrees clockwise
 flip_vert = 0; % flip matrix vertically
@@ -22,8 +26,8 @@ if use_carlsim_spikes
 	grid_size = 30; % sqrt of grid size
 	binside = 3;
 	std_smooth_kernel = 3.333;
-    hopper_use=0; % enable hopper folder or use local folder
-    hopper_run=3;
+    %hopper_use=0                                                                      ; % enable hopper folder or use local folder
+    hopper_run=5;
     hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/spikes_recorded.csv']);
 else
 	grid_size = 32;
@@ -40,11 +44,13 @@ else
 end
 
 if use_carlsim_spikes
-    if hopper_use
-        carlsim_spikes = readmatrix(hopper_path);
+    %if hopper_use
+    if false
+        %carlsim_spikes = readmatrix(hopper_path);
     else
-        if use_laptop == 0
-	        carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv');
+        %if use_laptop == 0
+        if false
+	        %carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv');
         else
             %carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/spikes_recorded.csv');
             carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/high_res_traj/highres_spikes.csv');

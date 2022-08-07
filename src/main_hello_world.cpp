@@ -171,12 +171,15 @@ int main() {
 			SMexc->startRecording();
 		}
 		if (p.move_test==0) {
-			straight_path(&sim, &p); // process movement
+			//straight_path(&sim, &p); // process movement
 			//move_path3(&sim, &p);
 			//move_animal(&sim, &p, &anim_angles, &anim_speeds);
 			//move_circles(&sim, &p);
 			//rand_path(&sim, &p);
-			//move_ramp(&sim, &p);
+			move_ramp(&sim, &p);
+			if (p.t % 20 == 0) {
+				//printf("%d %f %f\n",p.t,anim_speeds[floor(((int) p.t)/20)],anim_angles[floor(((int) p.t)/20)]);
+			}
 		}
 		#if import_animal_data
 			if (p.move_test==1) {move_test(&sim, &p, &anim_angles, &anim_speeds);}

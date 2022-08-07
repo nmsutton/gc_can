@@ -79,14 +79,16 @@ void control_speed(double speed, P* p) {
 	if (p->speed_limit == 1 && speed > p->max_speed) {speed = p->max_speed;} // speed limit
 	if (p->auto_speed_control || p->move_test) {
 		p->move_increment = (0.001*speed);
-		p->base_ext = 587.4881579-(5.7850940521124521*speed)+(1.4611941553146452*pow(speed,2))-(0.07780278296*pow(speed,3))+(0.001700452564*pow(speed,4));
-		p->speed_signaling = 0.01215404582+(0.01524206911*speed)+(0.008762289442*pow(speed,2))-(0.0006140572184*pow(speed,3))+(0.00001670652325*pow(speed,4));
-		p->spdin2in_curr = 0.03940910736-(0.05881012583*speed)+(0.01344803471*pow(speed,2))-(0.001339463905*pow(speed,3))+(0.00006120898184*pow(speed,4));
-		p->spdex2in_curr = 0.01*(54.33736842+(2.197281355*speed)-(0.6571770115*pow(speed,2))+(0.03983430037*pow(speed,3))-(0.0008224893280*pow(speed,4)));
+		p->base_ext = 587.3855203-(5.730716366*speed)+(1.453920316*pow(speed,2))-(0.07264995615*pow(speed,3))+(0.001179325705*pow(speed,4));
+		p->speed_signaling = -0.02569590422+(0.07417478541*speed)-(0.002294161887*pow(speed,2))-(0.0001477291721*pow(speed,3))+(0.00001691665882*pow(speed,4));
+		p->spdin2in_curr = -0.2+(0.02*speed);
+		if (speed<20) {p->spdin2in_curr=0;}
+		p->spdex2in_curr = 0.5516395507-(0.004627151273*speed)+(0.002634236803*pow(speed,2))-(0.0004900873827*pow(speed,3))+(0.00001485852756*pow(speed,4));
+		if (p->spdex2in_curr<0) {p->spdex2in_curr=0;}
 		//if (p->spdex2in_curr < 0.35) {p->spdex2in_curr = 0.35;}
 		//if (p->base_ext > 625) {p->base_ext = 625;}
 		//if (p->spdin2in_curr > 2) {p->base_ext = 2;}
-		if (speed >= 10) {p->pc_to_gc_wt = 0.5;} else {p->pc_to_gc_wt = 1.0;}
+		//if (speed >= 10) {p->pc_level = 400;} else {p->pc_level = 1000;}
 		//printf("%f %f\n",p->move_increment,speed);
 	}
 }
@@ -124,7 +126,7 @@ void straight_path(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(25,p);	
+		control_speed(5,p);	
 		//control_speed(20,p);	
 		//control_speed(25,p);	
 		//control_speed(0.1,p);	
@@ -321,10 +323,10 @@ void move_ramp(CARLsim* sim, P* p) {
 	vector<double> moves;
 	double angle = 90;
 	double speed = 5; 
-	double top_speed = 25;//25;//25;//13;
-	double max_angle = 90;
+	double top_speed = 22.5;//25;//25;//13;
+	double max_angle = 0;//90;
 	//int rand_val = rand() % max_angle;
-	int rev_dir_t = 200; // ms to reverse direction
+	int rev_dir_t = 120; // ms to reverse direction
 	bool speed_ramp = 1;
 	bool angle_ramp = 1;
 	double si = (p->t) % rev_dir_t;
@@ -343,10 +345,10 @@ void move_ramp(CARLsim* sim, P* p) {
 			if (angle_ramp) {angle = angle + max_angle*(1-(si/(double) rev_dir_t));}
 		}		
 		if (angle_ramp && angle > 360) {angle = angle - 360;}
-		//speed = (top_speed*.5)+(speed*.5);
+		speed = (top_speed*.45)+(speed*.55);
 		//speed = 0+(speed*.8);
 		control_speed(speed,p);
 		EISignal(angle, sim, p);
-		printf("%.2d %.2f %.2f\n",p->t,speed,angle);
+		//printf("%.2d %.2f %.2f\n",p->t,speed,angle);
 	}
 }

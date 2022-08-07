@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 20; // size of bins to record firing activity
-	double sim_time = 8000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 20000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -66,7 +66,7 @@ struct P {
 	bool record_pos_track = 0; // write files for animal position tracking plotting
 	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
 	bool record_spikes_file = 0; // write file for spike times and neuron positions
-	bool record_highrestraj = 1; // write files for high resolution trajectory locations
+	bool record_highrestraj = 0; // write files for high resolution trajectory locations
 	#define additional_spk_mon 0 // additional spike monitors
 	#define monitor_voltage 0 // turn voltage monitoring on or off 
 	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
@@ -104,10 +104,10 @@ struct P {
 	int conn_dist = 3; // distance between neurons in connections
 
 	// speed
-	bool auto_speed_control = 0; // automatically adjust parameters to match speed selected
+	bool auto_speed_control = 1; // automatically adjust parameters to match speed selected
 	bool speed_limit = 0; // speed limit on or off
-	double max_speed = 22;//7.0; // max movement speed
-	double speed_conversion = 1.0;//0.9;//0.2; // convert animal movement speed to bump movement speed
+	double max_speed = 17.5;//22;//7.0; // max movement speed
+	double speed_conversion = 0.9;//0.2; // convert animal movement speed to bump movement speed
 	double min_rand_speed = 0.25; // minimum speed for random speed generator. note: signal applied even when stopped.
 	double max_rand_speed = 1.0; // maximum speed for random speed generator
 	double move_rev = 1; // test movement in forward or reverse directions
@@ -117,9 +117,9 @@ struct P {
 	double ala_act_lvl = 0.1; // amount of activity level added for each visit with animal location all plot.
 
 	// place cell parameters
-	float pc_to_gc_wt = 0.5;//3;//0.5;//10; // pc to gc synaptic weight
+	float pc_to_gc_wt = 0.5;//3;//0.5;//3;//0.5;//10; // pc to gc synaptic weight
 	double pc_sig = 1.2;//2;//1.5;//4.0;//1.0;//0.25; // sigma symbol; width of the place feild
-	double pc_level = 1000.0;//1000.0;//5.5;//7.5;//5.0; //14.0; // place cell firing level
+	double pc_level = 1000;//1000.0;//1000.0;//5.5;//7.5;//5.0; //14.0; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters
