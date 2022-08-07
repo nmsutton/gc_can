@@ -176,6 +176,7 @@ int main() {
 			//move_animal(&sim, &p, &anim_angles, &anim_speeds);
 			//move_circles(&sim, &p);
 			//rand_path(&sim, &p);
+			//move_ramp(&sim, &p);
 		}
 		#if import_animal_data
 			if (p.move_test==1) {move_test(&sim, &p, &anim_angles, &anim_speeds);}
