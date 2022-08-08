@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 20; // size of bins to record firing activity
-	double sim_time = 8000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 1000000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -79,10 +79,10 @@ struct P {
 
 	// select movement trajectory
 	bool move_test = 0; // generate animal movement position but not signaling
-	bool run_path_test = 0; // only generate movement positions not signaling with run_path function
+	bool run_path_test = 1; // only generate movement positions not signaling with run_path function
 	bool move_straight = 0;
-	bool move_fullspace = 0;
-	bool move_animal = 1;
+	bool move_fullspace = 1;
+	bool move_animal = 0;
 	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;

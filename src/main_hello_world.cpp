@@ -167,7 +167,7 @@ int main() {
 			//setExtDir(&p,270,0.04,1);
 			//sim.setExternalCurrent(MEC_LII_Basket_Speed, p.ext_dir);
 		}
-		if (p.move_test==0) {sim.runNetwork(0,1,false);} // run for 1 ms, don't generate run stats
+		if (p.move_test==0 && p.run_path_test==0) {sim.runNetwork(0,1,false);} // run for 1 ms, don't generate run stats
 		if (p.record_fire_vs_pos || p.record_spikes_file || p.print_in_weights || p.print_gc_firing) {
 			SMexc->stopRecording();
 			p.nrn_spk = SMexc->getSpikeVector2D(); // store firing in vector
@@ -176,7 +176,7 @@ int main() {
 		if (p.move_test==0) {
 			if (p.move_animal) {move_animal(&sim, &p, &anim_angles, &anim_speeds);}
 			else {
-				if (run_path_test) {run_path_test(&p.angles, &p.speeds, &p.speed_times, p.num_moves, p.num_speeds, &sim, &p);}
+				if (p.run_path_test) {run_path_test(&p.angles, &p.speeds, &p.speed_times, p.num_moves, p.num_speeds, &sim, &p);}
 				else {run_path(&p.angles, &p.speeds, &p.speed_times, p.num_moves, p.num_speeds, &sim, &p);}
 			}
 			if (p.move_straight) {move_straight(&sim, &p);}
