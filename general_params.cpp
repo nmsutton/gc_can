@@ -82,8 +82,8 @@ struct P {
 	bool run_path_test = 0; // only generate movement positions not signaling with run_path function
 	bool move_straight = 0;
 	bool move_fullspace = 0;
-	bool move_animal = 0;
-	bool move_circles = 1;
+	bool move_animal = 1;
+	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;
 

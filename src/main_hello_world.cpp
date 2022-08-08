@@ -174,12 +174,14 @@ int main() {
 			SMexc->startRecording();
 		}
 		if (p.move_test==0) {
-			if (run_path_test) {run_path_test(&p.angles, &p.speeds, &p.speed_times, p.num_moves, p.num_speeds, &sim, &p);}
-			else {run_path(&p.angles, &p.speeds, &p.speed_times, p.num_moves, p.num_speeds, &sim, &p);}
+			if (p.move_animal) {move_animal(&sim, &p, &anim_angles, &anim_speeds);}
+			else {
+				if (run_path_test) {run_path_test(&p.angles, &p.speeds, &p.speed_times, p.num_moves, p.num_speeds, &sim, &p);}
+				else {run_path(&p.angles, &p.speeds, &p.speed_times, p.num_moves, p.num_speeds, &sim, &p);}
+			}
 			if (p.move_straight) {move_straight(&sim, &p);}
 			if (p.move_random) {move_random(&sim, &p);}
 			if (p.move_ramp) {move_ramp(&sim, &p);}
-			if (p.move_animal) {move_animal(&sim, &p, &anim_angles, &anim_speeds);}
 			if (false && p.t % 20 == 0) {printf("%d %f %f\n",p.t,anim_speeds[floor(((int) p.t)/20)],anim_angles[floor(((int) p.t)/20)]);}
 		}
 		#if import_animal_data
