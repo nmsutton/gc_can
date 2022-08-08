@@ -155,6 +155,9 @@ int main() {
 		animal_data_vars(&sim, &p, &anim_angles, &anim_speeds);
 	#endif	
 
+	if (p.move_fullspace) {move_fullspace(&sim, &p);}
+	if (p.move_circles) {move_circles(&sim, &p);}
+
 	for (int t=0; t<p.sim_time; t++) {	
 		p.t = t;
 		// Disable initial current to GCs settings
@@ -171,15 +174,13 @@ int main() {
 			SMexc->startRecording();
 		}
 		if (p.move_test==0) {
-			//straight_path(&sim, &p); // process movement
-			//move_path3(&sim, &p);
-			//move_animal(&sim, &p, &anim_angles, &anim_speeds);
-			//move_circles(&sim, &p);
-			//rand_path(&sim, &p);
-			move_ramp(&sim, &p);
-			if (p.t % 20 == 0) {
-				//printf("%d %f %f\n",p.t,anim_speeds[floor(((int) p.t)/20)],anim_angles[floor(((int) p.t)/20)]);
-			}
+			if (run_path_test) {run_path_test(&p.angles, &p.speeds, &p.speed_times, p.num_moves, p.num_speeds, &sim, &p);}
+			else {run_path(&p.angles, &p.speeds, &p.speed_times, p.num_moves, p.num_speeds, &sim, &p);}
+			if (p.move_straight) {move_straight(&sim, &p);}
+			if (p.move_random) {move_random(&sim, &p);}
+			if (p.move_ramp) {move_ramp(&sim, &p);}
+			if (p.move_animal) {move_animal(&sim, &p, &anim_angles, &anim_speeds);}
+			if (false && p.t % 20 == 0) {printf("%d %f %f\n",p.t,anim_speeds[floor(((int) p.t)/20)],anim_angles[floor(((int) p.t)/20)]);}
 		}
 		#if import_animal_data
 			if (p.move_test==1) {move_test(&sim, &p, &anim_angles, &anim_speeds);}

@@ -120,7 +120,27 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 	}
 }
 
-void straight_path(CARLsim* sim, P* p) {
+void run_path_test(vector<double> *moves, vector<double> *speeds, vector<int> *speed_times, int num_moves, int num_speeds, CARLsim* sim, P *p) {
+	/*
+		Output the path of a virtual animal without simulating signaling
+	*/
+
+	double angle;
+	if (p->t % p->move_delay == 0 && p->t != 0) {
+		p->mi = p->mi + 1;
+		if (p->mi < num_moves) {
+			angle = (*moves)[(int) floor(p->mi)];
+			control_speed((*speeds)[(int) floor(p->mi)], p);
+		}
+		set_pos(p, angle);
+	}
+	else {
+		angle = (*moves)[(int) floor(p->mi)];
+		set_pos(p, angle);
+	}
+}
+
+void move_straight(CARLsim* sim, P* p) {
 	// stright line path
 	//control_speed(50,p);
 	double angle = 90;
@@ -135,7 +155,7 @@ void straight_path(CARLsim* sim, P* p) {
 	}
 }
 
-void rand_path(CARLsim* sim, P* p) {
+void move_random(CARLsim* sim, P* p) {
 	// random move
 
 	if (p->t % 20 == 0) {
@@ -205,39 +225,48 @@ void move_path2(CARLsim* sim, P* p) {
 	run_path(&moves, &speeds, &speed_times, num_moves, num_speeds, sim, p);
 }
 
-void move_path3(CARLsim* sim, P* p) {
-	// movement path
+void move_fullspace(CARLsim* sim, P* p) {
+	// Moves virtual animal sequentially back and forth through an
+	// environment as a movement test pattern to test firing in each
+	// enviornment location.
 
-	vector<double> moves;
 	double angle;
-	double h_a = 90; // horizontal movement angle
-	int h_m = 10*50; // indices for horizontal movement
-	vector<int> m_d_i; // move down indices
-	for (int i = 0; i < 15; i++) {
-		m_d_i.push_back(h_m+i);
-	}
-	for (int i = 0; i < (h_m+m_d_i.size())*150; i++) {
-		angle = -1; // clear angle
-		for (int j = 0; j < m_d_i.size(); j++) { // process indices for down move
-			if (i % m_d_i[j] == 0) {
-				angle = 180;
+	double angle_rev_h = 1; // flag to reverse angle horizontally
+	double angle_rev_v = -1; // flag to reverse angle vertically
+	double speed = 5;
+	int ts_per_sec = 1000/p->firing_bin; // timesteps per second
+	int h_m = ((int) floor((double) p->x_size/speed)*ts_per_sec); // indices for horizontal movement
+	int v_m = ceil(1000.0/(double) p->firing_bin)/speed; // indices for vertical movement
+	vector<int> mv_i; // move vertical index
+	for (int i = 0; i < v_m; i++) {mv_i.push_back(h_m+i);}
+	int v_m_t = (int) ceil((p->sim_time/(double) p->firing_bin)/(double) (h_m+v_m)); // vertical moves total
+	if (p->t == 0) {p->pos[0]=0;p->pos[1]=0;} // set starting point to 0,0
+	for (int i = 0; i < (h_m+v_m)*v_m_t; i++) {
+		// detect end of layer row
+		if (i % h_m == 0) 
+		{angle_rev_h=angle_rev_h*-1;} 
+		// detect end of layer column
+		if (i % ((h_m+v_m)*p->y_size) == 0) 
+		{angle_rev_v=angle_rev_v*-1;} 
+		// process indices for horizontal move
+		if (angle_rev_h == -1) {angle = 90;}
+		else if (angle_rev_h == 1) {angle = 270;}
+		// process indices for vertical move
+		for (int j = 0; j < v_m; j++) { 
+			if (i % mv_i[j] == 0) {
+				if (angle_rev_v==1) {angle = 0;} else {angle = 180;}
 			}
 		}
-		if (angle == -1) {
-			angle = h_a;
-		}
-		moves.push_back(angle);
+		p->angles.push_back(angle);
 	}
-	vector<double> speeds;
-	vector<int> speed_times;
-	for (int i = 0; i < moves.size(); i++) {
-		speeds.push_back(3.587);
-		speed_times.push_back(i*20);
+	for (int i = 0; i < p->angles.size(); i++) {
+		p->speeds.push_back(speed);
+		p->speed_times.push_back(i*20);
 	}
-	int num_moves = moves.size();
-	int num_speeds = speeds.size();
+	p->num_moves = p->angles.size();
+	p->num_speeds = p->speeds.size();
 
-	run_path(&moves, &speeds, &speed_times, num_moves, num_speeds, sim, p);
+	//run_path(&moves, &speeds, &speed_times, num_moves, num_speeds, sim, p);
 }
 
 void move_animal(CARLsim* sim, P* p, vector<double> *anim_angles, vector<double> *anim_speeds) {
@@ -251,7 +280,6 @@ void move_animal(CARLsim* sim, P* p, vector<double> *anim_angles, vector<double>
 void move_circles(CARLsim* sim, P* p) {
 	// movement path
 
-	vector<double> moves;
 	double angle = 90;
 	for (int i = 0; i < (p->sim_time/p->animal_ts); i++) {
 		if (i % 40 == 0) {
@@ -263,19 +291,14 @@ void move_circles(CARLsim* sim, P* p) {
 		if (angle >= 360) {
 			angle = 0;
 		}
-		moves.push_back(angle);
+		p->angles.push_back(angle);
 	}
-	vector<double> speeds;
-	vector<int> speed_times;
-	for (int i = 0; i < moves.size(); i++) {
-		//speeds.push_back(35.4/400);
-		speeds.push_back(3.587);
-		speed_times.push_back(i*20);
+	for (int i = 0; i < p->angles.size(); i++) {
+		p->speeds.push_back(3.587);
+		p->speed_times.push_back(i*20);
 	}
-	int num_moves = moves.size();
-	int num_speeds = speeds.size();
-
-	run_path(&moves, &speeds, &speed_times, num_moves, num_speeds, sim, p);
+	p->num_moves = p->angles.size();
+	p->num_speeds = p->speeds.size();
 }
 
 void animal_data_vars(CARLsim* sim, P* p, vector<double> *anim_angles, vector<double> *anim_speeds) {

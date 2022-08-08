@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 20; // size of bins to record firing activity
-	double sim_time = 20000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 8000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -27,7 +27,7 @@ struct P {
 	int EC_LI_II_Multipolar_Pyramidal_Group, MEC_LII_Stellate_Group, EC_LII_Axo_Axonic_Group,
 	MEC_LII_Basket_Group, EC_LII_Basket_Multipolar_Group, CA1_Pyramidal_Group, MEC_LII_Basket_Speed_Group,
 	MEC_LII_Basket_Speed2_Group, MEC_LII_Stellate_Speed_Group;	
-	double pos[2] = {22,8}; //{3,6}; // starting position; {x,y}
+	double pos[2] = {9,17};//{22,8}; //{3,6}; // starting position; {x,y}
 	double dirs[4] = {0, 90, 180, 270};
 	double mi = 0; // move list index
 	vector<vector<int>> nrn_spk; // for total firing recording
@@ -52,6 +52,7 @@ struct P {
 	vector<double> anim_angles;
 	vector<double> anim_speeds;
 	vector<int> speed_times;
+	vector<double> angles;
 	vector<double> speeds;
 	int num_moves;
 	int num_speeds;
@@ -61,12 +62,11 @@ struct P {
 	bool print_time = 1; // print time after processing
 	bool print_in_weights = 0;
 	bool print_gc_firing = 0;
-	bool move_test = 0;
 	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
 	bool record_pos_track = 0; // write files for animal position tracking plotting
 	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
-	bool record_spikes_file = 0; // write file for spike times and neuron positions
-	bool record_highrestraj = 0; // write files for high resolution trajectory locations
+	bool record_spikes_file = 1; // write file for spike times and neuron positions
+	bool record_highrestraj = 1; // write files for high resolution trajectory locations
 	#define additional_spk_mon 0 // additional spike monitors
 	#define monitor_voltage 0 // turn voltage monitoring on or off 
 	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
@@ -76,6 +76,16 @@ struct P {
 	bool spex2in_active = 1; // excitatory speed cells active.	
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
+
+	// select movement trajectory
+	bool move_test = 0; // generate animal movement position but not signaling
+	bool run_path_test = 0; // only generate movement positions not signaling with run_path function
+	bool move_straight = 0;
+	bool move_fullspace = 0;
+	bool move_animal = 0;
+	bool move_circles = 1;
+	bool move_random = 0;
+	bool move_ramp = 0;
 
 	// noise parameters
 	bool noise_active = 0; // activate noise
@@ -107,7 +117,7 @@ struct P {
 	bool auto_speed_control = 1; // automatically adjust parameters to match speed selected
 	bool speed_limit = 0; // speed limit on or off
 	double max_speed = 17.5;//22;//7.0; // max movement speed
-	double speed_conversion = 0.9;//0.2; // convert animal movement speed to bump movement speed
+	double speed_conversion = 1;//0.2; // convert animal movement speed to bump movement speed
 	double min_rand_speed = 0.25; // minimum speed for random speed generator. note: signal applied even when stopped.
 	double max_rand_speed = 1.0; // maximum speed for random speed generator
 	double move_rev = 1; // test movement in forward or reverse directions
@@ -117,7 +127,7 @@ struct P {
 	double ala_act_lvl = 0.1; // amount of activity level added for each visit with animal location all plot.
 
 	// place cell parameters
-	float pc_to_gc_wt = 0.5;//3;//0.5;//3;//0.5;//10; // pc to gc synaptic weight
+	float pc_to_gc_wt = 1;//0.5;//3;//0.5;//3;//0.5;//10; // pc to gc synaptic weight
 	double pc_sig = 1.2;//2;//1.5;//4.0;//1.0;//0.25; // sigma symbol; width of the place feild
 	double pc_level = 1000;//1000.0;//1000.0;//5.5;//7.5;//5.0; //14.0; // place cell firing level
 	vector<float> pc_activity;
