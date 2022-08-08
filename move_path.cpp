@@ -80,12 +80,12 @@ void control_speed(double speed, P* p) {
 	if (p->auto_speed_control || p->move_animal_onlypos) {
 		p->move_increment = (0.001*speed);
 		speed = speed * p->bump_move_convert;
-		p->base_ext = 587.3855203-(5.730716366*speed)+(1.453920316*pow(speed,2))-(0.07264995615*pow(speed,3))+(0.001179325705*pow(speed,4));
-		p->speed_signaling = -0.02569590422+(0.07417478541*speed)-(0.002294161887*pow(speed,2))-(0.0001477291721*pow(speed,3))+(0.00001691665882*pow(speed,4));
-		p->spdin2in_curr = -0.2+(0.02*speed);
-		if (speed<20) {p->spdin2in_curr=0;}
-		p->spdex2in_curr = 0.5516395507-(0.004627151273*speed)+(0.002634236803*pow(speed,2))-(0.0004900873827*pow(speed,3))+(0.00001485852756*pow(speed,4));
-		if (p->spdex2in_curr<0) {p->spdex2in_curr=0;}
+		p->base_ext = 599.71807930192620+(1.8460223073478295*speed)-(0.98948203259954803*pow(speed,2))+(0.13615771207609734*pow(speed,3))-(0.0041120742441470969*pow(speed,4));
+		p->speed_signaling = .0032478779963611920+(.039982839907744427*speed)+(.00031123816763796528*pow(speed,2))+(.00026751083633427759*pow(speed,3))-(.000011288950631868635*pow(speed,4));
+		p->spdin2in_curr = -0.8+(0.066666667*speed);
+		if (speed<15) {p->spdin2in_curr=0;}
+		p->spdex2in_curr = 0.54654006643323527-(0.000016458194719924657*speed)+(0.0043514130440270721*pow(speed,2))-(0.0010839590599279461*pow(speed,3))+(0.000041640427990052633*pow(speed,4));
+		if (p->spdex2in_curr>13) {p->spdex2in_curr=0;}
 		//printf("%f %f\n",p->move_increment,speed);
 	}
 }
@@ -143,7 +143,7 @@ void move_straight(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(5,p);	
+		control_speed(22.5,p);	
 		//control_speed(20,p);	
 		//control_speed(25,p);	
 		//control_speed(0.1,p);	
