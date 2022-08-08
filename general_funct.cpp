@@ -133,6 +133,8 @@ void set_pos(P *p, double angle) {
 	vector<double> ver_hor = find_ver_hor(p, angle, &p->move_increment);
 	p->pos[0] = p->pos[0] + ver_hor[1];
 	p->pos[1] = p->pos[1] + ver_hor[0];
+	p->bpos[0] = p->bpos[0] + (ver_hor[1] * p->bump_move_convert);
+	p->bpos[1] = p->bpos[1] + (ver_hor[0] * p->bump_move_convert);
 	//printf("angle: %f %f ver_hor[1]:%f %f\n",angle,p->pos[0],ver_hor[1],p->move_increment);
 	//printf("%f ver_hor[0]:%f %f\n",p->pos[1],ver_hor[1],p->move_increment);
 
@@ -149,9 +151,37 @@ void set_pos(P *p, double angle) {
 	else if (p->pos[1] < 0) {
 		p->pos[1] = p->y_size + p->pos[1];
 	}
+	if (p->bpos[0] >= p->x_size) {
+		p->bpos[0] = p->x_size - p->bpos[0];
+	}
+	else if (p->bpos[0] < 0) {
+		p->bpos[0] = p->x_size + p->bpos[0];
+	}
+	if (p->bpos[1] >= p->y_size) {
+		p->bpos[1] = p->y_size - p->bpos[1];
+	}
+	else if (p->bpos[1] < 0) {
+		p->bpos[1] = p->y_size + p->bpos[1];
+	}
+	//taurus_wrap(P *p, double *x, double *y)
 
 	if (p->print_move == true) {
 		cout << " move: " << angle << " " << p->pos[0] << " " << p->pos[1] << " t: " << p->t;
+	}
+}
+
+void taurus_wrap(P *p, double* x, double* y) {
+	if (*x >= p->x_size) {
+		*x = p->x_size - *x;
+	}
+	else if (*x < 0) {
+		*x = p->x_size + *x;
+	}
+	if (*y >= p->y_size) {
+		*y = p->y_size - *y;
+	}
+	else if (*y < 0) {
+		*y = p->y_size + *y;
 	}
 }
 

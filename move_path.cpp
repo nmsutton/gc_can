@@ -75,20 +75,17 @@ void control_speed(double speed, P* p) {
 		dlm = fitlm(X,Y,'Intercept',false); This is linear reg with y-intercept forced at 0. This
 		allows position tracker speed scaling without altering trajectory that changing y-int causes.
 	*/
-	speed = speed * p->speed_conversion;
+	//speed = speed * p->speed_conversion;
 	if (p->speed_limit == 1 && speed > p->max_speed) {speed = p->max_speed;} // speed limit
 	if (p->auto_speed_control || p->move_animal_onlypos) {
 		p->move_increment = (0.001*speed);
+		speed = speed * p->bump_move_convert;
 		p->base_ext = 587.3855203-(5.730716366*speed)+(1.453920316*pow(speed,2))-(0.07264995615*pow(speed,3))+(0.001179325705*pow(speed,4));
 		p->speed_signaling = -0.02569590422+(0.07417478541*speed)-(0.002294161887*pow(speed,2))-(0.0001477291721*pow(speed,3))+(0.00001691665882*pow(speed,4));
 		p->spdin2in_curr = -0.2+(0.02*speed);
 		if (speed<20) {p->spdin2in_curr=0;}
 		p->spdex2in_curr = 0.5516395507-(0.004627151273*speed)+(0.002634236803*pow(speed,2))-(0.0004900873827*pow(speed,3))+(0.00001485852756*pow(speed,4));
 		if (p->spdex2in_curr<0) {p->spdex2in_curr=0;}
-		//if (p->spdex2in_curr < 0.35) {p->spdex2in_curr = 0.35;}
-		//if (p->base_ext > 625) {p->base_ext = 625;}
-		//if (p->spdin2in_curr > 2) {p->base_ext = 2;}
-		//if (speed >= 10) {p->pc_level = 400;} else {p->pc_level = 1000;}
 		//printf("%f %f\n",p->move_increment,speed);
 	}
 }

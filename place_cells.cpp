@@ -66,7 +66,7 @@ void place_cell_firing(CARLsim* sim, P *p) {
 			// find firing
 			pc_current = 0.0;
 			if (p->pc_active) {
-				pc_current = pc_rate(p_x, p_y, p->pos[0], p->pos[1], p);
+				pc_current = pc_rate(p_x, p_y, p->bpos[0], p->bpos[1], p);
 			}
 
 			// add boundary cell input
