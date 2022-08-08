@@ -155,8 +155,8 @@ int main() {
 		animal_data_vars(&sim, &p, &anim_angles, &anim_speeds);
 	#endif	
 
-	if (p.move_fullspace) {move_fullspace(&sim, &p);}
-	if (p.move_circles) {move_circles(&sim, &p);}
+	if (p.move_fullspace) {move_fullspace(&sim, &p);p.run_path=1;}
+	if (p.move_circles) {move_circles(&sim, &p);p.run_path=1;}
 
 	for (int t=0; t<p.sim_time; t++) {	
 		p.t = t;
@@ -167,15 +167,15 @@ int main() {
 			//setExtDir(&p,270,0.04,1);
 			//sim.setExternalCurrent(MEC_LII_Basket_Speed, p.ext_dir);
 		}
-		if (p.move_test==0 && p.run_path_test==0) {sim.runNetwork(0,1,false);} // run for 1 ms, don't generate run stats
+		if (p.move_animal_onlypos==0 && p.run_path_test==0) {sim.runNetwork(0,1,false);} // run for 1 ms, don't generate run stats
 		if (p.record_fire_vs_pos || p.record_spikes_file || p.print_in_weights || p.print_gc_firing) {
 			SMexc->stopRecording();
 			p.nrn_spk = SMexc->getSpikeVector2D(); // store firing in vector
 			SMexc->startRecording();
 		}
-		if (p.move_test==0) {
+		if (p.move_animal_onlypos==0) {
 			if (p.move_animal) {move_animal(&sim, &p, &anim_angles, &anim_speeds);}
-			else {
+			else if (p.run_path) {
 				if (p.run_path_test) {run_path_test(&p.angles, &p.speeds, &p.speed_times, p.num_moves, p.num_speeds, &sim, &p);}
 				else {run_path(&p.angles, &p.speeds, &p.speed_times, p.num_moves, p.num_speeds, &sim, &p);}
 			}
@@ -185,7 +185,7 @@ int main() {
 			if (false && p.t % 20 == 0) {printf("%d %f %f\n",p.t,anim_speeds[floor(((int) p.t)/20)],anim_angles[floor(((int) p.t)/20)]);}
 		}
 		#if import_animal_data
-			if (p.move_test==1) {move_test(&sim, &p, &anim_angles, &anim_speeds);}
+			if (p.move_animal_onlypos==1) {move_animal_onlypos(&sim, &p, &anim_angles, &anim_speeds);}
 		#endif
 		PrintWeightsAndFiring(&p);
 		RecordNeuronVsLocation(&sim, &p);

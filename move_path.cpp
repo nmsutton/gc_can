@@ -77,7 +77,7 @@ void control_speed(double speed, P* p) {
 	*/
 	speed = speed * p->speed_conversion;
 	if (p->speed_limit == 1 && speed > p->max_speed) {speed = p->max_speed;} // speed limit
-	if (p->auto_speed_control || p->move_test) {
+	if (p->auto_speed_control || p->move_animal_onlypos) {
 		p->move_increment = (0.001*speed);
 		p->base_ext = 587.3855203-(5.730716366*speed)+(1.453920316*pow(speed,2))-(0.07264995615*pow(speed,3))+(0.001179325705*pow(speed,4));
 		p->speed_signaling = -0.02569590422+(0.07417478541*speed)-(0.002294161887*pow(speed,2))-(0.0001477291721*pow(speed,3))+(0.00001691665882*pow(speed,4));
@@ -97,7 +97,7 @@ void EISignal(double angle, CARLsim* sim, P* p);
 
 void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_times, int num_moves, int num_speeds, CARLsim* sim, P *p) {
 	/*
-		Run movements through a path.
+		Move animal through a predefined set of velocities (speeds+angles) to create a path.
 	*/
 	double angle;
 
@@ -321,7 +321,7 @@ void animal_data_vars(CARLsim* sim, P* p, vector<double> *anim_angles, vector<do
 	//}
 }
 
-void move_test(CARLsim* sim, P* p, vector<double> *anim_angles, vector<double> *anim_speeds) {
+void move_animal_onlypos(CARLsim* sim, P* p, vector<double> *anim_angles, vector<double> *anim_speeds) {
 	/* test movement path with no neuron signaling simulation */
 
 	double angle;

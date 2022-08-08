@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 20; // size of bins to record firing activity
-	double sim_time = 1000000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 8000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -78,11 +78,12 @@ struct P {
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 
 	// select movement trajectory
-	bool move_test = 0; // generate animal movement position but not signaling
-	bool run_path_test = 1; // only generate movement positions not signaling with run_path function
-	bool move_straight = 0;
-	bool move_fullspace = 1;
+	bool run_path = 0;
+	bool run_path_test = 0; // only generate movement positions not signaling with run_path function
+	bool move_straight = 1;
+	bool move_fullspace = 0;
 	bool move_animal = 0;
+	bool move_animal_onlypos = 0; // generate animal movement position but not signaling
 	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;
@@ -148,7 +149,7 @@ struct P {
 	double bc_sig = 1.0;
 
 	// neuron vs location parameters
-	int selected_neuron = 372;//465;//372;//11;//465;//232;//465;//10;
+	int selected_neuron = 870;//372;//465;//372;//11;//465;//232;//465;//10;
 	double firing_positions[x_size*y_size]; // locations of firing of a neuron
 	double animal_location[x_size*y_size]; // location of animal
 	double animal_location_all[x_size*y_size]; // location of animal
