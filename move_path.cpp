@@ -79,7 +79,7 @@ void control_speed(double speed, P* p) {
 	if (p->speed_limit == 1 && speed > p->max_speed) {speed = p->max_speed;} // speed limit
 	if (p->auto_speed_control || p->move_animal_onlypos) {
 		p->move_increment = (0.001*speed);
-		speed = speed * p->bump_move_convert;
+		speed = speed * p->grid_pattern_scale;
 		p->base_ext = 599.71807930192620+(1.8460223073478295*speed)-(0.98948203259954803*pow(speed,2))+(0.13615771207609734*pow(speed,3))-(0.0041120742441470969*pow(speed,4));
 		p->speed_signaling = .0032478779963611920+(.039982839907744427*speed)+(.00031123816763796528*pow(speed,2))+(.00026751083633427759*pow(speed,3))-(.000011288950631868635*pow(speed,4));
 		p->spdin2in_curr = -0.8+(0.066666667*speed);

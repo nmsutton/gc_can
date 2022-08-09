@@ -136,8 +136,8 @@ void set_pos(P *p, double angle) {
 	angle = angle + p->grid_pattern_rot; // test rotation
 	if (angle>360) {angle=360-angle;}
 	ver_hor = find_ver_hor(p, angle, &p->move_increment);
-	p->bpos[0] = p->bpos[0] + (ver_hor[1] * p->bump_move_convert);
-	p->bpos[1] = p->bpos[1] + (ver_hor[0] * p->bump_move_convert);
+	p->bpos[0] = p->bpos[0] + (ver_hor[1] * p->grid_pattern_scale);
+	p->bpos[1] = p->bpos[1] + (ver_hor[0] * p->grid_pattern_scale);
 	//printf("angle: %f %f ver_hor[1]:%f %f\n",angle,p->pos[0],ver_hor[1],p->move_increment);
 	//printf("%f ver_hor[0]:%f %f\n",p->pos[1],ver_hor[1],p->move_increment);
 

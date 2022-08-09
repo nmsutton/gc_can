@@ -118,9 +118,8 @@ struct P {
 	// speed
 	bool auto_speed_control = 0; // automatically adjust parameters to match speed selected
 	bool speed_limit = 0; // speed limit on or off
-	double max_speed = 17.5;//22;//7.0; // max movement speed
-	double speed_conversion = 1;//0.2; // convert animal movement speed to bump movement speed
-	double bump_move_convert = 1;//18/22.5; // animal speed to bump speed conversion. <goal_top_bump_speed>/<goal_top_animal_speed>
+	double max_speed = 17.5; // max movement speed
+	double speed_conversion = 1;//0.2; // scale animal movement speed data
 	double min_rand_speed = 0.25; // minimum speed for random speed generator. note: signal applied even when stopped.
 	double max_rand_speed = 1.0; // maximum speed for random speed generator
 	double move_rev = 1; // test movement in forward or reverse directions
@@ -152,7 +151,8 @@ struct P {
 
 	// neuron vs location parameters
 	int selected_neuron = 372;//372;//465;//372;//11;//465;//232;//465;//10;
-	double grid_pattern_rot = 0; // rotation of grid pattern in plot
+	double grid_pattern_rot = 0; // angle value for rotation of grid pattern in plot
+	double grid_pattern_scale = 1; // rescale grid pattern for plot. smaller value makes larger rescale, e.g., 0.8 = 1.25x rescale. animal speed to bump speed conversion. <goal_top_bump_speed>/<goal_top_animal_speed>
 	double firing_positions[x_size*y_size]; // locations of firing of a neuron
 	double animal_location[x_size*y_size]; // location of animal
 	double animal_location_all[x_size*y_size]; // location of animal
