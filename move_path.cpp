@@ -230,7 +230,8 @@ void move_fullspace(CARLsim* sim, P* p) {
 	double angle;
 	double angle_rev_h = 1; // flag to reverse angle horizontally
 	double angle_rev_v = -1; // flag to reverse angle vertically
-	double speed = 5;
+	//double speed = 2.5;
+	double speed = p->move_increment*1000;
 	int ts_per_sec = 1000/p->firing_bin; // timesteps per second
 	int h_m = ((int) floor((double) p->x_size/speed)*ts_per_sec); // indices for horizontal movement
 	int v_m = ceil(1000.0/(double) p->firing_bin)/speed; // indices for vertical movement

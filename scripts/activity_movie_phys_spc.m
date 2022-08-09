@@ -9,7 +9,7 @@ clear all;
 clc;
 %input_folder = "pos_track";
 input_folder = "firing_vs_loc";
-time=2400000;%400000;%1200000;%199900; % time steps, use (end frame - 1) = time. 1 = 10ms.
+time=8000;%2400000;%400000;%1200000;%199900; % time steps, use (end frame - 1) = time. 1 = 10ms.
 hopper_use=0; % enable hopper folder or use local folder
 hopper_run=3;
 %% 
@@ -38,8 +38,8 @@ caxis manual;          % allow subsequent plots to use the same color limits
 %[A,map,alpha] = imread('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/media/grid.png');
 %A = imread('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/move_test/media/grid.png');
 
-%for frameIndex = 1 : numberOfFrames
-for frameIndex = (numberOfFrames-200) : (numberOfFrames - 10)
+for frameIndex = 1 : numberOfFrames
+%for frameIndex = (numberOfFrames-200) : (numberOfFrames - 10)
   if hopper_use
     hopper_path=strcat('/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/',input_folder,'/firing_t',int2str(frameIndex*bin_size),'.csv');
     filename = hopper_path;
