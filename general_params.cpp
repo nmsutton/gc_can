@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 20; // size of bins to record firing activity
-	double sim_time = 8000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 100000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -63,8 +63,8 @@ struct P {
 	bool run_path_test = 0; // only generate movement positions not signaling with run_path function
 	bool move_animal = 0; // use real animal movement positions with neural signaling
 	bool move_animal_onlypos = 0; // generate animal movement position but not signaling
-	bool move_fullspace = 1; // move through whole environment
-	bool move_straight = 0;
+	bool move_fullspace = 0; // move through whole environment
+	bool move_straight = 1;
 	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;
@@ -74,9 +74,9 @@ struct P {
 	bool print_time = 1; // print time after processing
 	bool print_in_weights = 0;
 	bool print_gc_firing = 0;
-	bool record_fire_vs_pos = 1; // write files for firing vs position plotting
+	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
 	bool record_pos_track = 0; // write files for animal position tracking plotting
-	bool record_pos_track_all = 1; // write files for animal positions with no past posit. clearing
+	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
 	bool record_spikes_file = 0; // write file for spike times and neuron positions
 	bool record_highrestraj = 0; // write files for high resolution trajectory locations
 	#define additional_spk_mon 0 // additional spike monitors
