@@ -51,13 +51,13 @@ stag_y=0; % y-axis tile stagger distance
 x_wrap=0; % wrap around values on x-axis
 y_wrap=0; % wrap around values on y-axis
 % rotations
-a=60;%10;%90-18.435;%90-18; % angle of movement
+a=0;%10;%90-18.435;%90-18; % angle of movement
 a=a/360 * pi*2; % convert to radians
 % limited fields params
-seven_fields=0; % choose between 7 or 4 field in initial shape
+seven_fields=1; % choose between 7 or 4 field in initial shape
 centx = []; centy = []; % x- and y-axis values of centroids
 center_x = 46; center_y = 46;
-select_cent=[1,2,3];%[1,4,7];%[1,2,3];%[1,4,7];%[3,4,5];% centroid indicies to duplicate
+select_cent=[3,4,5];%[1,2,3];%[1,4,7];%[3,4,5];% centroid indicies to duplicate
 
 cx=0; cy=0; % init feild centers
 tempx=[]; tempy=[];

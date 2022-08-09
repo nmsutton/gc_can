@@ -75,7 +75,7 @@ void control_speed(double speed, P* p) {
 		dlm = fitlm(X,Y,'Intercept',false); This is linear reg with y-intercept forced at 0. This
 		allows position tracker speed scaling without altering trajectory that changing y-int causes.
 	*/
-	//speed = speed * p->speed_conversion;
+	speed = speed * p->speed_conversion;
 	if (p->speed_limit == 1 && speed > p->max_speed) {speed = p->max_speed;} // speed limit
 	if (p->auto_speed_control || p->move_animal_onlypos) {
 		p->move_increment = (0.001*speed);
@@ -143,7 +143,7 @@ void move_straight(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(22.5,p);	
+		control_speed(5,p);	
 		//control_speed(20,p);	
 		//control_speed(25,p);	
 		//control_speed(0.1,p);	
@@ -237,7 +237,7 @@ void move_fullspace(CARLsim* sim, P* p) {
 	vector<int> mv_i; // move vertical index
 	for (int i = 0; i < v_m; i++) {mv_i.push_back(h_m+i);}
 	int v_m_t = (int) ceil((p->sim_time/(double) p->firing_bin)/(double) (h_m+v_m)); // vertical moves total
-	if (p->t == 0) {p->pos[0]=0;p->pos[1]=0;} // set starting point to 0,0
+	if (p->t == 0) {p->pos[0]=0;p->pos[1]=0;p->bpos[0]=0;p->bpos[1]=0;} // set starting point to 0,0
 	for (int i = 0; i < (h_m+v_m)*v_m_t; i++) {
 		// detect end of layer row
 		if (i % h_m == 0) 
@@ -262,8 +262,6 @@ void move_fullspace(CARLsim* sim, P* p) {
 	}
 	p->num_moves = p->angles.size();
 	p->num_speeds = p->speeds.size();
-
-	//run_path(&moves, &speeds, &speed_times, num_moves, num_speeds, sim, p);
 }
 
 void move_animal(CARLsim* sim, P* p, vector<double> *anim_angles, vector<double> *anim_speeds) {

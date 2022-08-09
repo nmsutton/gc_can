@@ -133,6 +133,9 @@ void set_pos(P *p, double angle) {
 	vector<double> ver_hor = find_ver_hor(p, angle, &p->move_increment);
 	p->pos[0] = p->pos[0] + ver_hor[1];
 	p->pos[1] = p->pos[1] + ver_hor[0];
+	angle = angle + p->grid_pattern_rot; // test rotation
+	if (angle>360) {angle=360-angle;}
+	ver_hor = find_ver_hor(p, angle, &p->move_increment);
 	p->bpos[0] = p->bpos[0] + (ver_hor[1] * p->bump_move_convert);
 	p->bpos[1] = p->bpos[1] + (ver_hor[0] * p->bump_move_convert);
 	//printf("angle: %f %f ver_hor[1]:%f %f\n",angle,p->pos[0],ver_hor[1],p->move_increment);
@@ -488,6 +491,8 @@ vector<double> directional_speeds(P* p, double angle, double speed) {
 
 void setExtDir(P* p, double angle, double speed, int sc) {
 	double noise;	
+	angle = angle + p->grid_pattern_rot; // test rotation
+	if (angle>360) {angle=360-angle;}	
 	vector<double> speeds = directional_speeds(p, angle, speed);
 	if (sc == 2) {for (int i = 0; i < 4; i++) {speeds[i]--;}}
 	//if (sc == true) {for (int i = 0; i < 4; i++) {speeds[i]=speeds[i]-0.695;}}

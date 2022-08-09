@@ -3,11 +3,11 @@
 % https://www.mathworks.com/matlabcentral/answers/430093-rotation-about-a-point
 
 % run options
-sample_matrix = 0;
-write_to_file = 1;
+sample_matrix = 1;
+write_to_file = 0;
 show_2d_plot = 0;
 show_3d_plot = 0;
-alt_weights = 1; % use alt synapse_weights matrix
+alt_weights = 0; % use alt synapse_weights matrix
 
 % params
 output_filename = "synapse_weights.cpp";
@@ -15,7 +15,7 @@ output_file = 0;
 if write_to_file
 	output_file = fopen(output_filename,'w');
 end
-grid_size = 120;%90;%120;
+grid_size = 90;%120;
 grid_size_target = 30; % target grid size for neuron weights
 total_nrns = (grid_size_target^2);%35;%(grid_size^2);% total neurons
 if show_2d_plot
@@ -24,10 +24,15 @@ end
 iter = 13; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
 start_x_shift = (grid_size/2) - 44;%- 44;%1;%28; -2 = 2 down
 start_y_shift = (grid_size/2) - 44;%- 44;%1;%-4;%28; +2 = 2 left
-p1=.68;p2=2;p3=2;p4=130;p5=p3;p6=p4;p7=0.20;
-p8=.135;p9=2;p10=2;p11=2;p12=p4;p13=p11;p14=p11;p15=p12;p16=1.08;p17=0.0058;
+p1=.68;p2=2;p3=2;
+p4=45; % center size
+p5=p3;p6=p4;
+p7=0.15; % surround size
+p8=.135;p9=2;p10=2;p11=2;p12=p4;p13=p11;p14=p11;p15=p12;
+p16=0.81; % surround size
+p17=0.0058;
 p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
-tiling_fraction=0.33333333333;%0.1666666667;%0.164;%0.33333333333;%0.1;%0.33333333333;%1;%0.33;%0.5; % fraction of standard tiling distance between bumps
+tiling_fraction=0.1666666667;%0.164;%0.33333333333;%0.1;%0.33333333333;%1;%0.33;%0.5; % fraction of standard tiling distance between bumps
 po=[show_3d_plot,write_to_file,sample_matrix,output_file,grid_size,iter,tiling_fraction, ...
     grid_size_target,start_x_shift,start_y_shift];
 comb_syn_wts=[];

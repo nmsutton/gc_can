@@ -13,7 +13,7 @@ clear all;
 clc;
 initOAT;
 hopper_use=0;
-hopper_run=3;
+hopper_run=1;
 if hopper_use
     hopper_path=strcat('/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat');
     SpikeReader(hopper_path, false, 'silent');
