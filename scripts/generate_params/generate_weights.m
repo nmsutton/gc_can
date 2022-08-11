@@ -15,7 +15,10 @@ output_file = 0;
 if write_to_file
 	output_file = fopen(output_filename,'w');
 end
-grid_size = 120;%90;%120;
+grid_size = 90;
+if alt_weights
+    grid_size = 120;
+end
 grid_size_target = 30; % target grid size for neuron weights
 total_nrns = (grid_size_target^2);%35;%(grid_size^2);% total neurons
 if show_2d_plot
@@ -25,14 +28,14 @@ iter = 13; % iterations to run cent-surr function. i.e., number of tiled cent-su
 start_x_shift = (grid_size/2) - 44;%- 44;%1;%28; -2 = 2 down
 start_y_shift = (grid_size/2) - 44;%- 44;%1;%-4;%28; +2 = 2 left
 p1=.68;p2=2;p3=2;
-p4=45; % center size
+p4=38; % center size
 p5=p3;p6=p4;
-p7=0.15; % surround size
+p7=0.174;%0.15; % surround size
 p8=.135;p9=2;p10=2;p11=2;p12=p4;p13=p11;p14=p11;p15=p12;
-p16=0.81; % surround size
+p16=0.9396;%0.81; % surround size
 p17=0.0058;
 p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
-tiling_fraction=0.1666666667;%0.164;%0.33333333333;%0.1;%0.33333333333;%1;%0.33;%0.5; % fraction of standard tiling distance between bumps
+tiling_fraction=0.33333333333;%0.1;%0.33333333333;%1;%0.33;%0.5; % fraction of standard tiling distance between bumps
 po=[show_3d_plot,write_to_file,sample_matrix,output_file,grid_size,iter,tiling_fraction, ...
     grid_size_target,start_x_shift,start_y_shift];
 comb_syn_wts=[];

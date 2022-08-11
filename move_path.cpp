@@ -80,12 +80,14 @@ void control_speed(double speed, P* p) {
 	if (p->auto_speed_control || p->move_animal_onlypos) {
 		p->move_increment = (0.001*speed);
 		speed = speed * p->grid_pattern_scale;
-		p->base_ext = 599.80090165493073+(1.6261465514582882*speed)-(0.91614491179608026*pow(speed,2))+(0.12862126960704923*pow(speed,3))-(0.0038746307083107070*pow(speed,4));
-		p->speed_signaling = .033142089711234834-(.018931921976746008*speed)+(.022852000258479707*pow(speed,2))-(.0023789928407943238*pow(speed,3))+(.000082693476104535207*pow(speed,4));
-		p->spdin2in_curr = -.50000000000002909+(0.023333333333336974*speed)+(.0013333333333332236*pow(speed,2));
-		if (speed<13) {p->spdin2in_curr=0;}
-		p->spdex2in_curr = 0.54192102759494176+(0.013333688462443864*speed)-(0.00040923216053246475*pow(speed,2))-(0.00056131770078813367*pow(speed,3))+(0.000024054119037496186*pow(speed,4));
-		if (p->spdex2in_curr>13) {p->spdex2in_curr=0;}
+		p->base_ext = -372.40259671059977+(284.01298677113806*speed)-(30.373737343199565*pow(speed,2))+(1.4316883100328286*pow(speed,3))-(.024704184671585638*pow(speed,4));
+		if (speed<7.5) {p->base_ext=575;}
+		p->speed_signaling = -.033786327002412908+(.38225015034412241*speed)-(.19036670524832777*pow(speed,2))+(.035907132240958609*pow(speed,3))-(.0026437607781101468*pow(speed,4))+(.000067712519266801180*pow(speed,5));
+		p->spdin2in_curr = -11.913636363492442+(2.7546969696644910*speed)-(.21027272727034879*pow(speed,2))+(.0053939393938827835*pow(speed,3));
+		if (speed<10) {p->spdin2in_curr=0;}
+		p->spdex2in_curr = 0.56618382429521452+(0.036800456756184027*speed)-(0.028563145831825898*pow(speed,2))+(0.0061993186095791221*pow(speed,3))-(0.00042767683987308307*pow(speed,4));
+		if (speed>10) {p->spdex2in_curr=0;}
+		//if (speed>10) {p->pc_level=400;} else {p->pc_level=1000;}
 		//printf("%f %f\n",p->move_increment,speed);
 	}
 }

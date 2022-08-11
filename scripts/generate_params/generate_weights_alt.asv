@@ -54,7 +54,8 @@ y_wrap=0; % wrap around values on y-axis
 a=345;%10;%90-18.435;%90-18; % angle of movement
 a=a/360 * pi*2; % convert to radians
 % limited fields params
-seven_fields=1; % choose between 7 or 4 field in initial shape
+seven_fields=0; % choose between 7 or 4 field in initial shape
+more_fields=1;
 centx = []; centy = []; % x- and y-axis values of centroids
 center_x = 46; center_y = 46;
 select_cent=[3,4,5];%[1,4,7];%[1,2,3];%[1,4,7];%[3,4,5];% centroid indicies to duplicate
@@ -90,12 +91,20 @@ function [centx, centy]=init_hex(centx,centy,center_x,center_y,x_t_space,y_t_spa
         centx=[centx, center_x+((x_t_space/2)*m)];
         centy=[centy, center_y-(y_t_space*m)];
     end
+    if more_fields
+        centx=[centx, center_x-(x_t_space*m)*2];
+        centy=[centy, center_y];
+    end    
         centx=[centx, center_x-(x_t_space*m)];
         centy=[centy, center_y];    
         centx=[centx, center_x];
         centy=[centy, center_y];    
         centx=[centx, center_x+(x_t_space*m)];
-        centy=[centy, center_y];    
+        centy=[centy, center_y];  
+    if more_fields
+        centx=[centx, center_x+(x_t_space*m)*2];
+        centy=[centy, center_y];
+    end      
     if seven_fields
         centx=[centx, center_x-((x_t_space/2)*m)];
         centy=[centy, center_y+(y_t_space*m)];
