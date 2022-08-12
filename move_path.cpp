@@ -96,7 +96,7 @@ void EISignal(double angle, CARLsim* sim, P* p);
 
 void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_times, int num_moves, int num_speeds, CARLsim* sim, P *p) {
 	/*
-		Move animal through a predefined set of velocities (speeds+angles) to create a path.
+		Move virtual animal through a predefined set of velocities (speeds+angles) to create a path.
 	*/
 	double angle;
 
@@ -131,9 +131,15 @@ void run_path_test(vector<double> *moves, vector<double> *speeds, vector<int> *s
 			angle = (*moves)[(int) floor(p->mi)];
 			control_speed((*speeds)[(int) floor(p->mi)], p);
 		}
+		//angle = angle - 15;
+		//if (angle>360) {angle=360-angle;}
+		//if (angle<0)   {angle=angle+360;}
 		set_pos(p, angle);
 	}
 	else {
+		//angle = angle - 15;
+		//if (angle>360) {angle=360-angle;}
+		//if (angle<0)   {angle=angle+360;}
 		angle = (*moves)[(int) floor(p->mi)];
 		set_pos(p, angle);
 	}

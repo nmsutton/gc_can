@@ -9,10 +9,12 @@
 %% use_hopper and use_laptop options are commented out. high_res_traj.m
 %% needs to be run first to create data for this script.
 %%
+%% References: https://lost-contact.mit.edu/afs/inf.ed.ac.uk/group/teaching/matlab-help/R2016b/matlab/creating_plots/save-figure-at-specific-size-and-resolution.html
+%% https://hydroecology.net/resizing-matlab-figures-the-easy-way/
 
 import CMBHOME.Utils.*
 
-[root c_ts] = load_spike_times();
+%[root c_ts] = load_spike_times();
 
 use_carlsim_spikes = 1;
 alt_heatmap = 0;
@@ -165,6 +167,7 @@ if flip_vert
 end
 
 % plot
+fig = figure;
 imagesc(heat_map);
 axis('tight')
 xlabel('animal position on x axis') 
@@ -182,3 +185,4 @@ else
 	caption = sprintf('Physical space grid cell firing, total t = %.0f ms', c_ts(end)*1000);
 end
 title(caption, 'FontSize', 15);
+set(fig, 'units', 'inches', 'position', [0 50 5 4.444]);

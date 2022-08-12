@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 20; // size of bins to record firing activity
-	double sim_time = 8000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 2400000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -62,9 +62,9 @@ struct P {
 	bool run_path = 0; // use run_path function. This is auto enabled by functions that use it.
 	bool run_path_test = 0; // only generate movement positions not signaling with run_path function
 	bool move_animal = 0; // use real animal movement positions with neural signaling
-	bool move_animal_onlypos = 0; // generate animal movement position but not signaling
+	bool move_animal_onlypos = 1; // generate animal movement position but not signaling
 	bool move_fullspace = 0; // move through whole environment
-	bool move_straight = 1;
+	bool move_straight = 0;
 	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;
@@ -77,12 +77,12 @@ struct P {
 	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
 	bool record_pos_track = 0; // write files for animal position tracking plotting
 	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
-	bool record_spikes_file = 1; // write file for spike times and neuron positions
-	bool record_highrestraj = 1; // write files for high resolution trajectory locations
+	bool record_spikes_file = 0; // write file for spike times and neuron positions
+	bool record_highrestraj = 0; // write files for high resolution trajectory locations
 	#define additional_spk_mon 0 // additional spike monitors
 	#define monitor_voltage 0 // turn voltage monitoring on or off 
-	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
-	bool pc_to_gc = 1; // place cells to grid cells signaling
+	bool pc_active = 0; // pc signaling active. bc->pc->gc can still work even if this is disabled.
+	bool pc_to_gc = 0; // place cells to grid cells signaling
 	bool spin2in_active = 1; // inhibitory speed cells active.	
 	bool spin2ex_active = 0; // inhibitory speed cells active.	
 	bool spex2in_active = 1; // excitatory speed cells active.	
@@ -150,7 +150,7 @@ struct P {
 	double noise_addit_freq = 0.0f; // additional spiking frequency added to base external input
 
 	// neuron vs location parameters
-	int selected_neuron = 378;//372;//465;//372;//11;//465;//232;//465;//10;
+	int selected_neuron = 465;//378;//372;//465;//372;//11;//465;//232;//465;//10;
 	double grid_pattern_rot = 0;//-15; // angle value for rotation of grid pattern in plot
 	double grid_pattern_scale = 1;//18/22.5; // rescale grid pattern for plot. smaller value makes larger rescale, e.g., 0.8 = 1.25x rescale. animal speed to bump speed conversion. <goal_top_bump_speed>/<goal_top_animal_speed>
 	double firing_positions[x_size*y_size]; // locations of firing of a neuron
