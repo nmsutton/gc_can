@@ -6,7 +6,8 @@ hopper_run = 7;
 laptop_data = 0;
 use_unwrapped_data = 1;
 plot_spikes = 1; 
-restrict_time = 100; % 0 for no restriction or input time value for restriction
+restrict_time = 300000; % 0 for no restriction or input time value for restriction
+timestep=20;
 hFigure = figure;
 
 % load traj data
@@ -48,7 +49,7 @@ if restrict_time == 0
 end
 
 % video
-numberOfFrames = (time);
+numberOfFrames = (time/timestep);
 allTheFrames = cell(numberOfFrames,1);
 vidHeight = 337;%342;
 vidWidth = 442;%434;
@@ -60,6 +61,7 @@ set(gcf, 'nextplot', 'replacechildren');
 set(gcf, 'renderer', 'zbuffer');
 caxis manual;          % allow subsequent plots to use the same color limits
 
+%{
 h = animatedline();
 %hold on
 for t = 1:time
@@ -79,6 +81,30 @@ for t = 1:time
     myMovie(t) = thisFrame;	
 end
 %hold off
+%}
+
+
+
+axes('position',[0 0 1 1]);
+plot1 = scatter(Ys(1),Xs(1),30,'.');
+
+for t = 1:20:time
+	hold on
+    for i=(t-timestep):t
+		if isempty(find(spk_t==i))==0
+	        scatter(Xs(i), Ys(i), 100, [1,0,0], 'filled');
+		end
+    end
+    plot1.XData = Xs(1:t); 
+    plot1.YData = Ys(1:t);
+    drawnow
+    caption = sprintf('t = %.0f ms', t);
+    title(caption, 'FontSize', 15);
+    hold off
+    thisFrame = getframe(gcf);
+    myMovie(ceil(t/20)) = thisFrame;	
+end
+hold off
 
 close(hFigure);
 myMovie(1) = []; % remove first frame causing issues due to wrong size
@@ -86,33 +112,6 @@ v = VideoWriter('./videos/spike_traj.avi'); % Create a VideoWriter object to wri
 open(v)
 writeVideo(v,myMovie) % Write the movie object to a new video file.
 close(v)
-
-%{
-figure;
-hold on
-%colormap(customMap);
-axes('position',[0 0 1 1]);
-plot1 = scatter(Ys(1),Xs(1),30,'.');
-%xlim([lonMin lonMax]);
-%ylim([latMin latMax]);
-%set(gca,'Color','none');
-%set(gca,'CLim',[0, 1E-4]);
-
-for k = 2:10000 %length(Xs)
-
-    % pause 2/10 second: 
-    %pause(0.2)
-    if isempty(find(spk_t==t)) == 0
-        %scatter(Xs(i), Ys(i), 300, [1,0,0], 'filled');
-        scatter(Xs(i), Ys(i), 300, [1,0,0]);
-    else
-        %plot1.XData = Xs(1:k); 
-        %plot1.YData = Ys(1:k); 
-    end
-    %drawnow
-end
-hold off
-%}
 
 %{
 % clear points
