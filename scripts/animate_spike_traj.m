@@ -6,7 +6,7 @@ hopper_run = 7;
 laptop_data = 0;
 use_unwrapped_data = 1;
 plot_spikes = 1; 
-restrict_time = 300000; % 0 for no restriction or input time value for restriction
+restrict_time = 0; % 0 for no restriction or input time value for restriction
 timestep=20;
 hFigure = figure;
 
@@ -48,6 +48,15 @@ if restrict_time == 0
     time = length(Xs);
 end
 
+min_x = min(Xs(1:time))
+max_x = max(Xs(1:time))
+min_y = min(Ys(1:time))
+max_y = max(Ys(1:time))
+if min_x > 0 min_x = 0; end
+if max_x < 30 max_x = 30; end
+if min_y > 0 min_y = 0; end
+if max_y < 30 max_y = 30; end
+
 % video
 numberOfFrames = (time/timestep);
 allTheFrames = cell(numberOfFrames,1);
@@ -85,26 +94,25 @@ end
 
 
 
-axes('position',[0 0 1 1]);
-plot1 = scatter(Ys(1),Xs(1),30,'.');
+%axes('position',[0 0 1 1]);
+%plot1 = scatter(Ys(1:time),Xs(1:time),30,'.');
 
-for t = 1:20:time
+for t = 1:timestep:time
+    clf(hFigure)
 	hold on
-    for i=(t-timestep):t
-		if isempty(find(spk_t==i))==0
-	        scatter(Xs(i), Ys(i), 100, [1,0,0], 'filled');
-		end
-    end
-    plot1.XData = Xs(1:t); 
-    plot1.YData = Ys(1:t);
-    drawnow
-    caption = sprintf('t = %.0f ms', t);
+    spikes = find(spk_t < t);
+    %scatter(Xs(1:t),Ys(1:t),10, [.1,.1,.1], 'filled'); % old positions
+    line(Xs(1:t),Ys(1:t), 'Color', 'k', 'LineWidth', 1.5)
+    scatter(Xs(spk_t(spikes)), Ys(spk_t(spikes)), 100, [1,0,0], 'filled'); % spikes
+    scatter(Xs(t),Ys(t),100, [0,.5,1], 'filled'); % current position
+    caption = sprintf('Virtual Animal Positions and Spikes; t = %.0f ms', t);
     title(caption, 'FontSize', 15);
+    xlim([min_x max_x])    
+    ylim([min_y max_y])
     hold off
     thisFrame = getframe(gcf);
     myMovie(ceil(t/20)) = thisFrame;	
 end
-hold off
 
 close(hFigure);
 myMovie(1) = []; % remove first frame causing issues due to wrong size
@@ -112,9 +120,3 @@ v = VideoWriter('./videos/spike_traj.avi'); % Create a VideoWriter object to wri
 open(v)
 writeVideo(v,myMovie) % Write the movie object to a new video file.
 close(v)
-
-%{
-% clear points
-clearpoints(h)
-drawnow
-%}
