@@ -4,14 +4,15 @@
 angles_speeds = 0; % load angles and speeds or x,y position coordinates
 preloaded_XsYs = 0; % use prior loaded Ys and Xs instead of reading them from files
 output_XsYs_file = 0;
-output_spikes_file = 1; % output file that can be used in rate map plot
 create_plot = 1;
-use_hopper = 1;
-hopper_run = 7;
+use_hopper = 0;
+hopper_run = 4;
 restrict_time = 0;%2400000;%725000/20;%5000; % 0 for no restriction; in 20ms bins
 timestep = 20;
 orig_xy = 0; % use orig x,y animal positions with no wrapping around or carlsim x,y that wraps around a taurus
-plot_spikes = 1;  
+plot_spikes = 0;  
+output_spikes_file = 1; % output file that can be used in rate map plot
+if plot_spikes == 0 output_spikes_file = 0; end
 laptop_data = 0;
 use_unwrapped_data = 1;
 

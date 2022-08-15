@@ -12,7 +12,7 @@
 clear all;
 clc;
 initOAT;
-hopper_use=1;
+hopper_use=0;
 hopper_run=7;
 if hopper_use
     hopper_path=strcat('/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat');
@@ -24,7 +24,7 @@ else
 end
 
 delay_frames = false;%true;
-time=300000;%10000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
+time=8000;%10000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
 bin_size=400; % size of firing bin in ms
 t=[0:(1/bin_size):(time*(1/bin_size))];
 x_size = 30; % size of network on x-axis
@@ -72,6 +72,7 @@ for frameIndex = 1 : numberOfFrames
   caxis([0 5.5])
   cb = colorbar;
   set(cb, 'ylim', [0 11.0]); % set colorbar range
+  set(gca,'YDir','normal') % set y-axis 0 - end bottom to top
   caption = sprintf('Neuron space grid cell firing amounts, t = %.0f ms', ((frameIndex+start_frame)*bin_size));
   if delay_frames == true
       caption = sprintf('Neuron space grid cell firing amounts, t = %.0f ms', ceil((frameIndex+start_frame)/bin_size)*bin_size);

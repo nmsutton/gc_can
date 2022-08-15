@@ -80,13 +80,15 @@ void control_speed(double speed, P* p) {
 	if (p->auto_speed_control || p->move_animal_onlypos) {
 		p->move_increment = (0.001*speed);
 		speed = speed * p->grid_pattern_scale;
-		p->base_ext = -372.40259671059977+(284.01298677113806*speed)-(30.373737343199565*pow(speed,2))+(1.4316883100328286*pow(speed,3))-(.024704184671585638*pow(speed,4));
-		if (speed<7.5) {p->base_ext=575;}
-		p->speed_signaling = -.033786327002412908+(.38225015034412241*speed)-(.19036670524832777*pow(speed,2))+(.035907132240958609*pow(speed,3))-(.0026437607781101468*pow(speed,4))+(.000067712519266801180*pow(speed,5));
-		p->spdin2in_curr = -11.913636363492442+(2.7546969696644910*speed)-(.21027272727034879*pow(speed,2))+(.0053939393938827835*pow(speed,3));
-		if (speed<10) {p->spdin2in_curr=0;}
-		p->spdex2in_curr = 0.56618382429521452+(0.036800456756184027*speed)-(0.028563145831825898*pow(speed,2))+(0.0061993186095791221*pow(speed,3))-(0.00042767683987308307*pow(speed,4));
-		if (speed>10) {p->spdex2in_curr=0;}
+		p->base_ext = 655;
+		//if (speed<7.5) {p->base_ext=575;}
+		p->speed_signaling = -.00034799225597907657+(.0081675325631652834*speed)+(.014970007271328412*pow(speed,2))-(.0017318129783734592*pow(speed,3))+(.000066887712315789088*pow(speed,4));
+		p->spdin2in_curr = -7.6999999999504416+(0.87666666666074300*speed)+(-.023333333333160879*pow(speed,2));
+		if (speed<=14) {p->spdin2in_curr=0;}
+		if (speed>=20) {p->spdin2in_curr=0.5;}
+		p->spdex2in_curr = 0.57963140405914459+(-0.076238844166134606*speed)+(0.024200128580085856*pow(speed,2))+(-0.0029881884411857643*pow(speed,3))+(0.00010282892540609924*pow(speed,4));
+		if (speed<=3) {p->spdex2in_curr=0.5;}
+		if (speed>=14) {p->spdex2in_curr=0;}
 		//if (speed>10) {p->pc_level=400;} else {p->pc_level=1000;}
 		//printf("%f %f\n",p->move_increment,speed);
 	}
@@ -151,7 +153,7 @@ void move_straight(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(15,p);	
+		control_speed(5,p);	
 		//control_speed(20,p);	
 		//control_speed(25,p);	
 		//control_speed(0.1,p);	
