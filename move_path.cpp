@@ -408,14 +408,12 @@ void move_animal_aug(CARLsim* sim, P* p) {
 	if (p->t == p->animal_aug_time) {
 		// clear old values
 		p->speeds.clear();p->angles.clear();
-		int curr_ind = floor(p->t/p->firing_bin); // current move index
-		int det_ind_exp = false; // detect if expansion of vector indices is needed
-		int fa_new, fa_old, fi_new, fi_old, x, y, new_ind; // firing amounts and indices
+		int fa_new, fa_old, fi_new, fi_old, x, y; // firing amounts and indices
 		int rand_max = 0;
 		int aug_time = (int) ceil(p->locations_sortind.size()*p->percent_for_aug);
 		double x_pos = p->pos[0];
 		double y_pos = p->pos[1];
-		double xleg, yleg, angle, speed, last_speed, h;
+		double xleg, yleg, angle, speed, last_speed, h, dist_away;
 		vector<int> rand_loc_xy, loc_range;
 
 		// copy vector
@@ -464,9 +462,9 @@ void move_animal_aug(CARLsim* sim, P* p) {
 			printf("x:%f y:%f\n",p->x_aug[i],p->y_aug[i]);
 		}
 		// generate movement to locations
-		double dist_away; // distance from target
 		speed = 5;
 		for (int i = 0; i < aug_time; i++) {
+			p->aug_i++;
 			// find angle to target
 			xleg = x_pos - p->x_aug[i];
 			yleg = y_pos - p->y_aug[i];
@@ -485,38 +483,33 @@ void move_animal_aug(CARLsim* sim, P* p) {
 			}
 
 			// find new movement steps given speed
-			dist_away = h / speed;
-			for (int j = 0; j < ceil(dist_away); j++) {
-				new_ind = curr_ind+i+j;
-				// detect if new indices are needed
-				if (det_ind_exp == false && new_ind > p->speeds->size()) {
-					det_ind_exp = true;
-					printf("new ind detect: %d s:%d\n",new_ind,p->speeds->size());
-				}
+			dist_away = ceil(h / speed);
+			for (int j = 0; j < dist_away; j++) {
+				p->aug_i++;
 				// store angles
-				if (det_ind_exp) {p->angles->push_back(angle);}
-				else {p->angles[new_ind] = angle;}
+				p->angles.push_back(angle);
 				// store speeds
-				if (j != ceil(dist_away) - 1) {
-					if (det_ind_exp) {p->speeds->push_back(speed);}
-					else {p->speeds[new_ind]=speed;}
+				if (j != dist_away - 1) {
+					p->speeds.push_back(speed);
 				}
 				else {
-					last_speed = h - (speed*(j-2)); // lower speed for last step
-					if (det_ind_exp) {p->speeds->push_back(last_speed);}
-					else {p->speeds[new_ind]=last_speed;}
+					last_speed = h - (speed*(double) j); // lower speed for last step
+					p->speeds.push_back(last_speed);
+					//printf("%.2f %.2d %.2f %.2f\n",h,j,(speed*(double) j-2),last_speed);
 				}
-				if (det_ind_exp) {p->speed_times.push_back(new_ind*p->firing_bin);}
-				else {p->speed_times[new_ind]=new_ind*p->firing_bin;}
+				p->speed_times.push_back(p->aug_i*p->firing_bin);
 
 				if (i<20) {
-					printf("s:%.2f a:%.2f x1:%.2f y1:%.2f x2:%.2f y2:%.2f xleg:%.2f yleg:%.2f h:%.2f a:%.2f ni:%d\n",p->speeds[new_ind],p->angles[new_ind],x_pos,y_pos,p->x_aug[i],p->y_aug[i],xleg,yleg,h,angle,new_ind);	
+					//printf("s:%.2f a:%.2f x1:%.2f y1:%.2f x2:%.2f y2:%.2f xleg:%.2f yleg:%.2f h:%.2f a:%.2f\n",p->speeds[i],p->angles[i],x_pos,y_pos,p->x_aug[i],p->y_aug[i],xleg,yleg,h,angle);	
 				}				
 			}			
 			x_pos = p->pos[0];
 			y_pos = p->pos[1];
 		}
-		p->num_moves = p->angles->size();
-		p->num_speeds = p->speeds->size();	
+		for (int i = 0; i < 20; i++) {
+			printf("%f %f\n",p->speeds[i],p->angles[i]);
+		}		
+		p->num_moves = p->angles.size();
+		p->num_speeds = p->speeds.size();	
 	}
 }

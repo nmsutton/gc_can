@@ -68,6 +68,7 @@ struct P {
 	vector<double> y_aug;
 	vector<int> locations_sortind; // binned firing locations sorted indices
 	vector<int> locations_amounts; // amount of firing in indices
+	int aug_i;
 
 	// select movement trajectory
 	bool run_path = 0; // use run_path function. This is auto enabled by functions that use it.
