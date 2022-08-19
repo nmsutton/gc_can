@@ -6,11 +6,13 @@ preloaded_XsYs = 0; % use prior loaded Ys and Xs instead of reading them from fi
 output_XsYs_file = 0;
 create_plot = 1;
 use_hopper = 0;
-hopper_run = 4;
+hopper_run = 1;
 restrict_time = 0;%2400000;%725000/20;%5000; % 0 for no restriction; in 20ms bins
 timestep = 20;
 orig_xy = 0; % use orig x,y animal positions with no wrapping around or carlsim x,y that wraps around a taurus
-plot_spikes = 0;  
+plot_spikes = 1;  
+plot_in_spikes = 0;
+if plot_in_spikes plot_spikes=1; end
 output_spikes_file = 1; % output file that can be used in rate map plot
 if plot_spikes == 0 output_spikes_file = 0; end
 laptop_data = 0;
@@ -68,45 +70,29 @@ end
 % load spike times
 if plot_spikes
     if use_hopper
-        %{
-        hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/highres_trajx.csv']);
-        spk_x = readmatrix(hopper_path);    
-        hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/highres_trajy.csv']);
-        spk_y = readmatrix(hopper_path); 
-        %}
-        hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/spikes_recorded.csv']);
-        spk_t = readmatrix(hopper_path); 
-    else
-        %spk_x = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/highres_trajx.csv');
-        %spk_y = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/highres_trajy.csv');
-        if laptop_data == 0
-            spk_t = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv');
+        if plot_in_spikes
+            hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/in_spikes_recorded.csv']);
+            spk_t = readmatrix(hopper_path);             
         else
-            spk_t = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/spikes_recorded.csv');
+            hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/spikes_recorded.csv']);
+            spk_t = readmatrix(hopper_path); 
+        end
+    else
+        if plot_in_spikes
+            if laptop_data == 0
+                spk_t = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/in_spikes_recorded.csv');
+            else
+                spk_t = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/in_spikes_recorded.csv');
+            end           
+        else
+            if laptop_data == 0
+                spk_t = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv');
+            else
+                spk_t = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/spikes_recorded.csv');
+            end
         end
     end
 end
-%{
-if angles_speeds == 1 && preloaded_XsYs ~= 1
-    x = 0; y = 0;
-    %x = pos(1,1); % use pos from reformatted positions file used in moves_analysis.m
-    %y = pos(2,1);
-    for i=1:length(animal_speeds)
-	    t=i*timestep; % in ms
-	    a=animal_angles(i);
-	    s=animal_speeds(i);
-	    a=a/360*pi*2;
-        x=cos(a)*s+x;
-	    y=sin(a)*s+y;
-	    %fprintf("%f %f\n",x2,y2);
-	    Xs=[Xs;x];
-	    Ys=[Ys;y];
-        if mod(i,10000)==0
-            fprintf("i:%d %.1f%% completed\n",i,i/length(animal_speeds)*100);
-        end
-    end
-end
-%}
 
 if angles_speeds == 1 && preloaded_XsYs ~= 1
     x = 0; y = 0;

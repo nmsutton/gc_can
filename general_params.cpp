@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 20; // size of bins to record firing activity
-	double sim_time = 2400000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 2000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -32,15 +32,18 @@ struct P {
 	double dirs[4] = {0, 90, 180, 270};
 	double mi = 0; // move list index
 	vector<vector<int>> nrn_spk; // for total firing recording
+	vector<vector<int>> in_nrn_spk; // for total firing recording
 	vector<vector<double>> weights_in; // IN-GC weights
 	vector<vector<float>> inec_weights;
 	double gc_firing[layer_size]; // gc spiking amount
 	double gc_firing_bin[layer_size]; // gc spiking amount in time bins
 	//string spikes_output_filepath = "/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv";
 	string spikes_output_filepath = "output/spikes/spikes_recorded.csv";
+	string in_spikes_output_filepath = "output/spikes/in_spikes_recorded.csv";
 	string highres_pos_x_filepath = "output/spikes/highres_pos_x.csv";
 	string highres_pos_y_filepath = "output/spikes/highres_pos_y.csv";
 	ofstream spikes_output_file;
+	ofstream in_spikes_output_file;
 	ofstream highres_pos_x_file;
 	ofstream highres_pos_y_file;
 
@@ -58,11 +61,20 @@ struct P {
 	int num_moves;
 	int num_speeds;
 
+	// animal move aug parameters
+	int animal_aug_time = sim_time * 0.9; // when to start movement augs
+	double percent_for_aug = 0.25; // percent of total envorinment locations to add as augmented moves
+	vector<double> x_aug; // positions coordinates to travel to
+	vector<double> y_aug;
+	vector<int> locations_sortind; // binned firing locations sorted indices
+	vector<int> locations_amounts; // amount of firing in indices
+
 	// select movement trajectory
 	bool run_path = 0; // use run_path function. This is auto enabled by functions that use it.
-	bool run_path_test = 0; // only generate movement positions not signaling with run_path function
-	bool move_animal = 0; // use real animal movement positions with neural signaling
-	bool move_animal_onlypos = 1; // generate animal movement position but not signaling
+	bool run_path_onlypos = 0; // only generate movement positions not signaling with run_path function
+	bool move_animal = 1; // use real animal movement positions with neural signaling
+	bool move_animal_aug = 1; // augment animal movement
+	bool move_animal_onlypos = 0; // generate animal movement position but not signaling
 	bool move_fullspace = 0; // move through whole environment
 	bool move_straight = 0;
 	bool move_circles = 0;
@@ -77,9 +89,10 @@ struct P {
 	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
 	bool record_pos_track = 0; // write files for animal position tracking plotting
 	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
-	bool record_spikes_file = 1; // write file for spike times and neuron positions
+	bool record_spikes_file = 1; // write file for grid cell spike times and neuron positions
+	bool record_in_spikes_file = 1; // write file for interneuron spike times and neuron positions
 	bool record_highrestraj = 1; // write files for high resolution trajectory locations
-	#define additional_spk_mon 0 // additional spike monitors
+	#define additional_spk_mon 1 // additional spike monitors
 	#define monitor_voltage 0 // turn voltage monitoring on or off 
 	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 	bool pc_to_gc = 1; // place cells to grid cells signaling
@@ -151,9 +164,10 @@ struct P {
 
 	// neuron vs location parameters
 	int selected_neuron = 465;//378;//372;//465;//372;//11;//465;//232;//465;//10;
+	int selected_in_neuron = 100; // interneuron
 	double grid_pattern_rot = 0;//-15; // angle value for rotation of grid pattern in plot
 	double grid_pattern_scale = 1;//18/22.5; // rescale grid pattern for plot. smaller value makes larger rescale, e.g., 0.8 = 1.25x rescale. animal speed to bump speed conversion. <goal_top_bump_speed>/<goal_top_animal_speed>
-	double firing_positions[x_size*y_size]; // locations of firing of a neuron
+	vector<int> locations_visited; // locations an animal visited
 	double animal_location[x_size*y_size]; // location of animal
 	double animal_location_all[x_size*y_size]; // location of animal
 };

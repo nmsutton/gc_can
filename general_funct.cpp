@@ -203,20 +203,22 @@ double get_noise(P *p) {
 	return rand_val;
 }
 
-void write_sel_nrn_spks(P* p) {
+void write_sel_nrn_spks(P* p, string n_type) {
 	/*
 		Write to file spikes from selected neuron to monitor
 	*/
-	//int x = (int) floor(p->pos[0]);
-	//int y = (int) floor(p->pos[1]);
-	p->spikes_output_file.close(); // reload file to save intermediate results
-	p->spikes_output_file.open(p->spikes_output_filepath, std::ios_base::app);
-	p->spikes_output_file << p->t;
-	//p->spikes_output_file << ",";
-	//p->spikes_output_file << x;
-	//p->spikes_output_file << ",";
-	//p->spikes_output_file << y;
-	p->spikes_output_file << "\n";
+	if (n_type=="grid_cell") {
+		p->spikes_output_file.close(); // reload file to save intermediate results
+		p->spikes_output_file.open(p->spikes_output_filepath, std::ios_base::app);
+		p->spikes_output_file << p->t;
+		p->spikes_output_file << "\n";		
+	}
+	else if (n_type=="interneuron") {
+		p->in_spikes_output_file.close();
+		p->in_spikes_output_file.open(p->in_spikes_output_filepath, std::ios_base::app);
+		p->in_spikes_output_file << p->t;
+		p->in_spikes_output_file << "\n";		
+	}
 }
 
 void count_firing(P* p, double *firing_matrix, vector<vector<int>> spike_recorder) {
@@ -298,6 +300,7 @@ void RecordNeuronVsLocation(CARLsim* sim, P* p) {
 		Detect firing of a selected individual neuron and record the animal's
 		position when the firing occured. Amount of firing is also recorded.
 	*/
+	if (p->move_animal_onlypos) {p->record_spikes_file=0;p->record_in_spikes_file=0;} // avoid extra spike file writing during onlypos
 	if (p->record_fire_vs_pos || p->record_spikes_file) {
 		int pi; // animal position index in GC layer
 		int i = p->selected_neuron; // neuron selected to record
@@ -306,13 +309,32 @@ void RecordNeuronVsLocation(CARLsim* sim, P* p) {
 		if (j > 0 && p->nrn_spk[i][j-1] == p->t) { // get index from position
 			if (p->record_fire_vs_pos) {
 				pi = (floor(p->pos[1]) * p->x_size) + floor(p->pos[0]);
-				p->firing_positions[pi] = p->firing_positions[pi] + 1;		
+				//p->firing_positions[pi] = p->firing_positions[pi] + 1;		
 			}
-			if (p->record_spikes_file) {write_sel_nrn_spks(p);}
+			if (p->record_spikes_file) {write_sel_nrn_spks(p, "grid_cell");}
 		}
 	}
 
-	if (p->record_fire_vs_pos) {write_rate_map(p->firing_positions, "firing_vs_loc", p);}
+	if (p->move_animal_aug) {
+		int pi, j;
+
+		if (p->t % p->firing_bin == 0) {
+			pi = (floor(p->pos[1]) * p->x_size) + floor(p->pos[0]);
+			p->locations_visited[pi] = p->locations_visited[pi] + 1;
+			//printf("pi:%d a:%d\n",pi,p->locations_visited[pi]);
+		}
+	}
+
+	if (p->record_in_spikes_file) {
+		int i = p->selected_in_neuron; // neuron selected to record
+		int j = p->in_nrn_spk[i].size(); // all spikes of selected neuron
+
+		if (j > 0 && p->in_nrn_spk[i][j-1] == p->t) { // get index from position
+			write_sel_nrn_spks(p, "interneuron");
+		}
+	}
+
+	//if (p->record_fire_vs_pos) {write_rate_map(p->firing_positions, "firing_vs_loc", p);}
 }
 
 void HighResTraj(CARLsim* sim, P* p) {

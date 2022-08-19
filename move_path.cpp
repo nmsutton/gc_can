@@ -1,5 +1,9 @@
 /*
 	movement sequences
+
+	references: https://www.omnicalculator.com/math/right-triangle-side-angle
+	https://www.mathsisfun.com/algebra/trig-finding-angle-right-triangle.html
+	https://cplusplus.com/reference/cmath/asin/
 */
 
 double rand_move() {
@@ -121,7 +125,7 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 	}
 }
 
-void run_path_test(vector<double> *moves, vector<double> *speeds, vector<int> *speed_times, int num_moves, int num_speeds, CARLsim* sim, P *p) {
+void run_path_onlypos(vector<double> *moves, vector<double> *speeds, vector<int> *speed_times, int num_moves, int num_speeds, CARLsim* sim, P *p) {
 	/*
 		Output the path of a virtual animal without simulating signaling
 	*/
@@ -379,5 +383,140 @@ void move_ramp(CARLsim* sim, P* p) {
 		control_speed(speed,p);
 		EISignal(angle, sim, p);
 		//printf("%.2d %.2f %.2f\n",p->t,speed,angle);
+	}
+}
+
+void create_rand_loc(P* p, int rand_max, vector<int> loc_range) {
+	int rand_loc;
+	//vector<int> rand_loc_xy;
+	int rand_val = (int) floor(rand() % rand_max); // random number up to rand_max
+	// find random location among list of low visited locations
+	for (int i = 0; i < ceil(p->locations_sortind.size()*p->percent_for_aug); i++) {
+		if (i == 0 && rand_val <= loc_range[0]) {
+			rand_loc = p->locations_sortind[0];
+		}
+		else if (rand_val > loc_range[i-1] && rand_val <= loc_range[i]) {
+			rand_loc = p->locations_sortind[i];
+		}
+	}
+	p->x_aug.push_back((double) (rand_loc % p->x_size));
+	p->y_aug.push_back((double) (rand_loc / p->x_size));
+	//printf("%d %d %d\n",rand_loc,rand_loc % p->x_size,rand_loc / p->x_size);
+}
+
+void move_animal_aug(CARLsim* sim, P* p) {
+	if (p->t == p->animal_aug_time) {
+		// clear old values
+		p->speeds.clear();p->angles.clear();
+		int curr_ind = floor(p->t/p->firing_bin); // current move index
+		int det_ind_exp = false; // detect if expansion of vector indices is needed
+		int fa_new, fa_old, fi_new, fi_old, x, y, new_ind; // firing amounts and indices
+		int rand_max = 0;
+		int aug_time = (int) ceil(p->locations_sortind.size()*p->percent_for_aug);
+		double x_pos = p->pos[0];
+		double y_pos = p->pos[1];
+		double xleg, yleg, angle, speed, last_speed, h;
+		vector<int> rand_loc_xy, loc_range;
+
+		// copy vector
+		for (int i = 0; i < p->locations_visited.size(); i++) {
+			p->locations_amounts[i]=p->locations_visited[i];
+			p->locations_sortind[i]=i;
+		}
+		// sort vectors
+		for (int i = 0; i < p->locations_amounts.size(); i++) {
+			for (int j = 0; j < p->locations_amounts.size(); j++) {
+				fa_old = p->locations_amounts[i];
+				fi_old = p->locations_sortind[i];
+				fa_new = p->locations_amounts[j];
+				fi_new = p->locations_sortind[j];
+				if (fa_new > fa_old) {
+					p->locations_amounts[i] = fa_new;
+					p->locations_sortind[i] = fi_new;
+					p->locations_amounts[j] = fa_old;
+					p->locations_sortind[j] = fi_old;
+				}
+			}
+		}
+		
+		//printf("locations sorted\n");
+		for (int i = 0; i < p->locations_visited.size(); i++) {
+			//printf("i:%d a:%d\n",p->locations_sortind[i],p->locations_amounts[i]);
+		}
+		for (int i = 0; i < p->locations_visited.size(); i++) {
+			//printf("i:%d a:%d\n",i,p->locations_visited[i]);
+		}
+		
+		// create target points
+		// find total number of low visited locations
+		for (int i = 0; i < aug_time; i++) {
+			//rand_max = rand_max + p->locations_visited[i] + 1;
+			rand_max = rand_max + 1;
+			// TODO: add more chance of location target based on lowest locations_visited value
+			loc_range.push_back(rand_max); // ranges for rand values
+		}
+		// generate list of target locations
+		for (int i = 0; i < aug_time; i++) {
+			create_rand_loc(p, rand_max, loc_range);
+		}
+		printf("aug moves:\n");
+		for (int i = 0; i < 20; i++) {
+			printf("x:%f y:%f\n",p->x_aug[i],p->y_aug[i]);
+		}
+		// generate movement to locations
+		double dist_away; // distance from target
+		speed = 5;
+		for (int i = 0; i < aug_time; i++) {
+			// find angle to target
+			xleg = x_pos - p->x_aug[i];
+			yleg = y_pos - p->y_aug[i];
+			h = sqrt(pow(xleg,2)+pow(yleg,2)); // triangle hypotenuse
+			// find angle from leg and h including converting radians to degrees
+			angle = asin(abs(yleg)/h)*(180/PI);
+			// find 360 degree rotation
+			if (xleg > 0 && yleg <= 0) {
+				angle = 90 + angle;
+			}
+			else if (xleg < 0 && yleg < 0) {
+				angle = 180 - angle;
+			}
+			else if (xleg < 0 && yleg > 0) {
+				angle = 180 + angle;
+			}
+
+			// find new movement steps given speed
+			dist_away = h / speed;
+			for (int j = 0; j < ceil(dist_away); j++) {
+				new_ind = curr_ind+i+j;
+				// detect if new indices are needed
+				if (det_ind_exp == false && new_ind > p->speeds->size()) {
+					det_ind_exp = true;
+					printf("new ind detect: %d s:%d\n",new_ind,p->speeds->size());
+				}
+				// store angles
+				if (det_ind_exp) {p->angles->push_back(angle);}
+				else {p->angles[new_ind] = angle;}
+				// store speeds
+				if (j != ceil(dist_away) - 1) {
+					if (det_ind_exp) {p->speeds->push_back(speed);}
+					else {p->speeds[new_ind]=speed;}
+				}
+				else {
+					last_speed = h - (speed*(j-2)); // lower speed for last step
+					if (det_ind_exp) {p->speeds->push_back(last_speed);}
+					else {p->speeds[new_ind]=last_speed;}
+				}
+				if (det_ind_exp) {p->speed_times.push_back(new_ind*p->firing_bin);}
+				else {p->speed_times[new_ind]=new_ind*p->firing_bin;}
+
+				if (i<20) {
+					printf("s:%.2f a:%.2f x1:%.2f y1:%.2f x2:%.2f y2:%.2f xleg:%.2f yleg:%.2f h:%.2f a:%.2f ni:%d\n",p->speeds[new_ind],p->angles[new_ind],x_pos,y_pos,p->x_aug[i],p->y_aug[i],xleg,yleg,h,angle,new_ind);	
+				}				
+			}			
+			x_pos = p->pos[0];
+			y_pos = p->pos[1];
+		}
+		p->num_moves = p->angles->size();
+		p->num_speeds = p->speeds->size();	
 	}
 }

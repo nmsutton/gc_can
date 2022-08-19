@@ -1,12 +1,12 @@
 % reference https://www.mathworks.com/help/matlab/ref/animatedline.html#:~:text=Create%20an%20animation%20by%20adding,loop%20using%20the%20addpoints%20function.&text=an%20%3D%20animatedline(%20x%20%2C%20y%20)%20creates%20an%20animated%20line,x%20%2C%20y%20%2C%20and%20z%20.
 
 % run options
-use_hopper = 0;
-hopper_run = 5;
+use_hopper = 1;
+hopper_run = 3;
 laptop_data = 0;
 use_unwrapped_data = 1;
-plot_spikes = 0; 
-restrict_time = 30000; % 0 for no restriction or input time value for restriction
+plot_spikes = 1; 
+restrict_time = 300000; % 0 for no restriction or input time value for restriction
 timestep=20;
 hFigure = figure;
 
@@ -108,7 +108,7 @@ for t = 1:timestep:time
     if plot_spikes scatter(Xs(spk_t(spikes)), Ys(spk_t(spikes)), 100, [1,0,0], 'filled'); end % spikes
     scatter(Xs(t),Ys(t),100, [0,.5,1], 'filled'); % current position
     caption = sprintf('Virtual Animal Positions and Spikes; t = %.0f ms', t);
-    title(caption, 'FontSize', 15);
+    title(caption, 'FontSize', 13);
     xlim([min_x max_x])    
     ylim([min_y max_y])
     hold off

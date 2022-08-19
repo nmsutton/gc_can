@@ -110,6 +110,11 @@ int main() {
 	vector<float> temp_vector(p.layer_size); // set vector size
 	p.ext_dir = temp_vector;
 	p.pc_activity = temp_vector;
+	for (int i = 0; i < p.layer_size; i++) {
+		p.locations_visited.push_back(0);
+		p.locations_sortind.push_back(0);
+		p.locations_amounts.push_back(0);
+	}
 	#if hopper_run
 		#if import_animal_data
 			vector<double> anim_angles = ParseCSV(p.anim_angles_csv);
@@ -131,7 +136,8 @@ int main() {
 		SpikeMonitor* SMext = sim.setSpikeMonitor(EC_LI_II_Multipolar_Pyramidal, "DEFAULT");
 		SpikeMonitor* SMspe = sim.setSpikeMonitor(MEC_LII_Basket_Speed, "DEFAULT");
 	#endif
-	if (p.record_spikes_file) {p.spikes_output_file.open(p.spikes_output_filepath);}
+	if (p.record_spikes_file && p.move_animal_onlypos==0) {p.spikes_output_file.open(p.spikes_output_filepath);}
+	if (p.record_in_spikes_file && p.move_animal_onlypos==0) {p.in_spikes_output_file.open(p.in_spikes_output_filepath);}
 	if (p.record_highrestraj) {p.highres_pos_x_file.open(p.highres_pos_x_filepath);}
 	if (p.record_highrestraj) {p.highres_pos_y_file.open(p.highres_pos_y_filepath);}
 
@@ -167,16 +173,22 @@ int main() {
 			//setExtDir(&p,270,0.04,1);
 			//sim.setExternalCurrent(MEC_LII_Basket_Speed, p.ext_dir);
 		}
-		if (p.move_animal_onlypos==0 && p.run_path_test==0) {sim.runNetwork(0,1,false);} // run for 1 ms, don't generate run stats
-		if (p.record_fire_vs_pos || p.record_spikes_file || p.print_in_weights || p.print_gc_firing) {
+		if (p.move_animal_onlypos==0 && p.run_path_onlypos==0) {sim.runNetwork(0,1,false);} // run for 1 ms, don't generate run stats
+		if (p.record_fire_vs_pos || (p.record_spikes_file && p.move_animal_onlypos==0) || p.print_in_weights || p.print_gc_firing) {
 			SMexc->stopRecording();
 			p.nrn_spk = SMexc->getSpikeVector2D(); // store firing in vector
 			SMexc->startRecording();
 		}
+		if (p.record_in_spikes_file && p.move_animal_onlypos==0) {
+			SMinh->stopRecording();
+			p.in_nrn_spk = SMinh->getSpikeVector2D(); // store firing in vector
+			SMinh->startRecording();
+		}
 		if (p.move_animal_onlypos==0) {
 			if (p.move_animal) {move_animal(&sim, &p, &anim_angles, &anim_speeds);}
+			if (p.move_animal_aug) {move_animal_aug(&sim, &p);}
 			else if (p.run_path) {
-				if (p.run_path_test) {run_path_test(&p.angles, &p.speeds, &p.speed_times, p.num_moves, p.num_speeds, &sim, &p);}
+				if (p.run_path_onlypos) {run_path_onlypos(&p.angles, &p.speeds, &p.speed_times, p.num_moves, p.num_speeds, &sim, &p);}
 				else {run_path(&p.angles, &p.speeds, &p.speed_times, p.num_moves, p.num_speeds, &sim, &p);}
 			}
 			if (p.move_straight) {move_straight(&sim, &p);}
@@ -205,7 +217,8 @@ int main() {
 		SMinh->print(false);
 		SMspe->print(false);
 	#endif
-	if (p.record_spikes_file) {p.spikes_output_file.close();}
+	if (p.record_spikes_file && p.move_animal_onlypos==0) {p.spikes_output_file.close();}
+	if (p.record_in_spikes_file && p.move_animal_onlypos==0) {p.in_spikes_output_file.close();}
 	if (p.record_highrestraj) {p.highres_pos_x_file.close();}
 	if (p.record_highrestraj) {p.highres_pos_y_file.close();}
 
