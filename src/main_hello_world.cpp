@@ -179,11 +179,13 @@ int main() {
 			p.nrn_spk = SMexc->getSpikeVector2D(); // store firing in vector
 			SMexc->startRecording();
 		}
-		if (p.record_in_spikes_file && p.move_animal_onlypos==0) {
-			SMinh->stopRecording();
-			p.in_nrn_spk = SMinh->getSpikeVector2D(); // store firing in vector
-			SMinh->startRecording();
-		}
+		#if additional_spk_mon
+			if (p.record_in_spikes_file && p.move_animal_onlypos==0) {
+				SMinh->stopRecording();
+				p.in_nrn_spk = SMinh->getSpikeVector2D(); // store firing in vector
+				SMinh->startRecording();
+			}
+		#endif
 		if (p.move_animal_onlypos==0) {
 			if (p.move_animal) {move_animal(&sim, &p, &anim_angles, &anim_speeds);}
 			if (p.move_animal_aug) {move_animal_aug(&sim, &p);}

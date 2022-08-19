@@ -62,7 +62,7 @@ struct P {
 	int num_speeds;
 
 	// animal move aug parameters
-	int animal_aug_time = sim_time * 0.9; // when to start movement augs
+	int animal_aug_time = sim_time * 0.75; // when to start movement augs
 	double percent_for_aug = 0.25; // percent of total envorinment locations to add as augmented moves
 	vector<double> x_aug; // positions coordinates to travel to
 	vector<double> y_aug;
@@ -91,9 +91,9 @@ struct P {
 	bool record_pos_track = 0; // write files for animal position tracking plotting
 	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
 	bool record_spikes_file = 1; // write file for grid cell spike times and neuron positions
-	bool record_in_spikes_file = 1; // write file for interneuron spike times and neuron positions
+	bool record_in_spikes_file = 0; // write file for interneuron spike times and neuron positions
 	bool record_highrestraj = 1; // write files for high resolution trajectory locations
-	#define additional_spk_mon 1 // additional spike monitors
+	#define additional_spk_mon 0 // additional spike monitors
 	#define monitor_voltage 0 // turn voltage monitoring on or off 
 	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 	bool pc_to_gc = 1; // place cells to grid cells signaling

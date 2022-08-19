@@ -284,7 +284,8 @@ void move_animal(CARLsim* sim, P* p, vector<double> *anim_angles, vector<double>
 	//	Movement data from real animal recordings.
 	//
 
-	run_path(anim_angles, anim_speeds, &p->speed_times, p->num_moves, p->num_speeds, sim, p);	
+	if (p->move_animal_aug == 1 && p->t >= p->animal_aug_time) {}
+	else {run_path(anim_angles, anim_speeds, &p->speed_times, p->num_moves, p->num_speeds, sim, p);}
 }
 
 void move_circles(CARLsim* sim, P* p) {
@@ -457,9 +458,9 @@ void move_animal_aug(CARLsim* sim, P* p) {
 		for (int i = 0; i < aug_time; i++) {
 			create_rand_loc(p, rand_max, loc_range);
 		}
-		printf("aug moves:\n");
+		//printf("aug moves:\n");
 		for (int i = 0; i < 20; i++) {
-			printf("x:%f y:%f\n",p->x_aug[i],p->y_aug[i]);
+			//printf("x:%f y:%f\n",p->x_aug[i],p->y_aug[i]);
 		}
 		// generate movement to locations
 		speed = 5;
@@ -507,9 +508,13 @@ void move_animal_aug(CARLsim* sim, P* p) {
 			y_pos = p->pos[1];
 		}
 		for (int i = 0; i < 20; i++) {
-			printf("%f %f\n",p->speeds[i],p->angles[i]);
+			//printf("%f %f\n",p->speeds[i],p->angles[i]);
 		}		
 		p->num_moves = p->angles.size();
 		p->num_speeds = p->speeds.size();	
+	}
+
+	if (p->t >= p->animal_aug_time) {
+		run_path(&p->angles, &p->speeds, &p->speed_times, p->num_moves, p->num_speeds, sim, p);	
 	}
 }
