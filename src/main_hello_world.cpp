@@ -199,7 +199,10 @@ int main() {
 			if (false && p.t % 20 == 0) {printf("%d %f %f\n",p.t,anim_speeds[floor(((int) p.t)/20)],anim_angles[floor(((int) p.t)/20)]);}
 		}
 		#if import_animal_data
-			if (p.move_animal_onlypos==1) {move_animal_onlypos(&sim, &p, &anim_angles, &anim_speeds);}
+			if (p.move_animal_onlypos==1) {
+				move_animal_onlypos(&sim, &p, &anim_angles, &anim_speeds);
+				if (p.move_animal_aug) {move_animal_aug(&sim, &p);}
+			}
 		#endif
 		PrintWeightsAndFiring(&p);
 		RecordNeuronVsLocation(&sim, &p);

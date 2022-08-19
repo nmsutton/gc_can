@@ -409,6 +409,7 @@ void move_animal_aug(CARLsim* sim, P* p) {
 	if (p->t == p->animal_aug_time) {
 		// clear old values
 		p->speeds.clear();p->angles.clear();
+		if(move_animal_onlypos) {p->mi=0;} // move_animal_onlypos specific use
 		int fa_new, fa_old, fi_new, fi_old, x, y; // firing amounts and indices
 		int rand_max = 0;
 		int aug_time = (int) ceil(p->locations_sortind.size()*p->percent_for_aug);
@@ -515,6 +516,11 @@ void move_animal_aug(CARLsim* sim, P* p) {
 	}
 
 	if (p->t >= p->animal_aug_time) {
-		run_path(&p->angles, &p->speeds, &p->speed_times, p->num_moves, p->num_speeds, sim, p);	
+		if (p->move_animal_onlypos==0) {
+			run_path(&p->angles, &p->speeds, &p->speed_times, p->num_moves, p->num_speeds, sim, p);	
+		}
+		else {
+			move_animal_onlypos(sim, p, &p->angles, &p->speeds);
+		}
 	}
 }
