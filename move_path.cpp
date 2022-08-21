@@ -246,12 +246,12 @@ void move_fullspace(CARLsim* sim, P* p) {
 	double angle_rev_v = -1; // flag to reverse angle vertically
 	//double speed = 2.5;
 	double speed = p->move_increment*1000;
-	int ts_per_sec = 1000/p->firing_bin; // timesteps per second
+	int ts_per_sec = 1000/p->timestep; // timesteps per second
 	int h_m = ((int) floor((double) p->x_size/speed)*ts_per_sec); // indices for horizontal movement
-	int v_m = ceil(1000.0/(double) p->firing_bin)/speed; // indices for vertical movement
+	int v_m = ceil(1000.0/(double) p->timestep)/speed; // indices for vertical movement
 	vector<int> mv_i; // move vertical index
 	for (int i = 0; i < v_m; i++) {mv_i.push_back(h_m+i);}
-	int v_m_t = (int) ceil((p->sim_time/(double) p->firing_bin)/(double) (h_m+v_m)); // vertical moves total
+	int v_m_t = (int) ceil((p->sim_time/(double) p->timestep)/(double) (h_m+v_m)); // vertical moves total
 	if (p->t == 0) {p->pos[0]=0;p->pos[1]=0;p->bpos[0]=0;p->bpos[1]=0;} // set starting point to 0,0
 	for (int i = 0; i < (h_m+v_m)*v_m_t; i++) {
 		// detect end of layer row
@@ -341,7 +341,7 @@ void move_animal_onlypos(CARLsim* sim, P* p, vector<double> *anim_angles, vector
 		if (p->mi < p->num_moves) {
 			angle = (*anim_angles)[(int) floor(p->mi)];
 			control_speed((*anim_speeds)[(int) floor(p->mi)], p);			
-			if (p->t>450000 && (*anim_angles)[(int) floor(p->mi)] != (*anim_angles)[(int) floor(p->mi-1)]) {
+			if (p->print_aug_values && p->t>450000 && (*anim_angles)[(int) floor(p->mi)] != (*anim_angles)[(int) floor(p->mi-1)]) {
 				printf("t: %d; speed: %f; angle: %f x:%f y:%f\n",p->t,(*anim_speeds)[(int) floor(p->mi)],(*anim_angles)[(int) floor(p->mi)],p->pos[0],p->pos[1]);
 			}
 		}
@@ -500,7 +500,7 @@ void move_animal_aug(CARLsim* sim, P* p) {
 			}
 
 			// find new movement steps given speed
-			dist_away = ceil((h / speed)*(1000/p->firing_bin)); // number of moves needed given timestep and speed values
+			dist_away = ceil((h / speed)*(1000/p->timestep)); // number of moves needed given timestep and speed values
 			for (int j = 0; j < dist_away; j++) {
 				// store angles
 				p->angles.push_back(angle);
@@ -514,7 +514,7 @@ void move_animal_aug(CARLsim* sim, P* p) {
 					p->speeds.push_back(last_speed);
 					//printf("%.2f %.2d %.2f %.2f\n",h,j,(speed*(double) j-2),last_speed);
 				}
-				p->speed_times.push_back(p->aug_m*p->firing_bin);
+				p->speed_times.push_back(p->aug_m*p->timestep);
 
 				if (p->print_aug_values) {
 					if (p->aug_m==0) {printf("aug velocity calcs, starting x:%.2f y:%.2f :\n",p->pos[0],p->pos[1]);}
@@ -523,7 +523,7 @@ void move_animal_aug(CARLsim* sim, P* p) {
 					}
 				}	
 				p->aug_m++;
-				t=t+p->firing_bin;	
+				t=t+p->timestep;	
 			}			
 			//x_pos = p->pos[0];
 			//y_pos = p->pos[1];
@@ -543,8 +543,8 @@ void move_animal_aug(CARLsim* sim, P* p) {
 				if (i > 0) {
 					if (p->angles[i] != p->angles[i-1]) {
 						aug_ctr++;						
-						printf("t:%d,x:%.2f,y:%.2f,a:%.2f\n",p->t+i*p->firing_bin,p->x_aug[aug_ctr],p->y_aug[aug_ctr],p->angles[i]);
-						//printf("%d,%.2f,%.2f\n",p->t+i*p->firing_bin,p->x_aug[aug_ctr],p->y_aug[aug_ctr]);
+						printf("t:%d,x:%.2f,y:%.2f,a:%.2f\n",p->t+i*p->timestep,p->x_aug[aug_ctr],p->y_aug[aug_ctr],p->angles[i]);
+						//printf("%d,%.2f,%.2f\n",p->t+i*p->timestep,p->x_aug[aug_ctr],p->y_aug[aug_ctr]);
 					}
 				}
 			}		

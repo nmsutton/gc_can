@@ -234,7 +234,7 @@ void count_firing(P* p, double *firing_matrix, vector<vector<int>> spike_recorde
 		s_num = spike_recorder[i].size();
 		for (int j = 0; j < s_num; j++) {
 			spk_time = spike_recorder[i][j];
-			if (spk_time >= (p->t - p->firing_bin) && spk_time <= p->t) {
+			if (spk_time >= (p->t - p->timestep) && spk_time <= p->t) {
 				tot += 1;
 			}
 		}
@@ -318,7 +318,7 @@ void RecordNeuronVsLocation(CARLsim* sim, P* p) {
 	if (p->move_animal_aug) {
 		int pi, j;
 
-		if (p->t % p->firing_bin == 0) {
+		if (p->t % p->timestep == 0) {
 			pi = (floor(p->pos[1]) * p->x_size) + floor(p->pos[0]);
 			p->locations_visited[pi] = p->locations_visited[pi] + 1;
 			//printf("pi:%d a:%d\n",pi,p->locations_visited[pi]);

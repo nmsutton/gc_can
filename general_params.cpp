@@ -5,8 +5,8 @@
 #define PI 3.14159265
 
 struct P {
-	int firing_bin = 20; // size of bins to record firing activity
-	double sim_time = 600000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 10000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -64,7 +64,7 @@ struct P {
 	// animal move aug parameters
 	int animal_aug_time = sim_time * 0.75; // when to start movement augs
 	double percent_for_aug = 0.25; // percent of total envorinment locations to add as augmented moves
-	bool print_aug_values = 1;
+	bool print_aug_values = 0;
 	vector<double> x_aug; // positions coordinates to travel to
 	vector<double> y_aug;
 	vector<int> locations_sortind; // binned firing locations sorted indices
@@ -77,7 +77,7 @@ struct P {
 	bool run_path_onlypos = 0; // only generate movement positions not signaling with run_path function
 	bool move_animal = 1; // use real animal movement positions with neural signaling
 	bool move_animal_aug = 1; // augment animal movement
-	bool move_animal_onlypos = 1; // generate animal movement position but not signaling
+	bool move_animal_onlypos = 0; // generate animal movement position but not signaling
 	bool move_fullspace = 0; // move through whole environment
 	bool move_straight = 0;
 	bool move_circles = 0;
