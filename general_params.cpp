@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 10000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 20000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance

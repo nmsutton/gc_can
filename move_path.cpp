@@ -115,6 +115,9 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 			//printf("t: %d; speed: %f; angle: %f\n",p->t,(*speeds)[(int) floor(p->mi)],(*moves)[(int) floor(p->mi)]);
 			//printf("x:%f y:%f\n",p->pos[0],p->pos[1]);
 			//printf("t: %d; speed: %f; angle: %f\n",p->t,(*anim_speeds)[(int) floor(p->mi)],(*anim_angles)[(int) floor(p->mi)]);
+			if (p->print_aug_values && p->t>p->animal_aug_time && (*moves)[(int) floor(p->mi)] != (*moves)[(int) floor(p->mi-1)]) {
+				printf("t: %d; speed: %f; angle: %f x:%f y:%f\n",p->t,(*speeds)[(int) floor(p->mi)],(*moves)[(int) floor(p->mi)],p->pos[0],p->pos[1]);
+			}
 		}
 		else {EISignal(rand_move(), sim, p);}
 		general_input(angle, sim, p);
@@ -341,7 +344,7 @@ void move_animal_onlypos(CARLsim* sim, P* p, vector<double> *anim_angles, vector
 		if (p->mi < p->num_moves) {
 			angle = (*anim_angles)[(int) floor(p->mi)];
 			control_speed((*anim_speeds)[(int) floor(p->mi)], p);			
-			if (p->print_aug_values && p->t>450000 && (*anim_angles)[(int) floor(p->mi)] != (*anim_angles)[(int) floor(p->mi-1)]) {
+			if (p->print_aug_values && p->t>p->animal_aug_time && (*anim_angles)[(int) floor(p->mi)] != (*anim_angles)[(int) floor(p->mi-1)]) {
 				printf("t: %d; speed: %f; angle: %f x:%f y:%f\n",p->t,(*anim_speeds)[(int) floor(p->mi)],(*anim_angles)[(int) floor(p->mi)],p->pos[0],p->pos[1]);
 			}
 		}
@@ -411,7 +414,8 @@ void move_animal_aug(CARLsim* sim, P* p) {
 	if (p->t == p->animal_aug_time) {
 		// clear old values
 		p->speeds.clear();p->angles.clear();
-		if(p->move_animal_onlypos) {p->mi=0;} // move_animal_onlypos specific use
+		//if(p->move_animal_onlypos) {p->mi=0;} // move_animal_onlypos specific use
+		p->mi=0; // different move set is used so a reset of moves counter is done
 		int fa_new, fa_old, fi_new, fi_old, x, y; // firing amounts and indices
 		int rand_max = 0;
 		int num_tgts = (int) ceil(p->locations_sortind.size()*p->percent_for_aug); // number of targets
