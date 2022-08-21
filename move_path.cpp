@@ -340,8 +340,10 @@ void move_animal_onlypos(CARLsim* sim, P* p, vector<double> *anim_angles, vector
 		p->mi = p->mi + 1;
 		if (p->mi < p->num_moves) {
 			angle = (*anim_angles)[(int) floor(p->mi)];
-			control_speed((*anim_speeds)[(int) floor(p->mi)], p);
-			//printf("t: %d; speed: %f; angle: %f\n",p->t,(*anim_speeds)[(int) floor(p->mi)],(*anim_angles)[(int) floor(p->mi)]);
+			control_speed((*anim_speeds)[(int) floor(p->mi)], p);			
+			if (p->t>450000 && (*anim_angles)[(int) floor(p->mi)] != (*anim_angles)[(int) floor(p->mi-1)]) {
+				printf("t: %d; speed: %f; angle: %f x:%f y:%f\n",p->t,(*anim_speeds)[(int) floor(p->mi)],(*anim_angles)[(int) floor(p->mi)],p->pos[0],p->pos[1]);
+			}
 		}
 		set_pos(p, angle);
 	}
@@ -409,14 +411,16 @@ void move_animal_aug(CARLsim* sim, P* p) {
 	if (p->t == p->animal_aug_time) {
 		// clear old values
 		p->speeds.clear();p->angles.clear();
-		if(move_animal_onlypos) {p->mi=0;} // move_animal_onlypos specific use
+		if(p->move_animal_onlypos) {p->mi=0;} // move_animal_onlypos specific use
 		int fa_new, fa_old, fi_new, fi_old, x, y; // firing amounts and indices
 		int rand_max = 0;
-		int aug_time = (int) ceil(p->locations_sortind.size()*p->percent_for_aug);
+		int num_tgts = (int) ceil(p->locations_sortind.size()*p->percent_for_aug); // number of targets
 		double x_pos = p->pos[0];
 		double y_pos = p->pos[1];
 		double xleg, yleg, angle, speed, last_speed, h, dist_away;
 		vector<int> rand_loc_xy, loc_range;
+
+		if (p->print_aug_values) {printf("aug start: x:%.2f y:%.2f \n",x_pos,y_pos);}
 
 		// copy vector
 		for (int i = 0; i < p->locations_visited.size(); i++) {
@@ -449,45 +453,55 @@ void move_animal_aug(CARLsim* sim, P* p) {
 		
 		// create target points
 		// find total number of low visited locations
-		for (int i = 0; i < aug_time; i++) {
+		for (int i = 0; i < num_tgts; i++) {
 			//rand_max = rand_max + p->locations_visited[i] + 1;
 			rand_max = rand_max + 1;
 			// TODO: add more chance of location target based on lowest locations_visited value
 			loc_range.push_back(rand_max); // ranges for rand values
 		}
 		// generate list of target locations
-		for (int i = 0; i < aug_time; i++) {
+		for (int i = 0; i < num_tgts; i++) {
 			create_rand_loc(p, rand_max, loc_range);
 		}
-		//printf("aug moves:\n");
-		for (int i = 0; i < 20; i++) {
-			//printf("x:%f y:%f\n",p->x_aug[i],p->y_aug[i]);
+		if (p->print_aug_values) {
+			printf("aug targets:\n");
+			for (int i = 0; i < 20; i++) {
+				printf("x:%f y:%f\n",p->x_aug[i],p->y_aug[i]);
+			}
 		}
 		// generate movement to locations
 		speed = 5;
-		for (int i = 0; i < aug_time; i++) {
+		for (int t = p->t; t < p->sim_time; /*t is incremented later*/) {
 			p->aug_i++;
 			// find angle to target
-			xleg = x_pos - p->x_aug[i];
-			yleg = y_pos - p->y_aug[i];
+			xleg = p->x_aug[p->aug_i] - x_pos;
+			yleg = p->y_aug[p->aug_i] - y_pos;
 			h = sqrt(pow(xleg,2)+pow(yleg,2)); // triangle hypotenuse
 			// find angle from leg and h including converting radians to degrees
 			angle = asin(abs(yleg)/h)*(180/PI);
 			// find 360 degree rotation
-			if (xleg > 0 && yleg <= 0) {
+			if (xleg > 0 && yleg > 0) {
+				angle = 90 - angle;
+			}
+			if (xleg > 0 && yleg < 0) {
 				angle = 90 + angle;
 			}
 			else if (xleg < 0 && yleg < 0) {
-				angle = 180 - angle;
+				angle = 270 - angle;
 			}
 			else if (xleg < 0 && yleg > 0) {
-				angle = 180 + angle;
+				angle = 270 + angle;
+			}
+			if (yleg == 0) {
+				if (xleg>0) {angle = 90;} else {angle = 270;}
+			}
+			if (xleg == 0) {
+				if (yleg>0) {angle = 0;} else {angle = 180;}
 			}
 
 			// find new movement steps given speed
-			dist_away = ceil(h / speed);
+			dist_away = ceil((h / speed)*(1000/p->firing_bin)); // number of moves needed given timestep and speed values
 			for (int j = 0; j < dist_away; j++) {
-				p->aug_i++;
 				// store angles
 				p->angles.push_back(angle);
 				// store speeds
@@ -495,22 +509,46 @@ void move_animal_aug(CARLsim* sim, P* p) {
 					p->speeds.push_back(speed);
 				}
 				else {
-					last_speed = h - (speed*(double) j); // lower speed for last step
+					//last_speed = h - (speed*(double) j); // lower speed for last step
+					last_speed = (((int) round(dist_away*1000) % 1000)*.001)*speed; // lower speed for last step. use fraction in dist_away to reduce speed. Need to use *1000 and *.001 because modulo only uses ints
 					p->speeds.push_back(last_speed);
 					//printf("%.2f %.2d %.2f %.2f\n",h,j,(speed*(double) j-2),last_speed);
 				}
-				p->speed_times.push_back(p->aug_i*p->firing_bin);
+				p->speed_times.push_back(p->aug_m*p->firing_bin);
 
-				if (i<20) {
-					//printf("s:%.2f a:%.2f x1:%.2f y1:%.2f x2:%.2f y2:%.2f xleg:%.2f yleg:%.2f h:%.2f a:%.2f\n",p->speeds[i],p->angles[i],x_pos,y_pos,p->x_aug[i],p->y_aug[i],xleg,yleg,h,angle);	
-				}				
+				if (p->print_aug_values) {
+					if (p->aug_m==0) {printf("aug velocity calcs, starting x:%.2f y:%.2f :\n",p->pos[0],p->pos[1]);}
+					if (p->angles[p->angles.size()-1] != p->angles[p->angles.size()-2]) { // detect angle change
+						printf("t:%d s:%.2f a:%.2f x1:%.0f y1:%.0f x2:%.0f y2:%.0f xleg:%.2f yleg:%.2f h:%.2f\n",t,p->speeds[p->aug_m],p->angles[p->aug_m],x_pos,y_pos,p->x_aug[p->aug_i],p->y_aug[p->aug_i],xleg,yleg,h);	
+					}
+				}	
+				p->aug_m++;
+				t=t+p->firing_bin;	
 			}			
-			x_pos = p->pos[0];
-			y_pos = p->pos[1];
+			//x_pos = p->pos[0];
+			//y_pos = p->pos[1];
+			x_pos = p->x_aug[p->aug_i]; // location is now aug target
+			y_pos = p->y_aug[p->aug_i]; 
 		}
-		for (int i = 0; i < 20; i++) {
-			//printf("%f %f\n",p->speeds[i],p->angles[i]);
-		}		
+		if (p->print_aug_values) {
+			printf("moves to aug targets:\n");
+			for (int i = 0; i < p->aug_i; i++) {
+				//printf("%f,%f\n",p->speeds[i],p->angles[i]);
+				//printf("%.2f,%.2f\n",p->x_aug[i],p->y_aug[i]);
+			}
+			int aug_ctr = 0;
+			for (int i = 0; i < p->aug_m; i++) {
+				//printf("%f,%f\n",p->speeds[i],p->angles[i]);
+				//printf("%.2f,%.2f\n",p->x_aug[i],p->y_aug[i]);
+				if (i > 0) {
+					if (p->angles[i] != p->angles[i-1]) {
+						aug_ctr++;						
+						printf("t:%d,x:%.2f,y:%.2f,a:%.2f\n",p->t+i*p->firing_bin,p->x_aug[aug_ctr],p->y_aug[aug_ctr],p->angles[i]);
+						//printf("%d,%.2f,%.2f\n",p->t+i*p->firing_bin,p->x_aug[aug_ctr],p->y_aug[aug_ctr]);
+					}
+				}
+			}		
+		}
 		p->num_moves = p->angles.size();
 		p->num_speeds = p->speeds.size();	
 	}

@@ -200,7 +200,12 @@ int main() {
 		}
 		#if import_animal_data
 			if (p.move_animal_onlypos==1) {
-				move_animal_onlypos(&sim, &p, &anim_angles, &anim_speeds);
+				if (p.move_animal_aug) {
+					if (p.t < p.animal_aug_time) {move_animal_onlypos(&sim, &p, &anim_angles, &anim_speeds);}
+				}
+				else {
+					move_animal_onlypos(&sim, &p, &anim_angles, &anim_speeds);
+				}
 				if (p.move_animal_aug) {move_animal_aug(&sim, &p);}
 			}
 		#endif

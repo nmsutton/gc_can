@@ -6,7 +6,7 @@
 
 struct P {
 	int firing_bin = 20; // size of bins to record firing activity
-	double sim_time = 2400000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 600000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
@@ -64,11 +64,13 @@ struct P {
 	// animal move aug parameters
 	int animal_aug_time = sim_time * 0.75; // when to start movement augs
 	double percent_for_aug = 0.25; // percent of total envorinment locations to add as augmented moves
+	bool print_aug_values = 1;
 	vector<double> x_aug; // positions coordinates to travel to
 	vector<double> y_aug;
 	vector<int> locations_sortind; // binned firing locations sorted indices
 	vector<int> locations_amounts; // amount of firing in indices
-	int aug_i;
+	int aug_i = 0; // aug target counter
+	int aug_m = 0; // aug move counter
 
 	// select movement trajectory
 	bool run_path = 0; // use run_path function. This is auto enabled by functions that use it.
