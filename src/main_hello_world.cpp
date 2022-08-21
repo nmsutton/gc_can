@@ -200,13 +200,10 @@ int main() {
 		}
 		#if import_animal_data
 			if (p.move_animal_onlypos==1) {
-				if (p.move_animal_aug) {
-					if (p.t < p.animal_aug_time) {move_animal_onlypos(&sim, &p, &anim_angles, &anim_speeds);}
-				}
-				else {
-					move_animal_onlypos(&sim, &p, &anim_angles, &anim_speeds);
-				}
-				if (p.move_animal_aug) {move_animal_aug(&sim, &p);}
+				if (p.move_animal_aug && p.t < p.animal_aug_time) { // cut off if using aug
+					  move_animal_onlypos(&sim, &p, &anim_angles, &anim_speeds);}
+				else {move_animal_onlypos(&sim, &p, &anim_angles, &anim_speeds);} // no cut off
+				if (p.move_animal_aug) {move_animal_aug(&sim, &p);} 
 			}
 		#endif
 		PrintWeightsAndFiring(&p);

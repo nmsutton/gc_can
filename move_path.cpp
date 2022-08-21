@@ -3,6 +3,7 @@
 
 	references: https://www.omnicalculator.com/math/right-triangle-side-angle
 	https://www.mathsisfun.com/algebra/trig-finding-angle-right-triangle.html
+	https://www.mathsisfun.com/algebra/sohcahtoa.html
 	https://cplusplus.com/reference/cmath/asin/
 */
 
@@ -393,8 +394,10 @@ void move_ramp(CARLsim* sim, P* p) {
 }
 
 void create_rand_loc(P* p, int rand_max, vector<int> loc_range) {
+	/* generate list of target locations to travel to. randomly select
+	among the lowest visited locations. loc_range specifies low visited
+	locations and rand_val selects randomly among loc_range indices. */
 	int rand_loc;
-	//vector<int> rand_loc_xy;
 	int rand_val = (int) floor(rand() % rand_max); // random number up to rand_max
 	// find random location among list of low visited locations
 	for (int i = 0; i < ceil(p->locations_sortind.size()*p->percent_for_aug); i++) {
@@ -411,14 +414,28 @@ void create_rand_loc(P* p, int rand_max, vector<int> loc_range) {
 }
 
 void move_animal_aug(CARLsim* sim, P* p) {
+	/*
+		Add augmented movements to the virtual animal's trajectory to visit locations
+		where little past traveling has occured. This helps represent in a greater way
+		the neural activity throughout an environment.
+
+		TODO: add more chance of location target based on lowest locations_visited value.
+		This can be added around the create target points section.
+		TODO: add speed and angle variation matching range found in real animals.
+		TODO: possibly add traveling to multiple near by low visited locations when in region
+		rather than longer trips between random locations each time. This could be efficient.
+		TODO: possibly add exact location updates for basing each starting location because there can
+		be a small rounding error (or something else) difference between intended target locations
+		and where virtual animal actually moves.
+	*/
 	if (p->t == p->animal_aug_time) {
 		// clear old values
 		p->speeds.clear();p->angles.clear();
-		//if(p->move_animal_onlypos) {p->mi=0;} // move_animal_onlypos specific use
 		p->mi=0; // different move set is used so a reset of moves counter is done
-		int fa_new, fa_old, fi_new, fi_old, x, y; // firing amounts and indices
+		speed = 5; // set movement speed
+		int fa_new, fa_old, fi_new, fi_old, x, y; // firing amounts, indices, locations
 		int rand_max = 0;
-		int num_tgts = (int) ceil(p->locations_sortind.size()*p->percent_for_aug); // number of targets
+		int num_tgts = (int) ceil(p->locations_sortind.size()*p->percent_for_aug); // number of aug location targets
 		double x_pos = p->pos[0];
 		double y_pos = p->pos[1];
 		double xleg, yleg, angle, speed, last_speed, h, dist_away;
@@ -431,7 +448,7 @@ void move_animal_aug(CARLsim* sim, P* p) {
 			p->locations_amounts[i]=p->locations_visited[i];
 			p->locations_sortind[i]=i;
 		}
-		// sort vectors
+		// sort vectors. least visited locations will become targets
 		for (int i = 0; i < p->locations_amounts.size(); i++) {
 			for (int j = 0; j < p->locations_amounts.size(); j++) {
 				fa_old = p->locations_amounts[i];
@@ -447,36 +464,31 @@ void move_animal_aug(CARLsim* sim, P* p) {
 			}
 		}
 		
-		//printf("locations sorted\n");
 		for (int i = 0; i < p->locations_visited.size(); i++) {
+			//if(i==0){printf("locations sorted\n");}
 			//printf("i:%d a:%d\n",p->locations_sortind[i],p->locations_amounts[i]);
-		}
-		for (int i = 0; i < p->locations_visited.size(); i++) {
 			//printf("i:%d a:%d\n",i,p->locations_visited[i]);
 		}
 		
 		// create target points
 		// find total number of low visited locations
 		for (int i = 0; i < num_tgts; i++) {
-			//rand_max = rand_max + p->locations_visited[i] + 1;
 			rand_max = rand_max + 1;
-			// TODO: add more chance of location target based on lowest locations_visited value
 			loc_range.push_back(rand_max); // ranges for rand values
 		}
 		// generate list of target locations
 		for (int i = 0; i < num_tgts; i++) {
 			create_rand_loc(p, rand_max, loc_range);
 		}
-		if (p->print_aug_values) {
+		if (p->print_aug_values) { // print some targets
 			printf("aug targets:\n");
 			for (int i = 0; i < 20; i++) {
 				printf("x:%f y:%f\n",p->x_aug[i],p->y_aug[i]);
 			}
 		}
 		// generate movement to locations
-		speed = 5;
 		for (int t = p->t; t < p->sim_time; /*t is incremented later*/) {
-			p->aug_i++;
+			p->aug_i++; // aug target index
 			// find angle to target
 			xleg = p->x_aug[p->aug_i] - x_pos;
 			yleg = p->y_aug[p->aug_i] - y_pos;
@@ -513,7 +525,6 @@ void move_animal_aug(CARLsim* sim, P* p) {
 					p->speeds.push_back(speed);
 				}
 				else {
-					//last_speed = h - (speed*(double) j); // lower speed for last step
 					last_speed = (((int) round(dist_away*1000) % 1000)*.001)*speed; // lower speed for last step. use fraction in dist_away to reduce speed. Need to use *1000 and *.001 because modulo only uses ints
 					p->speeds.push_back(last_speed);
 					//printf("%.2f %.2d %.2f %.2f\n",h,j,(speed*(double) j-2),last_speed);
@@ -526,26 +537,18 @@ void move_animal_aug(CARLsim* sim, P* p) {
 						printf("t:%d s:%.2f a:%.2f x1:%.0f y1:%.0f x2:%.0f y2:%.0f xleg:%.2f yleg:%.2f h:%.2f\n",t,p->speeds[p->aug_m],p->angles[p->aug_m],x_pos,y_pos,p->x_aug[p->aug_i],p->y_aug[p->aug_i],xleg,yleg,h);	
 					}
 				}	
-				p->aug_m++;
+				p->aug_m++; // moves index
 				t=t+p->timestep;	
 			}			
-			//x_pos = p->pos[0];
-			//y_pos = p->pos[1];
 			x_pos = p->x_aug[p->aug_i]; // location is now aug target
 			y_pos = p->y_aug[p->aug_i]; 
 		}
 		if (p->print_aug_values) {
 			printf("moves to aug targets:\n");
-			for (int i = 0; i < p->aug_i; i++) {
-				//printf("%f,%f\n",p->speeds[i],p->angles[i]);
-				//printf("%.2f,%.2f\n",p->x_aug[i],p->y_aug[i]);
-			}
 			int aug_ctr = 0;
 			for (int i = 0; i < p->aug_m; i++) {
-				//printf("%f,%f\n",p->speeds[i],p->angles[i]);
-				//printf("%.2f,%.2f\n",p->x_aug[i],p->y_aug[i]);
 				if (i > 0) {
-					if (p->angles[i] != p->angles[i-1]) {
+					if (p->angles[i] != p->angles[i-1]) { // report position and angle every time angle changes (indicating new target)
 						aug_ctr++;						
 						printf("t:%d,x:%.2f,y:%.2f,a:%.2f\n",p->t+i*p->timestep,p->x_aug[aug_ctr],p->y_aug[aug_ctr],p->angles[i]);
 						//printf("%d,%.2f,%.2f\n",p->t+i*p->timestep,p->x_aug[aug_ctr],p->y_aug[aug_ctr]);
