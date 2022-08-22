@@ -432,13 +432,13 @@ void move_animal_aug(CARLsim* sim, P* p) {
 		// clear old values
 		p->speeds.clear();p->angles.clear();
 		p->mi=0; // different move set is used so a reset of moves counter is done
-		speed = 5; // set movement speed
+		double speed = 5; // set movement speed
 		int fa_new, fa_old, fi_new, fi_old, x, y; // firing amounts, indices, locations
 		int rand_max = 0;
 		int num_tgts = (int) ceil(p->locations_sortind.size()*p->percent_for_aug); // number of aug location targets
 		double x_pos = p->pos[0];
 		double y_pos = p->pos[1];
-		double xleg, yleg, angle, speed, last_speed, h, dist_away;
+		double xleg, yleg, angle, last_speed, h, dist_away;
 		vector<int> rand_loc_xy, loc_range;
 
 		if (p->print_aug_values) {printf("aug start: x:%.2f y:%.2f \n",x_pos,y_pos);}
