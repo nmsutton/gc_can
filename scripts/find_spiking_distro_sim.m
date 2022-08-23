@@ -1,8 +1,8 @@
 % find distribution of spiking Hz
 
 initOAT;
-hopper_use=0;
-hopper_run=7;
+hopper_use=1;
+hopper_run=4;
 if hopper_use
     hopper_path=strcat('/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat');
     SpikeReader(hopper_path, false, 'silent');
@@ -32,4 +32,4 @@ ylabel('Neuron Count')
 caption = sprintf('Spiking Frequencies of %d Simulated Neurons',nrn_count);
 title(caption, 'FontSize', 15);
 
-fprintf("mode:%f median:%f sum:%f mean:%f\n",mode(spk_hz),median(spk_hz),sum(spk_hz),mean(spk_hz));
+fprintf("mode:%f median:%f sum:%f mean:%f max:%f\n",mode(spk_hz),median(spk_hz),sum(spk_hz),mean(spk_hz),max(spk_hz));
