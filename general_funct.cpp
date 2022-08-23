@@ -199,6 +199,7 @@ double get_noise(P *p) {
 	rand_val = ((rand_max*scale)/2)-rand_val; // rand val centered at 0	
 	rand_val = centered_val + rand_val; // rand val centered at centered_val
 	if (rand_val < 0) {rand_val = 0;}
+	//printf("rand_val: %f\n",rand_val);
 
 	return rand_val;
 }
@@ -507,7 +508,7 @@ vector<double> directional_speeds(P* p, double angle, double speed) {
 	}
 	vector<double> speeds = {N,E,S,W};
 	//vector<double> speeds = {E,N,W,S};
-	//printf("t:%d N:%f E:%f S:%f W:%f h:%f v:%f sm:%f s:%f p:%f r:%f\n",p->t,N,E,S,W,hor,ver,p->speed_mult,speed,pow(abs(hor),p->speed_mult),speed_adj);
+	//printf("t:%d N:%f E:%f S:%f W:%f h:%f v:%f s:%f r:%f\n",p->t,N,E,S,W,hor,ver,speed,speed_adj);
 
 	return speeds;
 }
@@ -571,6 +572,7 @@ void EISignal(double angle, CARLsim* sim, P* p) {
 	if (p->t > 2) {
 		//printf("ext input\n");
 		setExtDir(p,angle,p->speed_signaling,0);//0.20);
+		//printf("p->ext_dir: %f\n",p->ext_dir);
 		sim->setExternalCurrent(p->EC_LI_II_Multipolar_Pyramidal_Group, p->ext_dir);
 		//printf("speed cells\n");
 		if (p->spin2in_active) {

@@ -53,7 +53,7 @@ stag_y=0; % y-axis tile stagger distance
 x_wrap=0; % wrap around values on x-axis
 y_wrap=0; % wrap around values on y-axis
 % rotations
-a=345;%10;%90-18.435;%90-18; % angle of movement
+a=15;%10;%90-18.435;%90-18; % angle of movement
 a=a/360 * pi*2; % convert to radians
 % limited fields params
 fields_number=7; % choose between 4, 7, 9, etc., fields in initial shape
