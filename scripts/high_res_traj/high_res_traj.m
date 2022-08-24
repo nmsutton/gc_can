@@ -12,11 +12,11 @@ timestep = 20;
 orig_xy = 0; % use orig x,y animal positions with no wrapping around or carlsim x,y that wraps around a taurus
 plot_spikes = 1;  
 plot_in_spikes = 0;
-use_spk_reader = 0; % use CARLsim's spike reader rather than seperate spike times file
+use_spk_reader = 1; % use CARLsim's spike reader rather than seperate spike times file
 spk_bin_size = 10; % spike reader bin size. Note: small bin sizes may take long processing with large spike sets. 40min sim with bin size 1 can take 10min to create plot.
-sel_nrn = 730;%86;%465; % selected neuron to generate physical space plot
+sel_nrn = 870;%86;%465; % selected neuron to generate physical space plot
 laptop_data = 0;
-use_unwrapped_data = 1;
+use_unwrapped_data = 0;
 output_spikes_file = 1; % output file that can be used in rate map plot
 if plot_in_spikes plot_spikes=1; end
 if plot_spikes == 0 output_spikes_file = 0; end
@@ -34,6 +34,9 @@ end
 % load trajectory path
 if preloaded_XsYs == 0 Xs = []; Ys = []; end
 spk_x = []; spk_y = [];
+[Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_XsYs, ...
+    orig_xy, laptop_data, use_unwrapped_data, use_hopper, hopper_run);
+%{
 if angles_speeds
     if preloaded_XsYs ~= 1
         animal_angles = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/output/anim_angles.csv');
@@ -65,6 +68,7 @@ else
         load /home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/high_res_traj/191108_S1_lightVSdarkness_cells11and12_scaleddown_Ys_40min.mat;
     end
 end
+%}
 
 if plot_spikes
     spk_t=load_spk_times(use_hopper, hopper_run, plot_in_spikes, laptop_data, use_spk_reader, spk_bin_size, sel_nrn);
@@ -155,7 +159,7 @@ end
 % plot
 if create_plot
     cd '/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/holger_data/nate_scripts'
-    plot_trajectory_custom
+    plot_trajectory_custom2
     cd '/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/high_res_traj/'
 end
 
@@ -173,6 +177,48 @@ function [hor,ver]=hor_ver(angle, speed)
     elseif (angle >= (pi*1.5) && angle <= (pi*2)) 
 		hor = cos(angle-(pi*1.5)) * h * -1;
 		ver = sqrt(h^2-hor^2);
+    end
+end
+
+function [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_XsYs, ...
+    orig_xy, laptop_data, use_unwrapped_data, use_hopper, hopper_run)
+    animal_angles = []; animal_speeds = []; Xs = []; Ys = [];
+
+    if angles_speeds
+        if preloaded_XsYs ~= 1
+            animal_angles = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/output/anim_angles.csv');
+            animal_speeds = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/output/anim_speeds.csv');
+        end
+    else
+        if use_hopper
+            hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/highres_pos_x.csv']);
+            Xs = readmatrix(hopper_path);
+            hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/highres_pos_y.csv']);
+            Ys = readmatrix(hopper_path);
+        elseif orig_xy == 0
+            if laptop_data == 0
+                if use_unwrapped_data == 0
+                    Xs = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/highres_pos_x.csv');
+                    Ys = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/highres_pos_y.csv');
+                else
+                    Xs = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/output/Xs_unwrapped.csv');
+                    Ys = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/output/Ys_unwrapped.csv');
+                end
+            else
+                if use_unwrapped_data == 0
+                    Xs = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/highres_pos_x.csv');
+                    Ys = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/highres_pos_y.csv');
+                else
+                    Xs = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/output/Xs_unwrapped.csv');
+                    Ys = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/output/Ys_unwrapped.csv');            
+                end
+            end
+        else
+            %Xs = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/high_res_traj/test_data_x.csv');
+            %Ys = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/high_res_traj/test_data_y.csv');
+            load /home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/high_res_traj/191108_S1_lightVSdarkness_cells11and12_scaleddown_Xs_40min.mat;
+            load /home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/high_res_traj/191108_S1_lightVSdarkness_cells11and12_scaleddown_Ys_40min.mat;
+        end
     end
 end
 
