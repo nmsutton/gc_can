@@ -2,7 +2,7 @@
 
 initOAT;
 hopper_use=1;
-hopper_run=3;
+hopper_run=1;
 if hopper_use
     hopper_path=strcat('/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat');
     SpikeReader(hopper_path, false, 'silent');
@@ -13,8 +13,7 @@ else
 end
 bin_size=400; % size of firing bin in ms
 target_hz=2.36557; % target Hz to search for
-similarity=90; % similarity percent to find
-similarity=1-(similarity/100);
+similarity=0.9*target_hz;
 spikes = spk_data.readSpikes(bin_size);
 nrn_count = size(spikes(1,:),2);
 spk_count = [];
@@ -27,8 +26,8 @@ for i=1:nrn_count
     spk_hz = [spk_hz; count/sim_seconds];
 end
 
-high_spk=[find(spk_hz>=target_hz-similarity) spk_hz(find(spk_hz>=target_hz-similarity))];
-high_spk=high_spk(find(high_spk(:,2)<target_hz+similarity),:);
+high_spk=[find(spk_hz>=target_hz-0.2) spk_hz(find(spk_hz>=target_hz-0.2))];
+high_spk=high_spk(find(high_spk(:,2)<target_hz+0.2),:);
 
 % plot
 hist(spk_hz);

@@ -6,7 +6,9 @@
 
 clf;
 thresh = 15; % Wrap detection threshold. Above this movement distance a wrap around is detected.
-plot_interneurons = 0; % Change spike tick visual size when plotting interneurons.
+if ~exist('smaller_spk_ticks','var')
+    smaller_spk_ticks = 0; % Change spike tick visual size
+end
 
 % Avoid points in trajectory that are at the time of wrapping around. 
 % Set them to NaN to avoid lines being drawn that span a full axis of
@@ -21,10 +23,10 @@ end
 
 line(Xs, Ys, 'Color', 'k', 'LineWidth', 1.0), hold on;
 
-if plot_interneurons == 0
-    scatter(spk_x, spk_y, [], [1,0,0], 'filled'), hold off
-else
+if smaller_spk_ticks
     scatter(spk_x, spk_y, 5, [1,0,0], 'filled'), hold off
+else
+    scatter(spk_x, spk_y, [], [1,0,0], 'filled'), hold off
 end
 
 axis equal
