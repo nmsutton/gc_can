@@ -3,28 +3,29 @@ close all;
 
 % run parameters
 angles_speeds = 0; % load angles and speeds or x,y position coordinates
-preloaded_XsYs = 1; % use prior loaded Ys and Xs instead of reading them from files
-preloaded_data = 0; % use all prior loaded data. This is Xs, Ys, and spikes.
+preloaded_XsYs = 0; % use prior loaded Ys and Xs instead of reading them from files
+preloaded_data = 1; % use all prior loaded data. This is Xs, Ys, and spikes.
 output_XsYs_file = 0;
 create_plot = 1;
 use_hopper = 1;
-hopper_run = 3;
+hopper_run = 4;
 restrict_time = 0;%2400000;%725000/20;%5000; % 0 for no restriction; in 20ms bins
 timestep = 20;
 orig_xy = 0; % use orig x,y animal positions with no wrapping around or carlsim x,y that wraps around a taurus
 plot_spikes = 1;  
 plot_in_spikes = 0;
 use_spk_reader = 1; % use CARLsim's spike reader rather than seperate spike times file
-preloaded_spk_reader = 1; % use prior loaded spike reader
+preloaded_spk_reader = 0; % use prior loaded spike reader
 spk_bin_size = 10; % spike reader bin size. Note: small bin sizes may take long processing with large spike sets. 40min sim with bin size 1 can take 10min to create plot.
-sel_nrn = 218;%460;%870;%86;%465; % selected neuron to generate physical space plot
+sel_nrn = 884;%460;%870;%86;%465; % selected neuron to generate physical space plot
 laptop_data = 0;
 use_unwrapped_data = 0;
 output_spikes_file = 1; % output file that can be used in rate map plot
 plot_smooth_rm = 1; % plot smoothed rate map
-smaller_spk_ticks = 1; % Change spike tick visual size
+smaller_spk_ticks = 2; % Change spike tick visual size
 if plot_in_spikes plot_spikes=1; end
 if plot_spikes == 0 output_spikes_file = 0; end
+if preloaded_spk_reader==0 spikes=[]; end
 
 pi=3.1415926535897932384626433832795028841971;
 lines = [];
@@ -39,12 +40,12 @@ end
 % load trajectory path
 if preloaded_XsYs == 0 && preloaded_data == 0
     Xs = []; Ys = [];
-    spk_x = []; spk_y = [];
     [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_XsYs, ...
         orig_xy, laptop_data, use_unwrapped_data, use_hopper, hopper_run);
 end
 
 if plot_spikes && preloaded_data == 0
+    spk_x = []; spk_y = [];
     [spk_t,spikes]=load_spk_times(use_hopper, hopper_run, plot_in_spikes, laptop_data, use_spk_reader, spk_bin_size, sel_nrn, preloaded_spk_reader, spikes);
 end
 
@@ -208,7 +209,7 @@ function [spk_t,spikes]=load_spk_times(use_hopper, hopper_run, plot_in_spikes, l
             else
                 hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat']);            
             end
-            spk_data = SpikeReader(hopper_path, false, 'silent');
+            if preloaded_spk_reader==0 spk_data = SpikeReader(hopper_path, false, 'silent'); end
         else
             if plot_in_spikes
                 if laptop_data == 0
@@ -223,7 +224,7 @@ function [spk_t,spikes]=load_spk_times(use_hopper, hopper_run, plot_in_spikes, l
                     local_path = '/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/results/spk_MEC_LII_Stellate.dat';
                 end
             end
-            spk_data = SpikeReader(local_path, false, 'silent');
+            if preloaded_spk_reader==0 spk_data = SpikeReader(local_path, false, 'silent'); end
         end
         if preloaded_spk_reader==0 spikes = spk_data.readSpikes(spk_bin_size); end
         spk_t=find(spikes(:,sel_nrn)~=0);

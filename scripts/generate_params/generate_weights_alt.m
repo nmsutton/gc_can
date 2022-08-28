@@ -22,7 +22,7 @@ if limited_fields
     p2=2;p3=2;
     p4=15;%8; % center size
     p5=p3;p6=p4;
-    p7=0.20; % surround size
+    p7=0.12475;%0.20; % surround size
     p8=30;%.135;
     p9=2;p10=2;p11=2;p12=p4;p13=p11;p14=p11;p15=p12;
     p16=1.08; % surround size

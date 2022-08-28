@@ -32,10 +32,17 @@ scripts/high_res_traj/191108_S1_lightVSdarkness_cells11and12_scaleddown_Ys_40min
 scripts/high_res_traj/anim_trajx.csv
 scripts/high_res_traj/anim_trajy.csv
 scripts/high_res_traj/highres_spikes.csv
+scripts/high_res_traj/*.jpg
+scripts/high_res_traj/*.png
 scripts/generate_weights/examples
 scripts/generate_weights/*.jpg
+scripts/generate_weights/*.png
 scripts/generate_weights/synapse_weights.cpp
+scripts/generate_weights/synapse_weights.csv
 scripts/generate_params/*.cpp
+scripts/generate_params/*.csv
+scripts/*.jpg
+scripts/*.png
 data/mex_hat_bup.cpp
 data/mex_hat.cpp
 data/synapse_weights.cpp

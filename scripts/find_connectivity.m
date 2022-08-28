@@ -2,7 +2,7 @@
 
 thresh=.002;
 
-weights=readmatrix('/mnt/StorageDrive/General/comp_neuro/gmu/research/simulation/code/holger_data/medium_fields_weights/weights.csv');
+weights=readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/generate_params/synapse_weights.csv');
 %tot_conn=find(weights>=.thresh);
 
 ind_conn=[];

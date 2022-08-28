@@ -5,15 +5,22 @@
 % run options
 sample_matrix = 0;
 write_to_file = 1;
+write_to_csv = 1;
+if write_to_csv write_to_file = 1; end
 show_2d_plot = 0;
 show_3d_plot = 0;
 alt_weights = 1; % use alt synapse_weights matrix
 
 % params
 output_filename = "synapse_weights.cpp";
+csv_filename = "synapse_weights.csv";
 output_file = 0;
+output_csv = 0;
 if write_to_file
 	output_file = fopen(output_filename,'w');
+end
+if write_to_csv
+	output_csv = fopen(csv_filename,'w');
 end
 grid_size = 90;
 if alt_weights
@@ -78,12 +85,15 @@ if write_to_file
 	for i=0:(total_nrns-1)
 		for j=1:length(comb_syn_wts)
 			fprintf(output_file,'%f',comb_syn_wts(i+1,j));
+            if output_csv fprintf(output_csv,'%f',comb_syn_wts(i+1,j)); end
 			if j ~= length(comb_syn_wts)
 				fprintf(output_file,',');
+                if output_csv fprintf(output_csv,','); end
 			end
 		end
 		if i ~= (total_nrns-1)
 			fprintf(output_file,'},\n{');
+            if output_csv fprintf(output_csv,'\n'); end
 		end	
 		if (mod(i,grid_size_target*3)==0)
 			fprintf("%.3g%% completed\n",i/total_nrns*100);
