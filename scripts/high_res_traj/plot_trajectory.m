@@ -36,6 +36,12 @@ axis off
 set(gca, 'Box', 'on')
 xs = [min(min(x)) max(max(x))];
 ys = [min(min(y)) max(max(y))];
+if save_traj_plot
+    c = clock;
+    hr = mod(c(4),12);
+    output_filename = sprintf("traj_%.0f-%.0f-%.0f_%.0f-%.0f-%.0f.png",hr,c(5),c(6),c(2),c(3),c(1));
+    exportgraphics(gcf,output_filename,'Resolution',300)
+end
 
 function d=euc_d(x1,y1,x2,y2)
     d=sqrt((x2-x1)^2+(y2-y1)^2); % euclidean distance

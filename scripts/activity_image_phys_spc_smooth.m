@@ -11,6 +11,7 @@
 %%
 %% References: https://lost-contact.mit.edu/afs/inf.ed.ac.uk/group/teaching/matlab-help/R2016b/matlab/creating_plots/save-figure-at-specific-size-and-resolution.html
 %% https://hydroecology.net/resizing-matlab-figures-the-easy-way/
+%% https://www.mathworks.com/matlabcentral/answers/43326-create-figure-without-displaying-it
 
 import CMBHOME.Utils.*
 
@@ -19,6 +20,8 @@ import CMBHOME.Utils.*
 use_carlsim_spikes = 1;
 alt_heatmap = 0;
 use_smoothing = 1;
+display_plot = 0;
+save_plot = 1;
 %use_laptop = 0;
 limit_time = 0;
 rot90deg = 0; % rotate matrix 90 degrees clockwise
@@ -28,9 +31,10 @@ if use_carlsim_spikes
 	grid_size = 30; % sqrt of grid size
 	binside = 3;
 	std_smooth_kernel = 3.333;
+	% use highres_spikes.csv from high_res_traj.m not hopper created text file
     %hopper_use=0                                                                      ; % enable hopper folder or use local folder
-    hopper_run=5;
-    hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/spikes_recorded.csv']);
+    %hopper_run=5;
+    %hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/spikes_recorded.csv']);
 else
 	grid_size = 32;
 	spike_x = root.cel_x{1,1};
@@ -167,7 +171,11 @@ if flip_vert
 end
 
 % plot
-fig = figure;
+if display_plot == 0
+	fig = figure('visible','off');
+else
+	fig = figure;
+end
 imagesc(heat_map);
 axis('tight')
 xlabel('animal position on x axis') 
@@ -185,4 +193,14 @@ else
 	caption = sprintf('Physical space grid cell firing, total t = %.0f ms', c_ts(end)*1000);
 end
 title(caption, 'FontSize', 11);
-set(fig, 'units', 'inches', 'position', [0 50 5 4.444]);
+%set(fig, 'units', 'inches', 'position', [0 50 5 4.444]);
+set(fig, 'units', 'inches', 'position', [0 50 5.31 4.444]);
+if display_plot == 0
+	set(fig,'visible','on');
+end
+if save_plot
+	c = clock;
+	hr = mod(c(4),12);
+	output_filename = sprintf("ratemap_%.0f-%.0f-%.0f_%.0f-%.0f-%.0f.png",hr,c(5),c(6),c(2),c(3),c(1));
+	exportgraphics(gcf,output_filename,'Resolution',300)
+end

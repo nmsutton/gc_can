@@ -12,12 +12,12 @@ preloaded_data = 0; % use all prior loaded data. This is Xs, Ys, and spikes.
 output_XsYs_file = 0;
 create_plot = 1;
 use_hopper = 1;
-hopper_run = 6;
+hopper_run = 5;
 restrict_time = 0;%2400000;%725000/20;%5000; % 0 for no restriction; in 20ms bins
 timestep = 20;
 orig_xy = 0; % use orig x,y animal positions with no wrapping around or carlsim x,y that wraps around a taurus
 plot_spikes = 1;  
-plot_in_spikes = 0;
+plot_in_spikes = 0; % plot interneuron spikes
 use_spk_reader = 1; % use CARLsim's spike reader rather than seperate spike times file
 preloaded_spk_reader = 0; % use prior loaded spike reader
 spk_bin_size = 10; % spike reader bin size. Note: small bin sizes may take long processing with large spike sets. 40min sim with bin size 1 can take 10min to create plot.
@@ -27,6 +27,7 @@ use_unwrapped_data = 0;
 output_spikes_file = 1; % output file that can be used in rate map plot
 plot_smooth_rm = 1; % plot smoothed rate map
 smaller_spk_ticks = 2; % Change spike tick visual size
+save_traj_plot = 1; % save traj plot to file
 if plot_in_spikes plot_spikes=1; end
 if plot_spikes == 0 output_spikes_file = 0; end
 if preloaded_spk_reader==0 spikes=[]; end
