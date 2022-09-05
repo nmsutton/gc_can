@@ -33,7 +33,6 @@ void alter_value(regex param_pattern, double val_chg, string filepath) {
             new_line.str(""); // clear new line
             new_line.clear();
             if (regex_match (line,param_pattern)) {
-                //cout << line << "\n";
                 regex_match (line,pattern_match,param_pattern);
                 val_dbl = stod(pattern_match[2]);
                 val_dbl = val_dbl + val_chg;
@@ -49,36 +48,30 @@ void alter_value(regex param_pattern, double val_chg, string filepath) {
     file.close(); //close the file object.
 
     fstream file2;
-    file2.open("../../generate_config_state2.cpp",ios::out); //open a file to perform read operation using file object
-    file2 << newfile_text;
+    file2.open(filepath,ios::out); //open a file to perform read operation using file object
+    file2 << newfile_text;    
     file2.close();
 }
 
-int main()
+int main(int argc, char** argv)
 {
-    fstream file;
-    string filepath = "../../generate_config_state.cpp";
-    string line, newfile_text;
-
     /*
-    regex param_pattern("(.*MEC_LII_Stellate, )(\\d+.\\d+)(f, 0.0f, 0.98f, 0.0f, -58.53f, 0.0f, -43.52f.*)");
-    file.open(filepath,ios::in); //open a file to perform read operation using file object
-    double val_chg = 20;
-    if (file.is_open()){ //checking whether the file is open
-        while(getline(file, line)){ //read data from file object and put it into string.
-            newfile_text = newfile_text + alter_value(line, param_pattern, val_chg);
-        }
-    }
-    file.close(); //close the file object. 
+        Change parameter file's values based on input from command line arguments
 
-    fstream file2;
-    file2.open("../../generate_config_state2.cpp",ios::out); //open a file to perform read operation using file object
-    file2 << newfile_text;
-    file2.close(); 
     */
-    regex param_pattern("(.*MEC_LII_Stellate, )(\\d+.\\d+)(f, 0.0f, 0.98f, 0.0f, -58.53f, 0.0f, -43.52f.*)");
-    double val_chg = 25;
-    alter_value(param_pattern, val_chg, filepath);     
+    if (argc != 4) {
+        cout<<"Usage: auto_mod_params <param_file> <param_pattern> <value_change>\n\n";
+        cout<<"3 command line arguments are needed for running this program. For example:\n";
+        cout<<"auto_mod_params \"../../generate_config_state2.cpp\" \\\n";
+        cout<<"\"(.*MEC_LII_Stellate, )(\\d+.*\\d*)(f, 0.0f, 0.98f, 0.0f, -58.53f, 0.0f, -43.52f.*)\" \\\n";
+        cout<<"-25\n";
+    }
+    else {
+        string filepath = argv[1];
+        regex param_pattern((string) argv[2]);
+        double val_chg = stod(argv[3]);
+        alter_value(param_pattern, val_chg, filepath);     
+    }
 
     return 0;
 }
