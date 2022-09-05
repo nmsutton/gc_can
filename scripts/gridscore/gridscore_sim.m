@@ -1,6 +1,12 @@
-addpath /comp_neuro/Software/Github/CMBHOME_github/
-run('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/high_res_traj/high_res_traj.m');
-%run('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/activity_image_phys_spc_smooth.m');
+run_on_hopper=1;
+hopper_run=8;
+if run_on_hopper
+	addpath /home/nsutton2/git/CMBHOME_github/ 
+	run("/home/nsutton2/git/CARLsim4_dgx_hc_09_18_21/projects/gc_can_"+hopper_run+"/scripts/high_res_traj/high_res_traj.m");	
+else
+	addpath /comp_neuro/Software/Github/CMBHOME_github/
+	run('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/high_res_traj/high_res_traj.m');
+end
 m = []; % empty matrix
 [HDgridScore,gridness3Score]=get_HDGridScore(m,m,m,heat_map);
 gridness_file = fopen('../param_explore/output/gridness_score.txt','at'); % append file

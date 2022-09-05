@@ -2,7 +2,7 @@
 # Use matlab's linspace (e.g., linspace(0,128,5)) to find param ranges.
 
 # select params
-export param1_vals=(0 32 64 96 128)
+export param1_vals=(118.0000 121.2500 124.5000 127.7500 131.0000)
 export param2_vals=(0 2.9225 5.8450 8.7675 11.6900)
 export param_file1=" \"../../generate_config_state2.cpp\"";
 export param_file2=" \"../../generate_config_state2.cpp\"";
@@ -17,6 +17,7 @@ export run_am=" && ./auto_mod_params"
 export space=" "
 export comma=","
 export date_format="date +%H-%M-%S_%m-%d-%Y"
+module load matlab # load matlab on remote computer
 
 chg_prm(){
 	# change params

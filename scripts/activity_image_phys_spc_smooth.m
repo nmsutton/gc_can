@@ -59,7 +59,8 @@ if use_carlsim_spikes
 	        %carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv');
         else
             %carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/spikes_recorded.csv');
-            carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/high_res_traj/highres_spikes.csv');
+            curr_dir = pwd;
+            carlsim_spikes = readmatrix(curr_dir+"/high_res_traj/highres_spikes.csv");
         end
     end
 	if alt_heatmap

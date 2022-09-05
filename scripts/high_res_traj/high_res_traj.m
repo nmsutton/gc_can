@@ -1,18 +1,27 @@
 % create high-resolution trajectory and firing plot
 close all;
-cd /home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/
-initOAT
-cd /home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/high_res_traj/
-addpath /comp_neuro/Software/Github/CMBHOME_github/
 
 % run parameters
+run_from_hopper = 1; % run from hopper
+use_hopper = 1;
+hopper_run = 8;
+if run_from_hopper
+    curr_dir=pwd;
+    cd /home/nsutton2/git/OAT_CS4/
+    initOAT
+    cd(curr_dir)
+    addpath /home/nsutton2/git/CMBHOME_github/    
+else
+    cd /home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/
+    initOAT
+    cd /home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/high_res_traj/
+    addpath /comp_neuro/Software/Github/CMBHOME_github/
+end
 angles_speeds = 0; % load angles and speeds or x,y position coordinates
 preloaded_XsYs = 0; % use prior loaded Ys and Xs instead of reading them from files
 preloaded_data = 0; % use all prior loaded data. This is Xs, Ys, and spikes.
 output_XsYs_file = 0;
 create_plot = 1;
-use_hopper = 1;
-hopper_run = 5;
 restrict_time = 0;%2400000;%725000/20;%5000; % 0 for no restriction; in 20ms bins
 timestep = 20;
 orig_xy = 0; % use orig x,y animal positions with no wrapping around or carlsim x,y that wraps around a taurus
@@ -46,12 +55,13 @@ end
 if preloaded_XsYs == 0 && preloaded_data == 0
     Xs = []; Ys = [];
     [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_XsYs, ...
-        orig_xy, laptop_data, use_unwrapped_data, use_hopper, hopper_run);
+        orig_xy, laptop_data, use_unwrapped_data, use_hopper, hopper_run, run_from_hopper);
 end
 
 if plot_spikes && preloaded_data == 0
     spk_x = []; spk_y = [];
-    [spk_t,spikes]=load_spk_times(use_hopper, hopper_run, plot_in_spikes, laptop_data, use_spk_reader, spk_bin_size, sel_nrn, preloaded_spk_reader, spikes);
+    [spk_t,spikes]=load_spk_times(use_hopper, hopper_run, plot_in_spikes, laptop_data, ...
+        use_spk_reader, spk_bin_size, sel_nrn, preloaded_spk_reader, spikes, run_from_hopper);
 end
 
 if angles_speeds == 1 && preloaded_XsYs ~= 1
@@ -165,7 +175,7 @@ function [hor,ver]=hor_ver(angle, speed)
 end
 
 function [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_XsYs, ...
-    orig_xy, laptop_data, use_unwrapped_data, use_hopper, hopper_run)
+    orig_xy, laptop_data, use_unwrapped_data, use_hopper, hopper_run, run_from_hopper)
     animal_angles = []; animal_speeds = []; Xs = []; Ys = [];
 
     if angles_speeds
@@ -174,7 +184,12 @@ function [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_X
             animal_speeds = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/output/anim_speeds.csv');
         end
     else
-        if use_hopper
+        if run_from_hopper
+            hopper_path=(['/scratch/nsutton2/gc_sim/',int2str(hopper_run),'/spikes/highres_pos_x.csv']);
+            Xs = readmatrix(hopper_path);
+            hopper_path=(['/scratch/nsutton2/gc_sim/',int2str(hopper_run),'/spikes/highres_pos_y.csv']);
+            Ys = readmatrix(hopper_path);
+        elseif use_hopper
             hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/highres_pos_x.csv']);
             Xs = readmatrix(hopper_path);
             hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/highres_pos_y.csv']);
@@ -206,9 +221,17 @@ function [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_X
     end
 end
 
-function [spk_t,spikes]=load_spk_times(use_hopper, hopper_run, plot_in_spikes, laptop_data, use_spk_reader, spk_bin_size, sel_nrn, preloaded_spk_reader, spikes)
+function [spk_t,spikes]=load_spk_times(use_hopper, hopper_run, plot_in_spikes, laptop_data, ...
+    use_spk_reader, spk_bin_size, sel_nrn, preloaded_spk_reader, spikes, run_from_hopper)
     if use_spk_reader
-        if use_hopper
+        if run_from_hopper
+            if plot_in_spikes
+                hopper_path=(['/scratch/nsutton2/gc_sim/',int2str(hopper_run),'/results/spk_MEC_LII_Basket.dat']);
+            else
+                hopper_path=(['/scratch/nsutton2/gc_sim/',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat']);            
+            end
+            if preloaded_spk_reader==0 spk_data = SpikeReader(hopper_path, false, 'silent'); end
+        elseif use_hopper
             if plot_in_spikes
                 hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/results/spk_MEC_LII_Basket.dat']);
             else
@@ -235,7 +258,14 @@ function [spk_t,spikes]=load_spk_times(use_hopper, hopper_run, plot_in_spikes, l
         spk_t=find(spikes(:,sel_nrn)~=0);
         spk_t=spk_t*spk_bin_size;
     else
-        if use_hopper
+        if run_from_hopper
+            if plot_in_spikes
+                hopper_path=(['/scratch/nsutton2/gc_sim/',int2str(hopper_run),'/spikes/in_spikes_recorded.csv']);
+            else
+                hopper_path=(['/scratch/nsutton2/gc_sim/',int2str(hopper_run),'/spikes/spikes_recorded.csv']);
+            end
+            spk_t = readmatrix(hopper_path);             
+        elseif use_hopper
             if plot_in_spikes
                 hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/in_spikes_recorded.csv']);
             else
