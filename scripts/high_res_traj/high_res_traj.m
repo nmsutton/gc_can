@@ -2,10 +2,10 @@
 close all;
 
 % run parameters
-run_from_hopper = 1; % run from hopper
+run_on_hopper = 0; % run from hopper
 use_hopper = 1;
 hopper_run = 8;
-if run_from_hopper
+if run_on_hopper
     curr_dir=pwd;
     cd /home/nsutton2/git/OAT_CS4/
     initOAT
@@ -55,13 +55,13 @@ end
 if preloaded_XsYs == 0 && preloaded_data == 0
     Xs = []; Ys = [];
     [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_XsYs, ...
-        orig_xy, laptop_data, use_unwrapped_data, use_hopper, hopper_run, run_from_hopper);
+        orig_xy, laptop_data, use_unwrapped_data, use_hopper, hopper_run, run_on_hopper);
 end
 
 if plot_spikes && preloaded_data == 0
     spk_x = []; spk_y = [];
     [spk_t,spikes]=load_spk_times(use_hopper, hopper_run, plot_in_spikes, laptop_data, ...
-        use_spk_reader, spk_bin_size, sel_nrn, preloaded_spk_reader, spikes, run_from_hopper);
+        use_spk_reader, spk_bin_size, sel_nrn, preloaded_spk_reader, spikes, run_on_hopper);
 end
 
 if angles_speeds == 1 && preloaded_XsYs ~= 1
@@ -175,7 +175,7 @@ function [hor,ver]=hor_ver(angle, speed)
 end
 
 function [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_XsYs, ...
-    orig_xy, laptop_data, use_unwrapped_data, use_hopper, hopper_run, run_from_hopper)
+    orig_xy, laptop_data, use_unwrapped_data, use_hopper, hopper_run, run_on_hopper)
     animal_angles = []; animal_speeds = []; Xs = []; Ys = [];
 
     if angles_speeds
@@ -184,7 +184,7 @@ function [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_X
             animal_speeds = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/output/anim_speeds.csv');
         end
     else
-        if run_from_hopper
+        if run_on_hopper
             hopper_path=(['/scratch/nsutton2/gc_sim/',int2str(hopper_run),'/spikes/highres_pos_x.csv']);
             Xs = readmatrix(hopper_path);
             hopper_path=(['/scratch/nsutton2/gc_sim/',int2str(hopper_run),'/spikes/highres_pos_y.csv']);
@@ -222,9 +222,9 @@ function [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_X
 end
 
 function [spk_t,spikes]=load_spk_times(use_hopper, hopper_run, plot_in_spikes, laptop_data, ...
-    use_spk_reader, spk_bin_size, sel_nrn, preloaded_spk_reader, spikes, run_from_hopper)
+    use_spk_reader, spk_bin_size, sel_nrn, preloaded_spk_reader, spikes, run_on_hopper)
     if use_spk_reader
-        if run_from_hopper
+        if run_on_hopper
             if plot_in_spikes
                 hopper_path=(['/scratch/nsutton2/gc_sim/',int2str(hopper_run),'/results/spk_MEC_LII_Basket.dat']);
             else
@@ -258,7 +258,7 @@ function [spk_t,spikes]=load_spk_times(use_hopper, hopper_run, plot_in_spikes, l
         spk_t=find(spikes(:,sel_nrn)~=0);
         spk_t=spk_t*spk_bin_size;
     else
-        if run_from_hopper
+        if run_on_hopper
             if plot_in_spikes
                 hopper_path=(['/scratch/nsutton2/gc_sim/',int2str(hopper_run),'/spikes/in_spikes_recorded.csv']);
             else

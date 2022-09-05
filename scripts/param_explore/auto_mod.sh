@@ -4,8 +4,8 @@
 # select params
 export param1_vals=(118.0000 121.2500 124.5000 127.7500 131.0000)
 export param2_vals=(0 2.9225 5.8450 8.7675 11.6900)
-export param_file1=" \"../../generate_config_state2.cpp\"";
-export param_file2=" \"../../generate_config_state2.cpp\"";
+export param_file1=" \"../../generate_config_state.cpp\"";
+export param_file2=" \"../../generate_config_state.cpp\"";
 export param_pattern1=" \"(.*MEC_LII_Stellate, )(\\d+.*\\d*)(f, 0.0f, 0.98f, 0.0f, -58.53f, 0.0f, -43.52f.*)\""
 export param_pattern2=" \"(.*0.0f, 0.004f, 0.0f, )(\\d+.*\\d*)(f, 0.0f, 7.85f, 0.0f, -52.68f, 0.0f.*)\""
 # general settings
@@ -22,20 +22,20 @@ module load matlab # load matlab on remote computer
 chg_prm(){
 	# change params
 	command=$make_clean_am
-	eval $command;
+	eval $command
 	command=$make_am$run_am$param_file$param_pattern$value_change
-	eval $command;
+	eval $command
 }
 
 run_sim(){
 	# run CARLsim
-	cd ../..
-	#./rebuild.sh
-	cd scripts/param_explore/
+	cd ../.. &&
+	#./rebuild.sh &&
+	cd scripts/param_explore/ &&
 
 	# generate results reports
-	cd ../gridscore/
-	#matlab -nodisplay -r "gridscore_sim ; exit"
+	cd ../gridscore/ &&
+	#matlab -nodisplay -r "gridscore_sim ; exit" &&
 	cd ../param_explore/
 }
 

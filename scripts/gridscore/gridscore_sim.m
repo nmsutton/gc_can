@@ -1,4 +1,4 @@
-run_on_hopper=1;
+run_on_hopper=0;
 hopper_run=8;
 if run_on_hopper
 	addpath /home/nsutton2/git/CMBHOME_github/ 

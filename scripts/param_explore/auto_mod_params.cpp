@@ -13,13 +13,6 @@
 
 using namespace std;
 
-string dtos(double x)
-{
-  ostringstream ss;
-  ss << x;
-  return ss.str();
-}
-
 void alter_value(regex param_pattern, double val_chg, string filepath) {
     ostringstream new_line;
     smatch pattern_match;
@@ -37,7 +30,7 @@ void alter_value(regex param_pattern, double val_chg, string filepath) {
                 val_dbl = stod(pattern_match[2]);
                 //val_dbl = val_dbl + val_chg;
                 val_dbl = val_chg;
-                val_str = dtos(val_dbl);
+                val_str = to_string(val_dbl);
                 new_line << pattern_match[1] << val_str << pattern_match[3] << "\n";
             }
             else {
