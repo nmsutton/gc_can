@@ -20,44 +20,65 @@ string dtos(double x)
   return ss.str();
 }
 
-string alter_value(string line, regex param_pattern, double val_chg) {
+void alter_value(regex param_pattern, double val_chg, string filepath) {
     ostringstream new_line;
     smatch pattern_match;
     double val_dbl;
-    string val_str;
+    string val_str, newfile_text, line;
+    fstream file;
 
-    if (regex_match (line,param_pattern)) {
-        cout << line << "\n";
-        regex_match (line,pattern_match,param_pattern);
-        val_dbl = stod(pattern_match[2]);
-        val_dbl = val_dbl + val_chg;
-        val_str = dtos(val_dbl);
-        new_line << "[" << pattern_match[1] << val_str << pattern_match[3] << "] \n";
+    file.open(filepath,ios::in); //open a file to perform read operation using file object
+    if (file.is_open()){ //checking whether the file is open
+        while(getline(file, line)){ //read data from file object and put it into string.
+            new_line.str(""); // clear new line
+            new_line.clear();
+            if (regex_match (line,param_pattern)) {
+                //cout << line << "\n";
+                regex_match (line,pattern_match,param_pattern);
+                val_dbl = stod(pattern_match[2]);
+                val_dbl = val_dbl + val_chg;
+                val_str = dtos(val_dbl);
+                new_line << pattern_match[1] << val_str << pattern_match[3] << "\n";
+            }
+            else {
+                new_line << line << "\n";
+            }
+            newfile_text = newfile_text + new_line.str();
+        }
     }
+    file.close(); //close the file object.
 
-    return new_line.str();
+    fstream file2;
+    file2.open("../../generate_config_state2.cpp",ios::out); //open a file to perform read operation using file object
+    file2 << newfile_text;
+    file2.close();
 }
 
 int main()
 {
     fstream file;
-    regex param_pattern("(.*MEC_LII_Stellate, )(\\d+.\\d+)(f, 0.0f, 0.98f, 0.0f, -58.53f, 0.0f, -43.52f.*)");
-    smatch pattern_match;
-    file.open("../../generate_config_state.cpp",ios::in); //open a file to perform read operation using file object
-    double val_dbl;
-    string val_str;
-    string line;
-    string new_line;
-    double val_chg = 10;
+    string filepath = "../../generate_config_state.cpp";
+    string line, newfile_text;
 
+    /*
+    regex param_pattern("(.*MEC_LII_Stellate, )(\\d+.\\d+)(f, 0.0f, 0.98f, 0.0f, -58.53f, 0.0f, -43.52f.*)");
+    file.open(filepath,ios::in); //open a file to perform read operation using file object
+    double val_chg = 20;
     if (file.is_open()){ //checking whether the file is open
         while(getline(file, line)){ //read data from file object and put it into string.
-            new_line = alter_value(line, param_pattern, val_chg);
-            cout << new_line;
+            newfile_text = newfile_text + alter_value(line, param_pattern, val_chg);
         }
     }
+    file.close(); //close the file object. 
 
-    file.close(); //close the file object.   
+    fstream file2;
+    file2.open("../../generate_config_state2.cpp",ios::out); //open a file to perform read operation using file object
+    file2 << newfile_text;
+    file2.close(); 
+    */
+    regex param_pattern("(.*MEC_LII_Stellate, )(\\d+.\\d+)(f, 0.0f, 0.98f, 0.0f, -58.53f, 0.0f, -43.52f.*)");
+    double val_chg = 25;
+    alter_value(param_pattern, val_chg, filepath);     
 
     return 0;
 }
