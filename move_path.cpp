@@ -288,7 +288,7 @@ void move_fullspace2(CARLsim* sim, P* p) {
 	// environment as a movement test pattern to test firing in each
 	// enviornment location.
 
-	double angle; double x = 2; double y = 2;
+	double angle; double x = 5; double y = 2;
 	double angle_rev_h = -1; // flag to reverse angle horizontally
 	double angle_rev_v = 1; // flag to reverse angle vertically
 	bool move_vert = 0;
@@ -300,7 +300,7 @@ void move_fullspace2(CARLsim* sim, P* p) {
 	//vector<int> mv_i; // move vertical index
 	//for (int i = 0; i < v_m; i++) {mv_i.push_back(h_m+i);}
 	int v_m_t = (int) ceil((p->sim_time/(double) p->timestep)/(double) (h_m+v_m)); // vertical moves total
-	if (p->t == 0) {p->pos[0]=2;p->pos[1]=2;p->bpos[0]=2;p->bpos[1]=2;} // set starting point to 0,0
+	if (p->t == 0) {p->pos[0]=5;p->pos[1]=2;p->bpos[0]=5;p->bpos[1]=2;} // set starting point to 0,0
 	for (int i = 0; i < (h_m+v_m)*v_m_t; i++) {
 		// horiz move
 		if (x > 28) {angle_rev_h = 1;move_vert=1;}

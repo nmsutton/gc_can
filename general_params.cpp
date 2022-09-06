@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 22000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 300000;//131400;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
@@ -139,7 +139,7 @@ struct P {
 	double ala_act_lvl = 0.1; // amount of activity level added for each visit with animal location all plot.
 
 	// place cell parameters
-	float pc_to_gc_wt = 1.1;//0.5;//3;//0.5;//3;//0.5;//10; // pc to gc synaptic weight
+	float pc_to_gc_wt = 1.5;//0.5;//3;//0.5;//3;//0.5;//10; // pc to gc synaptic weight
 	double pc_sig = 2;//1.5;//1.2;//2;//1.5;//4.0;//1.0;//0.25; // sigma symbol; width of the place feild
 	double pc_level = 1000;//1000.0;//1000.0;//5.5;//7.5;//5.0; //14.0; // place cell firing level
 	vector<float> pc_activity;

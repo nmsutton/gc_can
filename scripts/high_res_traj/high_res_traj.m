@@ -35,7 +35,7 @@ laptop_data = 0;
 use_unwrapped_data = 0;
 output_spikes_file = 1; % output file that can be used in rate map plot
 plot_smooth_rm = 1; % plot smoothed rate map
-smaller_spk_ticks = 2; % Change spike tick visual size
+smaller_spk_ticks = 0;%2; % Change spike tick visual size; 2 for extra small
 save_traj_plot = 1; % save traj plot to file
 if plot_in_spikes plot_spikes=1; end
 if plot_spikes == 0 output_spikes_file = 0; end
