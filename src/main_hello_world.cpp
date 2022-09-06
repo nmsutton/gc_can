@@ -161,7 +161,7 @@ int main() {
 		animal_data_vars(&sim, &p, &anim_angles, &anim_speeds);
 	#endif	
 
-	if (p.move_fullspace) {move_fullspace(&sim, &p);p.run_path=1;}
+	if (p.move_fullspace) {move_fullspace2(&sim, &p);p.run_path=1;}
 	if (p.move_circles) {move_circles(&sim, &p);p.run_path=1;}
 
 	for (int t=0; t<p.sim_time; t++) {	
