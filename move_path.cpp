@@ -79,15 +79,17 @@ void control_speed(double speed, P* p) {
 		https://www.mathworks.com/matlabcentral/answers/230107-how-to-force-the-intercept-of-a-regression-line-to-zero
 		dlm = fitlm(X,Y,'Intercept',false); This is linear reg with y-intercept forced at 0. This
 		allows position tracker speed scaling without altering trajectory that changing y-int causes.
+		https://mycurvefit.com/ for sigmoid curve fitting with base_ext
 	*/
 	speed = speed * p->speed_conversion;
 	if (p->speed_limit == 1 && speed > p->max_speed) {speed = p->max_speed;} // speed limit
 	if (p->auto_speed_control || p->move_animal_onlypos) {
 		p->move_increment = (0.001*speed);
 		speed = speed * p->grid_pattern_scale;
-		p->base_ext = 655;
+		//p->base_ext = 770;//820;//655;
+		p->base_ext = 1200 + (770 - 1200)/(1 + pow((speed/8.280479),16.19154));
 		//if (speed<7.5) {p->base_ext=575;}
-		p->speed_signaling = -.00034799225597907657+(.0081675325631652834*speed)+(.014970007271328412*pow(speed,2))-(.0017318129783734592*pow(speed,3))+(.000066887712315789088*pow(speed,4));
+		p->speed_signaling = 10 * (-.00034799225597907657+(.0081675325631652834*speed)+(.014970007271328412*pow(speed,2))-(.0017318129783734592*pow(speed,3))+(.000066887712315789088*pow(speed,4)));
 		p->spdin2in_curr = -7.6999999999504416+(0.87666666666074300*speed)+(-.023333333333160879*pow(speed,2));
 		if (speed<=14) {p->spdin2in_curr=0;}
 		if (speed>=20) {p->spdin2in_curr=0.5;}
@@ -162,7 +164,7 @@ void move_straight(CARLsim* sim, P* p) {
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
 		//control_speed(5,p);	
-		control_speed(14,p);	
+		control_speed(1,p);	
 		//control_speed(25,p);	
 		//control_speed(0.1,p);	
 		//control_speed(0,p);	
