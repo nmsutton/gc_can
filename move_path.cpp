@@ -161,8 +161,8 @@ void move_straight(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(5,p);	
-		//control_speed(20,p);	
+		//control_speed(5,p);	
+		control_speed(14,p);	
 		//control_speed(25,p);	
 		//control_speed(0.1,p);	
 		//control_speed(0,p);	
@@ -293,6 +293,7 @@ void move_fullspace2(CARLsim* sim, P* p) {
 	double angle_rev_v = 1; // flag to reverse angle vertically
 	bool move_vert = 0;
 	double speed = p->move_increment*1000;
+	speed = 9;
 	int ts_per_sec = 1000/p->timestep; // timesteps per second
 	double step_spd = speed/ts_per_sec; // movement per timestep
 	int h_m = ((int) floor((double) p->x_size/speed)*ts_per_sec); // indices for horizontal movement

@@ -21,17 +21,24 @@ caption = sprintf('Spiking Frequencies of %d Real Neurons',f_length);
 title(caption, 'FontSize', 15);
 
 function spk_hz=find_hz(filename,cell_selection);
-	root.cel = cell_selection; % select cell of interest
 	y_offset = 660;
+    rec_seconds = 0;
 	limit_time = false; % choose to limit time of data extracted
 	total_time = 2400000; % max time of recordings to save in ms
 	time_step = 20; % recording timestep
 	timevars = [limit_time, total_time, time_step];
 
 	% load data
+    clear lightON; % clear old epoch data
 	load(filename);
+    root.cel = cell_selection; % select cell of interest
+    if exist('lightON')
+        root.epoch=lightON; % use lightON if it exists
+    end
 	CMBHOME.Utils.ContinuizeEpochs(root.ts); 
-	rec_seconds = root.epoch(2);
+    for i=1:size(root.epoch,1)
+	    rec_seconds = rec_seconds + (root.epoch(i,2) - root.epoch(i,1));
+    end
 
 	% retrieve spikes
 	cd /home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/holger_data/nate_scripts/for_jeffrey
