@@ -1,15 +1,21 @@
 % find distribution of spiking Hz
 
 initOAT;
-hopper_use=1;
-hopper_run=2;
+hopper_use=0;
+hopper_local_copy=0;
+hopper_run=5;
 if hopper_use
     hopper_path=strcat('/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat');
     SpikeReader(hopper_path, false, 'silent');
     spk_data = SpikeReader(hopper_path, false, 'silent');
 else
-    SpikeReader('/comp_neuro/PhD/gmu/research/simulation/code/gc_can/results/spk_MEC_LII_Stellate.dat', false, 'silent');
-    spk_data = SpikeReader('/comp_neuro/PhD/gmu/research/simulation/code/gc_can/results/spk_MEC_LII_Stellate.dat', false, 'silent');
+    if hopper_local_copy == 0
+        local_path='/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/results/spk_MEC_LII_Stellate.dat';
+    else
+        local_path='/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_hopper/results/spk_MEC_LII_Stellate.dat';
+    end
+    SpikeReader(local_path, false, 'silent');
+    spk_data = SpikeReader(local_path, false, 'silent');
 end
 bin_size=400; % size of firing bin in ms
 target_hz=2.36557; % target Hz to search for

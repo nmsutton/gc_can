@@ -87,7 +87,7 @@ void control_speed(double speed, P* p) {
 		p->move_increment = (0.001*speed);
 		speed = speed * p->grid_pattern_scale;
 		//p->base_ext = 770;//820;//655;
-		p->base_ext = 1200 + (770 - 1200)/(1 + pow((speed/8.280479),16.19154));
+		p->base_ext = 1200 + (770 - 1200)/(1 + pow((speed/8.5),16.19154));
 		//if (speed<7.5) {p->base_ext=575;}
 		p->speed_signaling = 10 * (-.00034799225597907657+(.0081675325631652834*speed)+(.014970007271328412*pow(speed,2))-(.0017318129783734592*pow(speed,3))+(.000066887712315789088*pow(speed,4)));
 		p->spdin2in_curr = -7.6999999999504416+(0.87666666666074300*speed)+(-.023333333333160879*pow(speed,2));
@@ -96,6 +96,7 @@ void control_speed(double speed, P* p) {
 		p->spdex2in_curr = 0.57963140405914459+(-0.076238844166134606*speed)+(0.024200128580085856*pow(speed,2))+(-0.0029881884411857643*pow(speed,3))+(0.00010282892540609924*pow(speed,4));
 		if (speed<=3) {p->spdex2in_curr=0.5;}
 		if (speed>=14) {p->spdex2in_curr=0;}
+		p->pc_level = 1000 + (333 - 1000)/(1 + pow((speed/8.974894),227.1313));
 		//if (speed>10) {p->pc_level=400;} else {p->pc_level=1000;}
 		//printf("%f %f\n",p->move_increment,speed);
 	}
@@ -164,7 +165,7 @@ void move_straight(CARLsim* sim, P* p) {
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
 		//control_speed(5,p);	
-		control_speed(1,p);	
+		control_speed(8.5,p);	
 		//control_speed(25,p);	
 		//control_speed(0.1,p);	
 		//control_speed(0,p);	

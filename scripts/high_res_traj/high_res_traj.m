@@ -3,8 +3,8 @@ close all;
 
 % run parameters
 run_on_hopper = 0; % run from hopper
-use_hopper = 1;
-hopper_run = 2;
+use_hopper = 0;
+hopper_run = 1;
 if run_on_hopper
     curr_dir=pwd;
     cd /home/nsutton2/git/OAT_CS4/
@@ -197,8 +197,10 @@ function [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_X
         elseif orig_xy == 0
             if laptop_data == 0
                 if use_unwrapped_data == 0
-                    Xs = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/highres_pos_x.csv');
-                    Ys = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/highres_pos_y.csv');
+                    %Xs = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/highres_pos_x.csv');
+                    %Ys = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/highres_pos_y.csv');
+                    Xs = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_hopper/output/spikes/highres_pos_x.csv');
+                    Ys = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_hopper/output/spikes/highres_pos_y.csv');
                 else
                     Xs = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/output/Xs_unwrapped.csv');
                     Ys = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/output/Ys_unwrapped.csv');
@@ -247,7 +249,8 @@ function [spk_t,spikes]=load_spk_times(use_hopper, hopper_run, plot_in_spikes, l
                 end           
             else
                 if laptop_data == 0
-                    local_path = '/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/results/spk_MEC_LII_Stellate.dat';
+                    %local_path = '/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/results/spk_MEC_LII_Stellate.dat';
+                    local_path = '/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_hopper/results/spk_MEC_LII_Stellate.dat';
                 else
                     local_path = '/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/results/spk_MEC_LII_Stellate.dat';
                 end

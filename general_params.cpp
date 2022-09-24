@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 10000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 30000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
@@ -75,11 +75,11 @@ struct P {
 	// select movement trajectory
 	bool run_path = 0; // use run_path function. This is auto enabled by functions that use it.
 	bool run_path_onlypos = 0; // only generate movement positions not signaling with run_path function
-	bool move_animal = 0; // use real animal movement positions with neural signaling
+	bool move_animal = 1; // use real animal movement positions with neural signaling
 	bool move_animal_aug = 0; // augment animal movement
 	bool move_animal_onlypos = 0; // generate animal movement position but not signaling
 	bool move_fullspace = 0; // move through whole environment
-	bool move_straight = 1;
+	bool move_straight = 0;
 	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;
@@ -92,7 +92,7 @@ struct P {
 	bool record_fire_vs_pos = 0; // write files for firing vs position plotting
 	bool record_pos_track = 0; // write files for animal position tracking plotting
 	bool record_pos_track_all = 0; // write files for animal positions with no past posit. clearing
-	bool record_spikes_file = 1; // write file for grid cell spike times and neuron positions
+	bool record_spikes_file = 0; // write file for grid cell spike times and neuron positions
 	bool record_in_spikes_file = 0; // write file for interneuron spike times and neuron positions
 	bool record_highrestraj = 1; // write files for high resolution trajectory locations
 	#define additional_spk_mon 0 // additional spike monitors
@@ -115,7 +115,7 @@ struct P {
 	double spdin2exwt = 10.0;//8.0;//3.0;//0.3;
 	double spdex2inwt = 3.0;//1.5;//0.3;
 	double spdin2in_curr = 0.0;//0.0;//0.0;//0;//0.0;//0.0;//3;//0.5;//3;//0.0;//3.0;//0.0;//30.0;//5.0;//0.0;//0.6;//0.15;//100;//0.0;
-	double spdin2ex_curr = 0.75;//0.25;//8.0;//4;//0.5;//0.4;
+	double spdin2ex_curr = 0.75;//0.75;//0.25;//8.0;//4;//0.5;//0.4;
 	double spdex2in_curr = 0.48;//0.2;//0.48;//48;//0.27;//0.48;//0.5;//0.53;//0.57;//0.55;//0.55;//0.473;//0.55;//0.0;//0.5;//1.0;//1.2;//0.0;//1.3;//0.0;//1.0;//50.0;//0.6;//0.6;//0;//1.0;
 	double dir_init_multi = 100000;//100000000;//10000;//1;//10000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
@@ -126,7 +126,7 @@ struct P {
 	int conn_dist = 3; // distance between neurons in connections
 
 	// speed
-	bool auto_speed_control = 1; // automatically adjust parameters to match speed selected
+	bool auto_speed_control = 0; // automatically adjust parameters to match speed selected
 	bool speed_limit = 0; // speed limit on or off
 	double max_speed = 17.5; // max movement speed
 	double speed_conversion = 1;//0.2; // scale animal movement speed data
@@ -139,9 +139,9 @@ struct P {
 	double ala_act_lvl = 0.1; // amount of activity level added for each visit with animal location all plot.
 
 	// place cell parameters
-	float pc_to_gc_wt = 1.0;//1.5;//1.125;//1.5;//0.5;//0.5;//3;//0.5;//3;//0.5;//10; // pc to gc synaptic weight
+	float pc_to_gc_wt = 1.0;//1.0;//1.5;//1.125;//1.5;//0.5;//0.5;//3;//0.5;//3;//0.5;//10; // pc to gc synaptic weight
 	double pc_sig = 2;//1.5;//1.2;//2;//1.5;//4.0;//1.0;//0.25; // sigma symbol; width of the place feild
-	double pc_level = 1000;//1000.0;//1000.0;//5.5;//7.5;//5.0; //14.0; // place cell firing level
+	double pc_level = 2000;//1000;//1000;//1000.0;//1000.0;//5.5;//7.5;//5.0; //14.0; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters
