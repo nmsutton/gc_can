@@ -20,9 +20,9 @@ synapse_weights=ones(grid_size);
 if limited_fields
     p1=20;%.68;
     p2=2;p3=2;
-    p4=10;%15;%8; % center size
+    p4=15;%8; % center size
     p5=p3;p6=p4;
-    p7=0.14;%0.12475;%0.20; % surround size
+    p7=0.12475;%0.20; % surround size
     p8=30;%.135;
     p9=2;p10=2;p11=2;p12=p4;p13=p11;p14=p11;p15=p12;
     p16=1.08; % surround size
@@ -44,8 +44,8 @@ cx_sft=-40;%-29; % x-axis shift
 cy_sft=-3;%-27; % y-axis shift
 y_tiles=12;%4;%25;
 x_tiles=17;%4;%15; % x-axis tiling
-y_t_space=10.54*.9;%13.5;%10.54; % spacing of tiling along y-axis
-x_t_space=14*.9;%14.4;%12;%10; % spacing of tiling along x-axis
+y_t_space=10.54;%13.5;%10.54; % spacing of tiling along y-axis
+x_t_space=14;%14.4;%12;%10; % spacing of tiling along x-axis
 s_mult = 1;%1.15;%1.3;%1.15;%1.3; % spacing multipler
 f_area = 9;%4;%5;%6; % sqrt of area each field contributes values to
 stag_x=0;%x_t_space/2; % x-axis tile stagger distance
