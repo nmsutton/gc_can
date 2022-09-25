@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 30000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 10000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
@@ -75,10 +75,10 @@ struct P {
 	// select movement trajectory
 	bool run_path = 0; // use run_path function. This is auto enabled by functions that use it.
 	bool run_path_onlypos = 0; // only generate movement positions not signaling with run_path function
-	bool move_animal = 1; // use real animal movement positions with neural signaling
+	bool move_animal = 0; // use real animal movement positions with neural signaling
 	bool move_animal_aug = 0; // augment animal movement
 	bool move_animal_onlypos = 0; // generate animal movement position but not signaling
-	bool move_fullspace = 0; // move through whole environment
+	bool move_fullspace = 1; // move through whole environment
 	bool move_straight = 0;
 	bool move_circles = 0;
 	bool move_random = 0;
@@ -106,7 +106,7 @@ struct P {
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 
 	// values for synapse activites
-	double base_ext = 840;//840;//800;//655;//655;//1200;//655;//500;//400;//655;//635;//590;//575;//500;//575;//500;//675;//675;//600;//585;//575;//950;//800;//400;//800;//400;//800;//500;//175;//300;//150;//300;//400;//270;//400;//600;//400;//400;//800;//600;//800;//800;//300;//300;//300;//1100;//16000.0;//1020.0;//2000.0;//1020.0;//34680;//1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level	
+	double base_ext = 850;//840;//800;//655;//655;//1200;//655;//500;//400;//655;//635;//590;//575;//500;//575;//500;//675;//675;//600;//585;//575;//950;//800;//400;//800;//400;//800;//500;//175;//300;//150;//300;//400;//270;//400;//600;//400;//400;//800;//600;//800;//800;//300;//300;//300;//1100;//16000.0;//1020.0;//2000.0;//1020.0;//34680;//1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level	
 	double speed_signaling = 2.5;//0.25;//25;//1.6;//1.632833487;//0.1;//0.2;//3;//0.25;//40;//0.025;//0.2;//20;//5;//0.2;//5;//2;//.2;//0.02;//10;//0.1;//200.0;//0;//50.0;//0.8;//0.195;//1.8;//0.255;//1.8;//0.255;//0.195;//0.195;//0.5;//0.0;//0.195;//0.12; // setting for use of a constant virtual animal speed
 	float dir_to_gc_wt = 2.5;//2.75;//3;//1.6;//1.65;//1.6;//1.6;//1.5;//1.6;//1.5;//1.5;//5.5; // ext_dir to gc weight
 	double mex_hat_multi = 130;//130;//170;//150;//170;//70;//170;//70;//180;//70;//70;//55;//60;//70;//85;//40;//85;//70;//85;//100;//70;//60;//60;//70;//90;//100;//140;//170;//200;//170;//170;//220;//180;//180;//300;//250;//140;//50;//30;//50;//800;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
@@ -120,13 +120,13 @@ struct P {
 	double dir_init_multi = 100000;//100000000;//10000;//1;//10000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
 	double dist_thresh = 5; // distance threshold for only local connections
-	double move_increment = 0.005;//0.027;//0.0005;//0.025;//0.02;//0.001;//0.001;//0.0;//0.001;//0.015;//0.001;//0.025;// 0.01 = 10mps //0.664;//0.0057;//0.0035;//0.0000;//0.0057;//0.0067;//0.002;//0.01;//0.005;//0.2;//0.05;//0.01;//0.266;//0.1;//0.03;//0.05;//0.12;//0.133;//0.664;//0.55;//0.5312;//0.664;//0.665;//0.658;//0.64;//0.658;//0.1;//0.5;//0.2634;//0.325;//0.65; // amount to move in position each move command
+	double move_increment = 0.015;//0.027;//0.0005;//0.025;//0.02;//0.001;//0.001;//0.0;//0.001;//0.015;//0.001;//0.025;// 0.01 = 10mps //0.664;//0.0057;//0.0035;//0.0000;//0.0057;//0.0067;//0.002;//0.01;//0.005;//0.2;//0.05;//0.01;//0.266;//0.1;//0.03;//0.05;//0.12;//0.133;//0.664;//0.55;//0.5312;//0.664;//0.665;//0.658;//0.64;//0.658;//0.1;//0.5;//0.2634;//0.325;//0.65; // amount to move in position each move command
 	vector<float> ext_dir;
 	int conn_offset = 0; // offset in neuron positions for connections
 	int conn_dist = 3; // distance between neurons in connections
 
 	// speed
-	bool auto_speed_control = 0; // automatically adjust parameters to match speed selected
+	bool auto_speed_control = 1; // automatically adjust parameters to match speed selected
 	bool speed_limit = 0; // speed limit on or off
 	double max_speed = 17.5; // max movement speed
 	double speed_conversion = 1;//0.2; // scale animal movement speed data
@@ -141,7 +141,7 @@ struct P {
 	// place cell parameters
 	float pc_to_gc_wt = 1.0;//1.0;//1.5;//1.125;//1.5;//0.5;//0.5;//3;//0.5;//3;//0.5;//10; // pc to gc synaptic weight
 	double pc_sig = 2;//1.5;//1.2;//2;//1.5;//4.0;//1.0;//0.25; // sigma symbol; width of the place feild
-	double pc_level = 3000;//3000;//1000;//1000;//1000.0;//1000.0;//5.5;//7.5;//5.0; //14.0; // place cell firing level
+	double pc_level = 1000;//3000;//1000;//1000;//1000.0;//1000.0;//5.5;//7.5;//5.0; //14.0; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters

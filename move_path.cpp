@@ -85,10 +85,14 @@ void control_speed(double speed, P* p) {
 	if (p->speed_limit == 1 && speed > p->max_speed) {speed = p->max_speed;} // speed limit
 	if (p->auto_speed_control || p->move_animal_onlypos) {
 		p->move_increment = (0.001*speed);
+		//printf("\n move inc: %f\n",speed);
 		//speed = speed * p->grid_pattern_scale;
 		//p->base_ext = 770;//820;//655;
 		//p->base_ext = (840/800) * (1200 + (770 - 1200)/(1 + pow((speed/8.5),16.19154)));
-		p->base_ext = (840/800) * (1200 + (770 - 1200)/(1 + pow((speed/8.5),5)));
+		//p->base_ext = (840/800) * (1200 + (770 - 1200)/(1 + pow((speed/8.5),5)));
+		//p->base_ext = 1400;
+		p->base_ext = (1400 + ((810 - 1400)/(1 + pow((speed/9),10))));
+		//printf("\n base_ext: %f\n",p->base_ext);
 		//if (speed<7.5) {p->base_ext=575;}
 		p->speed_signaling = 10 * (-.00034799225597907657+(.0081675325631652834*speed)+(.014970007271328412*pow(speed,2))-(.0017318129783734592*pow(speed,3))+(.000066887712315789088*pow(speed,4)));
 		p->spdin2in_curr = -7.6999999999504416+(0.87666666666074300*speed)+(-.023333333333160879*pow(speed,2));
