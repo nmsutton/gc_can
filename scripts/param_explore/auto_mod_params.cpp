@@ -47,6 +47,33 @@ void alter_value(regex param_pattern, double val_chg, string filepath) {
     file2.close();
 }
 
+void alter_value_iz(regex param_pattern, string val_chg, string filepath) {
+    ostringstream new_line;
+    smatch pattern_match;
+    string origfile_text, newfile_text;
+    fstream file;
+
+    // read in file
+    file.open(filepath,ios::in); //open a file to perform read operation using file object
+    if (file.is_open()){ //checking whether the file is open
+        while(getline(file, line)){ //read data from file object and put it into string.
+            origfile_text = origfile_text + line.str();
+        }
+    }
+    file.close(); //close the file object.
+
+    // search and replace
+    regex_match (origfile_text,pattern_match,param_pattern);
+    newfile_text = newfile_text + pattern_match[1];
+    newfile_text = newfile_text + val_chg;
+    newfile_text = newfile_text + pattern_match[3];
+
+    fstream file2;
+    file2.open(filepath,ios::out); //open a file to perform read operation using file object
+    file2 << newfile_text;    
+    file2.close();
+}
+
 int main(int argc, char** argv)
 {
     /*
@@ -61,10 +88,22 @@ int main(int argc, char** argv)
         cout<<"-25\n";
     }
     else {
+        string iz_pattern = ".*setNeuronParameters.*";
+        regex iz_test(iz_pattern);
+        smatch iz_match;
+
         string filepath = argv[1];
         regex param_pattern((string) argv[2]);
-        double val_chg = stod(argv[3]);
-        alter_value(param_pattern, val_chg, filepath);     
+        if (regex_match (argv[3],iz_test)) {
+            // process iz file
+            string val_chg = (string) argv[3];
+            alter_value_iz(param_pattern, val_chg, filepath);
+        }
+        else {
+            // process input param value
+            double val_chg = stod(argv[3]);
+            alter_value(param_pattern, val_chg, filepath);     
+        }
     }
 
     return 0;
