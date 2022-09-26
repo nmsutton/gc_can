@@ -19,6 +19,7 @@ export make_am="g++ -Wall -g -std=c++11 auto_mod_params.cpp -o auto_mod_params"
 export run_am=" && ./auto_mod_params"
 export space=" "
 export comma=","
+export semicol=";"
 export date_format="date +%H-%M-%S_%m-%d-%Y"
 module load matlab # load matlab on remote computer
 
@@ -54,10 +55,10 @@ for j in ${param2_vals[@]}; do
                                 $p4""f, 0.0f, 1);\"" &&
 	chg_prm &&
 	# param 2 change
-	#export param_file=$param_file2 &&
-	#export param_pattern=$param_pattern2 &&
-	#export value_change=$space$j &&
-	#chg_prm &&
+	export param_file=$param_file2 &&
+	export param_pattern=$param_pattern2 &&
+	export value_change=" \"        double dir_to_gc_wt = \""$j"\;" &&
+	chg_prm &&
 	# save params
 	curr_time=$($date_format) &&
 	echo $curr_time$comma$i$comma$j >> ./output/param_records.txt &&
