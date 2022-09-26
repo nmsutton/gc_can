@@ -33,9 +33,7 @@ p.MEC_LII_Stellate_Speed_Group = MEC_LII_Stellate_Speed; // 8
 sim.setNeuronParameters(EC_LI_II_Multipolar_Pyramidal, 204.0f, 0.0f, 0.37f, 0.0f, -70.53f, 0.0f, -39.99f, 
                                 0.0f, 0.001f, 0.0f, 0.01f, 0.0f, 3.96f, 0.0f, -54.95f, 0.0f, 
                                 7.0f, 0.0f, 1); // C,k,vr,vt,a,b,vpeak,c,d
-sim.setNeuronParameters(MEC_LII_Stellate, 428.000000f, 0.0f, 2.04779049691647f, 0.0f, -59.1602652733878f, 0.0f, -43.2037684644403f, 
-                                0.0f, 0.00753435323967846f, 0.0f, 88.8077035167208f, 0.0f, 11.8258859484417f, 0.0f, -49.616427055121f, 0.0f, 
-                                452.0f, 0.0f, 1);
+sim.setNeuronParameters(MEC_LII_Stellate, 118.0f, 0.0f, 0.6184380916765625f, 0.0f, -58.53106324064597f, 0.0f, -43.51683183129753f, 0.0f, 0.004821176339075235f, 0.0f, 11.688739717620688f, 0.0f, -49.5218067494078f, 0.0f, 11.482580030790679f, 0.0f, 3.0f, 0.0f, 1);
 sim.setNeuronParameters(EC_LII_Axo_Axonic, 20.0f, 0.0f,  1.0f, 0.0f, -55.0f, 0.0f, 
                                 -40.0f, 0.0f, 0.15f, 0.0f, 8.0f, 0.0f, 25.0f, 0.0f, 
                                 -55.0f, 0.0f, 200.0f, 0.0f, 1); 

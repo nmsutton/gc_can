@@ -48,30 +48,72 @@ void alter_value(regex param_pattern, double val_chg, string filepath) {
 }
 
 void alter_value_iz(regex param_pattern, string val_chg, string filepath) {
-    ostringstream new_line;
+    ostringstream new_line, tmp_text;
     smatch pattern_match;
-    string origfile_text, newfile_text;
+    string origfile_text, newfile_text, line, line2, line3, line_str;
     fstream file;
+    //bool match_found = false;
+    int line_counter = 0;
+    int match_line_num = 0;
 
     // read in file
     file.open(filepath,ios::in); //open a file to perform read operation using file object
     if (file.is_open()){ //checking whether the file is open
         while(getline(file, line)){ //read data from file object and put it into string.
-            origfile_text = origfile_text + line.str();
+            new_line.str(""); // clear new line
+            new_line.clear();
+            new_line << line3 << line2 << line;
+            line_str = new_line.str();
+            //cout << line_str << "\n";
+            //line_str = "sim.setNeuronParameters(MEC_LII_Stellate, 428.000000f, 0.0f, 2.04779049691647f, 0.0f, -59.1602652733878f, 0.0f, -43.2037684644403f,                                0.0f, 0.00753435323967846f, 0.0f, 88.8077035167208f, 0.0f, 11.8258859484417f, 0.0f, -49.616427055121f, 0.0f,                                 452.0f, 0.0f, 1);";
+            if (regex_match (line,param_pattern)) {
+                //cout<<"\nmatch\n";
+                //cout<<pattern_match[2]<<"\n";
+                //regex r2("[|]");
+                //val_chg = regex_replace(val_chg,r2,"\n");
+                newfile_text=newfile_text+val_chg+"\n";
+                //cout<<val_chg;
+                match_line_num=line_counter;
+                //cout<<match_line_num;
+            }        
+            else if (match_line_num==0 || (line_counter!=match_line_num+1 && line_counter!=match_line_num+2)) {
+                newfile_text=newfile_text+line+"\n";
+            }    
+            line3=line2;
+            line2=line;
+            line_counter++;
         }
     }
     file.close(); //close the file object.
-
+    
     // search and replace
-    regex_match (origfile_text,pattern_match,param_pattern);
-    newfile_text = newfile_text + pattern_match[1];
-    newfile_text = newfile_text + val_chg;
-    newfile_text = newfile_text + pattern_match[3];
+    /*cout << origfile_text.size() << "\n";
+    regex param_pattern2(".*test.*"); 
+    //cout << origfile_text;
+    if (regex_match (origfile_text,param_pattern)) {
+        //regex_match (origfile_text,pattern_match,param_pattern);
+    }
+    if (regex_match (origfile_text,param_pattern)) {
+        cout<<"\nmatch\n";
+    }
+    else {
+        //cout<<"\n"<<origfile_text<<"\n";
+    }*/
+    /*tmp_text << pattern_match[1] << val_chg << pattern_match[3] << "\n";
+    newfile_text = tmp_text.str();*/
+    //cout << newfile_text;
+    //if (newfile_text.size() > 10) {
+        //cout << newfile_text;
+        //cout << newfile_text.size();
+    //}
 
-    fstream file2;
-    file2.open(filepath,ios::out); //open a file to perform read operation using file object
-    file2 << newfile_text;    
-    file2.close();
+    if (newfile_text.size() > 10) { //(newfile_text != "") {
+        fstream file2;
+        string filepath2 = "../../general_config_state_test.cpp";
+        file2.open(filepath2,ios::out); //open a file to perform read operation using file object
+        file2 << newfile_text;    
+        file2.close();
+    }
 }
 
 int main(int argc, char** argv)
@@ -97,6 +139,7 @@ int main(int argc, char** argv)
         if (regex_match (argv[3],iz_test)) {
             // process iz file
             string val_chg = (string) argv[3];
+            //cout<<"\n"<<(string) argv[2]<<"\n";
             alter_value_iz(param_pattern, val_chg, filepath);
         }
         else {
