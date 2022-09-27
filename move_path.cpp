@@ -91,7 +91,7 @@ void control_speed(double speed, P* p) {
 		//p->base_ext = (840/800) * (1200 + (770 - 1200)/(1 + pow((speed/8.5),16.19154)));
 		//p->base_ext = (840/800) * (1200 + (770 - 1200)/(1 + pow((speed/8.5),5)));
 		//p->base_ext = 1400;
-		p->base_ext = (1400 + ((810 - 1400)/(1 + pow((speed/9),10))));
+		//p->base_ext = (1400 + ((810 - 1400)/(1 + pow((speed/9),10))));
 		//printf("\n base_ext: %f\n",p->base_ext);
 		//if (speed<7.5) {p->base_ext=575;}
 		p->speed_signaling = 10 * (-.00034799225597907657+(.0081675325631652834*speed)+(.014970007271328412*pow(speed,2))-(.0017318129783734592*pow(speed,3))+(.000066887712315789088*pow(speed,4)));
