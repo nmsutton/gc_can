@@ -31,8 +31,8 @@ void alter_value(regex param_pattern, string val_chg, string filepath) {
     file.close(); //close the file object.
 
     fstream file2;
-    string filepath2 = "../../general_params_test.cpp";
-    file2.open(filepath2,ios::out); //open a file to perform read operation using file object
+    //string filepath2 = "../../general_params_test.cpp";
+    file2.open(filepath,ios::out); //open a file to perform read operation using file object
     file2 << newfile_text;    
     file2.close();
 }
@@ -51,6 +51,8 @@ void alter_value_iz(regex param_pattern, string val_chg, string filepath) {
     if (file.is_open()){ //checking whether the file is open
         while(getline(file, line)){ //read data from file object and put it into string.
             if (regex_match (line,param_pattern)) {
+                regex newline("[|]"); // replace symbol with new line characters
+                val_chg = regex_replace(val_chg,newline,"\n");
                 newfile_text=newfile_text+val_chg+"\n";
                 match_line_num=line_counter;
             }        
@@ -64,8 +66,8 @@ void alter_value_iz(regex param_pattern, string val_chg, string filepath) {
     file.close(); //close the file object.
 
     fstream file2;
-    string filepath2 = "../../general_config_state_test.cpp";
-    file2.open(filepath2,ios::out); //open a file to perform read operation using file object
+    //string filepath2 = "../../general_config_state_test.cpp";
+    file2.open(filepath,ios::out); //open a file to perform read operation using file object
     file2 << newfile_text;    
     file2.close();
 }

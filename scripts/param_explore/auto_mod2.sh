@@ -50,8 +50,8 @@ for j in ${param2_vals[@]}; do
 	# param 1 change
 	export param_file=$param_file1 &&
 	export param_pattern=$param_pattern1 &&
-	export value_change=" \"sim.setNeuronParameters(MEC_LII_Stellate, $p5""f, 0.0f, $p1""f, 0.0f, $p6""f, 0.0f, $p7""f,
-                                0.0f, $p2""f, 0.0f, $p3""f, 0.0f, $p8""f, 0.0f, $p9""f, 0.0f,
+	export value_change=" \"sim.setNeuronParameters(MEC_LII_Stellate, $p5""f, 0.0f, $p1""f, 0.0f, $p6""f, 0.0f, $p7""f,|
+                                0.0f, $p2""f, 0.0f, $p3""f, 0.0f, $p8""f, 0.0f, $p9""f, 0.0f,|
                                 $p4""f, 0.0f, 1);\"" &&
 	chg_prm &&
 	# param 2 change
