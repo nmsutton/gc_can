@@ -1,5 +1,5 @@
 run_on_hopper=0;
-hopper_run=8;
+hopper_run=3;
 if run_on_hopper
 	addpath /home/nsutton2/git/CMBHOME_github/ 
 	run("/home/nsutton2/git/CARLsim4_dgx_hc_09_18_21/projects/gc_can_"+hopper_run+"/scripts/high_res_traj/high_res_traj.m");	
@@ -9,6 +9,7 @@ else
 end
 m = []; % empty matrix
 [HDgridScore,gridness3Score]=get_HDGridScore(m,m,m,heat_map);
+fprintf("%f,%f\n",HDgridScore,gridness3Score);
 gridness_file = fopen('../param_explore/output/gridness_score.txt','at'); % append file
 c = clock;
 hr = mod(c(4),12);

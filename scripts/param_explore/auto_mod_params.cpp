@@ -72,6 +72,33 @@ void alter_value_iz(regex param_pattern, string val_chg, string filepath) {
     file2.close();
 }
 
+void alter_value_tm(regex param_pattern, string val_chg, string filepath) {
+    string origfile_text, newfile_text, line;
+    fstream file;
+    smatch sm;
+
+    file.open(filepath,ios::in); //open a file to perform read operation using file object
+    if (file.is_open()){ //checking whether the file is open
+        while(getline(file, line)){ //read data from file object and put it into string.
+            if (regex_match (line,param_pattern)) {
+                regex_match(line,sm,param_pattern);
+                newfile_text=newfile_text+sm[1].str()+val_chg+sm[3].str()+"\n";
+                //cout << sm[1].str()+val_chg+sm[3].str() << "\n";
+            }        
+            else {
+                newfile_text=newfile_text+line+"\n";
+            }    
+        }
+    }
+    file.close(); //close the file object.
+
+    fstream file2;
+    //string filepath2 = "../../generate_config_state_test.cpp";
+    file2.open(filepath,ios::out); //open a file to perform read operation using file object
+    file2 << newfile_text;    
+    file2.close();
+}
+
 int main(int argc, char** argv)
 {
     /*
@@ -85,7 +112,8 @@ int main(int argc, char** argv)
     else {
         string iz_pattern = ".*setNeuronParameters.*";
         regex iz_test(iz_pattern);
-        smatch iz_match;
+        string tm_pattern = ".*setSTP.*";
+        regex tm_test(tm_pattern);
 
         string filepath = argv[1];
         regex param_pattern((string) argv[2]);
@@ -94,6 +122,11 @@ int main(int argc, char** argv)
             string val_chg = (string) argv[3];
             //cout<<"\n"<<(string) argv[2]<<"\n";
             alter_value_iz(param_pattern, val_chg, filepath);
+        }
+        else if (regex_match (argv[2],tm_test)) {
+            // process tm file
+            string val_chg = (string) argv[3];
+            alter_value_tm(param_pattern, val_chg, filepath);
         }
         else {
             // process input param value
