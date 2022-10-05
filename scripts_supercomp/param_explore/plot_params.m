@@ -1,0 +1,21 @@
+% reference: https://www.mathworks.com/help/matlab/ref/area.html
+%{
+y1=[1 2 1 2 1];
+x1=[1 2 3 4 5];
+area(x1,y1)
+axis([1 5 0 5])
+%}
+x_thr=[118.0000  118.0000  118.0000  121.2500  121.2500  121.2500  124.5000  124.5000  124.5000  127.7500  127.7500  127.7500  131.0000  131.0000];
+y_thr=[2.9225    5.8450    8.7675    2.9225    5.8450    8.7675    2.9225    5.8450    8.7675    2.9225    5.8450    8.7675    2.9225    5.8450];
+x_nothr=[118.0000  118.0000  121.2500  121.2500  124.5000  124.5000  127.7500  127.7500  131.0000  131.0000  131.0000];
+y_nothr=[0   11.6900         0   11.6900         0   11.6900         0   11.6900         0    8.7675   11.6900];
+x=[x_thr x_nothr];
+y=[y_thr y_nothr];
+scatter(x_nothr,y_nothr,1,'blue'), hold on;
+scatter(x_thr,y_thr,1,'red'), hold off;
+axis([min(x) max(x) min(y) max(y)])
+title("Gridness score of parameters for grid cells", 'FontSize', 11);
+axis('tight')
+xlabel('Izhikevich C value') 
+ylabel('Izhikevich b value')
+legend('<1 gridness','>=1 gridness')
