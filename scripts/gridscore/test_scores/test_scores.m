@@ -1,11 +1,8 @@
 run("/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/initOAT.m");
 addpath /comp_neuro/Software/Github/CMBHOME_github/
-spikes = [];
-load("example_data/example_spk_t.mat")
 load("example_data/example_spk_x.mat")
 load("example_data/example_spk_y.mat")
-load("example_data/example_Xs.mat")
-load("example_data/example_Ys.mat")
+spikes = [];
 display_plot=0;
 save_plot=1;
 grid_size=30;
