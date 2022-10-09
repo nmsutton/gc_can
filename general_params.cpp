@@ -141,7 +141,7 @@ struct P {
 	// place cell parameters
 	float pc_to_gc_wt = 1.0;//1.5;//1.125;//1.5;//0.5;//0.5;//3;//0.5;//3;//0.5;//10; // pc to gc synaptic weight
 	double pc_sig = 2;//1.5;//1.2;//2;//1.5;//4.0;//1.0;//0.25; // sigma symbol; width of the place feild
-	double pc_level = 400;//1000;//3000;//1000;//1000;//1000.0;//1000.0;//5.5;//7.5;//5.0; //14.0; // place cell firing level
+	double pc_level = 500;//1000;//3000;//1000;//1000;//1000.0;//1000.0;//5.5;//7.5;//5.0; //14.0; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters

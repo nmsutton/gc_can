@@ -71,9 +71,12 @@ sim.setNeuronParameters(MEC_LII_Basket_Speed, 20.0f, 0.0f,  1.0f, 0.0f, -55.0f, 
 sim.setNeuronParameters(MEC_LII_Basket_Speed2, 20.0f, 0.0f,  1.0f, 0.0f, -55.0f, 0.0f, 
                                 -40.0f, 0.0f, 0.15f, 0.0f, 8.0f, 0.0f, 25.0f, 0.0f, 
                                 -55.0f, 0.0f, 200.0f, 0.0f, 1); 
-sim.setNeuronParameters(MEC_LII_Stellate_Speed, 118.0f, 0.0f, 0.98f, 0.0f, -58.53f, 0.0f, -43.52f, 
+/*sim.setNeuronParameters(MEC_LII_Stellate_Speed, 118.0f, 0.0f, 0.98f, 0.0f, -58.53f, 0.0f, -43.52f, 
                                 0.0f, 0.004f, 0.0f, 11.690000f, 0.0f, 7.85f, 0.0f, -52.68f, 0.0f, 
-                                65.0f, 0.0f, 1);
+                                65.0f, 0.0f, 1);*/
+sim.setNeuronParameters(MEC_LII_Stellate_Speed, 118.000000f, 0.0f, 0.62f, 0.0f, -58.53f, 0.0f, -43.52f, 
+                                0.0f, 0.005f, 0.0f, 11.690000f, 0.0f, 11.48f, 0.0f, -49.52f, 0.0f, 
+                                50.0f, 0.0f, 1);
 sim.setNeuronParameters(CA1_Pyramidal, 204.0f, 0.0f, 0.76f, 0.0f, -69.36f, 0.0f, -39.99f, 
                                 0.0f, 0.001f, 0.0f, 0.01f, 0.0f, 25.46f, 0.0f, -54.95f, 
                                 0.0f, 16.0f, 0.0f, 1);
@@ -174,33 +177,9 @@ sim.setSTP(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, true, STPu(0.1513, 0
                                      STPtdGABAb(150.0, 0.0f),
                                      STPtrNMDA(0.0f, 0.0f),
                                      STPtrGABAb(0.0f, 0.0f));
-sim.setSTP(MEC_LII_Stellate, EC_LII_Axo_Axonic, true, STPu(0.1514, 0.0f),
-                                     STPtauU(58.97, 0.0f),
-                                     STPtauX(123.7, 0.0f),
-                                     STPtdAMPA(6.632, 0.0f),
-                                     STPtdNMDA(150.0, 0.0f),
-                                     STPtdGABAa(6.0, 0.0f),
-                                     STPtdGABAb(150.0, 0.0f),
-                                     STPtrNMDA(0.0f, 0.0f),
-                                     STPtrGABAb(0.0f, 0.0f));
-sim.setSTP(MEC_LII_Stellate, MEC_LII_Basket, true, STPu(0.1638, 0.0f),
-                                     STPtauU(57.57, 0.0f),
-                                     STPtauX(119, 0.0f),
-                                     STPtdAMPA(6.205, 0.0f),
-                                     STPtdNMDA(150.0, 0.0f),
-                                     STPtdGABAa(6.0, 0.0f),
-                                     STPtdGABAb(150.0, 0.0f),
-                                     STPtrNMDA(0.0f, 0.0f),
-                                     STPtrGABAb(0.0f, 0.0f));
-sim.setSTP(MEC_LII_Stellate, EC_LII_Basket_Multipolar, true, STPu(0.1638, 0.0f),
-                                     STPtauU(57.57, 0.0f),
-                                     STPtauX(119, 0.0f),
-                                     STPtdAMPA(6.205, 0.0f),
-                                     STPtdNMDA(150.0, 0.0f),
-                                     STPtdGABAa(6.0, 0.0f),
-                                     STPtdGABAb(150.0, 0.0f),
-                                     STPtrNMDA(0.0f, 0.0f),
-                                     STPtrGABAb(0.0f, 0.0f));
+sim.setSTP(MEC_LII_Stellate, EC_LII_Axo_Axonic, true, STPu(0.1514, 0.0f), STPtauU(58.97, 0.0f), STPtauX(123.7, 0.0f), STPtdAMPA(6.632, 0.0f), STPtdNMDA(150.0, 0.0f), STPtdGABAa(6.0, 0.0f), STPtdGABAb(150.0, 0.0f), STPtrNMDA(0.0f, 0.0f), STPtrGABAb(0.0f, 0.0f));
+sim.setSTP(MEC_LII_Stellate, MEC_LII_Basket, true, STPu(0.1638, 0.0f), STPtauU(57.57, 0.0f), STPtauX(119, 0.0f), STPtdAMPA(6.205, 0.0f), STPtdNMDA(150.0, 0.0f), STPtdGABAa(6.0, 0.0f), STPtdGABAb(150.0, 0.0f), STPtrNMDA(0.0f, 0.0f), STPtrGABAb(0.0f, 0.0f));
+sim.setSTP(MEC_LII_Stellate, EC_LII_Basket_Multipolar, true, STPu(0.1638, 0.0f), STPtauU(57.57, 0.0f), STPtauX(119, 0.0f), STPtdAMPA(5.467, 0.0f), STPtdNMDA(150.0, 0.0f), STPtdGABAa(6.0, 0.0f), STPtdGABAb(150.0, 0.0f), STPtrNMDA(0.0f, 0.0f), STPtrGABAb(0.0f, 0.0f));
 if (p.spin2in_active) {
 sim.setSTP(MEC_LII_Basket_Speed, EC_LII_Axo_Axonic, true, STPu(0.1638, 0.0f),
                                      STPtauU(57.57, 0.0f),
