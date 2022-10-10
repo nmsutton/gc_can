@@ -12,14 +12,25 @@ export param3_vals=(0.1655 0.2063 0.2471 0.2880 0.3288)
 export param4_vals=(14.7014 25.4180 36.1346 46.8512 57.5678)
 export param5_vals=(0.1511 0.2049 0.2587 0.3125 0.3663)
 export param6_vals=(12.7364 30.8289 48.9213 67.0138 85.1063)
+export param7_vals=(0.1200 0.1606 0.2012 0.2419 0.2825)
+export param8_vals=(11.1789 17.3272 23.4755 29.6239 35.7722)
+export param9_vals=(0.1232 0.1746 0.2260 0.2774 0.3288)
+export param10_vals=(11.2301 17.8397 24.4493 31.0590 37.6686)
+export param11_vals=(0.1429 0.1775 0.2121 0.2466 0.2812)
+export param12_vals=(12.1760 19.7719 27.3678 34.9637 42.5596)
 export param_file1=" \"../../generate_config_state.cpp\"";
-export param_file2=" \"../../generate_config_state.cpp\"";
 export param_pattern1=" \"(.*sim.setSTP\\(MEC_LII_Stellate, EC_LII_Axo_Axonic, true,.*STPu\\()(\\d+[.]?\\d*)(,.*)\"";
 export param_pattern2=" \"(.*sim.setSTP\\(MEC_LII_Stellate, EC_LII_Axo_Axonic, true,.*STPtauU\\()(\\d+[.]*\\d*)(,.*)\"";
 export param_pattern3=" \"(.*sim.setSTP\\(MEC_LII_Stellate, MEC_LII_Basket, true,.*STPu\\()(\\d+[.]?\\d*)(,.*)\"";
 export param_pattern4=" \"(.*sim.setSTP\\(MEC_LII_Stellate, MEC_LII_Basket, true,.*STPtauU\\()(\\d+[.]*\\d*)(,.*)\"";
 export param_pattern5=" \"(.*sim.setSTP\\(MEC_LII_Stellate, EC_LII_Basket_Multipolar, true,.*STPu\\()(\\d+[.]?\\d*)(,.*)\"";
 export param_pattern6=" \"(.*sim.setSTP\\(MEC_LII_Stellate, EC_LII_Basket_Multipolar, true,.*STPtauU\\()(\\d+[.]*\\d*)(,.*)\"";
+export param_pattern7=" \"(.*sim.setSTP\\(EC_LII_Axo_Axonic, MEC_LII_Stellate, true,.*STPu\\()(\\d+[.]?\\d*)(,.*)\"";
+export param_pattern8=" \"(.*sim.setSTP\\(EC_LII_Axo_Axonic, MEC_LII_Stellate, true,.*STPtauU\\()(\\d+[.]*\\d*)(,.*)\"";
+export param_pattern9=" \"(.*sim.setSTP\\(MEC_LII_Basket, MEC_LII_Stellate, true,.*STPu\\()(\\d+[.]?\\d*)(,.*)\"";
+export param_pattern10=" \"(.*sim.setSTP\\(MEC_LII_Basket, MEC_LII_Stellate, true,.*STPtauU\\()(\\d+[.]*\\d*)(,.*)\"";
+export param_pattern11=" \"(.*sim.setSTP\\(EC_LII_Basket_Multipolar, MEC_LII_Stellate, true,.*STPu\\()(\\d+[.]?\\d*)(,.*)\"";
+export param_pattern12=" \"(.*sim.setSTP\\(EC_LII_Basket_Multipolar, MEC_LII_Stellate, true,.*STPtauU\\()(\\d+[.]*\\d*)(,.*)\"";
 # general settings
 touch ./output/param_records.txt
 echo "" > ./output/param_records.txt # clear file
@@ -53,17 +64,15 @@ run_sim(){
 }
 
 # run all param combinations
-#for i in ${param1_vals[@]}; do
-#for j in ${param2_vals[@]}; do
 for i in {0..4} 
 do
 for j in {0..4} 
 do
 	# param change
+	export p1=$i &&
 	export param_file=$param_file1 &&
 	export param_pattern=$param_pattern1 &&
 	export value_change=" \"${param1_vals[$i]}\"" &&
-	export p1=$i;
 	chg_prm &&
 	export param_file=$param_file1 &&
 	export param_pattern=$param_pattern3 &&	
@@ -72,21 +81,45 @@ do
 	export param_file=$param_file1 &&
 	export param_pattern=$param_pattern5 &&	
 	export value_change=" \"${param5_vals[$i]}\"" &&
-	chg_prm &&		
+	chg_prm &&	
+	export param_file=$param_file1 &&
+	export param_pattern=$param_pattern7 &&
+	export value_change=" \"${param7_vals[$i]}\"" &&
+	chg_prm &&
+	export param_file=$param_file1 &&
+	export param_pattern=$param_pattern9 &&	
+	export value_change=" \"${param9_vals[$i]}\"" &&
+	chg_prm &&	
+	export param_file=$param_file1 &&
+	export param_pattern=$param_pattern11 &&	
+	export value_change=" \"${param11_vals[$i]}\"" &&
+	chg_prm &&	
 	# param change
-	export param_file=$param_file2 &&
+	export p2=$j &&
+	export param_file=$param_file1 &&
 	export param_pattern=$param_pattern2 &&
 	export value_change=" \"${param2_vals[$j]}\"" &&
-	export p2=$j;
 	chg_prm &&
-	export param_file=$param_file2 &&
+	export param_file=$param_file1 &&
 	export param_pattern=$param_pattern4 &&
 	export value_change=" \"${param4_vals[$j]}\"" &&
 	chg_prm &&
-	export param_file=$param_file2 &&
+	export param_file=$param_file1 &&
 	export param_pattern=$param_pattern6 &&
 	export value_change=" \"${param6_vals[$j]}\"" &&
 	chg_prm &&	
+	export param_file=$param_file1 &&
+	export param_pattern=$param_pattern8 &&
+	export value_change=" \"${param8_vals[$j]}\"" &&
+	chg_prm &&
+	export param_file=$param_file1 &&
+	export param_pattern=$param_pattern10 &&
+	export value_change=" \"${param10_vals[$j]}\"" &&
+	chg_prm &&
+	export param_file=$param_file1 &&
+	export param_pattern=$param_pattern12 &&
+	export value_change=" \"${param12_vals[$j]}\"" &&
+	chg_prm &&
 	# save params
 	curr_time=$($date_format) &&
 	echo $curr_time$comma$i$comma$j >> ./output/param_records.txt &&
