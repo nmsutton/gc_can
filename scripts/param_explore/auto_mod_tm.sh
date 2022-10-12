@@ -6,31 +6,31 @@
 
 # select params
 # Note: set number of vals in for statement {1..<count>} below
-export param1_vals=(0.1514 0.1967 0.2420 0.2874 0.3327)
-export param2_vals=(20.0590 29.7855 39.5121 49.2386 58.9651)
-export param3_vals=(0.1655 0.2063 0.2471 0.2880 0.3288)
-export param4_vals=(14.7014 25.4180 36.1346 46.8512 57.5678)
-export param5_vals=(0.1511 0.2049 0.2587 0.3125 0.3663)
-export param6_vals=(12.7364 30.8289 48.9213 67.0138 85.1063)
-export param7_vals=(0.1200 0.1606 0.2012 0.2419 0.2825)
-export param8_vals=(11.1789 17.3272 23.4755 29.6239 35.7722)
-export param9_vals=(0.1232 0.1746 0.2260 0.2774 0.3288)
-export param10_vals=(11.2301 17.8397 24.4493 31.0590 37.6686)
-export param11_vals=(0.1429 0.1775 0.2121 0.2466 0.2812)
-export param12_vals=(12.1760 19.7719 27.3678 34.9637 42.5596)
+export param1_vals=(123.6932 277.4218 431.1504 584.8790 738.6077)
+export param2_vals=(6.6322 5.7332 4.8342 3.9351 3.0361)
+export param3_vals=(118.9779 270.4092 421.8405 573.2718 724.7031)
+export param4_vals=(6.2055 5.3594 4.5134 3.6673 2.8213)
+export param5_vals=(106.1875 264.1745 422.1616 580.1487 738.1358)
+export param6_vals=(5.4674 4.7403 4.0133 3.2862 2.5592)
+export param7_vals=(385.3961 532.6420 679.8879 827.1337 974.3796)
+export param8_vals=(8.8387 7.6411 6.4435 5.2458 4.0482)
+export param9_vals=(401.7326 536.6648 671.5969 806.5291 941.4612)
+export param10_vals=(9.1373 7.8868 6.6362 5.3856 4.1350)
+export param11_vals=(374.8724 488.9898 603.1072 717.2246 831.3420)
+export param12_vals=(10.0216 8.6470 7.2724 5.8979 4.5233)
 export param_file1=" \"../../generate_config_state.cpp\"";
-export param_pattern1=" \"(.*sim.setSTP\\(MEC_LII_Stellate, EC_LII_Axo_Axonic, true,.*STPu\\()(\\d+[.]?\\d*)(,.*)\"";
-export param_pattern2=" \"(.*sim.setSTP\\(MEC_LII_Stellate, EC_LII_Axo_Axonic, true,.*STPtauU\\()(\\d+[.]*\\d*)(,.*)\"";
-export param_pattern3=" \"(.*sim.setSTP\\(MEC_LII_Stellate, MEC_LII_Basket, true,.*STPu\\()(\\d+[.]?\\d*)(,.*)\"";
-export param_pattern4=" \"(.*sim.setSTP\\(MEC_LII_Stellate, MEC_LII_Basket, true,.*STPtauU\\()(\\d+[.]*\\d*)(,.*)\"";
-export param_pattern5=" \"(.*sim.setSTP\\(MEC_LII_Stellate, EC_LII_Basket_Multipolar, true,.*STPu\\()(\\d+[.]?\\d*)(,.*)\"";
-export param_pattern6=" \"(.*sim.setSTP\\(MEC_LII_Stellate, EC_LII_Basket_Multipolar, true,.*STPtauU\\()(\\d+[.]*\\d*)(,.*)\"";
-export param_pattern7=" \"(.*sim.setSTP\\(EC_LII_Axo_Axonic, MEC_LII_Stellate, true,.*STPu\\()(\\d+[.]?\\d*)(,.*)\"";
-export param_pattern8=" \"(.*sim.setSTP\\(EC_LII_Axo_Axonic, MEC_LII_Stellate, true,.*STPtauU\\()(\\d+[.]*\\d*)(,.*)\"";
-export param_pattern9=" \"(.*sim.setSTP\\(MEC_LII_Basket, MEC_LII_Stellate, true,.*STPu\\()(\\d+[.]?\\d*)(,.*)\"";
-export param_pattern10=" \"(.*sim.setSTP\\(MEC_LII_Basket, MEC_LII_Stellate, true,.*STPtauU\\()(\\d+[.]*\\d*)(,.*)\"";
-export param_pattern11=" \"(.*sim.setSTP\\(EC_LII_Basket_Multipolar, MEC_LII_Stellate, true,.*STPu\\()(\\d+[.]?\\d*)(,.*)\"";
-export param_pattern12=" \"(.*sim.setSTP\\(EC_LII_Basket_Multipolar, MEC_LII_Stellate, true,.*STPtauU\\()(\\d+[.]*\\d*)(,.*)\"";
+export param_pattern1=" \"(.*sim.setSTP\\(MEC_LII_Stellate, EC_LII_Axo_Axonic, true,.*STPtauX\\()(\\d+[.]?\\d*)(f?,.*)\"";
+export param_pattern2=" \"(.*sim.setSTP\\(MEC_LII_Stellate, EC_LII_Axo_Axonic, true,.*STPtdAMPA\\()(\\d+[.]*\\d*)(f?,.*)\"";
+export param_pattern3=" \"(.*sim.setSTP\\(MEC_LII_Stellate, MEC_LII_Basket, true,.*STPtauX\\()(\\d+[.]?\\d*)(f?,.*)\"";
+export param_pattern4=" \"(.*sim.setSTP\\(MEC_LII_Stellate, MEC_LII_Basket, true,.*STPtdAMPA\\()(\\d+[.]*\\d*)(f?,.*)\"";
+export param_pattern5=" \"(.*sim.setSTP\\(MEC_LII_Stellate, EC_LII_Basket_Multipolar, true,.*STPtauX\\()(\\d+[.]?\\d*)(f?,.*)\"";
+export param_pattern6=" \"(.*sim.setSTP\\(MEC_LII_Stellate, EC_LII_Basket_Multipolar, true,.*STPtdAMPA\\()(\\d+[.]*\\d*)(f?,.*)\"";
+export param_pattern7=" \"(.*sim.setSTP\\(EC_LII_Axo_Axonic, MEC_LII_Stellate, true,.*STPtauX\\()(\\d+[.]?\\d*)(f?,.*)\"";
+export param_pattern8=" \"(.*sim.setSTP\\(EC_LII_Axo_Axonic, MEC_LII_Stellate, true,.*STPtdGABAa\\()(\\d+[.]*\\d*)(f?,.*)\"";
+export param_pattern9=" \"(.*sim.setSTP\\(MEC_LII_Basket, MEC_LII_Stellate, true,.*STPtauX\\()(\\d+[.]?\\d*)(f?,.*)\"";
+export param_pattern10=" \"(.*sim.setSTP\\(MEC_LII_Basket, MEC_LII_Stellate, true,.*STPtdGABAa\\()(\\d+[.]*\\d*)(f?,.*)\"";
+export param_pattern11=" \"(.*sim.setSTP\\(EC_LII_Basket_Multipolar, MEC_LII_Stellate, true,.*STPtauX\\()(\\d+[.]?\\d*)(f?,.*)\"";
+export param_pattern12=" \"(.*sim.setSTP\\(EC_LII_Basket_Multipolar, MEC_LII_Stellate, true,.*STPtdGABAa\\()(\\d+[.]*\\d*)(f?,.*)\"";
 # general settings
 touch ./output/param_records.txt
 echo "" > ./output/param_records.txt # clear file
@@ -49,6 +49,7 @@ chg_prm(){
 	eval $command
 	command=$make_am$run_am$param_file$param_pattern$value_change
 	eval $command
+	#echo $command
 }
 
 run_sim(){
@@ -61,6 +62,7 @@ run_sim(){
 	cd ../gridscore/ &&
 	#matlab -nodisplay -r "gridscore_sim $p1 $p2; exit" &&
 	cd ../param_explore/
+	#echo "run sim"
 }
 
 # run all param combinations
