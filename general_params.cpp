@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 220000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 5200;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int bump_dist = 15; // inter-bump distance
@@ -78,8 +78,8 @@ struct P {
 	bool move_animal = 0; // use real animal movement positions with neural signaling
 	bool move_animal_aug = 0; // augment animal movement
 	bool move_animal_onlypos = 0; // generate animal movement position but not signaling
-	bool move_fullspace = 1; // move through whole environment
-	bool move_straight = 0;
+	bool move_fullspace = 0; // move through whole environment
+	bool move_straight = 1;
 	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;
@@ -97,26 +97,26 @@ struct P {
 	bool record_highrestraj = 1; // write files for high resolution trajectory locations
 	#define additional_spk_mon 0 // additional spike monitors
 	#define monitor_voltage 0 // turn voltage monitoring on or off 
-	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
-	bool pc_to_gc = 1; // place cells to grid cells signaling
-	bool spin2in_active = 1; // inhibitory speed cells active.	
+	bool pc_active = 0; // pc signaling active. bc->pc->gc can still work even if this is disabled.
+	bool pc_to_gc = 0; // place cells to grid cells signaling
+	bool spin2in_active = 0; // inhibitory speed cells active.	
 	bool spin2ex_active = 1; // inhibitory speed cells active.	
 	bool spex2in_active = 1; // excitatory speed cells active.	
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 
 	// values for synapse activites
-	double base_ext = 655;//600;//840;//800;//655;//655;//1200;//655;//500;//400;//655;//635;//590;//575;//500;//575;//500;//675;//675;//600;//585;//575;//950;//800;//400;//800;//400;//800;//500;//175;//300;//150;//300;//400;//270;//400;//600;//400;//400;//800;//600;//800;//800;//300;//300;//300;//1100;//16000.0;//1020.0;//2000.0;//1020.0;//34680;//1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level	
-	double speed_signaling = 0.25;//2.5;//0.25;//25;//2.5;//0.25;//2.5;//1.6;//1.632833487;//0.1;//0.2;//3;//0.25;//40;//0.025;//0.2;//20;//5;//0.2;//5;//2;//.2;//0.02;//10;//0.1;//200.0;//0;//50.0;//0.8;//0.195;//1.8;//0.255;//1.8;//0.255;//0.195;//0.195;//0.5;//0.0;//0.195;//0.12; // setting for use of a constant virtual animal speed
+	double base_ext = 650;//655;//655;//600;//840;//800;//655;//655;//1200;//655;//500;//400;//655;//635;//590;//575;//500;//575;//500;//675;//675;//600;//585;//575;//950;//800;//400;//800;//400;//800;//500;//175;//300;//150;//300;//400;//270;//400;//600;//400;//400;//800;//600;//800;//800;//300;//300;//300;//1100;//16000.0;//1020.0;//2000.0;//1020.0;//34680;//1020.0;//30.0;//184//4.5;//800.0;//4.5; // baseline ext input speed level	
+	double speed_signaling = 0.15;//0.25;//2.5;//0.25;//25;//2.5;//0.25;//2.5;//1.6;//1.632833487;//0.1;//0.2;//3;//0.25;//40;//0.025;//0.2;//20;//5;//0.2;//5;//2;//.2;//0.02;//10;//0.1;//200.0;//0;//50.0;//0.8;//0.195;//1.8;//0.255;//1.8;//0.255;//0.195;//0.195;//0.5;//0.0;//0.195;//0.12; // setting for use of a constant virtual animal speed
 	float dir_to_gc_wt = 2.0;//1.6;//1.5;//2.75;//1.6;//2.75; // ext_dir to gc weight
 	double mex_hat_multi = 130;//130;//170;//150;//170;//70;//170;//70;//180;//70;//70;//55;//60;//70;//85;//40;//85;//70;//85;//100;//70;//60;//60;//70;//90;//100;//140;//170;//200;//170;//170;//220;//180;//180;//300;//250;//140;//50;//30;//50;//800;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
 	float gc_to_in_wt = 37;//38;//70;//20;//25;//9;//9;//20;//45;//14;//10;//1;//14;//9;//18.5;//9;//9.0;//7.5;//6.0;//11.5;//18.5;//13.5;//10;//8.5;//12;//5.5;//18.5;//16.5;//15.5;//13.5;//11.5;//5.5;//2.5;//1;//1;//0.45;//1;//25;//700.0; // gc to interneurons weight
 	double spdin2inwt = 1.0;//1.0;//3.0;//0.3;
 	double spdin2exwt = 10.0;//8.0;//3.0;//0.3;
-	double spdex2inwt = 3.0;//1.5;//0.3;
+	double spdex2inwt = 0.44;//3.0;//1.5;//0.3;
 	double spdin2in_curr = 0.0;//0.0;//0.0;//0;//0.0;//0.0;//3;//0.5;//3;//0.0;//3.0;//0.0;//30.0;//5.0;//0.0;//0.6;//0.15;//100;//0.0;
 	double spdin2ex_curr = 0.0;//0.19;//0.0;//0.75;//0.75;//0.25;//8.0;//4;//0.5;//0.4;
-	double spdex2in_curr = 0.48;//0.48;//0.48;//0.2;//0.48;//48;//0.27;//0.48;//0.5;//0.53;//0.57;//0.55;//0.55;//0.473;//0.55;//0.0;//0.5;//1.0;//1.2;//0.0;//1.3;//0.0;//1.0;//50.0;//0.6;//0.6;//0;//1.0;
+	double spdex2in_curr = 0.5;//0.48;//0.48;//0.48;//0.2;//0.48;//48;//0.27;//0.48;//0.5;//0.53;//0.57;//0.55;//0.55;//0.473;//0.55;//0.0;//0.5;//1.0;//1.2;//0.0;//1.3;//0.0;//1.0;//50.0;//0.6;//0.6;//0;//1.0;
 	double dir_init_multi = 100000;//100000000;//10000;//1;//10000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
 	double dist_thresh = 5; // distance threshold for only local connections

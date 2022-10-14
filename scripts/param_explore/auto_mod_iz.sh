@@ -3,15 +3,11 @@
 # This version is for Izhikevich params
 
 # select params
-export param1_vals="csv_files/6-003-1_paramset.csv"
-export param2_vals=(1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20)
+export param1_vals=(0.12 0.42 0.62 0.72 0.92)
+export param2_vals=(0.001 0.003 0.005 0.007 0.01)
 export param_file1=" \"../../generate_config_state.cpp\"";
-export param_file2=" \"../../general_params.cpp\"";
-#export param_pattern1=" \"(.*MEC_LII_Stellate, )(\\d+.*\\d*)(f, 0.0f, 0.98f, 0.0f, -58.53f, 0.0f, -43.52f.*)\""
-#export param_pattern1=" \"(.*)(MEC_LII_Stellate, [-]?\\d+[.]\\d*f, 0.0f, [-]?\\d+[.]\\d*f, 0.0f, [-]?\\d+[.]\\d*f, 0.0f, [-]?\\d+[.]\\d*f,\\D*0.0f, [-]?\\d+[.]\\d*f, 0.0f, [-]?\\d+[.]\\d*f, 0.0f, [-]?\\d+[.]\\d*f, 0.0f, [-]?\\d+[.]\\d*f, 0.0f,\\D*[-]?\\d+[.]\\d*f, 0.0f, 1[)];)(.*)\"";
-export param_pattern1=" \"(.*)(sim.setNeuronParameters\\(MEC_LII_Stellate, )(.*)\"";
-#export param_pattern2=" \"(.*0.0f, 0.004f, 0.0f, )(\\d+.*\\d*)(f, 0.0f, 7.85f, 0.0f, -52.68f, 0.0f.*)\""
-export param_pattern2=" \"(.*)(dir_to_gc_wt = \\d+[.]?\\d*)(.*)\""
+export param_pattern1=" \"(.*sim.setNeuronParameters\\(MEC_LII_Stellate, [-]?\\d+[.]?\\d*f?, [-]?\\d+[.]?\\d*f?, )([-]?\\d+[.]?\\d*)(.*)\"";
+export param_pattern2=" \"(.*sim.setNeuronParameters\\(MEC_LII_Stellate, [-]?\\d+[.]?\\d*f?, [-]?\\d+[.]?\\d*f?, [-]?\\d+[.]?\\d*f?, [-]?\\d+[.]?\\d*f?, [-]?\\d+[.]?\\d*f?, [-]?\\d+[.]?\\d*f?, [-]?\\d+[.]?\\d*f?, [-]?\\d+[.]?\\d*f?, )([-]?\\d+[.]?\\d*)(.*)\"";
 # general settings
 touch ./output/param_records.txt
 echo "" > ./output/param_records.txt # clear file
@@ -40,25 +36,26 @@ run_sim(){
 
 	# generate results reports
 	cd ../gridscore/ &&
-	#matlab -nodisplay -r "gridscore_sim ; exit" &&
+	#matlab -nodisplay -r "gridscore_sim $p1 $p2; exit" &&
 	cd ../param_explore/
 }
 
 # run all param combinations
-while IFS="," read -r p0 p1 p2 p3 p4 p5 p6 p7 p8 p9
+for i in {0..4} 
 do
-for j in ${param2_vals[@]}; do
-	# param 1 change
+for j in {0..4} 
+do
+	# param change
+	export p1=$i &&
 	export param_file=$param_file1 &&
 	export param_pattern=$param_pattern1 &&
-	export value_change=" \"sim.setNeuronParameters(MEC_LII_Stellate, $p5""f, 0.0f, $p1""f, 0.0f, $p6""f, 0.0f, $p7""f,|
-                                0.0f, $p2""f, 0.0f, $p3""f, 0.0f, $p8""f, 0.0f, $p9""f, 0.0f,|
-                                $p4""f, 0.0f, 1);\"" &&
+	export value_change=" \"${param1_vals[$i]}\"" &&
 	chg_prm &&
-	# param 2 change
-	export param_file=$param_file2 &&
+	# param change
+	export p2=$j &&
+	export param_file=$param_file1 &&
 	export param_pattern=$param_pattern2 &&
-	export value_change=" \"        double dir_to_gc_wt = \""$j"\;" &&
+	export value_change=" \"${param2_vals[$j]}\"" &&
 	chg_prm &&
 	# save params
 	curr_time=$($date_format) &&
@@ -66,4 +63,4 @@ for j in ${param2_vals[@]}; do
 	# run simulation
 	run_sim
 done
-done < $param1_vals
+done

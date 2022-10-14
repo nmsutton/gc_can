@@ -72,7 +72,9 @@ void alter_value_iz(regex param_pattern, string val_chg, string filepath) {
     file2.close();
 }
 
-void alter_value_tm(regex param_pattern, string val_chg, string filepath) {
+void alter_value_indiv(regex param_pattern, string val_chg, string filepath) {
+    // alter individual value in line not whole line at a time
+
     string origfile_text, newfile_text, line;
     fstream file;
     smatch sm;
@@ -117,16 +119,11 @@ int main(int argc, char** argv)
 
         string filepath = argv[1];
         regex param_pattern((string) argv[2]);
-        if (regex_match (argv[3],iz_test)) {
-            // process iz file
+        if (regex_match (argv[2],iz_test) || regex_match (argv[2],tm_test)) {
+            // process input param value
             string val_chg = (string) argv[3];
-            //cout<<"\n"<<(string) argv[2]<<"\n";
-            alter_value_iz(param_pattern, val_chg, filepath);
-        }
-        else if (regex_match (argv[2],tm_test)) {
-            // process tm file
-            string val_chg = (string) argv[3];
-            alter_value_tm(param_pattern, val_chg, filepath);
+            alter_value_indiv(param_pattern, val_chg, filepath);
+            //printf("match\n");
         }
         else {
             // process input param value
