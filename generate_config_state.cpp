@@ -84,7 +84,7 @@ if (p.spin2in_active) {
     p.gc_to_in_wt = p.spdin2inwt;
     SomeToSomeConn = new SomeToSomeConnection(&p);
     //sim.connect(MEC_LII_Basket_Speed, EC_LII_Axo_Axonic, SomeToSomeConn, SYN_FIXED, 9.654, 0.0f);
-    sim.connect(MEC_LII_Basket_Speed, EC_LII_Axo_Axonic, SomeToSomeConn, 8.5, 0.95, SYN_FIXED);
+    sim.connect(MEC_LII_Basket_Speed, EC_LII_Axo_Axonic, SomeToSomeConn, 8.5, 5.2, SYN_FIXED);
 }
 if (p.spin2ex_active) {
     p.gc_to_in_wt = p.spdin2exwt;
@@ -100,57 +100,57 @@ if (p.spex2in_active) {
     p.gc_to_in_wt = p.spdex2inwt;
     SomeToSomeConn = new SomeToSomeConnection(&p);
     //sim.connect(MEC_LII_Stellate_Speed, EC_LII_Axo_Axonic, SomeToSomeConn, SYN_FIXED, 9.654, 0.0f);    
-    sim.connect(MEC_LII_Stellate_Speed, EC_LII_Axo_Axonic, SomeToSomeConn, 8.5, 0.95, SYN_FIXED);    
+    sim.connect(MEC_LII_Stellate_Speed, EC_LII_Axo_Axonic, SomeToSomeConn, 8.5, 5.2, SYN_FIXED);    
 }
 p.gc_to_in_wt = gc2inwt;
 SomeToSomeConn = new SomeToSomeConnection(&p);
 //sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, SomeToSomeConn, SYN_FIXED, 9.654, 0.0f);
-sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, SomeToSomeConn, 8.5, 0.95, SYN_FIXED);
+sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, SomeToSomeConn, 8.5, 5.2, SYN_FIXED);
 MexHatConn = new MexHatConnection(&p);
 //sim.connect(EC_LII_Axo_Axonic, MEC_LII_Stellate, MexHatConn, SYN_FIXED, 9.654, 0.0f); // 2 IN->GC one-to-many
-sim.connect(EC_LII_Axo_Axonic, MEC_LII_Stellate, MexHatConn, 8.5, 0.95, SYN_FIXED); // 2 IN->GC one-to-many
+sim.connect(EC_LII_Axo_Axonic, MEC_LII_Stellate, MexHatConn, 8.5, 5.2, SYN_FIXED); // 2 IN->GC one-to-many
 ////
 p.conn_offset = 1;
 if (p.spin2in_active) {
     p.gc_to_in_wt = p.spdin2inwt;
     SomeToSomeConn = new SomeToSomeConnection(&p);
     //sim.connect(MEC_LII_Basket_Speed, MEC_LII_Basket, SomeToSomeConn, SYN_FIXED, 9.654, 0.0f);
-    sim.connect(MEC_LII_Basket_Speed, MEC_LII_Basket, SomeToSomeConn, 8.5, 0.95, SYN_FIXED);
+    sim.connect(MEC_LII_Basket_Speed, MEC_LII_Basket, SomeToSomeConn, 8.5, 5.2, SYN_FIXED);
 }
 if (p.spex2in_active) {
     p.gc_to_in_wt = p.spdex2inwt;
     SomeToSomeConn = new SomeToSomeConnection(&p);
     //sim.connect(MEC_LII_Stellate_Speed, MEC_LII_Basket, SomeToSomeConn, SYN_FIXED, 9.654, 0.0f);
-    sim.connect(MEC_LII_Stellate_Speed, MEC_LII_Basket, SomeToSomeConn, 8.5, 0.95, SYN_FIXED);
+    sim.connect(MEC_LII_Stellate_Speed, MEC_LII_Basket, SomeToSomeConn, 8.5, 5.2, SYN_FIXED);
 }
 p.gc_to_in_wt = gc2inwt;
 SomeToSomeConn = new SomeToSomeConnection(&p);
 //sim.connect(MEC_LII_Stellate, MEC_LII_Basket, SomeToSomeConn, SYN_FIXED, 9.654, 0.0f);
-sim.connect(MEC_LII_Stellate, MEC_LII_Basket, SomeToSomeConn, 8.5, 0.95, SYN_FIXED);
+sim.connect(MEC_LII_Stellate, MEC_LII_Basket, SomeToSomeConn, 8.5, 5.2, SYN_FIXED);
 MexHatConn = new MexHatConnection(&p);
 //sim.connect(MEC_LII_Basket, MEC_LII_Stellate, MexHatConn, SYN_FIXED, 9.654, 0.0f); // 2 IN->GC one-to-many
-sim.connect(MEC_LII_Basket, MEC_LII_Stellate, MexHatConn, 8.5, 0.95, SYN_FIXED); // 2 IN->GC one-to-many
+sim.connect(MEC_LII_Basket, MEC_LII_Stellate, MexHatConn, 8.5, 5.2, SYN_FIXED); // 2 IN->GC one-to-many
 ////
 p.conn_offset = 2;
 if (p.spin2in_active) {
     p.gc_to_in_wt = p.spdin2inwt;
     SomeToSomeConn = new SomeToSomeConnection(&p);
     //sim.connect(MEC_LII_Basket_Speed, EC_LII_Basket_Multipolar, SomeToSomeConn, SYN_FIXED, 9.654, 0.0f);
-    sim.connect(MEC_LII_Basket_Speed, EC_LII_Basket_Multipolar, SomeToSomeConn, 8.5, 0.95, SYN_FIXED);
+    sim.connect(MEC_LII_Basket_Speed, EC_LII_Basket_Multipolar, SomeToSomeConn, 8.5, 5.2, SYN_FIXED);
 }
 if (p.spex2in_active) {
     p.gc_to_in_wt = p.spdex2inwt;
     SomeToSomeConn = new SomeToSomeConnection(&p);
     //sim.connect(MEC_LII_Stellate_Speed, EC_LII_Basket_Multipolar, SomeToSomeConn, SYN_FIXED, 9.654, 0.0f);
-    sim.connect(MEC_LII_Stellate_Speed, EC_LII_Basket_Multipolar, SomeToSomeConn, 8.5, 0.95, SYN_FIXED);
+    sim.connect(MEC_LII_Stellate_Speed, EC_LII_Basket_Multipolar, SomeToSomeConn, 8.5, 5.2, SYN_FIXED);
 }
 p.gc_to_in_wt = gc2inwt;
 SomeToSomeConn = new SomeToSomeConnection(&p);
 //sim.connect(MEC_LII_Stellate, EC_LII_Basket_Multipolar, SomeToSomeConn, SYN_FIXED, 9.654, 0.0f);
-sim.connect(MEC_LII_Stellate, EC_LII_Basket_Multipolar, SomeToSomeConn, 8.5, 0.95, SYN_FIXED);
+sim.connect(MEC_LII_Stellate, EC_LII_Basket_Multipolar, SomeToSomeConn, 8.5, 5.2, SYN_FIXED);
 MexHatConn = new MexHatConnection(&p);
 //sim.connect(EC_LII_Basket_Multipolar, MEC_LII_Stellate, MexHatConn, SYN_FIXED, 9.654, 0.0f); // 2 IN->GC one-to-many
-sim.connect(EC_LII_Basket_Multipolar, MEC_LII_Stellate, MexHatConn, 8.5, 0.95, SYN_FIXED); // 2 IN->GC one-to-many
+sim.connect(EC_LII_Basket_Multipolar, MEC_LII_Stellate, MexHatConn, 8.5, 5.2, SYN_FIXED); // 2 IN->GC one-to-many
 ////
 //sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
 //           RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 67.165, 0.0f); // 3 PCs
