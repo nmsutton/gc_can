@@ -74,8 +74,10 @@ MexHatConnection* MexHatConn;
 SomeToSomeConnection* SomeToSomeConn;    
 //sim.connect(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, "one-to-one", p.dir_to_gc_wt, 1.0f, 
 //            RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 33.082, 0.0f); // 0 DIR
+//sim.connect(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, "one-to-one", p.dir_to_gc_wt, 1.0f, 
+//            RangeDelay(1), RadiusRF(-1), SYN_FIXED, 33.082, 0.0f); // 0 DIR
 sim.connect(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, "one-to-one", p.dir_to_gc_wt, 1.0f, 
-            RangeDelay(1), RadiusRF(-1), SYN_FIXED, 33.082, 0.0f); // 0 DIR
+            RangeDelay(1), RadiusRF(-1), SYN_FIXED, 33.082, 20.0f); // 0 DIR
 //sim.connect(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, "one-to-one", p.dir_to_gc_wt, 1.0f, 
 //            RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 33.082, 1.6541f); //1.6541f); // 0 DIR
 ////
@@ -91,8 +93,10 @@ if (p.spin2ex_active) {
     SomeToSomeConn = new SomeToSomeConnection(&p);
     //sim.connect(MEC_LII_Basket_Speed2, MEC_LII_Stellate, "one-to-one", p.spdin2exwt, 1.0f, 
     //        RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 9.654, 0.0f); // 0 DIR    
+    //sim.connect(MEC_LII_Basket_Speed2, MEC_LII_Stellate, "one-to-one", p.spdin2exwt, 1.0f, 
+    //        RangeDelay(1), RadiusRF(-1), SYN_FIXED, 9.654, 0.0f); // 0 DIR
     sim.connect(MEC_LII_Basket_Speed2, MEC_LII_Stellate, "one-to-one", p.spdin2exwt, 1.0f, 
-            RangeDelay(1), RadiusRF(-1), SYN_FIXED, 9.654, 0.0f); // 0 DIR
+            RangeDelay(1), RadiusRF(-1), SYN_FIXED, 9.654, 5.92f); // 0 DIR
     //sim.connect(MEC_LII_Basket_Speed2, MEC_LII_Stellate, "one-to-one", p.spdin2exwt, 1.0f, 
     //        RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 9.654, 0.425f); // 0 DIR
 }
@@ -154,8 +158,10 @@ sim.connect(EC_LII_Basket_Multipolar, MEC_LII_Stellate, MexHatConn, 8.5, 5.2, SY
 ////
 //sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
 //           RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 67.165, 0.0f); // 3 PCs
+//sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
+//           RangeDelay(1), RadiusRF(-1), SYN_FIXED, 67.165, 0.0f); // 3 PCs
 sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
-           RangeDelay(1), RadiusRF(-1), SYN_FIXED, 67.165, 0.0f); // 3 PCs
+           RangeDelay(1), RadiusRF(-1), SYN_FIXED, 67.165, 41.166f); // 3 PCs
 //sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
 //           RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 67.165, 3.358f); // 3 PCs
 ////
