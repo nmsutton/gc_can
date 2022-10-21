@@ -85,25 +85,20 @@ void control_speed(double speed, P* p) {
 	if (p->speed_limit == 1 && speed > p->max_speed) {speed = p->max_speed;} // speed limit
 	if (p->auto_speed_control || p->move_animal_onlypos) {
 		p->move_increment = (0.001*speed);
-		//printf("\n move inc: %f\n",speed);
-		//speed = speed * p->grid_pattern_scale;
-		//p->base_ext = 770;//820;//655;
-		//p->base_ext = (840/800) * (1200 + (770 - 1200)/(1 + pow((speed/8.5),16.19154)));
-		//p->base_ext = (840/800) * (1200 + (770 - 1200)/(1 + pow((speed/8.5),5)));
-		//p->base_ext = 1400;
-		//p->base_ext = (1400 + ((810 - 1400)/(1 + pow((speed/9),10))));
-		//printf("\n base_ext: %f\n",p->base_ext);
-		//if (speed<7.5) {p->base_ext=575;}
-		p->speed_signaling = 1 * (-.00034799225597907657+(.0081675325631652834*speed)+(.014970007271328412*pow(speed,2))-(.0017318129783734592*pow(speed,3))+(.000066887712315789088*pow(speed,4)));
-		p->spdin2in_curr = -7.6999999999504416+(0.87666666666074300*speed)+(-.023333333333160879*pow(speed,2));
-		if (speed<=14) {p->spdin2in_curr=0;}
-		if (speed>=20) {p->spdin2in_curr=0.5;}
-		p->spdex2in_curr = 1 * (0.57963140405914459+(-0.076238844166134606*speed)+(0.024200128580085856*pow(speed,2))+(-0.0029881884411857643*pow(speed,3))+(0.00010282892540609924*pow(speed,4)));
-		if (speed<=3) {p->spdex2in_curr=0.5;}
-		if (speed>=14) {p->spdex2in_curr=0;}
-		//p->pc_level = 1000 + (333 - 1000)/(1 + pow((speed/8.974894),227.1313));
-		//if (speed>10) {p->pc_level=400;} else {p->pc_level=1000;}
-		//printf("%f %f\n",p->move_increment,speed);
+		p->base_ext = 498.0592 + (297.6004 - 498.0592)/(1 + pow((speed/9.716963),4.192364));
+		if (speed<1) {p->base_ext=380;}
+		if (speed>15) {p->base_ext=500;}
+		p->base_ext = 380;
+		p->speed_signaling = 0.1674454432+(-0.1174937214*speed)+(0.03435256877*pow(speed,2))+(-0.0003344800187*pow(speed,3));
+		if (speed<1) {p->speed_signaling=0;}
+		if (speed>15) {p->speed_signaling=30.0;}
+		p->spdin2in_curr = 50 + -50/(1 + pow((speed/15.31543),187.0108));
+		//p->spdin2in_curr = 0;
+		p->spdin2ex_curr = -0.00000004740198 + (3.000000047)/(1 + pow((speed/14.91975),129.208));
+		//p->spdin2ex_curr = 3;
+		p->spdex2in_curr = 0.007033614 + (0.402344 - 0.007033614)/(1 + pow((speed/6.444907),13.6803));
+		if (speed<1) {p->spdex2in_curr=0.3;}
+		p->spdex2in_curr = 0.3;
 	}
 }
 
@@ -170,7 +165,7 @@ void move_straight(CARLsim* sim, P* p) {
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
 		//control_speed(5,p);	
-		control_speed(5,p);	
+		control_speed(20,p);	
 		//control_speed(25,p);	
 		//control_speed(0.1,p);	
 		//control_speed(0,p);	

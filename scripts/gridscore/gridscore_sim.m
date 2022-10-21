@@ -1,7 +1,8 @@
 run_on_hopper=0;
-hopper_run=3;
+hopper_run=1;
 if run_on_hopper
 	addpath /home/nsutton2/git/CMBHOME_github/ 
+    %addpath /comp_neuro/Software/Github/CMBHOME_github/
 	run("/home/nsutton2/git/CARLsim4_dgx_hc_09_18_21/projects/gc_can_"+hopper_run+"/scripts/high_res_traj/high_res_traj.m");	
 else
 	addpath /comp_neuro/Software/Github/CMBHOME_github/
