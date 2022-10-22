@@ -79,16 +79,16 @@ void control_speed(double speed, P* p) {
 		https://www.mathworks.com/matlabcentral/answers/230107-how-to-force-the-intercept-of-a-regression-line-to-zero
 		dlm = fitlm(X,Y,'Intercept',false); This is linear reg with y-intercept forced at 0. This
 		allows position tracker speed scaling without altering trajectory that changing y-int causes.
-		https://mycurvefit.com/ for sigmoid curve fitting with base_ext
+		https://mycurvefit.com/ for sigmoid curve fitting
+		base_ext uses a double sigmoid (high at start, low at middle, high at end). This is from
+		dividing by two the combined values from two sigmoid curves with different midpoints. 
+		Double sigmoid reference: https://www.reddit.com/r/askmath/comments/cmey15/what_is_the_general_formula_for_a_double_sigmoid/
 	*/
 	//speed = speed * p->speed_conversion;
 	if (p->speed_limit == 1 && speed > p->max_speed) {speed = p->max_speed;} // speed limit
 	if (p->auto_speed_control || p->move_animal_onlypos) {
 		p->move_increment = (0.001*speed);
-		p->base_ext = 498.0592 + (297.6004 - 498.0592)/(1 + pow((speed/9.716963),4.192364));
-		if (speed<1) {p->base_ext=380;}
-		if (speed>15) {p->base_ext=500;}
-		p->base_ext = 380;
+		p->base_ext = ((400+(160/(1+pow((speed/0.5),6))))+(400+(-200/(1+pow((speed/7),5)))))/2;
 		p->speed_signaling = 0.1674454432+(-0.1174937214*speed)+(0.03435256877*pow(speed,2))+(-0.0003344800187*pow(speed,3));
 		if (speed<1) {p->speed_signaling=0;}
 		if (speed>15) {p->speed_signaling=30.0;}
@@ -165,7 +165,7 @@ void move_straight(CARLsim* sim, P* p) {
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
 		//control_speed(5,p);	
-		control_speed(20,p);	
+		control_speed(2,p);	
 		//control_speed(25,p);	
 		//control_speed(0.1,p);	
 		//control_speed(0,p);	
