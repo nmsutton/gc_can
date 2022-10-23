@@ -88,16 +88,12 @@ void control_speed(double speed, P* p) {
 	if (p->speed_limit == 1 && speed > p->max_speed) {speed = p->max_speed;} // speed limit
 	if (p->auto_speed_control || p->move_animal_onlypos) {
 		p->move_increment = (0.001*speed);
-		p->base_ext = ((400+(160/(1+pow((speed/0.5),6))))+(400+(-200/(1+pow((speed/7),5)))))/2;
+		p->base_ext = 380;
 		p->speed_signaling = 0.1674454432+(-0.1174937214*speed)+(0.03435256877*pow(speed,2))+(-0.0003344800187*pow(speed,3));
 		if (speed<1) {p->speed_signaling=0;}
-		if (speed>15) {p->speed_signaling=30.0;}
-		p->spdin2in_curr = 50 + -50/(1 + pow((speed/15.31543),187.0108));
-		//p->spdin2in_curr = 0;
-		p->spdin2ex_curr = -0.00000004740198 + (3.000000047)/(1 + pow((speed/14.91975),129.208));
-		//p->spdin2ex_curr = 3;
-		p->spdex2in_curr = 0.007033614 + (0.402344 - 0.007033614)/(1 + pow((speed/6.444907),13.6803));
-		if (speed<1) {p->spdex2in_curr=0.3;}
+		if (speed>15) {p->speed_signaling=20.0;}
+		p->spdin2in_curr = 8 + -8/(1 + pow((speed/15.31543),187.0108));
+		p->spdin2ex_curr = 3/(1 + pow((speed/14.91975),129.208));
 		p->spdex2in_curr = 0.3;
 	}
 }
@@ -165,7 +161,7 @@ void move_straight(CARLsim* sim, P* p) {
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
 		//control_speed(5,p);	
-		control_speed(2,p);	
+		control_speed(20,p);	
 		//control_speed(25,p);	
 		//control_speed(0.1,p);	
 		//control_speed(0,p);	
