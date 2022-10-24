@@ -59,14 +59,18 @@ void place_cell_firing(CARLsim* sim, P *p) {
 		generate place cell firing
 	*/
 	int gc_i; 
-	double pc_current, bc_firing;
+	double pc_current, bc_firing, theta_mod;
 
 	for (int p_y = 0; p_y < p->y_size; p_y++) {
 		for (int p_x = 0; p_x < p->x_size; p_x++) {
 			// find firing
 			pc_current = 0.0;
 			if (p->pc_active) {
+				//if (p->t%125>=0 && p->t%125<35) {
 				pc_current = pc_rate(p_x, p_y, p->bpos[0], p->bpos[1], p);
+				//}
+				theta_mod = (sin((((PI*2)/125)*(p->t))+(PI/2)))/2 + 1;
+				pc_current = pc_current * theta_mod;
 			}
 
 			// add boundary cell input

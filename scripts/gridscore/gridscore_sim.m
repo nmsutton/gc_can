@@ -1,5 +1,8 @@
+% generate gridscore from rate map plot
+% note: set use_hopper and hopper_run in high_res_traj.m if wanting to use hopper data
+% while running locally.
 run_on_hopper=0;
-hopper_run=1;
+hopper_run=1; % set this in high_res_traj if using hopper data locally
 if run_on_hopper
 	addpath /home/nsutton2/git/CMBHOME_github/ 
     %addpath /comp_neuro/Software/Github/CMBHOME_github/

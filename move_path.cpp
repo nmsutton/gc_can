@@ -161,7 +161,7 @@ void move_straight(CARLsim* sim, P* p) {
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
 		//control_speed(5,p);	
-		control_speed(20,p);	
+		control_speed(5,p);	
 		//control_speed(25,p);	
 		//control_speed(0.1,p);	
 		//control_speed(0,p);	
