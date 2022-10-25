@@ -42,10 +42,8 @@ double get_distance(int x1, int y1, int x2, int y2, char pd, P *p) {
 	return d;
 }
 
-double pc_rate(int p_x, int p_y, int b_x, int b_y, P *p) {
+double pc_rate(double d, P *p) {
 	double rate = 0;
-
-	double d = get_distance(p_x, p_y, b_x, b_y, 'n', p);
 
 	if (d < p->dist_thresh) { // skip calculation for too distant neurons for computational efficiency
 		rate = p->pc_level * exp(-((pow(d,2))/(2*pow(p->pc_sig,2))));
@@ -58,18 +56,18 @@ void place_cell_firing(CARLsim* sim, P *p) {
 	/*
 		generate place cell firing
 	*/
+	double pc_current, bc_firing, theta_mod, phase_prec, d;
 	int gc_i; 
-	double pc_current, bc_firing, theta_mod;
 
 	for (int p_y = 0; p_y < p->y_size; p_y++) {
 		for (int p_x = 0; p_x < p->x_size; p_x++) {
 			// find firing
 			pc_current = 0.0;
 			if (p->pc_active) {
-				//if (p->t%125>=0 && p->t%125<35) {
-				pc_current = pc_rate(p_x, p_y, p->bpos[0], p->bpos[1], p);
-				//}
-				theta_mod = (sin((((PI*2)/125)*(p->t))+(PI/2)))/2 + 1;
+				d = get_distance(p_x, p_y, p->bpos[0], p->bpos[1], 'n', p);
+				pc_current = pc_rate(d, p);
+				phase_prec = (PI/2) * (d + 1);
+				theta_mod = (sin((((PI*2)/p->theta_freq)*(p->t))+phase_prec))/2 + 1;
 				pc_current = pc_current * theta_mod;
 			}
 
