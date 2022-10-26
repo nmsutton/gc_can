@@ -14,18 +14,18 @@
 limited_fields=1; % create inhibition pattern that targets limited fields
 
 grid_size = 120.0;
-grid_size_target = 42;%30; % target grid size for neuron weights
+grid_size_target = 42;%42;%30; % target grid size for neuron weights
 synapse_weights=ones(grid_size);
 % field params
 if limited_fields
     p1=20;%.68;
     p2=2;p3=2;
-    p4=15*1.4;%8; % center size
+    p4=15;%*1.4;%*2;%8; % center size
     p5=p3;p6=p4;
-    p7=0.12475*1.4;%0.20; % surround size
+    p7=0.12475;%*1.4;%*2;%0.20; % surround size
     p8=30;%.135;
     p9=2;p10=2;p11=2;p12=p4;p13=p11;p14=p11;p15=p12;
-    p16=1.08*1.4; % surround size
+    p16=1.08;%*2; % surround size
     p17=0.0058;
     p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
 else
@@ -44,8 +44,8 @@ cx_sft=-40;%-29; % x-axis shift
 cy_sft=-3;%-27; % y-axis shift
 y_tiles=12;%4;%25;
 x_tiles=17;%4;%15; % x-axis tiling
-y_t_space=10.54*1.4;%13.5;%10.54; % spacing of tiling along y-axis
-x_t_space=14*1.4;%14.4;%12;%10; % spacing of tiling along x-axis
+y_t_space=10.54;%*1.4;%13.5;%10.54; % spacing of tiling along y-axis
+x_t_space=14;%*1.4;%14.4;%12;%10; % spacing of tiling along x-axis
 s_mult = 1;%1.15;%1.3;%1.15;%1.3; % spacing multipler
 f_area = 25;%9*1.4;%4;%5;%6; % sqrt of area each field contributes values to
 stag_x=0;%x_t_space/2; % x-axis tile stagger distance
@@ -53,13 +53,13 @@ stag_y=0; % y-axis tile stagger distance
 x_wrap=0; % wrap around values on x-axis
 y_wrap=0; % wrap around values on y-axis
 % rotations
-a=0;%15;%10;%90-18.435;%90-18; % angle of movement
+a=15;%0;%15;%10;%90-18.435;%90-18; % angle of movement
 a=a/360 * pi*2; % convert to radians
 % limited fields params
-fields_number=1; % choose between 1, 3, 7, 9, etc., fields in initial shape
+fields_number=7; % choose between 1, 3, 7, 9, etc., fields in initial shape
 centx = []; centy = []; % x- and y-axis values of centroids
-center_x = 40;%42;%48;%46;
-center_y = 40;%46.5;%46;
+center_x = 40;%46;%40;%42;%48;%46;
+center_y = 40;%46;%40;%46.5;%46;
 select_cent=[1,2,3];%[1,2,3];%[1,4,7];%[3,4,5];% centroid indicies to duplicate
 
 cx=0; cy=0; % init feild centers

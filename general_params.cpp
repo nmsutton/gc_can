@@ -5,25 +5,25 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 5200;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 30000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	/*static const int bump_dist = 15; // inter-bump distance
 	static const int bumps_x = 2; // number of bumps on x axis
 	static const int bumps_y = 2; // number of bumps on y axis
 	static const int num_bumps = bumps_x * bumps_y; // number of initial bumps*/
-	static const int x_size = 30;//42;//30;//26;
-	static const int y_size = 30;//42;//30;//26;
+	static const int x_size = 42;//30;//26;
+	static const int y_size = 42;//30;//26;
 	static const int layer_size = x_size * y_size;
-	static const int EC_LI_II_Multipolar_Pyramidal_Count = 900;//1764;//900;
-	static const int MEC_LII_Stellate_Count = 900;//1764;//900;
-	static const int EC_LII_Axo_Axonic_Count = 300;//588;//300;
-	static const int MEC_LII_Basket_Count = 300;//588;//300;
-	static const int EC_LII_Basket_Multipolar_Count = 300;//588;//300;
-	static const int CA1_Pyramidal_Count = 900;//1764;//900;
-	static const int MEC_LII_Basket_Speed_Count = 900;//1764;//900;		
-	static const int MEC_LII_Basket_Speed2_Count = 900;//1764;//900;
-	static const int MEC_LII_Stellate_Speed_Count = 900;//1764;//900;	
+	static const int EC_LI_II_Multipolar_Pyramidal_Count = 1764;//900;
+	static const int MEC_LII_Stellate_Count = 1764;//900;
+	static const int EC_LII_Axo_Axonic_Count = 588;//300;
+	static const int MEC_LII_Basket_Count = 588;//300;
+	static const int EC_LII_Basket_Multipolar_Count = 588;//300;
+	static const int CA1_Pyramidal_Count = 1764;//900;
+	static const int MEC_LII_Basket_Speed_Count = 1764;//900;		
+	static const int MEC_LII_Basket_Speed2_Count = 1764;//900;
+	static const int MEC_LII_Stellate_Speed_Count = 1764;//900;	
 	int EC_LI_II_Multipolar_Pyramidal_Group, MEC_LII_Stellate_Group, EC_LII_Axo_Axonic_Group,
 	MEC_LII_Basket_Group, EC_LII_Basket_Multipolar_Group, CA1_Pyramidal_Group, MEC_LII_Basket_Speed_Group,
 	MEC_LII_Basket_Speed2_Group, MEC_LII_Stellate_Speed_Group;	
@@ -110,7 +110,7 @@ struct P {
 	double speed_signaling = 0.4;//30;//0.05;//30;//0.05;//0.05;//0.3;//20;//0.3;//20;//0.5;//20;//0.5;//20;//20;//0.1;//0.1;//1.0;//0.0;//20;//10;//0.0;//1.0;//0.5;//10;//10;//0.5;//10;//0.0;//10;//1.0;//1.00;//10;//10;//0.0;//10;//15;//0.0;//20;//0.0;//1.3;//20;//1.3;//0.25;//0.25;//25;//0.0;//25;//0.0;//25.0;//0.0;//25.0;//0.0;//0.5;//5;//0.5;//25;//0.2;//0.15;//1.0;//1.0;//2.5;//1.0;//1.0;//5.0;//1.0;//2.5;//0.25;//2.5;//0.25;//25;//2.5;//0.25;//2.5;//1.6;//1.632833487;//0.1;//0.2;//3;//0.25;//40;//0.025;//0.2;//20;//5;//0.2;//5;//2;//.2;//0.02;//10;//0.1;//200.0;//0;//50.0;//0.8;//0.195;//1.8;//0.255;//1.8;//0.255;//0.195;//0.195;//0.5;//0.0;//0.195;//0.12; // setting for use of a constant virtual animal speed
 	float dir_to_gc_wt = 4;//2.5;//4.0;//4.0;//2.0;//7.0;//4.0;//2.0;//1.6;//1.5;//2.75;//1.6;//2.75; // ext_dir to gc weight
 	double mex_hat_multi = 600;//400;//700;//700;//600;//350;//450;//260;//190;//180;//200;//190;//170;//200;//190;//170;//200;//150;//160;//200;//150;//200;//200;//130;//400;//500;//160;//500;//250;//160;//300;//150;//300;//400;//500;//350;//300;//200;//160;//200;//185;//130;//130;//130;//170;//150;//170;//70;//170;//70;//180;//70;//70;//55;//60;//70;//85;//40;//85;//70;//85;//100;//70;//60;//60;//70;//90;//100;//140;//170;//200;//170;//170;//220;//180;//180;//300;//250;//140;//50;//30;//50;//800;//5;//2.6;//1.2;//1.2;//400.0;//1.2;//1.2;//1.4; // mexican hat multiplier
-	float gc_to_in_wt = 30;//20;//20;//20;//40;//100;//70;//60;//80;//100;//70;//50;//60;//50;//40;//50;//70;//80;//40;//80;//37;//165;//200;//300;//150;//300;//200;//150;//100;//250;//300;//100;//550;//250;//400;//1900;//1000;//800;//400;//200;//300;//200;//250;//150;//150;//200;//45;//37;//38;//70;//20;//25;//9;//9;//20;//45;//14;//10;//1;//14;//9;//18.5;//9;//9.0;//7.5;//6.0;//11.5;//18.5;//13.5;//10;//8.5;//12;//5.5;//18.5;//16.5;//15.5;//13.5;//11.5;//5.5;//2.5;//1;//1;//0.45;//1;//25;//700.0; // gc to interneurons weight
+	float gc_to_in_wt = 20;//20;//20;//20;//40;//100;//70;//60;//80;//100;//70;//50;//60;//50;//40;//50;//70;//80;//40;//80;//37;//165;//200;//300;//150;//300;//200;//150;//100;//250;//300;//100;//550;//250;//400;//1900;//1000;//800;//400;//200;//300;//200;//250;//150;//150;//200;//45;//37;//38;//70;//20;//25;//9;//9;//20;//45;//14;//10;//1;//14;//9;//18.5;//9;//9.0;//7.5;//6.0;//11.5;//18.5;//13.5;//10;//8.5;//12;//5.5;//18.5;//16.5;//15.5;//13.5;//11.5;//5.5;//2.5;//1;//1;//0.45;//1;//25;//700.0; // gc to interneurons weight
 	double spdin2inwt = 10;//10;//1;//10.0;//1.0;//10.0;//3.0;//0.5;//1.0;//1.0;//3.0;//0.3;
 	double spdin2exwt = 5;//20;//5;//10;//5;//100;//20.0;//10;//100;//10.0;//8.0;//3.0;//0.3;
 	double spdex2inwt = 3.0;//1.65;//0.52;//0.5;//1.0;//0.55;//0.52;//0.45;//0.52;//0.51;//0.52;//0.44;//3.0;//1.5;//0.3;
