@@ -84,5 +84,5 @@ void place_cell_firing(CARLsim* sim, P *p) {
 		}
 	}
 
-	sim->setExternalCurrent(p->CA1_Pyramidal_Group, p->pc_activity); // apply computed pc current levels
+	//sim->setExternalCurrent(p->CA1_Pyramidal_Group, p->pc_activity); // apply computed pc current levels
 }

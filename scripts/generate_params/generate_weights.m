@@ -26,7 +26,7 @@ grid_size = 90;
 if alt_weights
     grid_size = 120;
 end
-grid_size_target = 30; % target grid size for neuron weights
+grid_size_target = 42;%30; % target grid size for neuron weights
 total_nrns = (grid_size_target^2);%35;%(grid_size^2);% total neurons
 if show_2d_plot
     total_nrns = 1;

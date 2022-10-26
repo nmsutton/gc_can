@@ -14,7 +14,7 @@
 limited_fields=1; % create inhibition pattern that targets limited fields
 
 grid_size = 120.0;
-grid_size_target = 30; % target grid size for neuron weights
+grid_size_target = 42;%30; % target grid size for neuron weights
 synapse_weights=ones(grid_size);
 % field params
 if limited_fields
@@ -53,12 +53,13 @@ stag_y=0; % y-axis tile stagger distance
 x_wrap=0; % wrap around values on x-axis
 y_wrap=0; % wrap around values on y-axis
 % rotations
-a=15;%10;%90-18.435;%90-18; % angle of movement
+a=0;%15;%10;%90-18.435;%90-18; % angle of movement
 a=a/360 * pi*2; % convert to radians
 % limited fields params
 fields_number=7; % choose between 4, 7, 9, etc., fields in initial shape
 centx = []; centy = []; % x- and y-axis values of centroids
-center_x = 46; center_y = 46;
+center_x = 40;%42;%48;%46;
+center_y = 40;%46.5;%46;
 select_cent=[1,2,3];%[1,2,3];%[1,4,7];%[3,4,5];% centroid indicies to duplicate
 
 cx=0; cy=0; % init feild centers
@@ -68,7 +69,7 @@ if limited_fields==1
     synapse_weights=zeros(grid_size);
     [centx,centy]=init_hex(centx,centy,center_x,center_y,x_t_space,y_t_space,s_mult,fields_number);
     [centx,centy]=rot_hex(centx,centy,a,center_x,center_y);
-    [centx,centy]=dup_cent(centx,centy,select_cent);
+    [centx,centy]=dup_cent(centx,centy,select_cent,grid_size_target);
     synapse_weights=feilds_from_cents(po2,grid_size,p,synapse_weights,centx,centy);
 else
     for i=1:x_tiles
@@ -150,16 +151,16 @@ function [centx,centy]=rot_hex(centx,centy,a,center_x,center_y)
     end
 end
 
-function [centx,centy]=dup_cent(centx,centy,select_cent)
+function [centx,centy]=dup_cent(centx,centy,select_cent,grid_size_target)
     for i=1:length(select_cent)
         i2=select_cent(i);
         centx=[centx,centx(i2)];
-        centy=[centy,centy(i2)-30];
+        centy=[centy,centy(i2)-grid_size_target];
     end
     for i=1:length(select_cent)
         i2=select_cent(i);
         centx=[centx,centx(i2)];
-        centy=[centy,centy(i2)+30];
+        centy=[centy,centy(i2)+grid_size_target];
     end
 end
 

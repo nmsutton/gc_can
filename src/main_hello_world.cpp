@@ -140,7 +140,7 @@ int main() {
 	if (p.record_in_spikes_file && p.move_animal_onlypos==0) {p.in_spikes_output_file.open(p.in_spikes_output_filepath);}
 	if (p.record_highrestraj) {p.highres_pos_x_file.open(p.highres_pos_x_filepath);}
 	if (p.record_highrestraj) {p.highres_pos_y_file.open(p.highres_pos_y_filepath);}
-
+	
 	// ---------------- RUN STATE -------------------
 	SMexc->startRecording();
 	SMexc->setPersistentData(true); // keep prior firing when recording is stopped and restarted
