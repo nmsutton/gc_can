@@ -20,12 +20,12 @@ synapse_weights=ones(grid_size);
 if limited_fields
     p1=20;%.68;
     p2=2;p3=2;
-    p4=15;%8; % center size
+    p4=15*1.4;%8; % center size
     p5=p3;p6=p4;
-    p7=0.12475;%0.20; % surround size
+    p7=0.12475*1.4;%0.20; % surround size
     p8=30;%.135;
     p9=2;p10=2;p11=2;p12=p4;p13=p11;p14=p11;p15=p12;
-    p16=1.08; % surround size
+    p16=1.08*1.4; % surround size
     p17=0.0058;
     p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
 else
@@ -44,10 +44,10 @@ cx_sft=-40;%-29; % x-axis shift
 cy_sft=-3;%-27; % y-axis shift
 y_tiles=12;%4;%25;
 x_tiles=17;%4;%15; % x-axis tiling
-y_t_space=10.54;%13.5;%10.54; % spacing of tiling along y-axis
-x_t_space=14;%14.4;%12;%10; % spacing of tiling along x-axis
+y_t_space=10.54*1.4;%13.5;%10.54; % spacing of tiling along y-axis
+x_t_space=14*1.4;%14.4;%12;%10; % spacing of tiling along x-axis
 s_mult = 1;%1.15;%1.3;%1.15;%1.3; % spacing multipler
-f_area = 9;%4;%5;%6; % sqrt of area each field contributes values to
+f_area = 25;%9*1.4;%4;%5;%6; % sqrt of area each field contributes values to
 stag_x=0;%x_t_space/2; % x-axis tile stagger distance
 stag_y=0; % y-axis tile stagger distance
 x_wrap=0; % wrap around values on x-axis
@@ -56,7 +56,7 @@ y_wrap=0; % wrap around values on y-axis
 a=0;%15;%10;%90-18.435;%90-18; % angle of movement
 a=a/360 * pi*2; % convert to radians
 % limited fields params
-fields_number=7; % choose between 4, 7, 9, etc., fields in initial shape
+fields_number=1; % choose between 1, 3, 7, 9, etc., fields in initial shape
 centx = []; centy = []; % x- and y-axis values of centroids
 center_x = 40;%42;%48;%46;
 center_y = 40;%46.5;%46;
@@ -87,12 +87,16 @@ plt = imagesc(synapse_weights_crop);
 function [centx, centy]=init_hex(centx,centy,center_x,center_y,x_t_space,y_t_space,s_mult,fields_number)
     m=s_mult;
     % initial hexagon
-        centx=[centx, center_x-(x_t_space*m)];
-        centy=[centy, center_y];    
+    if fields_number >= 1
         centx=[centx, center_x];
+        centy=[centy, center_y];    
+    end        
+    if fields_number >= 3
+        centx=[centx, center_x-(x_t_space*m)];
         centy=[centy, center_y];    
         centx=[centx, center_x+(x_t_space*m)];
         centy=[centy, center_y];  
+    end
     if fields_number >= 7 % above and below center row
         centx=[centx, center_x-((x_t_space/2)*m)];
         centy=[centy, center_y-(y_t_space*m)];
