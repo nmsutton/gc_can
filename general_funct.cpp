@@ -342,11 +342,32 @@ void HighResTraj(CARLsim* sim, P* p) {
 	/* 
 		Record high resolution position data of spikes. 
 	*/
-
+	//ostringstream ss;
+	/*
 	p->highres_pos_x_file << p->pos[0];
 	p->highres_pos_x_file << "\n";
 	p->highres_pos_y_file << p->pos[1];
 	p->highres_pos_y_file << "\n";	
+	*/
+	if (p->t % 5000 == 0 || p->t == (int) (p->sim_time-1)) {
+		p->highres_pos_x_file << p->pos_x.str();
+		p->highres_pos_y_file << p->pos_y.str();
+		p->pos_x.str("");
+		p->pos_y.str("");
+		//for (int i = 0; i < p->pos_x.size(); i++) {
+		//}
+	}
+	else {
+		p->pos_x << p->pos[0];
+		p->pos_x << "\n";
+		p->pos_y << p->pos[1];
+		p->pos_y << "\n";
+		/*p->pos_x.append(to_string((double) p->pos[0]));
+		p->pos_x.append("\n");
+		p->pos_y.append(to_string((double) p->pos[1]));
+		p->pos_y.append("\n");*/
+	}
+	
 }
 
 void RecordLocationPath(P *p, string rec_type) {

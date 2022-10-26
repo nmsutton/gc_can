@@ -3,7 +3,7 @@ close all;
 
 % run parameters
 run_on_hopper = 0; % run from hopper
-use_hopper = 1;
+use_hopper = 0;
 hopper_run = 6;
 if run_on_hopper
     curr_dir=pwd;
@@ -30,7 +30,7 @@ plot_in_spikes = 0; % plot interneuron spikes
 use_spk_reader = 1; % use CARLsim's spike reader rather than seperate spike times file
 preloaded_spk_reader = 0; % use prior loaded spike reader
 spk_bin_size = 10; % spike reader bin size. Note: small bin sizes may take long processing with large spike sets. 40min sim with bin size 1 can take 10min to create plot.
-sel_nrn = 465;%202;%200;%465;%463;%878;%465;%460;%870;%86;%465; % selected neuron to generate physical space plot
+sel_nrn = 903;%465;%202;%200;%465;%463;%878;%465;%460;%870;%86;%465; % selected neuron to generate physical space plot
 laptop_data = 0;
 use_unwrapped_data = 0;
 output_spikes_file = 1; % output file that can be used in rate map plot
