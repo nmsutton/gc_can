@@ -153,7 +153,7 @@ else
 		heat_map = hist3([spike_x, spike_y], 'Edges', {xdim, ydim2});
 		s = (grid_size-plot_size)/2;
 		e = plot_size+s;
-		%heat_map = heat_map(s:e, s:e); % crop to intended plot size
+		heat_map = heat_map(s:e, s:e); % crop to intended plot size
 		if use_smoothing
 			heat_map = SmoothMat(heat_map, [5*std_smooth_kernel/binside, 5*std_smooth_kernel/binside], std_smooth_kernel/binside); % smooth the spikes and occupancy with a 5x5 bin gaussian with std=1
 		end

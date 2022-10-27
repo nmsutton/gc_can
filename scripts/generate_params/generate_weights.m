@@ -14,14 +14,9 @@ alt_weights = 1; % use alt synapse_weights matrix
 % params
 output_filename = "synapse_weights.cpp";
 csv_filename = "synapse_weights.csv";
-output_file = 0;
-output_csv = 0;
-if write_to_file
-	output_file = fopen(output_filename,'w');
-end
-if write_to_csv
-	output_csv = fopen(csv_filename,'w');
-end
+output_file = 0; output_csv = 0; % these are always init as 0
+if write_to_file output_file = fopen(output_filename,'w'); end
+if write_to_csv output_csv = fopen(csv_filename,'w'); end
 grid_size_target = 42; % target grid size for neuron weights
 total_nrns = (grid_size_target^2);%35;%(grid_size^2);% total neurons
 if show_2d_plot

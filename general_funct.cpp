@@ -1,7 +1,8 @@
 /*
 	General functions
 
-	Reference: https://stackoverflow.com/questions/34218040/how-to-read-a-csv-file-data-into-an-array
+	References: https://stackoverflow.com/questions/34218040/how-to-read-a-csv-file-data-into-an-array
+	https://iq.opengenus.org/split-string-in-cpp/
 */
 
 string to_string(double x);
@@ -342,7 +343,6 @@ void HighResTraj(CARLsim* sim, P* p) {
 	/* 
 		Record high resolution position data of spikes. 
 	*/
-	//ostringstream ss;
 	/*
 	p->highres_pos_x_file << p->pos[0];
 	p->highres_pos_x_file << "\n";
@@ -354,20 +354,13 @@ void HighResTraj(CARLsim* sim, P* p) {
 		p->highres_pos_y_file << p->pos_y.str();
 		p->pos_x.str("");
 		p->pos_y.str("");
-		//for (int i = 0; i < p->pos_x.size(); i++) {
-		//}
 	}
 	else {
 		p->pos_x << p->pos[0];
 		p->pos_x << "\n";
 		p->pos_y << p->pos[1];
 		p->pos_y << "\n";
-		/*p->pos_x.append(to_string((double) p->pos[0]));
-		p->pos_x.append("\n");
-		p->pos_y.append(to_string((double) p->pos[1]));
-		p->pos_y.append("\n");*/
 	}
-	
 }
 
 void RecordLocationPath(P *p, string rec_type) {
@@ -611,6 +604,22 @@ void EISignal(double angle, CARLsim* sim, P* p) {
 	}	
 }
 
+vector<double> SplitStr(string str)
+{
+	vector<double> entries;
+	string deli = ",";
+    int start = 0;
+    int end = str.find(deli);
+    while (end != -1) {
+        entries.push_back(stod(str.substr(start, end - start)));
+        start = end + deli.size();
+        end = str.find(deli, start);
+    }
+    entries.push_back(stod(str.substr(start, end - start)));
+
+    return entries;
+}
+
 vector<double> ParseCSV(string filepath)
 {
     ifstream data(filepath);
@@ -620,4 +629,13 @@ vector<double> ParseCSV(string filepath)
     while(getline(data,line)) {parsedRow.push_back(stod(line));}
 
     return parsedRow;
+};
+
+void ParseCentSurrCSV(string filepath, vector<vector<double>> *cent_surr)
+{
+	ifstream data(filepath);
+    string line;
+    vector<double> parsedRow;
+	if(!data.is_open()) {cout << "Failed to open file" << endl;}
+	while(getline(data,line)) {cent_surr->push_back(SplitStr(line));}
 };

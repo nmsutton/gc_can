@@ -69,22 +69,20 @@ using namespace std;
 #include "../data/ext_dir_initial.cpp"
 #include "../data/ext_dir.cpp"
 #include "../data/init_firings.cpp"
-#include "../data/synapse_weights.cpp"
 #include "../general_params.cpp"
+#if hopper_run
+	vector<vector<double>> mex_hat;
+#else
+	#if import_animal_data
+		#include "../data/anim_angles.cpp"
+		#include "../data/anim_speeds.cpp"
+		#include "../data/synapse_weights.cpp"
+	#endif
+#endif
 #include "../place_cells.cpp"
 #include "../general_funct.cpp"
 #include "../move_path.cpp"
 //#include "boundary_cells.cpp"
-
-#if hopper_run
-#else
-	#if import_animal_data
-		//#include "../data/anim_angles_191108_S1_lightVSdarkness_cells11and12.cpp"
-		//#include "../data/anim_speeds_191108_S1_lightVSdarkness_cells11and12.cpp"
-		#include "../data/anim_angles.cpp"
-		#include "../data/anim_speeds.cpp"
-	#endif
-#endif
 
 int main() {
 	// ---------------- CONFIG STATE -------------------
@@ -95,6 +93,9 @@ int main() {
 	CARLsim sim("gc can", GPU_MODE, USER, numGPUs, randSeed);
 	//CARLsim sim("gc can", CPU_MODE, USER);
 	int n_num;
+	#if hopper_run
+		ParseCentSurrCSV("./data/synapse_weights.csv", &mex_hat);
+	#endif
 	std::vector<std::vector<float>> inec_weights;
 	double noise_addit_freq = 0.0;
 	if (p.noise_active) {noise_addit_freq = p.noise_addit_freq;}

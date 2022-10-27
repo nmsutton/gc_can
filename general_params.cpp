@@ -23,8 +23,8 @@ struct P {
 	int EC_LI_II_Multipolar_Pyramidal_Group, MEC_LII_Stellate_Group, EC_LII_Axo_Axonic_Group,
 	MEC_LII_Basket_Group, EC_LII_Basket_Multipolar_Group, CA1_Pyramidal_Group, MEC_LII_Basket_Speed_Group,
 	MEC_LII_Basket_Speed2_Group, MEC_LII_Stellate_Speed_Group;	
-	double pos[2] = {22,8};//{9,17};//{22,8}; // virtual animal position tracker. starting position: {x,y}
-	double bpos[2] = {22,8};//{9,17}; // bump position tracker
+	double pos[2] = {28,14};//{9,17};//{22,8}; // virtual animal position tracker. starting position: {x,y}
+	double bpos[2] = {28,14};//{9,17}; // bump position tracker
 	double dirs[4] = {0, 90, 180, 270};
 	double mi = 0; // move list index
 	vector<vector<int>> nrn_spk; // for total firing recording
