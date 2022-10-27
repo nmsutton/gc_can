@@ -4,19 +4,18 @@
 
 % run options
 sample_matrix = 1;
-write_to_file = 1;
-write_to_csv = 1;
-if write_to_csv write_to_file = 1; end
+write_to_csv = 1; % needed for running on supercomputer
+write_to_cpp = 0; % alternative file for running locally (not supercomputer)
 show_2d_plot = 0;
 show_3d_plot = 0;
 alt_weights = 1; % use alt synapse_weights matrix
 
 % params
-output_filename = "synapse_weights.cpp";
 csv_filename = "synapse_weights.csv";
-output_file = 0; output_csv = 0; % these are always init as 0
-if write_to_file output_file = fopen(output_filename,'w'); end
+cpp_filename = "synapse_weights.cpp";
+output_cpp = 0; output_csv = 0; % these are always init as 0
 if write_to_csv output_csv = fopen(csv_filename,'w'); end
+if write_to_cpp output_cpp = fopen(cpp_filename,'w'); end
 grid_size_target = 42; % target grid size for neuron weights
 total_nrns = (grid_size_target^2);%35;%(grid_size^2);% total neurons
 if show_2d_plot
@@ -38,7 +37,7 @@ p16=0.81;%0.9396*1.4*.9;%*3*(14/20);%1.4;%*.75;%0.81; % surround size
 p17=0.0058;
 p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
 tiling_fraction=0.33333333333;%0.1;%0.33333333333;%1;%0.33;%0.5; % fraction of standard tiling distance between bumps
-po=[show_3d_plot,write_to_file,sample_matrix,output_file,grid_size,iter,tiling_fraction, ...
+po=[show_3d_plot,write_to_cpp,sample_matrix,output_cpp,grid_size,iter,tiling_fraction, ...
     grid_size_target,start_x_shift,start_y_shift];
 comb_syn_wts=[];
 [X,Y] = meshgrid(1:1:grid_size);
@@ -61,7 +60,7 @@ if show_3d_plot
 end
 
 % write to file and create matrix
-if write_to_file
+if write_to_csv || write_to_cpp
     if alt_weights == 0
 	    synapse_weights=nrn_syn_wts(start_x_shift,start_y_shift,p,po);
     end
@@ -76,25 +75,25 @@ if write_to_file
 		end
 	end
 	disp("writing to file");
-	fprintf(output_file,'static const vector<vector<double>> mex_hat{{');
+	if output_cpp fprintf(output_cpp,'static const vector<vector<double>> mex_hat{{'); end
 	for i=0:(total_nrns-1)
 		for j=1:length(comb_syn_wts)
-			fprintf(output_file,'%f',comb_syn_wts(i+1,j));
+			if output_cpp fprintf(output_cpp,'%f',comb_syn_wts(i+1,j)); end
             if output_csv fprintf(output_csv,'%f',comb_syn_wts(i+1,j)); end
 			if j ~= length(comb_syn_wts)
-				fprintf(output_file,',');
+				if output_cpp fprintf(output_cpp,','); end
                 if output_csv fprintf(output_csv,','); end
 			end
 		end
 		if i ~= (total_nrns-1)
-			fprintf(output_file,'},\n{');
+			if output_cpp fprintf(output_cpp,'},\n{'); end
             if output_csv fprintf(output_csv,'\n'); end
 		end	
 		if (mod(i,grid_size_target*3)==0)
 			fprintf("%.3g%% completed\n",i/total_nrns*100);
 		end
 	end
-	fprintf(output_file,'}};');
+	if output_cpp fprintf(output_cpp,'}};'); end
     if show_2d_plot
         imagesc(reshape(comb_syn_wts(1,1:end),grid_size_target,grid_size_target));
     end
@@ -112,9 +111,8 @@ if sample_matrix
     imagesc(synapse_weights4);
 end
 
-if write_to_file
-	fclose(output_file);
-end
+if write_to_csv fclose(output_csv); end
+if write_to_cpp fclose(output_cpp); end
 
 function synapse_weights2=rotate_weights(po,Rz,synapse_weights)
 	% apply rotation to synapse weights matrix
