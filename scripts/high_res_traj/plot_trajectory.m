@@ -23,11 +23,11 @@ end
 
 line(Xs, Ys, 'Color', 'k', 'LineWidth', 1.0), hold on;
 
-if smaller_spk_ticks
+if plot_spikes && smaller_spk_ticks
     scatter(spk_x, spk_y, 5, [1,0,0], 'filled'), hold off
-elseif smaller_spk_ticks==2
+elseif plot_spikes && smaller_spk_ticks==2
     scatter(spk_x, spk_y, .01, [1,0,0], 'filled'), hold off
-else
+elseif plot_spikes
     scatter(spk_x, spk_y, [], [1,0,0], 'filled'), hold off
 end
 

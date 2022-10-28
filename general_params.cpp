@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 5200;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 2400000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 42;//30;//26;
@@ -75,9 +75,9 @@ struct P {
 	bool run_path_onlypos = 0; // only generate movement positions not signaling with run_path function
 	bool move_animal = 0; // use real animal movement positions with neural signaling
 	bool move_animal_aug = 0; // augment animal movement
-	bool move_animal_onlypos = 0; // generate animal movement position but not signaling
+	bool move_animal_onlypos = 1; // generate animal movement position but not signaling
 	bool move_fullspace = 0; // move through whole environment
-	bool move_straight = 1;
+	bool move_straight = 0;
 	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;

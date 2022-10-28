@@ -343,12 +343,13 @@ void HighResTraj(CARLsim* sim, P* p) {
 	/* 
 		Record high resolution position data of spikes. 
 	*/
-	/*
+	
 	p->highres_pos_x_file << p->pos[0];
 	p->highres_pos_x_file << "\n";
 	p->highres_pos_y_file << p->pos[1];
 	p->highres_pos_y_file << "\n";	
-	*/
+	
+	/*
 	if (p->t % 5000 == 0 || p->t == (int) (p->sim_time-1)) {
 		p->highres_pos_x_file << p->pos_x.str();
 		p->highres_pos_y_file << p->pos_y.str();
@@ -361,6 +362,7 @@ void HighResTraj(CARLsim* sim, P* p) {
 		p->pos_y << p->pos[1];
 		p->pos_y << "\n";
 	}
+	*/
 }
 
 void RecordLocationPath(P *p, string rec_type) {
@@ -586,8 +588,8 @@ void EISignal(double angle, CARLsim* sim, P* p) {
 	if (p->t > 2) {
 		//printf("ext input\n");
 		setExtDir(p,angle,p->speed_signaling,0);//0.20);
-		//printf("p->ext_dir: %f\n",p->ext_dir);
 		sim->setExternalCurrent(p->EC_LI_II_Multipolar_Pyramidal_Group, p->ext_dir);
+		//printf("p->ext_dir: %f\n",p->ext_dir);
 		//printf("speed cells\n");
 		if (p->spin2in_active) {
 			setExtDir(p,angle,p->spdin2in_curr,2);//100.0,1);//0.075,1);//0.20);
