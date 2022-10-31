@@ -88,7 +88,7 @@ void control_speed(double speed, P* p) {
 	if (p->speed_limit == 1 && speed > p->max_speed) {speed = p->max_speed;} // speed limit
 	if (p->auto_speed_control || p->move_animal_onlypos) {
 		p->move_increment = (0.001*speed);
-		p->base_ext = 380;
+		p->base_ext = 175;//380;
 		p->speed_signaling = 0.1674454432+(-0.1174937214*speed)+(0.03435256877*pow(speed,2))+(-0.0003344800187*pow(speed,3));
 		if (speed<1) {p->speed_signaling=0;}
 		if (speed>15) {p->speed_signaling=20.0;}

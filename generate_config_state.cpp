@@ -161,7 +161,7 @@ sim.connect(EC_LII_Basket_Multipolar, MEC_LII_Stellate, MexHatConn, 8.5, 5.2, SY
 //sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
 //           RangeDelay(1), RadiusRF(-1), SYN_FIXED, 67.165, 0.0f); // 3 PCs
 sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
-           RangeDelay(1), RadiusRF(-1), SYN_FIXED, 67.165, 41.166f); // 3 PCs
+           RangeDelay(1), RadiusRF(-1), SYN_FIXED, 34.27, 21.0f); // 3 PCs
 //sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
 //           RangeDelay(1), RadiusRF(-1), SYN_PLASTIC, 67.165, 3.358f); // 3 PCs
 ////
