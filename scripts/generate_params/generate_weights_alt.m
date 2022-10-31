@@ -58,7 +58,7 @@ a=a/360 * pi*2; % convert to radians
 % limited fields params
 fields_number=7; % choose between 1, 3, 7, 9, etc., fields in initial shape
 centx = []; centy = []; % x- and y-axis values of centroids
-center_x = 43.02;%43;%46;%40;%42;%48;%46;
+center_x = 43.025;%43.02;%43;%46;%40;%42;%48;%46;
 center_y = 43.0;%43;%46;%40;%46.5;%46;
 select_cent=[1,2,3,4];%[1,2,3];%[1,4,7];%[3,4,5];% centroid indicies to duplicate
 

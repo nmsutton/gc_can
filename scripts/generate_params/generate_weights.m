@@ -22,9 +22,9 @@ if show_2d_plot
     total_nrns = 1;
 end
 grid_size = grid_size_target*3;%90;
-if alt_weights
-    grid_size = 126;%120;
-end
+%if alt_weights
+%    grid_size = 120;
+%end
 iter = 13; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
 start_x_shift = (grid_size/2) - 20;%44;%20;%50;%44;%- 44;%1;%28; -2 = 2 down
 start_y_shift = (grid_size/2) - 20;%44;%20;%50;%44;%- 44;%1;%-4;%28; +2 = 2 left

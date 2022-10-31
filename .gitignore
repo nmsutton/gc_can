@@ -47,3 +47,4 @@ data/mex_hat_bup.cpp
 data/mex_hat.cpp
 data/synapse_weights.cpp
 data/synapse_weights.csv
+data/*.csv
