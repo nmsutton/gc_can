@@ -3,8 +3,8 @@ close all;
 
 % run parameters
 run_on_hopper = 0; % run from hopper
-use_hopper = 0;
-hopper_run = 8;
+use_hopper = 1;
+hopper_run = 1;
 if run_on_hopper
     curr_dir=pwd;
     cd /home/nsutton2/git/OAT_CS4/
