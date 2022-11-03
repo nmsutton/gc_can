@@ -92,7 +92,8 @@ void control_speed(double speed, P* p) {
 		p->speed_signaling = (0.5/0.4) * (0.1674454432+(-0.1174937214*speed)+(0.03435256877*pow(speed,2))+(-0.0003344800187*pow(speed,3)));
 		if (speed<1) {p->speed_signaling=0;}
 		if (speed>15) {p->speed_signaling=20.0;}
-		p->spdin2in_curr = 8 + -8/(1 + pow((speed/15.31543),187.0108));
+		//p->spdin2in_curr = 8 + -8/(1 + pow((speed/15.31543),187.0108));
+		p->spdin2in_curr = 1 + -1/(1 + pow((speed/13),187));
 		//p->spdin2ex_curr = 3/(1 + pow((speed/14.91975),129.208));
 		p->spdex2in_curr = 0.3;
 	}
