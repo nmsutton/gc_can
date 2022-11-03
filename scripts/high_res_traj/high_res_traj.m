@@ -3,7 +3,7 @@ close all;
 
 % run parameters
 run_on_hopper = 0; % run from hopper
-use_hopper = 1;
+use_hopper = 0;
 hopper_run = 2;
 if run_on_hopper
     curr_dir=pwd;
