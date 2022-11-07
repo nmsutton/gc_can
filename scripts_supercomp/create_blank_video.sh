@@ -1,1 +1,0 @@
-ffmpeg -t 00:05:00 -s 850x623 -f rawvideo -pix_fmt rgb24 -r 25 -i /dev/zero blank.mp4

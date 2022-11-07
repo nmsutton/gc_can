@@ -13,7 +13,7 @@
 %% https://hydroecology.net/resizing-matlab-figures-the-easy-way/
 %% https://www.mathworks.com/matlabcentral/answers/43326-create-figure-without-displaying-it
 
-function exitcode = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data_data,fdr_prefix,hopper_run)
+function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data_data,fdr_prefix,hopper_run)
 	import CMBHOME.Utils.*
 
 	%[root c_ts] = load_spike_times();
@@ -23,7 +23,7 @@ function exitcode = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	use_smoothing = 1;
 	display_plot = 0;
 	save_plot = 0;
-	if run_on_hopper save_plot = 0; end
+	if run_on_hopper==1 save_plot = 0; end
 	%use_laptop = 0;
 	limit_time = 0;
 	rot90deg = 0; % rotate matrix 90 degrees clockwise

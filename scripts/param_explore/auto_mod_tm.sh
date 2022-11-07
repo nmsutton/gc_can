@@ -5,10 +5,11 @@
 # multiple lines.
 
 # select params
-run_on_hopper=0
-use_hopper_data=0
-fdr_prefix="param_explore_tm_"
-hopper_run=1
+export run_on_hopper=0 # run from hopper's system 
+export use_hopper_data=0 # access hopper data locally
+export fdr_prefix="param_explore_tm_" # folder name prefix
+export hopper_run=1 # hopper run number
+export save_gridscore_file=0; # save gridscore to file
 # Note: set number of vals in for statement {1..<count>} below
 export param1_vals=(123.6932 277.4218 431.1504 584.8790 738.6077)
 export param2_vals=(6.6322 5.7332 4.8342 3.9351 3.0361)
@@ -45,7 +46,10 @@ export space=" "
 export comma=","
 export semicol=";"
 export date_format="date +%H-%M-%S_%m-%d-%Y"
-module load matlab # load matlab on remote computer
+if $run_on_hopper == 1
+then
+	module load matlab # load matlab on remote computer
+fi
 
 chg_prm(){
 	# change params
@@ -64,7 +68,7 @@ run_sim(){
 
 	# generate results reports
 	cd ../gridscore/ &&
-	#matlab -nodisplay -r "gridscore_sim $p1 $p2 $run_on_hopper $use_hopper_data $fdr_prefix $hopper_run; exit" &&
+	matlab -nodisplay -r "gridscore_sim $p1 $p2 $run_on_hopper $use_hopper_data $fdr_prefix $hopper_run $save_gridscore_file; exit" &&
 	cd ../param_explore/
 	#echo "run sim"
 }
@@ -74,6 +78,7 @@ for i in {0..4}
 do
 for j in {0..4} 
 do
+	echo "processing $i $j";
 	# param change
 	export p1=$i &&
 	export param_file=$param_file1 &&
