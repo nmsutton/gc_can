@@ -5,9 +5,10 @@
 # multiple lines.
 
 # select params
+export paramexp_type=" \"tm\""; # choose iz (izhikevich) or tm (tsodyks-markram) parameters exploration
+export fdr_prefix="param_explore_tm_" # folder name prefix
 export run_on_hopper=0 # run from hopper's system 
 export use_hopper_data=0 # access hopper data locally
-export fdr_prefix="param_explore_tm_" # folder name prefix
 export hopper_run=1 # hopper run number
 export save_gridscore_file=0; # save gridscore to file
 # Note: set number of vals in for statement {1..<count>} below
@@ -46,16 +47,13 @@ export space=" "
 export comma=","
 export semicol=";"
 export date_format="date +%H-%M-%S_%m-%d-%Y"
-if $run_on_hopper == 1
-then
-	module load matlab # load matlab on remote computer
-fi
+module load matlab # load matlab on remote computer
 
 chg_prm(){
 	# change params
 	command=$make_clean_am
 	eval $command
-	command=$make_am$run_am$param_file$param_pattern$value_change
+	command=$make_am$run_am$paramexp_type$param_file$param_pattern$value_change
 	eval $command
 	#echo $command
 }
@@ -63,7 +61,7 @@ chg_prm(){
 run_sim(){
 	# run CARLsim
 	cd ../.. &&
-	#./rebuild.sh &&
+	./rebuild.sh &&
 	cd scripts/param_explore/ &&
 
 	# generate results reports
@@ -78,8 +76,8 @@ for i in {0..4}
 do
 for j in {0..4} 
 do
-	echo "processing $i $j";
-	# param change
+	# param change	
+	echo "processing p1: $i; p2: $j";
 	export p1=$i &&
 	export param_file=$param_file1 &&
 	export param_pattern=$param_pattern1 &&
@@ -131,7 +129,7 @@ do
 	export param_pattern=$param_pattern12 &&
 	export value_change=" \"${param12_vals[$j]}\"" &&
 	chg_prm &&
-	# save params
+	# save record of params
 	curr_time=$($date_format) &&
 	echo $curr_time$comma$i$comma$j >> ./output/param_records.txt &&
 	# run simulation

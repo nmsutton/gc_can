@@ -42,10 +42,10 @@ function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hoppe
 
     pi=3.1415926535897932384626433832795028841971;
     lines = [];
-    if output_spikes_file
+    if output_spikes_file==1
         recspk_file = fopen('highres_spikes.csv','w');
     end
-    if output_XsYs_file
+    if output_XsYs_file==1
         Xs_file = fopen('anim_trajx.csv','w');
         Ys_file = fopen('anim_trajy.csv','w');
     end
@@ -57,7 +57,7 @@ function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hoppe
             orig_xy, laptop_data, use_unwrapped_data, use_hopper_data, hopper_run, run_on_hopper, fdr_prefix);
     end
 
-    if plot_spikes && preloaded_data == 0
+    if plot_spikes==1 && preloaded_data == 0
         spk_x = []; spk_y = [];
         [spk_t,spikes]=load_spk_times(use_hopper_data, hopper_run, plot_in_spikes, laptop_data, ...
             use_spk_reader, spk_bin_size, sel_nrn, preloaded_spk_reader, spikes, run_on_hopper, fdr_prefix);
@@ -102,35 +102,35 @@ function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hoppe
         y = Ys;
     end
 
-    if plot_spikes || output_spikes_file
+    if plot_spikes==1 || output_spikes_file==1
         for i=1:length(spk_t)
             if restrict_time == 0 
-                if orig_xy || angles_speeds
+                if orig_xy==1 || angles_speeds==1
                     spk_x=[spk_x,x(floor(spk_t(i)/timestep))];
     	            spk_y=[spk_y,y(floor(spk_t(i)/timestep))];
                 else 
                     spk_x=[spk_x,x(spk_t(i))];
     	            spk_y=[spk_y,y(spk_t(i))];
                 end
-                if output_spikes_file
+                if output_spikes_file==1
                     fprintf(recspk_file,"%f,%f,%f\n",spk_t(i),spk_x(i),spk_y(i));
                 end
             elseif spk_t(i) < restrict_time
-                if orig_xy || angles_speeds
+                if orig_xy==1 || angles_speeds==1
     	            spk_x=[spk_x,x(floor(spk_t(i)/timestep))];
     	            spk_y=[spk_y,y(floor(spk_t(i)/timestep))];
                 else
                     spk_x=[spk_x,x(spk_t(i))];
     	            spk_y=[spk_y,y(spk_t(i))];
                 end
-                if output_spikes_file
+                if output_spikes_file==1
                     fprintf(recspk_file,"%f,%f,%f\n",spk_t(i),spk_x(i),spk_y(i));
                 end
             end
         end
     end
 
-    if output_XsYs_file
+    if output_XsYs_file==1
         for i=1:length(Xs)
             fprintf(Xs_file,'%.6f\n',Xs(i));
             fprintf(Ys_file,'%.6f\n',Ys(i));
@@ -141,16 +141,16 @@ function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hoppe
         fclose(Xs_file);
         fclose(Ys_file);   
     end
-    if output_spikes_file
+    if output_spikes_file==1
         fclose(recspk_file);
     end
 
     % plot
-    if create_plot
+    if create_plot==1
         plot_trajectory
     end
 
-    if plot_smooth_rm
+    if plot_smooth_rm==1
         cd ..
         heat_map=activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data,fdr_prefix,hopper_run);
         cd high_res_traj

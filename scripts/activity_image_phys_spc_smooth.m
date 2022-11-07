@@ -23,7 +23,9 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	use_smoothing = 1;
 	display_plot = 0;
 	save_plot = 0;
-	if run_on_hopper==1 save_plot = 0; end
+	disp("run_on_hopper");
+	disp(run_on_hopper);
+	if run_on_hopper==1 save_plot = 1; end
 	%use_laptop = 0;
 	limit_time = 0;
 	rot90deg = 0; % rotate matrix 90 degrees clockwise
