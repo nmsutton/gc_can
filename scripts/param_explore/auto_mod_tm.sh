@@ -5,6 +5,10 @@
 # multiple lines.
 
 # select params
+run_on_hopper=0
+use_hopper_data=0
+fdr_prefix="param_explore_tm_"
+hopper_run=1
 # Note: set number of vals in for statement {1..<count>} below
 export param1_vals=(123.6932 277.4218 431.1504 584.8790 738.6077)
 export param2_vals=(6.6322 5.7332 4.8342 3.9351 3.0361)
@@ -60,7 +64,7 @@ run_sim(){
 
 	# generate results reports
 	cd ../gridscore/ &&
-	#matlab -nodisplay -r "gridscore_sim $p1 $p2; exit" &&
+	#matlab -nodisplay -r "gridscore_sim $p1 $p2 $run_on_hopper $use_hopper_data $fdr_prefix $hopper_run; exit" &&
 	cd ../param_explore/
 	#echo "run sim"
 }

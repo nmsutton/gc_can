@@ -21,7 +21,9 @@ bin_size=400; % size of firing bin in ms
 target_hz=2.36557; % target Hz to search for
 similarity=90; % similarity percent to find
 similarity=1-(similarity/100);
-spikes = spk_data.readSpikes(bin_size);
+if 0
+    spikes = spk_data.readSpikes(bin_size);
+end
 nrn_count = size(spikes(1,:),2);
 spk_count = [];
 sim_seconds = (size(spikes(:,1),1)*bin_size)/1000;
