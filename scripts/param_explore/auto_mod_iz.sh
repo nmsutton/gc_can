@@ -1,13 +1,11 @@
 # Automatically modify simulation parameter settings for parameter explorations
 # Use matlab's linspace (e.g., linspace(0,128,5)) to find param ranges.
 # This version is for Izhikevich params
+# Note: the target line to be changed with regex must be converted to 1 line not
+# multiple lines.
 
-# select params
-export param1_vals=(0.12 0.42 0.62 0.72 0.92)
-export param2_vals=(0.001 0.003 0.005 0.007 0.01)
-export param_file1=" \"../../generate_config_state.cpp\"";
-export param_pattern1=" \"(.*sim.setNeuronParameters\\(MEC_LII_Stellate, [-]?\\d+[.]?\\d*f?, [-]?\\d+[.]?\\d*f?, )([-]?\\d+[.]?\\d*)(.*)\"";
-export param_pattern2=" \"(.*sim.setNeuronParameters\\(MEC_LII_Stellate, [-]?\\d+[.]?\\d*f?, [-]?\\d+[.]?\\d*f?, [-]?\\d+[.]?\\d*f?, [-]?\\d+[.]?\\d*f?, [-]?\\d+[.]?\\d*f?, [-]?\\d+[.]?\\d*f?, [-]?\\d+[.]?\\d*f?, [-]?\\d+[.]?\\d*f?, )([-]?\\d+[.]?\\d*)(.*)\"";
+# params
+source ./config_files/params_config.sh
 # general settings
 touch ./output/param_records.txt
 echo "" > ./output/param_records.txt # clear file
@@ -24,19 +22,19 @@ chg_prm(){
 	# change params
 	command=$make_clean_am
 	eval $command
-	command=$make_am$run_am$param_file$param_pattern$value_change
+	command=$make_am$run_am$paramexp_type$param_file$param_pattern$value_change
 	eval $command
 }
 
 run_sim(){
 	# run CARLsim
 	cd ../.. &&
-	#./rebuild.sh &&
+	./rebuild.sh &&
 	cd scripts/param_explore/ &&
 
 	# generate results reports
 	cd ../gridscore/ &&
-	#matlab -nodisplay -r "gridscore_sim $p1 $p2; exit" &&
+	matlab -nodisplay -r "gridscore_sim $p1 $p2 $run_on_hopper $use_hopper_data $fdr_prefix $hopper_run $save_gridscore_file; exit" &&
 	cd ../param_explore/
 }
 
@@ -46,6 +44,7 @@ do
 for j in {0..4} 
 do
 	# param change
+	echo "processing p1: $i; p2: $j";
 	export p1=$i &&
 	export param_file=$param_file1 &&
 	export param_pattern=$param_pattern1 &&
