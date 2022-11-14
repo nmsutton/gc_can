@@ -5,7 +5,7 @@
 # multiple lines.
 
 # params
-source ./config_files/params_config.sh
+source ./config_files/params_config_tm.sh
 # general settings
 touch ./output/param_records.txt
 echo "" > ./output/param_records.txt # clear file
