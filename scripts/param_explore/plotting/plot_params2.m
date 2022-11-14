@@ -12,7 +12,7 @@ for i=1:rows_number
 end
 % create interpolated points
 grid_points=floor(sqrt(size(x)));
-zi=2;
+zi=1;
 xis=linspace(grid_points(2),rows_number(1),grid_points(2));
 for xi=xis
     for yi=1:grid_points(2)
@@ -20,9 +20,9 @@ for xi=xis
 	        x=[x results_data(xi,2)];
 	        y=[y (results_data(yi,3)+results_data(yi-1,3))/2];
 	        z=[z (results_data(zi,4)+results_data(zi-1,4))/2];
-            zi=zi+1;
             %disp(xi);
         end
+        zi=zi+1;        
     end
 end
 
