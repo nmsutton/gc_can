@@ -7,10 +7,10 @@ function exitcode = gridscore_sim(p1,p2,run_on_hopper,use_hopper_data,fdr_prefix
 	% use_hopper_data: access hopper data locally
 	% fdr_prefix: folder name prefix
 	% hopper_run: hopper run number
-	run_on_hopper=str2num([run_on_hopper]);
-	use_hopper_data=str2num([use_hopper_data]);
-	hopper_run=str2num([hopper_run]);
-	save_gridscore_file=str2num([save_gridscore_file]);
+	%run_on_hopper=str2num([run_on_hopper]);
+	%use_hopper_data=str2num([use_hopper_data]);
+	%hopper_run=str2num([hopper_run]);
+	%save_gridscore_file=str2num([save_gridscore_file]);
 
 	if run_on_hopper==1
 		addpath /home/nsutton2/git/CMBHOME_github/ 
@@ -29,7 +29,7 @@ function exitcode = gridscore_sim(p1,p2,run_on_hopper,use_hopper_data,fdr_prefix
 	else
 		addpath /comp_neuro/Software/Github/CMBHOME_github/
 		PWD=pwd;
-		fldr="/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/high_res_traj/";
+		fldr="/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/scripts/high_res_traj/";
 		cd(fldr);
 		heat_map=high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hopper_run);
 		cd(PWD);

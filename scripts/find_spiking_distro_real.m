@@ -43,7 +43,7 @@ function spk_hz=find_hz(filename,cell_selection);
 	% retrieve spikes
 	cd /home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/holger_data/nate_scripts/for_jeffrey
 	spikes=retrieve_spikes(root, timevars, y_offset, cell_selection);
-	cd /home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts
+	cd /home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/scripts
 
 	spk_count = size(spikes(1,:),2);
 	spk_hz = spk_count/rec_seconds;

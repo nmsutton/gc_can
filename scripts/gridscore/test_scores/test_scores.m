@@ -1,4 +1,4 @@
-run("/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/initOAT.m");
+run("/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/scripts/initOAT.m");
 addpath /comp_neuro/Software/Github/CMBHOME_github/
 load("example_data/example_spk_x.mat")
 load("example_data/example_spk_y.mat")

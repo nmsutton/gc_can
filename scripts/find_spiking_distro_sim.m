@@ -10,7 +10,7 @@ if hopper_use
     spk_data = SpikeReader(hopper_path, false, 'silent');
 else
     if hopper_local_copy == 0
-        local_path='/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/results/spk_MEC_LII_Stellate.dat';
+        local_path='/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/results/spk_MEC_LII_Stellate.dat';
     else
         local_path='/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_hopper/results/spk_MEC_LII_Stellate.dat';
     end

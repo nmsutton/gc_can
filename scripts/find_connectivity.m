@@ -2,7 +2,7 @@
 
 thresh=.002;
 
-weights=readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/generate_params/synapse_weights.csv');
+weights=readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/scripts/generate_params/synapse_weights.csv');
 %tot_conn=find(weights>=.thresh);
 
 ind_conn=[];

@@ -59,7 +59,7 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	    else
 	        %if use_laptop == 0
 	        if false
-		        %carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv');
+		        %carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/output/spikes/spikes_recorded.csv');
 	        else
 	            %carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/spikes_recorded.csv');
 	            curr_dir = pwd;

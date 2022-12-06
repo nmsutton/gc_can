@@ -4,11 +4,11 @@
 
 cd '/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/holger_data/nate_scripts/for_jeffrey/'
 load_data
-cd '/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/scripts/'
+cd '/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/scripts/'
 
 animal_spikes = spikes(3,:)';
-sim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/spikes_recorded.csv');
-%sim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_cs4/output/spikes/in_spikes_recorded.csv');
+sim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/output/spikes/spikes_recorded.csv');
+%sim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/output/spikes/in_spikes_recorded.csv');
 time_limit_start = 450000; % time limit start in ms
 time_limit_end = time_limit_start + 50000;%2400000; 
 limit_indices = find(animal_spikes(find(animal_spikes*1000>time_limit_start))*1000<time_limit_end);

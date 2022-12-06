@@ -131,6 +131,7 @@ void set_pos(P *p, double angle) {
 	/*
 		Angle should be between 0-360 degrees.
 	*/
+	//angle = angle + 180;
 	vector<double> ver_hor = find_ver_hor(p, angle, &p->move_increment);
 	p->pos[0] = p->pos[0] + ver_hor[1];
 	p->pos[1] = p->pos[1] + ver_hor[0];
@@ -545,16 +546,16 @@ void setExtDir(P* p, double angle, double speed, int sc) {
 	//if (sc == true) {speeds[0]=0.01;speeds[1]=0.01;speeds[2]=0.01;speeds[3]=0.01;}
 
 	for (int i = 0; i < p->layer_size; i++) {
-		if (get_pd(i, p) == 0) {
+		if (get_pd(i, p) == 180) {
 			p->ext_dir[i] = p->base_ext*speeds[0];
 		}
-		else if (get_pd(i, p) == 90) {
+		else if (get_pd(i, p) == 270) {
 			p->ext_dir[i] = p->base_ext*speeds[1];
 		}
-		else if (get_pd(i, p) == 180) {
+		else if (get_pd(i, p) == 0) {
 			p->ext_dir[i] = p->base_ext*speeds[2];
 		}
-		else if (get_pd(i, p) == 270) {
+		else if (get_pd(i, p) == 90) {
 			p->ext_dir[i] = p->base_ext*speeds[3];
 		}
 	}
