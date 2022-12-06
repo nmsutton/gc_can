@@ -65,7 +65,6 @@
 #include <iostream>
 #include <fstream> // for file out
 using namespace std;
-#include <math.h> // for sqrt() and other functions
 #include "../data/ext_dir_initial.cpp"
 #include "../data/ext_dir.cpp"
 #include "../data/init_firings.cpp"
@@ -153,12 +152,11 @@ int main() {
 		SMspe->startRecording();
 		SMspe->setPersistentData(true);
 	#endif
-	/*for (int i = 0; i < p.layer_size; i++) {
+	for (int i = 0; i < p.layer_size; i++) {
 		p.gc_firing[i] = init_firings[i]; // set initial firing
-	}*/
+	}
 	
 	#if import_animal_data
-		//printf("%f\n",anim_speeds[100]);
 		animal_data_vars(&sim, &p, &anim_angles, &anim_speeds);
 	#endif	
 

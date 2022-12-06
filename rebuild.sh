@@ -1,1 +1,1 @@
-make clean && make && ./hello_world
+make clean && make && ./gc_can
