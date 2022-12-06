@@ -1,5 +1,9 @@
-% reference: https://www.mathworks.com/help/matlab/ref/area.html
+% references: https://www.mathworks.com/help/matlab/ref/area.html
 % https://www.mathworks.com/matlabcentral/fileexchange/5105-making-surface-plots-from-scatter-data
+% possible alt. plots: https://www.mathworks.com/help/matlab/ref/gradient.html#bvhqkfr
+
+downsample_colormap = 0; % activate colormap downsampling
+downsample_amount = 20; % amount of downsampling; higher is more
 
 % extract data
 x=[];y=[];z=[];xyz=[];
@@ -90,7 +94,7 @@ campos([0.52,0,200]);
 
 %xlim([min(x) max(x)])
 %ylim([min(y) max(y)])
-%colormap default
+colormap default
 %colormap(parula(25))
 %{
 map = [0 0 0.0
@@ -101,14 +105,24 @@ map = [0 0 0.0
     0 0 1.0];
 colormap(map)
 %}
-load CustomBlueGreenColormap;
-colormap(CustomBlueGreenColormap);
+%load CustomBlueGreenColormap;
+%colormap(CustomBlueGreenColormap);
+
+if downsample_colormap
+	cm = colormap;
+	cmx = downsample(cm(:,1),downsample_amount);
+	cmy = downsample(cm(:,2),downsample_amount);
+	cmz = downsample(cm(:,3),downsample_amount);
+	cm2 = [cmx'; cmy'; cmz'];
+	cm2 = cm2';
+	colormap(cm2);
+end
 %colormapeditor
 %axis([min(x) max(x) min(y) max(y)])
 title("Gridness score of parameters for grid cells", 'FontSize', 11);
 axis('tight');
 %xlabel('Izhikevich k value') 
 %ylabel('Izhikevich a value')
-xlabel('tau_x value');
-ylabel('tau_d value');
+%xlabel('tau_x value');
+%ylabel('tau_d value');
 %legend('<0.2 gridness','>=0.2 gridness')

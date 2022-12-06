@@ -1,19 +1,32 @@
-project(carlsim-hello-world)
-cmake_minimum_required(VERSION 3.0)
+project(gc_can)
 
-# Dependencies
+# Targets  
+add_executable(gc_can
+    src/main_gc_can.cpp
+)
 
-    find_package(carlsim REQUIRED)
+# definitions     
+if(CARLSIM_NO_CUDA)
+    target_compile_definitions(gc_can PUBLIC
+        -D__NO_CUDA__ )
+endif()
 
-# Targets
+# Linking    
+target_link_libraries(gc_can PRIVATE
+    carlsim
+    carlsim-stopwatch
+)
+target_include_directories(gc_can PRIVATE
+    ../../tools/stopwatch
+)
+   
+        
+# Installation   
+install(TARGETS gc_can
+    EXPORT carlsim
+    RUNTIME 
+        DESTINATION $<$<CONFIG:Debug>:debug/>samples 
+        COMPONENT gc_can
+        )
 
-    add_executable(hello_world
-        src/main_hello_world.cpp
-    )
-
-# Linking
-
-    target_link_libraries(hello_world
-        PRIVATE
-            carlsim
-    )
+#install(FILES run_gc_can DESTINATION $<$<CONFIG:Debug>:debug/>samples)          

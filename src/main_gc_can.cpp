@@ -153,9 +153,9 @@ int main() {
 		SMspe->startRecording();
 		SMspe->setPersistentData(true);
 	#endif
-	for (int i = 0; i < p.layer_size; i++) {
+	/*for (int i = 0; i < p.layer_size; i++) {
 		p.gc_firing[i] = init_firings[i]; // set initial firing
-	}
+	}*/
 	
 	#if import_animal_data
 		//printf("%f\n",anim_speeds[100]);
@@ -169,8 +169,8 @@ int main() {
 		p.t = t;
 		// Disable initial current to GCs settings
 		if (t == 2) {
-			setExtDir(&p,270,0.04,0);
-			sim.setExternalCurrent(EC_LI_II_Multipolar_Pyramidal, p.ext_dir);
+			//setExtDir(&p,270,0.04,0);
+			//sim.setExternalCurrent(EC_LI_II_Multipolar_Pyramidal, p.ext_dir);
 			//setExtDir(&p,270,0.04,1);
 			//sim.setExternalCurrent(MEC_LII_Basket_Speed, p.ext_dir);
 		}
