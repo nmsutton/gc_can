@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 10000;//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 2000;//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 42;//30;//26;
@@ -103,8 +103,8 @@ struct P {
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 
 	// values for synapse activites
-	double base_ext = 300.0;//10.0;//0.0; // baseline ext input speed level	
-	double speed_signaling = 5.0;//1.0;//0.5;//1.0;//0.1; // setting for use of a constant virtual animal speed
+	double base_ext = 600.0;//10.0;//0.0; // baseline ext input speed level	
+	double speed_signaling = 0.0;//5.0;//1.0;//0.5;//1.0;//0.1; // setting for use of a constant virtual animal speed
 	float dir_to_gc_wt = 0.3;//0.5;//0.9;//0.75; ext_dir to gc weight
 	double mex_hat_multi = 10;//1000;//700;//1100; // mexican hat multiplier
 	float gc_to_in_wt = 0.28;//0.28;//200;//50;//600; // gc to interneurons weight
