@@ -533,16 +533,12 @@ vector<double> directional_speeds(P* p, double angle, double speed) {
 void setExtDir(P* p, double angle, double speed, int sc) {
 	double noise;	
 	angle = angle + p->grid_pattern_rot;
+	//if (sc == 2) {angle=angle+180;} // TODO: this is a fix for speed cells but could look into if this could be modeled better
 	if (angle>360) {angle=360-angle;}	
 	if (angle<0)   {angle=angle+360;}	
 	vector<double> speeds = directional_speeds(p, angle, speed);
+	if (sc == 1) {speeds[0]=speed;speeds[1]=speed;speeds[2]=speed;speeds[3]=speed;}	
 	if (sc == 2) {for (int i = 0; i < 4; i++) {speeds[i]--;}}
-	//if (sc == true) {for (int i = 0; i < 4; i++) {speeds[i]=speeds[i]-0.695;}}
-	if (sc == 1) {
-		speeds[0]=speed;speeds[1]=speed;speeds[2]=speed;speeds[3]=speed;
-	}
-	//speeds[0]=2;speeds[1]=2;speeds[2]=2;speeds[3]=2;
-	//if (sc == true) {for (int i = 0; i < 4; i++) {speeds[i]--;}}
 	//if (sc == true) {speeds[0]=0.01;speeds[1]=0.01;speeds[2]=0.01;speeds[3]=0.01;}
 
 	for (int i = 0; i < p->layer_size; i++) {

@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 220000;//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 7000;//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 42;//30;//26;
@@ -17,12 +17,11 @@ struct P {
 	static const int MEC_LII_Basket_Count = 588;//300;
 	static const int EC_LII_Basket_Multipolar_Count = 588;//300;
 	static const int CA1_Pyramidal_Count = 1764;//900;
-	static const int MEC_LII_Basket_Speed_Count = 1764;//900;		
-	static const int MEC_LII_Basket_Speed2_Count = 1764;//900;
+	static const int MEC_LII_Basket_Speed_Count = 1764;//900;
 	static const int MEC_LII_Stellate_Speed_Count = 1764;//900;	
 	int EC_LI_II_Multipolar_Pyramidal_Group, MEC_LII_Stellate_Group, EC_LII_Axo_Axonic_Group,
-	MEC_LII_Basket_Group, EC_LII_Basket_Multipolar_Group, CA1_Pyramidal_Group, MEC_LII_Basket_Speed_Group,
-	MEC_LII_Basket_Speed2_Group, MEC_LII_Stellate_Speed_Group, MEC_LII_Basket_Speed3_Group, MEC_LII_Basket_Speed4_Group;	
+	MEC_LII_Basket_Group, EC_LII_Basket_Multipolar_Group, CA1_Pyramidal_Group, 
+	MEC_LII_Basket_Speed_Group,	MEC_LII_Stellate_Speed_Group;	
 	double pos[2] = {28,14};//{9,17};//{22,8}; // virtual animal position tracker. starting position: {x,y}
 	double bpos[2] = {28,14};//{9,17}; // bump position tracker
 	double dirs[4] = {0, 90, 180, 270};
@@ -76,8 +75,8 @@ struct P {
 	bool move_animal = 0; // use real animal movement positions with neural signaling
 	bool move_animal_aug = 0; // augment animal movement
 	bool move_animal_onlypos = 0; // generate animal movement position but not signaling
-	bool move_fullspace = 1; // move through whole environment
-	bool move_straight = 0;
+	bool move_fullspace = 0; // move through whole environment
+	bool move_straight = 1;
 	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;
@@ -95,23 +94,23 @@ struct P {
 	bool record_highrestraj = 1; // write files for high resolution trajectory locations
 	#define additional_spk_mon 0 // additional spike monitors
 	#define monitor_voltage 0 // turn voltage monitoring on or off 
-	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
-	bool pc_to_gc = 1; // place cells to grid cells signaling
+	bool pc_active = 0; // pc signaling active. bc->pc->gc can still work even if this is disabled.
+	bool pc_to_gc = 0; // place cells to grid cells signaling
 	bool spin2in_active = 0; // inhibitory speed cells active.	
 	bool spex2in_active = 0; // excitatory speed cells active.	
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 
 	// values for synapse activites
-	double base_ext = 400;//300.0;//500.0;//10.0;//0.0; // baseline ext input speed level	
-	double speed_signaling = 1.0;//5.0;//0.0;//5.0;//1.0;//0.5;//1.0;//0.1; // setting for use of a constant virtual animal speed
+	double base_ext = 375;//320;//300.0;//500.0;//10.0;//0.0; // baseline ext input speed level	
+	double speed_signaling = 3.5;//5.0;//5.0;//0.0;//5.0;//1.0;//0.5;//1.0;//0.1; // setting for use of a constant virtual animal speed
 	float dir_to_gc_wt = 0.3;//0.5;//0.9;//0.75; ext_dir to gc weight
 	double mex_hat_multi = 10;//1000;//700;//1100; // mexican hat multiplier
-	float gc_to_in_wt = 0.28;//0.28;//200;//50;//600; // gc to interneurons weight
+	float gc_to_in_wt = 0.28;//0.30;//0.315;//0.297;//0.28;//0.28;//200;//50;//600; // gc to interneurons weight
 	double spdin2inwt = 0.5;//10;//0.5;//10;
-	double spdex2inwt = 3.0;//1.65;//0.52;//0.5;
-	double spdin2in_curr = 0.0;//0;//1;//100;//10;
-	double spdex2in_curr = 0.0;//0.3;//0.0;//0.3;
+	double spdex2inwt = 1.0;//1.65;//0.52;//0.5;
+	double spdin2in_curr = 1.0;//1.0;//0;//1;//100;//10;
+	double spdex2in_curr = 0.35;//0.3;//0.0;//0.3;
 	double dir_init_multi = 1000;//100000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
 	double move_increment = 0.01;//0.018;//0.005;//0.018; // amount to move in position each move command
