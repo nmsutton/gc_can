@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 2000;//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 220000;//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 42;//30;//26;
@@ -75,8 +75,8 @@ struct P {
 	bool move_animal = 0; // use real animal movement positions with neural signaling
 	bool move_animal_aug = 0; // augment animal movement
 	bool move_animal_onlypos = 0; // generate animal movement position but not signaling
-	bool move_fullspace = 0; // move through whole environment
-	bool move_straight = 1;
+	bool move_fullspace = 1; // move through whole environment
+	bool move_straight = 0;
 	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;
@@ -94,17 +94,17 @@ struct P {
 	bool record_highrestraj = 1; // write files for high resolution trajectory locations
 	#define additional_spk_mon 0 // additional spike monitors
 	#define monitor_voltage 0 // turn voltage monitoring on or off 
-	bool pc_active = 0; // pc signaling active. bc->pc->gc can still work even if this is disabled.
-	bool pc_to_gc = 0; // place cells to grid cells signaling
+	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
+	bool pc_to_gc = 1; // place cells to grid cells signaling
 	bool spin2in_active = 0; // inhibitory speed cells active.	
 	bool spex2in_active = 0; // excitatory speed cells active.	
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 
 	// values for synapse activites
-	double base_ext = 600;//400;//600;//320;//300.0;//500.0;//10.0;//0.0; // baseline ext input speed level	
-	double speed_signaling = 0.0;//1.0;//1.0;//5.0;//5.0;//0.0;//5.0;//1.0;//0.5;//1.0;//0.1; // setting for use of a constant virtual animal speed
-	float dir_to_gc_wt = 0.3;//1.0;//0.8;//2.0;//0.3;//0.5;//0.9;//0.75; ext_dir to gc weight
+	double base_ext = 500;//400;//600;//320;//300.0;//500.0;//10.0;//0.0; // baseline ext input speed level	
+	double speed_signaling = 0.3;//1.0;//1.0;//5.0;//5.0;//0.0;//5.0;//1.0;//0.5;//1.0;//0.1; // setting for use of a constant virtual animal speed
+	float dir_to_gc_wt = 0.4;//1.0;//0.8;//2.0;//0.3;//0.5;//0.9;//0.75; ext_dir to gc weight
 	double mex_hat_multi = 10.0;//20;//20;//30.0;//10;//1000;//700;//1100; // mexican hat multiplier
 	float gc_to_in_wt = 0.28;//0.5;//0.27;//0.2;//0.28;//0.30;//0.315;//0.297;//0.28;//0.28;//200;//50;//600; // gc to interneurons weight
 	double spdin2inwt = 0.5;//10;//0.5;//10;
@@ -113,15 +113,16 @@ struct P {
 	double spdex2in_curr = 0.35;//0.3;//0.0;//0.3;
 	double dir_init_multi = 1000;//100000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
-	double move_increment = 0.01;//0.018;//0.005;//0.018; // amount to move in position each move command
+	double move_increment = 0.005;//0.018;//0.005;//0.018; // amount to move in position each move command
 	vector<float> ext_dir;
 	// interneuron connections
 	int conn_offset = 0; // offset in neuron positions for connections
 	int conn_dist = 3; // distance between neurons in connections
-	#define FACILITATION 1
+	#define ORIGINAL 0
+	#define FACILITATION 0
 	#define DEPRESSION 0
 	#define BALANCE 0
-	#define BALANCE2 0
+	#define BALANCE2 1
 
 	// speed
 	bool auto_speed_control = 0; // automatically adjust parameters to match speed selected
@@ -141,9 +142,9 @@ struct P {
 	// place cell parameters
 	double theta_freq = 125.0; // theta frequency in Hz
 	double dist_thresh = 5; // distance threshold for only local connections	
-	float pc_to_gc_wt = 1.0;//3.0;//2.5;//2;//4;//5.5; // pc to gc synaptic weight
+	float pc_to_gc_wt = 0.4;//1.0;//3.0;//2.5;//2;//4;//5.5; // pc to gc synaptic weight
 	double pc_sig = 2;//1;//1.4;//1;//0.75; // sigma symbol; width of the place feild
-	double pc_level = 3000;//3000;//2000;//2500;//3000; // place cell firing level
+	double pc_level = 500;//3000;//3000;//2000;//2500;//3000; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters

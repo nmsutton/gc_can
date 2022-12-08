@@ -283,35 +283,30 @@ void move_fullspace(CARLsim* sim, P* p) {
 void move_fullspace2(CARLsim* sim, P* p) {
 	// Moves virtual animal sequentially back and forth through an
 	// environment as a movement test pattern to test firing in each
-	// enviornment location.
+	// environment location.
 
 	double offset = (p->x_size-p->x_size_plot)/2; // offset for plotting
-	p->pos[0]=offset;p->pos[1]=offset; // set starting point
-	p->bpos[0]=offset;p->bpos[1]=offset;
-	double angle; double x = p->pos[0]; double y = p->pos[1];
+	p->pos[0]=offset+5;p->pos[1]=offset-5; // set starting point
+	p->bpos[0]=offset+5;p->bpos[1]=offset-5;
+	//p->pos[0]=offset;p->pos[1]=offset; // set starting point
+	//p->bpos[0]=offset;p->bpos[1]=offset;
+	double angle; double x = p->pos[0]; double y = p->pos[1]; bool move_vert = 0;
 	double angle_rev_h = -1; // flag to reverse angle horizontally
 	double angle_rev_v = 1; // flag to reverse angle vertically
-	bool move_vert = 0;
 	double speed = p->move_increment*1000;
-	//speed = 9;
 	int ts_per_sec = 1000/p->timestep; // timesteps per second
 	double step_spd = speed/ts_per_sec; // movement per timestep
 	int h_m = ((int) floor((double) p->x_size_plot/speed)*ts_per_sec); // indices for horizontal movement
-	//h_m = h_m * .8;
 	int v_m = (ceil(1000.0/(double) p->timestep)/speed); // indices for vertical movement
-	//vector<int> mv_i; // move vertical index
-	//for (int i = 0; i < v_m; i++) {mv_i.push_back(h_m+i);}
 	int v_m_t = (int) ceil((p->sim_time/(double) p->timestep)/(double) (h_m+v_m)); // vertical moves total
 	for (int i = 0; i < (h_m+v_m)*v_m_t; i++) {
 		// horiz move
-		//if (x > 28) {angle_rev_h = 1;move_vert=1;}
 		if (x > offset+30) {angle_rev_h = 1;move_vert=1;}
 		else if (x < offset+0) {angle_rev_h = -1;move_vert=1;}
 		// process indices for horizontal move
 		if (angle_rev_h == -1) {angle = 90;x=x+step_spd;}
 		else {angle = 270;x=x-step_spd;}
 		// vert move
-		//if (y > 28) {angle_rev_v=-1;}
 		if (y > offset+30) {angle_rev_v=-1;}
 		else if (y < offset+0) {angle_rev_v=1;}
 		// process indices for vertical move
