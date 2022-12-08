@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 5200;//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 2000;//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 42;//30;//26;
@@ -94,19 +94,19 @@ struct P {
 	bool record_highrestraj = 1; // write files for high resolution trajectory locations
 	#define additional_spk_mon 0 // additional spike monitors
 	#define monitor_voltage 0 // turn voltage monitoring on or off 
-	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
-	bool pc_to_gc = 1; // place cells to grid cells signaling
+	bool pc_active = 0; // pc signaling active. bc->pc->gc can still work even if this is disabled.
+	bool pc_to_gc = 0; // place cells to grid cells signaling
 	bool spin2in_active = 0; // inhibitory speed cells active.	
 	bool spex2in_active = 0; // excitatory speed cells active.	
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 
 	// values for synapse activites
-	double base_ext = 600;//320;//300.0;//500.0;//10.0;//0.0; // baseline ext input speed level	
-	double speed_signaling = 0.0;//5.0;//5.0;//0.0;//5.0;//1.0;//0.5;//1.0;//0.1; // setting for use of a constant virtual animal speed
-	float dir_to_gc_wt = 0.3;//0.5;//0.9;//0.75; ext_dir to gc weight
-	double mex_hat_multi = 10;//1000;//700;//1100; // mexican hat multiplier
-	float gc_to_in_wt = 0.28;//0.30;//0.315;//0.297;//0.28;//0.28;//200;//50;//600; // gc to interneurons weight
+	double base_ext = 600;//600;//320;//300.0;//500.0;//10.0;//0.0; // baseline ext input speed level	
+	double speed_signaling = 0.0;//1.0;//5.0;//5.0;//0.0;//5.0;//1.0;//0.5;//1.0;//0.1; // setting for use of a constant virtual animal speed
+	float dir_to_gc_wt = 1.0;//0.8;//2.0;//0.3;//0.5;//0.9;//0.75; ext_dir to gc weight
+	double mex_hat_multi = 20;//20;//30.0;//10;//1000;//700;//1100; // mexican hat multiplier
+	float gc_to_in_wt = 0.5;//0.27;//0.2;//0.28;//0.30;//0.315;//0.297;//0.28;//0.28;//200;//50;//600; // gc to interneurons weight
 	double spdin2inwt = 0.5;//10;//0.5;//10;
 	double spdex2inwt = 1.0;//1.65;//0.52;//0.5;
 	double spdin2in_curr = 1.0;//1.0;//0;//1;//100;//10;
@@ -120,9 +120,10 @@ struct P {
 	int conn_dist = 3; // distance between neurons in connections
 	#define FACILITATION 0
 	#define DEPRESSION 0
+	#define BALANCE 1
 
 	// speed
-	bool auto_speed_control = 1; // automatically adjust parameters to match speed selected
+	bool auto_speed_control = 0; // automatically adjust parameters to match speed selected
 	bool speed_limit = 0; // speed limit on or off
 	double max_speed = 17.5; // max movement speed
 	double speed_conversion = 1;//0.2; // scale animal movement speed data

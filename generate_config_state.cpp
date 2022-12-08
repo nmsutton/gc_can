@@ -118,7 +118,7 @@ sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f,
 
 /* STP parameters */
 // Keivan data conversion: g = conductance; t_d = STPtdAMPA or STPtdGABAa; u = U; t_f = tauU; t_r = tauX; 
-
+/*
 sim.setSTP(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, true, STPu(0.1513, 0.0f),
                                      STPtauU(69.11, 0.0f),
                                      STPtauX(98.1, 0.0f),
@@ -203,7 +203,7 @@ sim.setSTP(CA1_Pyramidal, MEC_LII_Stellate, true, STPu(0.1231, 0.0f),
                                      STPtdGABAb(150.0, 0.0f),
                                      STPtrNMDA(0.0f, 0.0f),
                                      STPtrGABAb(0.0f, 0.0f));
-
+*/
 // g,d,r,f,U
 // g,d,x,u,U
 // Facilitating: U:0.15 u:750.0 x:50.0 
@@ -341,6 +341,81 @@ sim.setSTP(MEC_LII_Basket, MEC_LII_Stellate, true, STPu(0.27121282, 0.0f),
 sim.setSTP(EC_LII_Basket_Multipolar, MEC_LII_Stellate, true, STPu(0.26842606, 0.0f), 
                                     STPtauU(13.102789, 0.0f), 
                                     STPtauX(827.2014, 0.0f), 
+                                    STPtdAMPA(5.0f, 0.0f), 
+                                    STPtdNMDA(150.0f, 0.0f), 
+                                    STPtdGABAa(4.6974845f, 0.0f), 
+                                    STPtdGABAb(150.0f, 0.0f), 
+                                    STPtrNMDA(0.0f, 0.0f), 
+                                    STPtrGABAb(0.0f, 0.0f));
+sim.setSTP(CA1_Pyramidal, MEC_LII_Stellate, true, STPu(0.1231, 0.0f),
+                                     STPtauU(49.71, 0.0f),
+                                     STPtauX(153.4, 0.0f),
+                                     STPtdAMPA(6.674, 0.0f),
+                                     STPtdNMDA(150.0, 0.0f),
+                                     STPtdGABAa(6.0, 0.0f),
+                                     STPtdGABAb(150.0, 0.0f),
+                                     STPtrNMDA(0.0f, 0.0f),
+                                     STPtrGABAb(0.0f, 0.0f));
+#endif
+
+#if BALANCE
+sim.setSTP(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, true, STPu(0.201116785, 0.0f),
+                                     STPtauU(41.105, 0.0f),
+                                     STPtauX(569.487, 0.0f),
+                                     STPtdAMPA(4.6974845, 0.0f),
+                                     STPtdNMDA(150.0, 0.0f),
+                                     STPtdGABAa(6.0, 0.0f),
+                                     STPtdGABAb(150.0, 0.0f),
+                                     STPtrNMDA(0.0f, 0.0f),
+                                     STPtrGABAb(0.0f, 0.0f));
+sim.setSTP(MEC_LII_Stellate, EC_LII_Axo_Axonic, true, STPu(0.242, 0.0f), 
+                                    STPtauU(39.512, 0.0f), 
+                                    STPtauX(431.150, 0.0f), 
+                                    STPtdAMPA(3.0361104, 0.0f), 
+                                    STPtdNMDA(150.0, 0.0f), 
+                                    STPtdGABAa(6.0, 0.0f), 
+                                    STPtdGABAb(150.0, 0.0f), 
+                                    STPtrNMDA(0.0f, 0.0f), 
+                                    STPtrGABAb(0.0f, 0.0f));
+sim.setSTP(MEC_LII_Stellate, MEC_LII_Basket, true, STPu(0.246, 0.0f), 
+                                    STPtauU(38.623, 0.0f), 
+                                    STPtauX(421.841, 0.0f), 
+                                    STPtdAMPA(2.8213217, 0.0f), 
+                                    STPtdNMDA(150.0, 0.0f), 
+                                    STPtdGABAa(6.0, 0.0f), 
+                                    STPtdGABAb(150.0, 0.0f), 
+                                    STPtrNMDA(0.0f, 0.0f), 
+                                    STPtrGABAb(0.0f, 0.0f));
+sim.setSTP(MEC_LII_Stellate, EC_LII_Basket_Multipolar, true, STPu(0.277, 0.0f), 
+                                    STPtauU(41.223, 0.0f), 
+                                    STPtauX(422.161, 0.0f), 
+                                    STPtdAMPA(2.5591583, 0.0f), 
+                                    STPtdNMDA(150.0, 0.0f), 
+                                    STPtdGABAa(6.0, 0.0f), 
+                                    STPtdGABAb(150.0, 0.0f), 
+                                    STPtrNMDA(0.0f, 0.0f), 
+                                    STPtrGABAb(0.0f, 0.0f));
+sim.setSTP(EC_LII_Axo_Axonic, MEC_LII_Stellate, true, STPu(0.188, 0.0f), 
+                                    STPtauU(23.754, 0.0f),
+                                    STPtauX(681.412, 0.0f),
+                                    STPtdAMPA(5.0f, 0.0f),
+                                    STPtdNMDA(150.0f, 0.0f),
+                                    STPtdGABAa(4.22285f, 0.0f),
+                                    STPtdGABAb(150.0f, 0.0f),
+                                    STPtrNMDA(0.0f, 0.0f),
+                                    STPtrGABAb(0.0f, 0.0f));
+sim.setSTP(MEC_LII_Basket, MEC_LII_Stellate, true, STPu(0.196, 0.0f), 
+                                    STPtauU(24.645, 0.0f), 
+                                    STPtauX(664.772, 0.0f), 
+                                    STPtdAMPA(5.0f, 0.0f), 
+                                    STPtdNMDA(150.0f, 0.0f), 
+                                    STPtdGABAa(4.3151045f, 0.0f), 
+                                    STPtdGABAb(150.0f, 0.0f), 
+                                    STPtrNMDA(0.0f, 0.0f), 
+                                    STPtrGABAb(0.0f, 0.0f));
+sim.setSTP(EC_LII_Basket_Multipolar, MEC_LII_Stellate, true, STPu(0.201, 0.0f), 
+                                    STPtauU(27.521, 0.0f), 
+                                    STPtauX(569.488, 0.0f), 
                                     STPtdAMPA(5.0f, 0.0f), 
                                     STPtdNMDA(150.0f, 0.0f), 
                                     STPtdGABAa(4.6974845f, 0.0f), 
