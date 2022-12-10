@@ -576,21 +576,12 @@ sim.setSTP(EC_LII_Basket_Multipolar, MEC_LII_Stellate, true, STPu(0.1617, 0.0f),
 sim.setSTP(CA1_Pyramidal, MEC_LII_Stellate, true, STPu(0.1231, 0.0f),
                                      STPtauU(49.71, 0.0f),
                                      STPtauX(153.4, 0.0f),
-                                     STPtdAMPA(6.674, 0.0f),
+                                     STPtdAMPA(3.3800, 0.0f),
                                      STPtdNMDA(150.0, 0.0f),
                                      STPtdGABAa(6.0, 0.0f),
                                      STPtdGABAb(150.0, 0.0f),
                                      STPtrNMDA(0.0f, 0.0f),
                                      STPtrGABAb(0.0f, 0.0f));
-/*sim.setSTP(CA1_Pyramidal, MEC_LII_Stellate, true, STPu(0.1513, 0.0f),
-                                     STPtauU(69.11, 0.0f),
-                                     STPtauX(98.1, 0.0f),
-                                     STPtdAMPA(3.4186974, 0.0f),
-                                     STPtdNMDA(150.0, 0.0f),
-                                     STPtdGABAa(6.0, 0.0f),
-                                     STPtdGABAb(150.0, 0.0f),
-                                     STPtrNMDA(0.0f, 0.0f),
-                                     STPtrGABAb(0.0f, 0.0f));*/
 #endif
 
 /* neuron monitors */
