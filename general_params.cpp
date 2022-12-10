@@ -102,7 +102,7 @@ struct P {
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 
 	// values for synapse activites
-	double base_ext = 350;//400;//500;//400;//600;//320;//300.0;//500.0;//10.0;//0.0; // baseline ext input speed level	
+	double base_ext = 300;//400;//500;//400;//600;//320;//300.0;//500.0;//10.0;//0.0; // baseline ext input speed level	
 	double speed_signaling = 5.0;//0.3;//1.0;//1.0;//5.0;//5.0;//0.0;//5.0;//1.0;//0.5;//1.0;//0.1; // setting for use of a constant virtual animal speed
 	float dir_to_gc_wt = 0.7;//0.5;//0.4;//1.0;//0.8;//2.0;//0.3;//0.5;//0.9;//0.75; ext_dir to gc weight
 	double mex_hat_multi = 10.0;//20;//20;//30.0;//10;//1000;//700;//1100; // mexican hat multiplier
