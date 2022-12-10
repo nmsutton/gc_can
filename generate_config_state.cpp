@@ -509,10 +509,6 @@ sim.setSTP(CA1_Pyramidal, MEC_LII_Stellate, true, STPu(0.1231, 0.0f),
                                      STPtrGABAb(0.0f, 0.0f));*/
 #endif
 
-// g,d,r,f,U
-// g,d,x,u,U
-// Facilitating: U:0.15 u:750.0 x:50.0 
-// Depressing: U:0.45 u:50.0 x:750.0
 #if STDEV2X
 sim.setSTP(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, true, STPu(0.1802, 0.0f),
                                      STPtauU(58.9204, 0.0f),

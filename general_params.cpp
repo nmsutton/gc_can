@@ -102,9 +102,9 @@ struct P {
 	bool bc_to_gc = 0; // boundary cells to grid cells signaling
 
 	// values for synapse activites
-	double base_ext = 500;//400;//600;//320;//300.0;//500.0;//10.0;//0.0; // baseline ext input speed level	
+	double base_ext = 400;//500;//400;//600;//320;//300.0;//500.0;//10.0;//0.0; // baseline ext input speed level	
 	double speed_signaling = 0.3;//1.0;//1.0;//5.0;//5.0;//0.0;//5.0;//1.0;//0.5;//1.0;//0.1; // setting for use of a constant virtual animal speed
-	float dir_to_gc_wt = 0.4;//1.0;//0.8;//2.0;//0.3;//0.5;//0.9;//0.75; ext_dir to gc weight
+	float dir_to_gc_wt = 0.5;//0.4;//1.0;//0.8;//2.0;//0.3;//0.5;//0.9;//0.75; ext_dir to gc weight
 	double mex_hat_multi = 10.0;//20;//20;//30.0;//10;//1000;//700;//1100; // mexican hat multiplier
 	float gc_to_in_wt = 0.28;//0.5;//0.27;//0.2;//0.28;//0.30;//0.315;//0.297;//0.28;//0.28;//200;//50;//600; // gc to interneurons weight
 	double spdin2inwt = 0.5;//10;//0.5;//10;
@@ -122,8 +122,8 @@ struct P {
 	#define FACILITATION 0
 	#define DEPRESSION 0
 	#define BALANCE 0
-	#define BALANCE2 0
-	#define STDEV2X 1
+	#define BALANCE2 1
+	#define STDEV2X 0
 
 	// speed
 	bool auto_speed_control = 0; // automatically adjust parameters to match speed selected
@@ -143,9 +143,9 @@ struct P {
 	// place cell parameters
 	double theta_freq = 125.0; // theta frequency in Hz
 	double dist_thresh = 5; // distance threshold for only local connections	
-	float pc_to_gc_wt = 0.4;//1.0;//3.0;//2.5;//2;//4;//5.5; // pc to gc synaptic weight
+	float pc_to_gc_wt = 0.5;//0.4;//1.0;//3.0;//2.5;//2;//4;//5.5; // pc to gc synaptic weight
 	double pc_sig = 2;//1;//1.4;//1;//0.75; // sigma symbol; width of the place feild
-	double pc_level = 500;//3000;//3000;//2000;//2500;//3000; // place cell firing level
+	double pc_level = 400;//500;//3000;//3000;//2000;//2500;//3000; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters
