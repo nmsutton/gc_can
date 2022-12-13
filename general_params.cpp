@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 5000;//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 30000;//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 42;//30;//26;
@@ -72,11 +72,11 @@ struct P {
 	// select movement trajectory
 	bool run_path = 0; // use run_path function. This is auto enabled by functions that use it.
 	bool run_path_onlypos = 0; // only generate movement positions not signaling with run_path function
-	bool move_animal = 0; // use real animal movement positions with neural signaling
+	bool move_animal = 1; // use real animal movement positions with neural signaling
 	bool move_animal_aug = 0; // augment animal movement
 	bool move_animal_onlypos = 0; // generate animal movement position but not signaling
 	bool move_fullspace = 0; // move through whole environment
-	bool move_straight = 1;
+	bool move_straight = 0;
 	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;
@@ -103,7 +103,7 @@ struct P {
 
 	// values for synapse activites
 	double base_ext = 335;//600;//300;//700;//300;//400;//500;//400;//600;//320;//300.0;//500.0;//10.0;//0.0; // baseline ext input speed level	
-	double speed_signaling = 1.8;//3.5;//0.0;//5.0;//0.0;//5.0;//0.3;//1.0;//1.0;//5.0;//5.0;//0.0;//5.0;//1.0;//0.5;//1.0;//0.1; // setting for use of a constant virtual animal speed
+	double speed_signaling = 2.0;//3.5;//0.0;//5.0;//0.0;//5.0;//0.3;//1.0;//1.0;//5.0;//5.0;//0.0;//5.0;//1.0;//0.5;//1.0;//0.1; // setting for use of a constant virtual animal speed
 	float dir_to_gc_wt = 0.4;//0.7;//0.5;//0.4;//1.0;//0.8;//2.0;//0.3;//0.5;//0.9;//0.75; ext_dir to gc weight
 	double mex_hat_multi = 10.0;//20;//20;//30.0;//10;//1000;//700;//1100; // mexican hat multiplier
 	float gc_to_in_wt = 0.315;//0.3;//0.28;//0.5;//0.27;//0.2;//0.28;//0.30;//0.315;//0.297;//0.28;//0.28;//200;//50;//600; // gc to interneurons weight
