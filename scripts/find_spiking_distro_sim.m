@@ -1,9 +1,9 @@
 % find distribution of spiking Hz
 
 initOAT;
-hopper_use=0;
+hopper_use=1;
 hopper_local_copy=0;
-hopper_run=8;
+hopper_run=1;
 if hopper_use
     hopper_path=strcat('/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat');
     SpikeReader(hopper_path, false, 'silent');
@@ -21,7 +21,7 @@ bin_size=400; % size of firing bin in ms
 target_hz=2.36557; % target Hz to search for
 similarity=90; % similarity percent to find
 similarity=1-(similarity/100);
-if 0
+if 1
     spikes = spk_data.readSpikes(bin_size);
 end
 nrn_count = size(spikes(1,:),2);
