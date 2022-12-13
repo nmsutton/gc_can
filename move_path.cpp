@@ -88,8 +88,8 @@ void control_speed(double speed, P* p) {
 	if (p->speed_limit == 1 && speed > p->max_speed) {speed = p->max_speed;} // speed limit
 	if (p->auto_speed_control || p->move_animal_onlypos) {
 		p->move_increment = (0.001*speed);
-		p->base_ext = 362.2596 + 237.4259/(1 + pow((speed/6.306302),3.103072));
-		p->speed_signaling = 3.372328 - 3.29728764/(1 + pow((speed/8.937019),7.80222));
+		p->base_ext = 328.1851 + 264.5679/(1 + pow((speed/9.923302),8.14715));
+		p->speed_signaling = 2.318527 - (2.27162279/(1 + pow((speed/12.15808),4.901232)));
 		//if (speed<1) {p->speed_signaling=0;}
 		//if (speed>15) {p->speed_signaling=20.0;}
 		//p->spdin2in_curr = 8 + -8/(1 + pow((speed/15.31543),187.0108));
@@ -161,7 +161,7 @@ void move_straight(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(10,p);	
+		control_speed(1,p);
 		//control_speed(18,p);	
 		EISignal(angle, sim, p);
 	}
@@ -237,7 +237,7 @@ void move_path2(CARLsim* sim, P* p) {
 	run_path(&moves, &speeds, &speed_times, num_moves, num_speeds, sim, p);
 }
 
-void move_fullspace(CARLsim* sim, P* p) {
+/*void move_fullspace(CARLsim* sim, P* p) {
 	// Moves virtual animal sequentially back and forth through an
 	// environment as a movement test pattern to test firing in each
 	// enviornment location.
@@ -278,13 +278,15 @@ void move_fullspace(CARLsim* sim, P* p) {
 	}
 	p->num_moves = p->angles.size();
 	p->num_speeds = p->speeds.size();
-}
+}*/
 
 void move_fullspace2(CARLsim* sim, P* p) {
 	// Moves virtual animal sequentially back and forth through an
 	// environment as a movement test pattern to test firing in each
 	// environment location.
 
+	double speed = p->move_increment*1000;
+	control_speed(speed,p);	
 	double offset = (p->x_size-p->x_size_plot)/2; // offset for plotting
 	p->pos[0]=offset+5;p->pos[1]=offset-5; // set starting point
 	p->bpos[0]=offset+5;p->bpos[1]=offset-5;
@@ -293,7 +295,6 @@ void move_fullspace2(CARLsim* sim, P* p) {
 	double angle; double x = p->pos[0]; double y = p->pos[1]; bool move_vert = 0;
 	double angle_rev_h = -1; // flag to reverse angle horizontally
 	double angle_rev_v = 1; // flag to reverse angle vertically
-	double speed = p->move_increment*1000;
 	int ts_per_sec = 1000/p->timestep; // timesteps per second
 	double step_spd = speed/ts_per_sec; // movement per timestep
 	int h_m = ((int) floor((double) p->x_size_plot/speed)*ts_per_sec); // indices for horizontal movement
