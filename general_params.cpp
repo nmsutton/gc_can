@@ -145,7 +145,7 @@ struct P {
 	double dist_thresh = 5; // distance threshold for only local connections	
 	float pc_to_gc_wt = 0.4;//0.4;//0.5;//0.4;//1.0;//3.0;//2.5;//2;//4;//5.5; // pc to gc synaptic weight
 	double pc_sig = 2;//1;//1.4;//1;//0.75; // sigma symbol; width of the place feild
-	double pc_level = 300;//600;//700;//500;//3000;//3000;//2000;//2500;//3000; // place cell firing level
+	double pc_level = 400;//600;//700;//500;//3000;//3000;//2000;//2500;//3000; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters
