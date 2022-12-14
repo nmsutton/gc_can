@@ -90,6 +90,7 @@ void control_speed(double speed, P* p) {
 		p->move_increment = (0.001*speed);
 		p->base_ext = 328.1851 + 264.5679/(1 + pow((speed/9.923302),8.14715));
 		p->speed_signaling = 2.318527 - (2.27162279/(1 + pow((speed/12.15808),4.901232)));
+		p->pc_level = p->base_ext * .71;
 		//if (speed<1) {p->speed_signaling=0;}
 		//if (speed>15) {p->speed_signaling=20.0;}
 		//p->spdin2in_curr = 8 + -8/(1 + pow((speed/15.31543),187.0108));
@@ -161,7 +162,7 @@ void move_straight(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(1,p);
+		control_speed(18,p);
 		//control_speed(18,p);	
 		EISignal(angle, sim, p);
 	}

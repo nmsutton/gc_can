@@ -12,6 +12,7 @@
 %clear all;
 %clc;
 initOAT;
+local_run=1;
 hopper_use=0;
 hopper_run=1;
 if hopper_use
@@ -19,12 +20,12 @@ if hopper_use
     SpikeReader(hopper_path, false, 'silent');
     spk_data = SpikeReader(hopper_path, false, 'silent');
 else
-    SpikeReader('/comp_neuro/PhD/gmu/research/simulation/code/gc_can/results/spk_MEC_LII_Stellate.dat', false, 'silent');
-    spk_data = SpikeReader('/comp_neuro/PhD/gmu/research/simulation/code/gc_can/results/spk_MEC_LII_Stellate.dat', false, 'silent');
+    SpikeReader(strcat('/comp_neuro/PhD/gmu/research/simulation/code/gc_can_',int2str(local_run),'/results/spk_MEC_LII_Stellate.dat'), false, 'silent');
+    spk_data = SpikeReader(strcat('/comp_neuro/PhD/gmu/research/simulation/code/gc_can_',int2str(local_run),'/results/spk_MEC_LII_Stellate.dat'), false, 'silent');
 end
 
 delay_frames = false;%true;
-time=220000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
+time=40000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
 bin_size=100;%10; % size of firing bin in ms
 t=[0:(1/bin_size):(time*(1/bin_size))];
 x_size = 42;%30; % size of network on x-axis
