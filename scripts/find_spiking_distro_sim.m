@@ -1,18 +1,19 @@
 % find distribution of spiking Hz
 
 initOAT;
-hopper_use=1;
-hopper_local_copy=0;
+local_run=1;
+hopper_use=0;
 hopper_run=1;
+hopper_local_copy=0;
 if hopper_use
     hopper_path=strcat('/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat');
     SpikeReader(hopper_path, false, 'silent');
     spk_data = SpikeReader(hopper_path, false, 'silent');
 else
     if hopper_local_copy == 0
-        local_path='/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/results/spk_MEC_LII_Stellate.dat';
+        local_path=strcat('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_',int2str(local_run),'/results/spk_MEC_LII_Stellate.dat');
     else
-        local_path='/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_hopper/results/spk_MEC_LII_Stellate.dat';
+        local_path=strcat('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_hopper/results/spk_MEC_LII_Stellate.dat');
     end
     SpikeReader(local_path, false, 'silent');
     spk_data = SpikeReader(local_path, false, 'silent');

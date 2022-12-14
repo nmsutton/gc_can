@@ -8,7 +8,7 @@ local_run=1; % local run number
 % supercomputer run options:
 run_on_hopper=0; % run from hopper's system 
 use_hopper_data=0; % access hopper data locally
-hopper_run=1; % hopper run number
+hopper_run=2; % hopper run number
 fdr_prefix=""; % folder name prefix for hopper run 
 % fdr_prefix="" for gc_can and fdr_prefix="param_explore_iz_" for iz pe
 

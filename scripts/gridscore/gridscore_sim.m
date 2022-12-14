@@ -23,7 +23,7 @@ function exitcode = gridscore_sim(p1,p2,local_run,run_on_hopper,use_hopper_data,
 		addpath /comp_neuro/Software/Github/CMBHOME_github/
 		PWD=pwd;
 		%fldr="/home/nsutton2/git/CARLsim6-feat-ca3net_5/.build/projects/"+fdr_prefix+hopper_run+"/scripts/high_res_traj/";
-        fldr="/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/scripts/high_res_traj/";
+        fldr="/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_1/scripts/high_res_traj/";
 		cd(fldr);		
 		heat_map=high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hopper_run,local_run);
 		cd(PWD);
