@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 220000;//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 500000;//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 42;//30;//26;
@@ -112,7 +112,7 @@ struct P {
 	double spdex2in_curr = 0.35;//0.3;//0.0;//0.3;
 	double dir_init_multi = 1000;//100000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
-	double move_increment = 0.010;//0.024;//0.018;//0.005;//0.018; // amount to move in position each move command
+	double move_increment = 0.002;//0.024;//0.018;//0.005;//0.018; // amount to move in position each move command
 	vector<float> ext_dir;
 	// interneuron connections
 	int conn_offset = 0; // offset in neuron positions for connections

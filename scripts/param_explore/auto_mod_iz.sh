@@ -28,13 +28,20 @@ chg_prm(){
 
 run_sim(){
 	# run CARLsim
-	cd ../.. &&
+	export curr_dir=$PWD;
+	if [ run_on_hopper == 0 ]; then
+		command="cd ../../../../.build/projects/$fdr_prefix$local_run/"
+	else
+		command="cd ../../../../.build/projects/$fdr_prefix$hopper_run/"
+	fi
+	eval $command &&
 	./rebuild.sh &&
-	cd scripts/param_explore/ &&
+	command="cd $curr_dir" &&
+	eval $command &&
 
 	# generate results reports
 	cd ../gridscore/ &&
-	matlab -nodisplay -r "gridscore_sim $p1 $p2 $run_on_hopper $use_hopper_data $fdr_prefix $hopper_run $save_gridscore_file; exit" &&
+	matlab -nodisplay -r "gridscore_sim $p1 $p2 $local_run $run_on_hopper $use_hopper_data $fdr_prefix $hopper_run $save_gridscore_file; exit" &&
 	cd ../param_explore/
 }
 

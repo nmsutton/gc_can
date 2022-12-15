@@ -10,9 +10,10 @@ function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hoppe
         cd(curr_dir)
         addpath /home/nsutton2/git/CMBHOME_github/    
     else
-        cd(strcat("/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_",int2str(local_run),"/scripts/"));
+        curr_dir=pwd;
+        cd ..
         initOAT
-        cd(strcat("/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_",int2str(local_run),"/scripts/high_res_traj/"));
+        cd(curr_dir)
         addpath /comp_neuro/Software/Github/CMBHOME_github/
     end
     angles_speeds = 0; % load angles and speeds or x,y position coordinates
@@ -28,13 +29,13 @@ function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hoppe
     use_spk_reader = 1; % use CARLsim's spike reader rather than seperate spike times file
     preloaded_spk_reader = 0; % use prior loaded spike reader
     spk_bin_size = 10; % spike reader bin size. Note: small bin sizes may take long processing with large spike sets. 40min sim with bin size 1 can take 10min to create plot.
-    sel_nrn = 265;%1313;%265;%892;%912;%1317;%903;%265;%349;%518;%533;%903;%465;%202;%200;%465;%463;%878;%465;%460;%870;%86;%465; % selected neuron to generate physical space plot
+    sel_nrn = 265;%1313;%265;%903;%892;%912;%1317;%903;%265;%349;%518;%533;%903;%465;%202;%200;%465;%463;%878;%465;%460;%870;%86;%465; % selected neuron to generate physical space plot
     laptop_data = 0;
     use_unwrapped_data = 0;
     output_spikes_file = 1; % output file that can be used in rate map plot
     plot_smooth_rm = 1; % plot smoothed rate map
     smaller_spk_ticks = 2;%2; % Change spike tick visual size; 2 for extra small
-    save_traj_plot = 0; % save traj plot to file
+    save_traj_plot = 1; % save traj plot to file
     if run_on_hopper==1 save_traj_plot = 1; end
     if plot_in_spikes==1 plot_spikes=1; end
     if plot_spikes==0 output_spikes_file = 0; end
@@ -55,13 +56,14 @@ function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hoppe
         Xs = []; Ys = [];
         [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_XsYs, ...
             orig_xy, laptop_data, use_unwrapped_data, use_hopper_data, hopper_run, ...
-            run_on_hopper, fdr_prefix, local_run);
+            run_on_hopper, fdr_prefix, local_run, curr_dir);
     end
 
     if plot_spikes==1 && preloaded_data == 0
         spk_x = []; spk_y = [];
         [spk_t,spikes]=load_spk_times(use_hopper_data, hopper_run, plot_in_spikes, laptop_data, ...
-            use_spk_reader, spk_bin_size, sel_nrn, preloaded_spk_reader, spikes, run_on_hopper, fdr_prefix, local_run);
+            use_spk_reader, spk_bin_size, sel_nrn, preloaded_spk_reader, spikes, run_on_hopper, ...
+            fdr_prefix, local_run, curr_dir);
     end
 
     if angles_speeds == 1 && preloaded_XsYs ~= 1
@@ -177,7 +179,7 @@ end
 
 function [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_XsYs, ...
     orig_xy, laptop_data, use_unwrapped_data, use_hopper_data, hopper_run, run_on_hopper, ...
-    fdr_prefix, local_run)
+    fdr_prefix, local_run, curr_dir)
     animal_angles = []; animal_speeds = []; Xs = []; Ys = [];
 
     if angles_speeds==1
@@ -199,8 +201,8 @@ function [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_X
         elseif orig_xy == 0
             if laptop_data == 0
                 if use_unwrapped_data == 0
-                    Xs = readmatrix(strcat('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_',int2str(local_run),'/output/spikes/highres_pos_x.csv'));
-                    Ys = readmatrix(strcat('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_',int2str(local_run),'/output/spikes/highres_pos_y.csv'));
+                    Xs = readmatrix(strcat(curr_dir,"/../../output/spikes/highres_pos_x.csv"));
+                    Ys = readmatrix(strcat(curr_dir,"/../../output/spikes/highres_pos_y.csv"));
                 else
                     Xs = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/output/Xs_unwrapped.csv');
                     Ys = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/output/Ys_unwrapped.csv');
@@ -215,8 +217,6 @@ function [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_X
                 end
             end
         else
-            %Xs = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/scripts/high_res_traj/test_data_x.csv');
-            %Ys = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/scripts/high_res_traj/test_data_y.csv');
             load /home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/scripts/high_res_traj/191108_S1_lightVSdarkness_cells11and12_scaleddown_Xs_40min.mat;
             load /home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/scripts/high_res_traj/191108_S1_lightVSdarkness_cells11and12_scaleddown_Ys_40min.mat;
         end
@@ -224,7 +224,8 @@ function [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_X
 end
 
 function [spk_t,spikes]=load_spk_times(use_hopper_data, hopper_run, plot_in_spikes, laptop_data, ...
-    use_spk_reader, spk_bin_size, sel_nrn, preloaded_spk_reader, spikes, run_on_hopper,fdr_prefix,local_run)
+    use_spk_reader, spk_bin_size, sel_nrn, preloaded_spk_reader, spikes, run_on_hopper, ...
+    fdr_prefix, local_run, curr_dir)
     if use_spk_reader==1
         if run_on_hopper==1
             if plot_in_spikes==1
@@ -249,7 +250,7 @@ function [spk_t,spikes]=load_spk_times(use_hopper_data, hopper_run, plot_in_spik
                 end           
             else
                 if laptop_data == 0
-                    local_path = strcat('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_',int2str(local_run),'/results/spk_MEC_LII_Stellate.dat');
+                    local_path = strcat(curr_dir,"/../../results/spk_MEC_LII_Stellate.dat");
                 else
                     local_path = '/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/results/spk_MEC_LII_Stellate.dat';
                 end
@@ -283,7 +284,7 @@ function [spk_t,spikes]=load_spk_times(use_hopper_data, hopper_run, plot_in_spik
                 end           
             else
                 if laptop_data == 0
-                    spk_t = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/output/spikes/spikes_recorded.csv');
+                    spk_t = readmatrix(strcat(curr_dir,"/../../output/spikes/spikes_recorded.csv"));
                 else
                     spk_t = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/spikes_recorded.csv');
                 end
