@@ -7,11 +7,11 @@ function heat_map = gridscore_sim(p1,p2,local_run,run_on_hopper,use_hopper_data,
 	% use_hopper_data: access hopper data locally
 	% fdr_prefix: folder name prefix
 	% hopper_run: hopper run number
-	local_run=str2num([local_run]);
-	run_on_hopper=str2num([run_on_hopper]);
-	use_hopper_data=str2num([use_hopper_data]);
-	hopper_run=str2num([hopper_run]);
-	save_gridscore_file=str2num([save_gridscore_file]);
+	local_run=str2num([string(local_run)]);
+	run_on_hopper=str2num([string(run_on_hopper)]);
+	use_hopper_data=str2num([string(use_hopper_data)]);
+	hopper_run=str2num([string(hopper_run)]);
+	save_gridscore_file=str2num([string(save_gridscore_file)]);
 
 	if run_on_hopper==1
 		addpath /home/nsutton2/git/CMBHOME_github/ 
