@@ -7,6 +7,8 @@ function heat_map = gridscore_sim(p1,p2,local_run,run_on_hopper,use_hopper_data,
 	% use_hopper_data: access hopper data locally
 	% fdr_prefix: folder name prefix
 	% hopper_run: hopper run number
+	p1=str2double([string(p1)]);
+	p2=str2double([string(p2)]);
 	local_run=str2num([string(local_run)]);
 	run_on_hopper=str2num([string(run_on_hopper)]);
 	use_hopper_data=str2num([string(use_hopper_data)]);
@@ -15,28 +17,13 @@ function heat_map = gridscore_sim(p1,p2,local_run,run_on_hopper,use_hopper_data,
 
 	if run_on_hopper==1
 		addpath /home/nsutton2/git/CMBHOME_github/ 
-		PWD=pwd;
-		fldr="/home/nsutton2/git/CARLsim6-feat-ca3net_5/.build/projects/"+fdr_prefix+hopper_run+"/scripts/high_res_traj/";
-		cd(fldr);
-		heat_map=high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hopper_run,local_run);
-		cd(PWD);
-	elseif use_hopper_data==1
-		addpath /comp_neuro/Software/Github/CMBHOME_github/
-		PWD=pwd;
-		%fldr="/home/nsutton2/git/CARLsim6-feat-ca3net_5/.build/projects/"+fdr_prefix+hopper_run+"/scripts/high_res_traj/";
-        fldr="/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_1/scripts/high_res_traj/";
-		cd(fldr);		
-		heat_map=high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hopper_run,local_run);
-		cd(PWD);
 	else
 		addpath /comp_neuro/Software/Github/CMBHOME_github/
-		PWD=pwd;
-		%fldr="/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_"+local_run+"/scripts/high_res_traj/";
-		%cd(fldr);
-		cd ../high_res_traj
-		heat_map=high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hopper_run,local_run);
-		cd(PWD);
 	end
+	PWD=pwd;
+	cd ../high_res_traj
+	heat_map=high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hopper_run,local_run);
+	cd(PWD);
 
 	m = []; % empty matrix
 	[HDgridScore,gridness3Score]=get_HDGridScore(m,m,m,heat_map);

@@ -188,34 +188,12 @@ function [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_X
             animal_speeds = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/output/anim_speeds.csv');
         end
     else
-        if run_on_hopper==1
-            hopper_path="/scratch/nsutton2/gc_sim/"+fdr_prefix+hopper_run+"/spikes/highres_pos_x.csv";
-            Xs = readmatrix(hopper_path);
-            hopper_path="/scratch/nsutton2/gc_sim/"+fdr_prefix+hopper_run+"/spikes/highres_pos_y.csv";
-            Ys = readmatrix(hopper_path);
-        elseif use_hopper_data==1
-            hopper_path="/mnt/hopper_scratch/gc_sim/"+fdr_prefix+hopper_run+"/spikes/highres_pos_x.csv";
-            Xs = readmatrix(hopper_path);
-            hopper_path="/mnt/hopper_scratch/gc_sim/"+fdr_prefix+hopper_run+"/spikes/highres_pos_y.csv";
-            Ys = readmatrix(hopper_path);
+        if use_hopper_data==1
+            Xs = readmatrix(strcat("/mnt/hopper_scratch/gc_sim/"+fdr_prefix+hopper_run+"/spikes/highres_pos_x.csv"));
+            Ys = readmatrix(strcat("/mnt/hopper_scratch/gc_sim/"+fdr_prefix+hopper_run+"/spikes/highres_pos_y.csv"));
         elseif orig_xy == 0
-            if laptop_data == 0
-                if use_unwrapped_data == 0
-                    Xs = readmatrix(strcat(curr_dir,"/../../output/spikes/highres_pos_x.csv"));
-                    Ys = readmatrix(strcat(curr_dir,"/../../output/spikes/highres_pos_y.csv"));
-                else
-                    Xs = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/output/Xs_unwrapped.csv');
-                    Ys = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/output/Ys_unwrapped.csv');
-                end
-            else
-                if use_unwrapped_data == 0
-                    Xs = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/highres_pos_x.csv');
-                    Ys = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/highres_pos_y.csv');
-                else
-                    Xs = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/output/Xs_unwrapped.csv');
-                    Ys = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/moves_analysis/src/output/Ys_unwrapped.csv');            
-                end
-            end
+            Xs = readmatrix(strcat(curr_dir,"/../../output/spikes/highres_pos_x.csv"));
+            Ys = readmatrix(strcat(curr_dir,"/../../output/spikes/highres_pos_y.csv"));
         else
             load /home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/scripts/high_res_traj/191108_S1_lightVSdarkness_cells11and12_scaleddown_Xs_40min.mat;
             load /home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/scripts/high_res_traj/191108_S1_lightVSdarkness_cells11and12_scaleddown_Ys_40min.mat;
@@ -227,68 +205,37 @@ function [spk_t,spikes]=load_spk_times(use_hopper_data, hopper_run, plot_in_spik
     use_spk_reader, spk_bin_size, sel_nrn, preloaded_spk_reader, spikes, run_on_hopper, ...
     fdr_prefix, local_run, curr_dir)
     if use_spk_reader==1
-        if run_on_hopper==1
-            if plot_in_spikes==1
-                hopper_path="/scratch/nsutton2/gc_sim/"+fdr_prefix+hopper_run+"/results/spk_MEC_LII_Basket.dat";
+        if use_hopper_data==1
+            if plot_in_spikes==0
+                file_path="/mnt/hopper_scratch/gc_sim/"+fdr_prefix+hopper_run+"/results/spk_MEC_LII_Stellate.dat";            
             else
-                hopper_path="/scratch/nsutton2/gc_sim/"+fdr_prefix+hopper_run+"/results/spk_MEC_LII_Stellate.dat";            
+                file_path="/mnt/hopper_scratch/gc_sim/"+fdr_prefix+hopper_run+"/results/spk_MEC_LII_Basket.dat";                
             end
-            if preloaded_spk_reader==0 spk_data = SpikeReader(hopper_path, false, 'silent'); end
-        elseif use_hopper_data==1
-            if plot_in_spikes==1
-                hopper_path="/mnt/hopper_scratch/gc_sim/"+fdr_prefix+hopper_run+"/results/spk_MEC_LII_Basket.dat";
-            else
-                hopper_path="/mnt/hopper_scratch/gc_sim/"+fdr_prefix+hopper_run+"/results/spk_MEC_LII_Stellate.dat";            
-            end
-            if preloaded_spk_reader==0 spk_data = SpikeReader(hopper_path, false, 'silent'); end
         else
-            if plot_in_spikes==1
-                if laptop_data == 0
-                    local_path = '/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/results/spk_MEC_LII_Basket.dat';
-                else
-                    local_path = '/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/results/spk_MEC_LII_Basket.dat';
-                end           
+            if plot_in_spikes==0
+                file_path = strcat(curr_dir,"/../../results/spk_MEC_LII_Stellate.dat");
             else
-                if laptop_data == 0
-                    local_path = strcat(curr_dir,"/../../results/spk_MEC_LII_Stellate.dat");
-                else
-                    local_path = '/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/results/spk_MEC_LII_Stellate.dat';
-                end
+                file_path = strcat(curr_dir,"/../../results/spk_MEC_LII_Basket.dat");
             end
-            if preloaded_spk_reader==0 spk_data = SpikeReader(local_path, false, 'silent'); end
         end
+        if preloaded_spk_reader==0 spk_data = SpikeReader(file_path, false, 'silent'); end
         if preloaded_spk_reader==0 spikes = spk_data.readSpikes(spk_bin_size); end
         spk_t=find(spikes(:,sel_nrn)~=0);
         spk_t=spk_t*spk_bin_size;
     else
         if run_on_hopper==1
             if plot_in_spikes==1
-                hopper_path="/scratch/nsutton2/gc_sim/"+fdr_prefix+hopper_run+"/spikes/in_spikes_recorded.csv";
+                file_path="/scratch/nsutton2/gc_sim/"+fdr_prefix+hopper_run+"/spikes/in_spikes_recorded.csv";
             else
-                hopper_path="/scratch/nsutton2/gc_sim/"+fdr_prefix+hopper_run+"/spikes/spikes_recorded.csv";
+                file_path="/scratch/nsutton2/gc_sim/"+fdr_prefix+hopper_run+"/spikes/spikes_recorded.csv";
             end
-            spk_t = readmatrix(hopper_path);             
-        elseif use_hopper_data==1
-            if plot_in_spikes==1
-                hopper_path="/mnt/hopper_scratch/gc_sim/"+fdr_prefix+hopper_run+"/spikes/in_spikes_recorded.csv";
-            else
-                hopper_path="/mnt/hopper_scratch/gc_sim/"+fdr_prefix+hopper_run+"/spikes/spikes_recorded.csv";
-            end
-            spk_t = readmatrix(hopper_path); 
         else
             if plot_in_spikes==1
-                if laptop_data == 0
-                    spk_t = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/output/spikes/in_spikes_recorded.csv');
-                else
-                    spk_t = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/in_spikes_recorded.csv');
-                end           
+                file_path=strcat(curr_dir,"/../../output/spikes/in_spikes_recorded.csv");
             else
-                if laptop_data == 0
-                    spk_t = readmatrix(strcat(curr_dir,"/../../output/spikes/spikes_recorded.csv"));
-                else
-                    spk_t = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/spikes_recorded.csv');
-                end
+                file_path=strcat(curr_dir,"/../../output/spikes/spikes_recorded.csv");
             end
         end
+        spk_t = readmatrix(file_path);         
     end
 end
