@@ -18,7 +18,7 @@ ea_filepath="$base_folder";
 ea_results_filepath="$base_folder$output_path";
 ea_file_run="nohup ./startEAbatch.sh &> /dev/null"
 pat1="s/"
-pat2=" : [[[:digit:]]\+\.[[:digit:]]\+, [[:digit:]]\+\.[[:digit:]]\+\]\,/"
+pat2=" : \[-*[[:digit:]]\+.*[[:digit:]]*, -*[[:digit:]]\+.*[[:digit:]]*\]\,/"
 pat3=" : ["
 pat4="],/g"
 results_file="./output/param_records_ea_iz.txt"
@@ -35,9 +35,9 @@ run_ea(){
 	#echo "" >> $results_file # newline
 }
 
-for i in {0..10} 
+for i in {0..4} 
 do
-for j in {0..10} 
+for j in {0..4} 
 do
 	# update params
 	sed -i "$pat1${p1_p}$pat2${p1_p}$pat3${p1_v[$i]}, ${p1_v[$i]}$pat4" $ea_input_filepath

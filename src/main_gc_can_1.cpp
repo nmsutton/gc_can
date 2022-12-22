@@ -123,7 +123,7 @@ int main() {
 	#endif
 
 	#include "../generate_config_state.cpp" // include file that contains generation of groups and their properties
-
+	sim.setIntegrationMethod(RUNGE_KUTTA4, 40);
 	// ---------------- SETUP STATE -------------------
 	// build the network
 	sim.setupNetwork();

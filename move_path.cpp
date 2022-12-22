@@ -87,10 +87,14 @@ void control_speed(double speed, P* p) {
 	//speed = speed * p->speed_conversion;
 	if (p->speed_limit == 1 && speed > p->max_speed) {speed = p->max_speed;} // speed limit
 	if (p->auto_speed_control || p->move_animal_onlypos) {
-		p->move_increment = (0.001*speed);
+		/*p->move_increment = (0.001*speed);
 		p->base_ext = 186.3885 + (524.6455/(1 + pow((speed/3.737486),2.211211)));
 		p->speed_signaling = 2.057852 - (2.01749818/(1 + pow((speed/8.060984),4.142584)));
-		p->pc_level = 295.9315 + (513.837/(1 + pow((speed/2.681747),3.170439)));
+		p->pc_level = 295.9315 + (513.837/(1 + pow((speed/2.681747),3.170439)));*/
+		p->move_increment = (0.001*speed);
+		p->base_ext = 328.1851 + 264.5679/(1 + pow((speed/9.923302),8.14715));
+		p->speed_signaling = 2.318527 - (2.27162279/(1 + pow((speed/12.15808),4.901232)));
+		p->pc_level = p->base_ext * .71;
 		//if (speed<1) {p->speed_signaling=0;}
 		//if (speed>15) {p->speed_signaling=20.0;}
 		//p->spdin2in_curr = 8 + -8/(1 + pow((speed/15.31543),187.0108));
@@ -162,7 +166,7 @@ void move_straight(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(18,p);
+		control_speed(5,p);
 		//control_speed(18,p);	
 		EISignal(angle, sim, p);
 	}
