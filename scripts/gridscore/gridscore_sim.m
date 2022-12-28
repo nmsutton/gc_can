@@ -34,7 +34,7 @@ function heat_map = gridscore_sim(p1,p2,local_run,run_on_hopper,use_hopper_data,
 		hr = mod(c(4),12);
 		output_time = sprintf("%.0f-%.0f-%.0f_%.0f-%.0f-%.0f",hr,c(5),c(6),c(2),c(3),c(1));
         if isnan(HDgridScore) HDgridScore=0; end
-        fprintf(gridness_file,"%s,%f,%f,%f,%f\n",output_time,p1,p2,HDgridScore,gridness3Score);
+        fprintf(gridness_file,"%s,a_%f,b_%f,%f,%f\n",output_time,p1,p2,HDgridScore,gridness3Score);
 		fclose(gridness_file);
 	end
 	exitcode = 0;

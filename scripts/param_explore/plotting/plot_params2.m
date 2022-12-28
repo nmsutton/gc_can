@@ -2,12 +2,13 @@
 % https://www.mathworks.com/matlabcentral/fileexchange/5105-making-surface-plots-from-scatter-data
 % possible alt. plots: https://www.mathworks.com/help/matlab/ref/gradient.html#bvhqkfr
 
-downsample_colormap = 0; % activate colormap downsampling
-downsample_amount = 20; % amount of downsampling; higher is more
+downsample_colormap = 1; % activate colormap downsampling
+downsample_amount = 10; % amount of downsampling; higher is more
 
 % extract data
 x=[];y=[];z=[];xyz=[];
-results_data=readmatrix('iz_results_example.txt');
+results_data=readmatrix('gridness_score.txt');
+plot_rotation=25.005;%.51999;%1.9999;
 rows_number=size(results_data(:,1));
 for i=1:rows_number
 	x=[x results_data(i,2)];
@@ -90,11 +91,12 @@ h = trisurf(tri, x, y, z);
 lighting phong;
 shading interp;
 colorbar EastOutside;
-campos([0.52,0,200]);
+%campos([0.52,0,200]);
+campos([plot_rotation,0,200]);
 
 %xlim([min(x) max(x)])
 %ylim([min(y) max(y)])
-colormap default
+%colormap default
 %colormap(parula(25))
 %{
 map = [0 0 0.0
@@ -105,8 +107,8 @@ map = [0 0 0.0
     0 0 1.0];
 colormap(map)
 %}
-%load CustomBlueGreenColormap;
-%colormap(CustomBlueGreenColormap);
+load CustomBlueGreenColormap;
+colormap(CustomBlueGreenColormap);
 
 if downsample_colormap
 	cm = colormap;
@@ -119,10 +121,10 @@ if downsample_colormap
 end
 %colormapeditor
 %axis([min(x) max(x) min(y) max(y)])
-title("Gridness score of parameters for grid cells", 'FontSize', 11);
+title("Gridness Scores of Izhikevich a and k Parameters for Grid Cells", 'FontSize', 11);
 axis('tight');
-%xlabel('Izhikevich k value') 
-%ylabel('Izhikevich a value')
+xlabel('Izhikevich k value') 
+ylabel('Izhikevich a value')
 %xlabel('tau_x value');
 %ylabel('tau_d value');
 %legend('<0.2 gridness','>=0.2 gridness')

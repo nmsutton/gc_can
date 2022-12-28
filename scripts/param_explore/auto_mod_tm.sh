@@ -29,13 +29,20 @@ chg_prm(){
 
 run_sim(){
 	# run CARLsim
-	cd ../.. &&
+	export curr_dir=$PWD;
+	if [ run_on_hopper == 0 ]; then
+		command="cd ../../../../.build/projects/$fdr_prefix$local_run/"
+	else
+		command="cd ../../../../.build/projects/$fdr_prefix$hopper_run/"
+	fi
+	eval $command &&
 	./rebuild.sh &&
-	cd scripts/param_explore/ &&
+	command="cd $curr_dir" &&
+	eval $command &&
 
 	# generate results reports
 	cd ../gridscore/ &&
-	matlab -nodisplay -r "gridscore_sim $p1 $p2 $run_on_hopper $use_hopper_data $fdr_prefix $hopper_run $save_gridscore_file; exit" &&
+	matlab -nodisplay -r "gridscore_sim $p1 $p2 $local_run $run_on_hopper $use_hopper_data $fdr_prefix $hopper_run $save_gridscore_file; exit" &&
 	cd ../param_explore/
 	#echo "run sim"
 }
@@ -59,19 +66,7 @@ do
 	export param_file=$param_file1 &&
 	export param_pattern=$param_pattern5 &&	
 	export value_change=" \"${param5_vals[$i]}\"" &&
-	chg_prm &&	
-	export param_file=$param_file1 &&
-	export param_pattern=$param_pattern7 &&
-	export value_change=" \"${param7_vals[$i]}\"" &&
-	chg_prm &&
-	export param_file=$param_file1 &&
-	export param_pattern=$param_pattern9 &&	
-	export value_change=" \"${param9_vals[$i]}\"" &&
-	chg_prm &&	
-	export param_file=$param_file1 &&
-	export param_pattern=$param_pattern11 &&	
-	export value_change=" \"${param11_vals[$i]}\"" &&
-	chg_prm &&	
+	chg_prm &&		
 	# param change
 	export p2=$j &&
 	export param_file=$param_file1 &&
@@ -86,18 +81,6 @@ do
 	export param_pattern=$param_pattern6 &&
 	export value_change=" \"${param6_vals[$j]}\"" &&
 	chg_prm &&	
-	export param_file=$param_file1 &&
-	export param_pattern=$param_pattern8 &&
-	export value_change=" \"${param8_vals[$j]}\"" &&
-	chg_prm &&
-	export param_file=$param_file1 &&
-	export param_pattern=$param_pattern10 &&
-	export value_change=" \"${param10_vals[$j]}\"" &&
-	chg_prm &&
-	export param_file=$param_file1 &&
-	export param_pattern=$param_pattern12 &&
-	export value_change=" \"${param12_vals[$j]}\"" &&
-	chg_prm &&
 	# save record of params
 	curr_time=$($date_format) &&
 	echo $curr_time$comma$i$comma$j >> ./output/param_records.txt &&

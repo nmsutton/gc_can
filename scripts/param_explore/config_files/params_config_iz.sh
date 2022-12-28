@@ -3,8 +3,8 @@
 # select params
 export paramexp_type=" \"iz\""; # choose iz (izhikevich) or tm (tsodyks-markram) parameters exploration
 export fdr_prefix="param_explore_iz_" # folder name prefix
-export local_run=1 # local run number
 export run_on_hopper=0 # run from hopper's system 
+export local_run=1 # local run number
 export use_hopper_data=0 # access hopper data locally
 export hopper_run=1 # hopper run number
 export save_gridscore_file=1; # save gridscore to file
