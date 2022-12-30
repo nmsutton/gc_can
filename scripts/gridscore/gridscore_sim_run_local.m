@@ -3,8 +3,8 @@
 % general run options
 p1=0; % param explore parameter for file naming
 p2=0; % param explore parameter for file naming
-use_hopper_data=1; % access hopper data locally
-local_run=2; % local run number
+use_hopper_data=0; % access hopper data locally
+local_run=1; % local run number
 save_gridscore_file=0; % save gridscore to file
 % supercomputer run options:
 hopper_run=3; % hopper run number
