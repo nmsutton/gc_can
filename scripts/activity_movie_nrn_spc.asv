@@ -12,23 +12,24 @@
 %clear all;
 %clc;
 initOAT;
+local_run=1;
 hopper_use=0;
-hopper_run=3;
+hopper_run=1;
 if hopper_use
     hopper_path=strcat('/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat');
     SpikeReader(hopper_path, false, 'silent');
     spk_data = SpikeReader(hopper_path, false, 'silent');
 else
-    SpikeReader('/comp_neuro/PhD/gmu/research/simulation/code/gc_can/results/spk_MEC_LII_Stellate.dat', false, 'silent');
-    spk_data = SpikeReader('/comp_neuro/PhD/gmu/research/simulation/code/gc_can/results/spk_MEC_LII_Stellate.dat', false, 'silent');
+    SpikeReader(strcat('/comp_neuro/PhD/gmu/research/simulation/code/gc_can_',int2str(local_run),'/results/spk_MEC_LII_Stellate.dat'), false, 'silent');
+    spk_data = SpikeReader(strcat('/comp_neuro/PhD/gmu/research/simulation/code/gc_can_',int2str(local_run),'/results/spk_MEC_LII_Stellate.dat'), false, 'silent');
 end
 
 delay_frames = false;%true;
-time=20000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
-bin_size=100; % size of firing bin in ms
+time=12600;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
+bin_size=600;%10; % size of firing bin in ms
 t=[0:(1/bin_size):(time*(1/bin_size))];
-x_size = 30; % size of network on x-axis
-y_size = 30; % size of network on y-axis
+x_size = 42;%30; % size of network on x-axis
+y_size = 42;%30; % size of network on y-axis
 spk_window = spk_data.readSpikes(bin_size);
 % Set up the movie structure. Preallocate recalledMovie, which will be an array of structures. First get a cell array with all the frames.
 hFigure = figure;
@@ -49,7 +50,7 @@ set(gcf, 'nextplot', 'replacechildren');
 % Need to change from the default renderer to zbuffer to get it to work right. openGL doesn't work and Painters is way too slow.
 set(gcf, 'renderer', 'zbuffer');
 caxis manual; % allow subsequent plots to use the same color limits
-custom_colormap = load('neuron_space_colormap.mat');
+custom_colormap = load('neuron_space_colormap2.mat');
 
 for frameIndex = 1 : numberOfFrames
 %for frameIndex = (numberOfFrames-200) : (numberOfFrames-10)

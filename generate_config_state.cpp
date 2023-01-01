@@ -589,5 +589,5 @@ sim.setSTP(CA1_Pyramidal, MEC_LII_Stellate, true, STPu(0.1231, 0.0f),
     sim.setNeuronMonitor(MEC_LII_Stellate,"DEFAULT");
     sim.setNeuronMonitor(MEC_LII_Basket,"DEFAULT");
     sim.setNeuronMonitor(CA1_Pyramidal,"DEFAULT");
-    sim.setNeuronMonitor(MEC_LII_Basket_Speed,"DEFAULT");
+    //sim.setNeuronMonitor(MEC_LII_Basket_Speed,"DEFAULT");
 #endif

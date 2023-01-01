@@ -4,6 +4,7 @@
 % Todo: This could be looked into to see if the indices are offset by 1.
 
 initOAT;
+plot_voltage=0; % choose to plot current or voltage
 % read in voltages
 stel_nR = NeuronReader('../results/n_MEC_LII_Stellate.dat');
 bask_nR = NeuronReader('../results/n_MEC_LII_Basket.dat');
@@ -17,24 +18,36 @@ stel_nS = stel_sR.readSpikes(1); % import spikes with bin of recording size of 1
 bask_nS = bask_sR.readSpikes(1);
 stel_spk_sels = []; bask_spk_sels = [];
 % set run params
-t_start = 12400;%8000;%10000;%5000; % start time
-t_end = 12800;%13000;%11000;%13000; % end time
-nrns_tot = 3; % number of neurons to plot
-i_start = 8; % starting neuron index
+t_start = 11400;%7000%12400;%8000;%10000;%5000; % start time
+t_end = t_start+600;%3000;%12800;%13000;%11000;%13000; % end time
+nrns_tot = 1;%3; % number of neurons to plot
+i_start = 10; % starting neuron index
 plot_spikes = 0;
 t_range = linspace(t_start,t_end,(t_end-t_start+1));
 % resize peak params
-rsz_peaks_active = 1; % toggle resizing of peaks
+rsz_peaks_active = 0;%1; % toggle resizing of peaks
 window_size = 50; % size of rolling window
-min_spk_v = -20; % minimum voltage to be detected as a spike
-min_isi = 20; % minimum inter-spike interval
-new_peak = 10; % new peak voltage
+min_spk_v = 0;%-20; % minimum voltage to be detected as a spike
+min_isi = 5; % minimum inter-spike interval
+new_peak = 40;%10; % new peak voltage
 resize_params=[window_size,min_spk_v,min_isi,new_peak];
+window_size2 = 50; % size of rolling window
+min_spk_v2 = -30;%-20; % minimum voltage to be detected as a spike
+min_isi2 = 20; % minimum inter-spike interval
+new_peak2 = 40;%10; % new peak voltage
+resize_params2=[window_size2,min_spk_v2,min_isi2,new_peak2];
+plot_n1=1; plot_n2=0; % choose neurons to plot
+plot_legend=0; % choose if to plot legend
 
 % extract voltages
 for i=1:nrns_tot
-	stel_sel = stel_nV.v(i+i_start,t_start:t_end);
-	bask_sel = bask_nV.v(i+i_start,t_start:t_end);
+    if plot_voltage
+	    stel_sel = stel_nV.v(i+i_start,t_start:t_end);
+	    bask_sel = bask_nV.v(i+i_start,t_start:t_end);
+    else
+	    stel_sel = stel_nV.I(i+i_start,t_start:t_end);
+	    bask_sel = bask_nV.I(i+i_start,t_start:t_end);
+    end
 	stel_spk_sel = stel_nS(t_start:t_end,i+i_start);
 	bask_spk_sel = bask_nS(t_start:t_end,i+i_start);
 	stel_sels(:,i) = stel_sel;
@@ -46,18 +59,19 @@ end
 if rsz_peaks_active
 	for i=1:nrns_tot
 		stel_sels(:,i)=resize_peaks(stel_sels(:,i),t_range,resize_params);
+        bask_sels(:,i)=resize_peaks(bask_sels(:,i),t_range,resize_params2);
 	end
 end
 
 j=0;
+clf;
 for i=1:nrns_tot
 	if plot_spikes plotnum = nrns_tot*2; else plotnum = nrns_tot; end
 	j=j+1;
 	s_plot = subplot(plotnum, 1, j);
 	hold on;
-	%plot(s_plot, t_range, bask_sels(:,i),'Color','#ff9900','LineWidth',1);
-	plot(s_plot, t_range, bask_sels(:,i),'Color','#ff9900','LineWidth',0.5);
-	plot(s_plot, t_range, stel_sels(:,i),'Color','#80B3FF','LineWidth',1.5);
+	if plot_n1==1 plot(s_plot, t_range, bask_sels(:,i),'Color','#ff9900','LineWidth',0.5); end
+	if plot_n2==1 plot(s_plot, t_range, stel_sels(:,i),'Color','#80B3FF','LineWidth',0.5); end
 	hold off;
 	if plot_spikes
 		j=j+1;
@@ -73,7 +87,14 @@ for i=1:nrns_tot
 		xlim([t_start t_end])
 		caxis(s_plot,[0 3])
 		hold off;
-	end
+    end
+    xlabel('Time (ms)','FontSize',14) 
+    if plot_voltage==1 ylabel('Voltage (mV)','FontSize',14); end
+    if plot_voltage==0 ylabel('Current (mA)','FontSize',14); end
+    set(gca,'FontSize',14)
+    if plot_legend==1 legend({'Interneuron','Grid cell'},'FontSize',10); end
+    if i==1 && plot_voltage==1 title("Simulated Voltage Recordings", 'FontSize', 16); end
+    if i==1 && plot_voltage==0 title("Simulated Interneuron Current Recording", 'FontSize', 16); end
 end
 
 function volt_sel=resize_peaks(volt_sel,t_range,resize_params)
