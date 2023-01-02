@@ -29,13 +29,13 @@ function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hoppe
     use_spk_reader = 1; % use CARLsim's spike reader rather than seperate spike times file
     preloaded_spk_reader = 0; % use prior loaded spike reader
     spk_bin_size = 10; % spike reader bin size. Note: small bin sizes may take long processing with large spike sets. 40min sim with bin size 1 can take 10min to create plot.
-    sel_nrn = 27;%265;%1313;%265;%903;%892;%912;%1317;%903;%265;%349;%518;%533;%903;%465;%202;%200;%465;%463;%878;%465;%460;%870;%86;%465; % selected neuron to generate physical space plot
+    sel_nrn = 1456;%1313;%265;%903;%892;%912;%1317;%903;%265;%349;%518;%533;%903;%465;%202;%200;%465;%463;%878;%465;%460;%870;%86;%465; % selected neuron to generate physical space plot
     laptop_data = 0;
     use_unwrapped_data = 0;
     output_spikes_file = 1; % output file that can be used in rate map plot
     plot_smooth_rm = 1; % plot smoothed rate map
     smaller_spk_ticks = 2;%2; % Change spike tick visual size; 2 for extra small
-    save_traj_plot = 1; % save traj plot to file
+    save_traj_plot = 0; % save traj plot to file
     if run_on_hopper==1 save_traj_plot = 1; end
     if plot_in_spikes==1 plot_spikes=1; end
     if plot_spikes==0 output_spikes_file = 0; end

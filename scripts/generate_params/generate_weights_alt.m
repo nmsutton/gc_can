@@ -16,18 +16,18 @@ limited_fields=1; % create inhibition pattern that targets limited fields
 grid_size = 120.0;%126;%120.0;
 grid_size_target = 42;%42;%30; % target grid size for neuron weights
 synapse_weights=ones(grid_size);
-m=2.5;%1;
+m=2;%2.5;%1;
 m2=0;%4.5;%2.5;
 % field params
 if limited_fields
     p1=20;%.68;
     p2=2;p3=2;
-    p4=16*m;%15*m;%*1*.7;%*1.4;%*2;%8; % center size
+    p4=14*m;%16*m;%15*m;%*1*.7;%*1.4;%*2;%8; % center size %*
     p5=p3;p6=p4;
-    p7=0.12475*m;%*1.2*1.2;%*1.4;%*2;%0.20; % surround size
-    p8=50;%30;%.135;
+    p7=0.12475*m;%*1.2*1.2;%*1.4;%*2;%0.20; % surround size %*
+    p8=20;%50;%30;%.135; %*
     p9=2;p10=2;p11=2;p12=p4;p13=p11;p14=p11;p15=p12;
-    p16=1.8*m;%1.08*m;%*1.1*1;%*2; % surround size
+    p16=1.8*m;%1.08*m;%*1.1*1;%*2; % surround size %*
     p17=0.0058;
     p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
 else
@@ -46,8 +46,8 @@ cx_sft=-40;%-29; % x-axis shift
 cy_sft=-3;%-27; % y-axis shift
 y_tiles=12;%4;%25;
 x_tiles=17;%4;%15; % x-axis tiling
-y_t_space=8.5*m;%10.54*m;%*1.1*.8;%*1.4;%13.5;%10.54; % spacing of tiling along y-axis
-x_t_space=16.5*m;%14*m;%*1.1*.8;%*1.4;%14.4;%12;%10; % spacing of tiling along x-axis
+y_t_space=10.5*m;%8.5*m;%10.54*m;%*1.1*.8;%*1.4;%13.5;%10.54; % spacing of tiling along y-axis
+x_t_space=13*m;%14*m;%16.5*m;%14*m;%*1.1*.8;%*1.4;%14.4;%12;%10; % spacing of tiling along x-axis
 s_mult = 1;%1.15;%1.3;%1.15;%1.3; % spacing multipler
 f_area = 25;%9*1.4;%4;%5;%6; % sqrt of area each field contributes values to
 stag_x=0;%x_t_space/2; % x-axis tile stagger distance

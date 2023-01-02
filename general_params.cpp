@@ -104,8 +104,8 @@ struct P {
 	double base_ext = 580;//335;//600;//200;//600;//300;//700;//300;//400;//500;//400;//600;//320;//300.0;//500.0;//10.0;//0.0; // baseline ext input speed level	
 	double speed_signaling = 0.3;//2.0;//0.05;//1.8;//3.5;//0.0;//5.0;//0.0;//5.0;//0.3;//1.0;//1.0;//5.0;//5.0;//0.0;//5.0;//1.0;//0.5;//1.0;//0.1; // setting for use of a constant virtual animal speed
 	float dir_to_gc_wt = 0.4;//1.0;//0.4;//0.7;//0.5;//0.4;//1.0;//0.8;//2.0;//0.3;//0.5;//0.9;//0.75; ext_dir to gc weight
-	double mex_hat_multi = 13;//11.76;//10.0;//20;//20;//30.0;//10;//1000;//700;//1100; // mexican hat multiplier
-	float gc_to_in_wt = 0.45;//0.370;//0.315;//0.3;//0.28;//0.5;//0.27;//0.2;//0.28;//0.30;//0.315;//0.297;//0.28;//0.28;//200;//50;//600; // gc to interneurons weight
+	double mex_hat_multi = 8;//13;//11.76;//10.0;//20;//20;//30.0;//10;//1000;//700;//1100; // mexican hat multiplier
+	float gc_to_in_wt = .37;//0.45;//0.370;//0.315;//0.3;//0.28;//0.5;//0.27;//0.2;//0.28;//0.30;//0.315;//0.297;//0.28;//0.28;//200;//50;//600; // gc to interneurons weight
 	double spdin2inwt = 0.5;//10;//0.5;//10;
 	double spdex2inwt = 1.0;//1.65;//0.52;//0.5;
 	double spdin2in_curr = 1.0;//1.0;//0;//1;//100;//10;
@@ -136,9 +136,9 @@ struct P {
 	// place cell parameters
 	double theta_freq = 125.0; // theta frequency in Hz
 	double dist_thresh = 20;//5; // distance threshold for only local connections	
-	float pc_to_gc_wt = 1.0;//0.4;//0.4;//0.4;//0.5;//0.4;//1.0;//3.0;//2.5;//2;//4;//5.5; // pc to gc synaptic weight
-	double pc_sig = 6.0;//4.0;//2;//1;//1.4;//1;//0.75; // sigma symbol; width of the place feild
-	double pc_level = 20000;//400;//600;//700;//500;//3000;//3000;//2000;//2500;//3000; // place cell firing level
+	float pc_to_gc_wt = 1.0;//0.4;//0.4;//0.4;//0.4;//0.5;//0.4;//1.0;//3.0;//2.5;//2;//4;//5.5; // pc to gc synaptic weight
+	double pc_sig = 6.0;//4.0;//4.0;//2;//1;//1.4;//1;//0.75; // sigma symbol; width of the place feild
+	double pc_level = 2000;//40000;//400;//600;//700;//500;//3000;//3000;//2000;//2500;//3000; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters
