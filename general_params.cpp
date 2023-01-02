@@ -91,8 +91,8 @@ struct P {
 	bool record_spikes_file = 0; // write file for grid cell spike times and neuron positions
 	bool record_in_spikes_file = 0; // write file for interneuron spike times and neuron positions
 	bool record_highrestraj = 1; // write files for high resolution trajectory locations
-	#define additional_spk_mon 1 // additional spike monitors
-	#define monitor_voltage 1 // turn voltage monitoring on or off 
+	#define additional_spk_mon 0 // additional spike monitors
+	#define monitor_voltage 0 // turn voltage monitoring on or off 
 	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 	bool pc_to_gc = 1; // place cells to grid cells signaling
 	bool spin2in_active = 0; // inhibitory speed cells active.	
@@ -112,20 +112,14 @@ struct P {
 	double spdex2in_curr = 0.35;//0.3;//0.0;//0.3;
 	double dir_init_multi = 1000;//100000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
-	double move_increment = 0.004;//0.005;//0.024;//0.018;//0.005;//0.018; // amount to move in position each move command
+	double move_increment = 0.005;//0.005;//0.024;//0.018;//0.005;//0.018; // amount to move in position each move command
 	vector<float> ext_dir;
 	// interneuron connections
 	int conn_offset = 0; // offset in neuron positions for connections
 	int conn_dist = 3; // distance between neurons in connections
-	#define ORIGINAL 0
-	#define FACILITATION 0
-	#define DEPRESSION 0
-	#define BALANCE 0
-	#define BALANCE2 0
-	#define STDEV2X 1
 
 	// speed
-	bool auto_speed_control = 0; // automatically adjust parameters to match speed selected
+	bool auto_speed_control = 1; // automatically adjust parameters to match speed selected
 	bool speed_limit = 0; // speed limit on or off
 	double max_speed = 17.5; // max movement speed
 	double speed_conversion = 1;//0.2; // scale animal movement speed data
@@ -141,10 +135,10 @@ struct P {
 
 	// place cell parameters
 	double theta_freq = 125.0; // theta frequency in Hz
-	double dist_thresh = 5; // distance threshold for only local connections	
-	float pc_to_gc_wt = 0.4;//0.4;//0.5;//0.4;//1.0;//3.0;//2.5;//2;//4;//5.5; // pc to gc synaptic weight
-	double pc_sig = 2;//1;//1.4;//1;//0.75; // sigma symbol; width of the place feild
-	double pc_level = 400;//600;//700;//500;//3000;//3000;//2000;//2500;//3000; // place cell firing level
+	double dist_thresh = 20;//5; // distance threshold for only local connections	
+	float pc_to_gc_wt = 1.0;//0.4;//0.4;//0.4;//0.5;//0.4;//1.0;//3.0;//2.5;//2;//4;//5.5; // pc to gc synaptic weight
+	double pc_sig = 6.0;//4.0;//2;//1;//1.4;//1;//0.75; // sigma symbol; width of the place feild
+	double pc_level = 20000;//400;//600;//700;//500;//3000;//3000;//2000;//2500;//3000; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters
