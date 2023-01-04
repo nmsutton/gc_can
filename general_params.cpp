@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 220000;//8553860;//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 220000;//1440140;//8553860;//1440140//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 42;//30;//26;
@@ -22,8 +22,8 @@ struct P {
 	int EC_LI_II_Multipolar_Pyramidal_Group, MEC_LII_Stellate_Group, EC_LII_Axo_Axonic_Group,
 	MEC_LII_Basket_Group, EC_LII_Basket_Multipolar_Group, CA1_Pyramidal_Group, 
 	MEC_LII_Basket_Speed_Group,	MEC_LII_Stellate_Speed_Group;	
-	double pos[2] = {30,18};//{9,17};//{22,8}; // virtual animal position tracker. starting position: {x,y}
-	double bpos[2] = {30,18};//{9,17}; // bump position tracker
+	double pos[2] = {23,29};//{30,18};//{9,17};//{22,8}; // virtual animal position tracker. starting position: {x,y}
+	double bpos[2] = {23,29};//{9,17}; // bump position tracker
 	double dirs[4] = {0, 90, 180, 270};
 	double mi = 0; // move list index
 	vector<vector<int>> nrn_spk; // for total firing recording
@@ -136,9 +136,9 @@ struct P {
 	// place cell parameters
 	double theta_freq = 125.0; // theta frequency in Hz
 	double dist_thresh = 5; // distance threshold for only local connections	
-	float pc_to_gc_wt = 0.4;//1.0;//0.4;//1.0;//0.4;//0.4;//0.5;//0.4;//1.0;//3.0;//2.5;//2;//4;//5.5; // pc to gc synaptic weight
+	float pc_to_gc_wt = 0.4;//0.4;//1.0;//0.4;//1.0;//0.4;//0.4;//0.5;//0.4;//1.0;//3.0;//2.5;//2;//4;//5.5; // pc to gc synaptic weight
 	double pc_sig = 2;//2;//1;//1.4;//1;//0.75; // sigma symbol; width of the place feild
-	double pc_level = 1000;//2000;//400;//600;//700;//500;//3000;//3000;//2000;//2500;//3000; // place cell firing level
+	double pc_level = 400;//400;//2000;//400;//600;//700;//500;//3000;//3000;//2000;//2500;//3000; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters

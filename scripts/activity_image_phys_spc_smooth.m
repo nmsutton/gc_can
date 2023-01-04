@@ -13,7 +13,7 @@
 %% https://hydroecology.net/resizing-matlab-figures-the-easy-way/
 %% https://www.mathworks.com/matlabcentral/answers/43326-create-figure-without-displaying-it
 
-function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data_data,fdr_prefix,hopper_run)
+function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data_data,fdr_prefix,hopper_run,local_run)
 	import CMBHOME.Utils.*
 
 	%[root c_ts] = load_spike_times();
@@ -61,8 +61,9 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	        if false
 		        %carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/output/spikes/spikes_recorded.csv');
 	        else
-	            %carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/spikes_recorded.csv');
 	            curr_dir = pwd;
+                curr_dir = replace(curr_dir,"gc_can_1",strcat(fdr_prefix,int2str(local_run)));
+                cd(curr_dir);
 	            carlsim_spikes = readmatrix(curr_dir+"/high_res_traj/highres_spikes.csv");
 	        end
 	    end

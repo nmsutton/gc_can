@@ -11,9 +11,8 @@ function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hoppe
         addpath /home/nsutton2/git/CMBHOME_github/    
     else
         curr_dir=pwd;
-        cd ..
-        initOAT
-        cd(curr_dir)
+        curr_dir=replace(curr_dir,"gc_can_1",strcat(fdr_prefix,int2str(local_run)));
+        cd(curr_dir);
         addpath /comp_neuro/Software/Github/CMBHOME_github/
     end
     angles_speeds = 0; % load angles and speeds or x,y position coordinates
@@ -29,7 +28,7 @@ function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hoppe
     use_spk_reader = 1; % use CARLsim's spike reader rather than seperate spike times file
     preloaded_spk_reader = 0; % use prior loaded spike reader
     spk_bin_size = 10; % spike reader bin size. Note: small bin sizes may take long processing with large spike sets. 40min sim with bin size 1 can take 10min to create plot.
-    sel_nrn = 616;%322;%1372;%1313;%265;%903;%892;%912;%1317;%903;%265;%349;%518;%533;%903;%465;%202;%200;%465;%463;%878;%465;%460;%870;%86;%465; % selected neuron to generate physical space plot
+    sel_nrn = 931;%520;%616;%322;%1372;%1313;%265;%903;%892;%912;%1317;%903;%265;%349;%518;%533;%903;%465;%202;%200;%465;%463;%878;%465;%460;%870;%86;%465; % selected neuron to generate physical space plot
     laptop_data = 0;
     use_unwrapped_data = 0;
     output_spikes_file = 1; % output file that can be used in rate map plot
@@ -155,7 +154,7 @@ function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hoppe
 
     if plot_smooth_rm==1
         cd ..
-        heat_map=activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data,fdr_prefix,hopper_run);
+        heat_map=activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data,fdr_prefix,hopper_run,local_run);
         cd high_res_traj
     end
 end
@@ -194,6 +193,7 @@ function [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_X
         elseif orig_xy == 0
             Xs = readmatrix(strcat(curr_dir,"/../../output/spikes/highres_pos_x.csv"));
             Ys = readmatrix(strcat(curr_dir,"/../../output/spikes/highres_pos_y.csv"));
+            disp(strcat(curr_dir,"/../../output/spikes/highres_pos_x.csv"))
         else
             load /home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/scripts/high_res_traj/191108_S1_lightVSdarkness_cells11and12_scaleddown_Xs_40min.mat;
             load /home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/scripts/high_res_traj/191108_S1_lightVSdarkness_cells11and12_scaleddown_Ys_40min.mat;
