@@ -10,27 +10,12 @@ function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hoppe
         cd(curr_dir)
         addpath /home/nsutton2/git/CMBHOME_github/    
     else
-        %{
-        curr_dir=pwd;
-        disp(curr_dir);
-        cd ..
-        cd ..
-        cd ..
-        disp(pwd);
-        newdir=strcat(fdr_prefix,int2str(local_run));
-        disp(newdir);
-        cd(newdir);
-        cd("scripts");
-        initOAT
-        %curr_dir=replace(curr_dir,"gc_can_1",strcat(fdr_prefix,int2str(local_run)));
-        disp(pwd);
-        cd("high_res_traj")
-        %}
         curr_dir=pwd;
         curr_dir=replace(curr_dir,"gc_can_1",strcat(fdr_prefix,int2str(local_run)));
-        disp(curr_dir);
         cd(curr_dir);
-        disp(pwd);
+        cd ..
+        initOAT
+        cd(curr_dir);
         addpath /comp_neuro/Software/Github/CMBHOME_github/
     end
     angles_speeds = 0; % load angles and speeds or x,y position coordinates
