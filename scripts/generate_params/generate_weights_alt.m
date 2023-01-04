@@ -16,18 +16,18 @@ limited_fields=1; % create inhibition pattern that targets limited fields
 grid_size = 120.0;%126;%120.0;
 grid_size_target = 42;%42;%30; % target grid size for neuron weights
 synapse_weights=ones(grid_size);
-m=2;%2.5;%1;
-m2=0;%4.5;%2.5;
+m=1.2;%1;
+m2=2.5;
 % field params
 if limited_fields
     p1=20;%.68;
     p2=2;p3=2;
-    p4=13*m;%14*m;%16*m;%15*m;%*1*.7;%*1.4;%*2;%8; % center size %*
+    p4=9*m;%11*m;%8*m;%12*m;%12*m;%12*m;%15*m;%*1*.7;%*1.4;%*2;%8; % center size
     p5=p3;p6=p4;
-    p7=0.12475*m;%*1.2*1.2;%*1.4;%*2;%0.20; % surround size %*
-    p8=20;%50;%30;%.135; %*
+    p7=.35*m;%.2*m;%0.12475*m;%*1.2*1.2;%*1.4;%*2;%0.20; % surround size
+    p8=30;%13;%15;%30;%.135;
     p9=2;p10=2;p11=2;p12=p4;p13=p11;p14=p11;p15=p12;
-    p16=1.8*m;%1.08*m;%*1.1*1;%*2; % surround size %*
+    p16=1.08*m;%1.08*m;%*1.1*1;%*2; % surround size
     p17=0.0058;
     p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
 else
@@ -46,8 +46,8 @@ cx_sft=-40;%-29; % x-axis shift
 cy_sft=-3;%-27; % y-axis shift
 y_tiles=12;%4;%25;
 x_tiles=17;%4;%15; % x-axis tiling
-y_t_space=10.5*m;%8.5*m;%10.54*m;%*1.1*.8;%*1.4;%13.5;%10.54; % spacing of tiling along y-axis
-x_t_space=13*m;%14*m;%16.5*m;%14*m;%*1.1*.8;%*1.4;%14.4;%12;%10; % spacing of tiling along x-axis
+y_t_space=10.54*(10/12)*m;%10.54*m;%*1.1*.8;%*1.4;%13.5;%10.54; % spacing of tiling along y-axis
+x_t_space=12*(10/12)*m;%12*m;%14*m;%*1.1*.8;%*1.4;%14.4;%12;%10; % spacing of tiling along x-axis
 s_mult = 1;%1.15;%1.3;%1.15;%1.3; % spacing multipler
 f_area = 25;%9*1.4;%4;%5;%6; % sqrt of area each field contributes values to
 stag_x=0;%x_t_space/2; % x-axis tile stagger distance
@@ -55,13 +55,13 @@ stag_y=0; % y-axis tile stagger distance
 x_wrap=0; % wrap around values on x-axis
 y_wrap=0; % wrap around values on y-axis
 % rotations
-a=0;%0;%15;%10;%90-18.435;%90-18; % angle of movement
+a=15;%0;%15;%10;%90-18.435;%90-18; % angle of movement
 a=a/360 * pi*2; % convert to radians
 % limited fields params
-fields_number=7; % choose between 1, 3, 7, 9, etc., fields in initial shape
+fields_number=7;%13;%7; % choose between 1, 3, 7, 9, etc., fields in initial shape
 centx = []; centy = []; % x- and y-axis values of centroids
-center_x = 40;%40;%43.025;%43.02;%43;%46;%40;%42;%48;%46;
-center_y = 40;%40;%43;%43.0;%43;%46;%40;%46.5;%46;
+center_x = 40;%43.025;%43.02;%43;%46;%40;%42;%48;%46;
+center_y = 40;%43;%43.0;%43;%46;%40;%46.5;%46;
 select_cent=[1,2,3];%[1,2,3];%[1,4,7];%[3,4,5];% centroid indicies to duplicate
 
 cx=0; cy=0; % init feild centers
@@ -111,13 +111,13 @@ function [centx, centy]=init_hex(centx,centy,center_x,center_y,x_t_space,y_t_spa
         centx=[centx, center_x+((x_t_space/2)*m)];
         centy=[centy, center_y+(y_t_space*m)]; 
     end
-    if false && fields_number >= 9 % right and left of center row
+    if fields_number >= 9 % right and left of center row
         centx=[centx, center_x-(x_t_space*m)*2];
         centy=[centy, center_y];
         centx=[centx, center_x+(x_t_space*m)*2];
         centy=[centy, center_y];
     end  
-    if false && fields_number >= 13 % above and below center row
+    if fields_number >= 13 % above and below center row
         centx=[centx, center_x-((x_t_space/2)*m)*3];
         centy=[centy, center_y-(y_t_space*m)];
         centx=[centx, center_x+((x_t_space/2)*m)*3];
@@ -127,7 +127,7 @@ function [centx, centy]=init_hex(centx,centy,center_x,center_y,x_t_space,y_t_spa
         centx=[centx, center_x+((x_t_space/2)*m)*3];
         centy=[centy, center_y+(y_t_space*m)];
     end  
-    if false && fields_number >= 17 % above and below center row
+    if fields_number >= 17 % above and below center row
         centx=[centx, center_x-((x_t_space/2)*m)*5];
         centy=[centy, center_y-(y_t_space*m)];
         centx=[centx, center_x+((x_t_space/2)*m)*5];
