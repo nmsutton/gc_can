@@ -63,7 +63,7 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	        else
 	            curr_dir = pwd;
                 curr_dir = replace(curr_dir,"gc_can_1",strcat(fdr_prefix,int2str(local_run)));
-                curr_dir = replace(curr_dir,"code/1","code/gc_can_1");
+                curr_dir = replace(curr_dir,strcat("code/1",strcat("code/gc_can_",int2str(hopper_run)));
                 cd(curr_dir);
 	            carlsim_spikes = readmatrix(curr_dir+"/high_res_traj/highres_spikes.csv");
 	        end

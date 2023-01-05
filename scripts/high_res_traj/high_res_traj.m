@@ -8,7 +8,16 @@ function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hoppe
         cd /home/nsutton2/git/OAT_CS4/
         initOAT
         cd(curr_dir)
-        addpath /home/nsutton2/git/CMBHOME_github/    
+        addpath /home/nsutton2/git/CMBHOME_github/ 
+    elseif use_hopper_data==1
+        curr_dir="/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_1/scripts/";
+        cd(curr_dir);
+        initOAT
+        cd("high_res_traj");
+        %new_prefix=fdr_prefix;
+        %if fdr_prefix=="" new_prefix="gc_can_"; end
+        %cd(strcat("/home/nsutton2/git/CARLsim6-feat-ca3net_5/projects/"+new_prefix+hopper_run+"/scripts/high_res_traj"));
+        addpath /comp_neuro/Software/Github/CMBHOME_github/
     else
         curr_dir=pwd;
         curr_dir=replace(curr_dir,"gc_can_1",strcat(fdr_prefix,int2str(local_run)));
@@ -31,7 +40,7 @@ function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hoppe
     use_spk_reader = 1; % use CARLsim's spike reader rather than seperate spike times file
     preloaded_spk_reader = 0; % use prior loaded spike reader
     spk_bin_size = 10; % spike reader bin size. Note: small bin sizes may take long processing with large spike sets. 40min sim with bin size 1 can take 10min to create plot.
-    sel_nrn = 931;%520;%616;%322;%1372;%1313;%265;%903;%892;%912;%1317;%903;%265;%349;%518;%533;%903;%465;%202;%200;%465;%463;%878;%465;%460;%870;%86;%465; % selected neuron to generate physical space plot
+    sel_nrn = 903;%300;%534;%931;%520;%616;%322;%1372;%1313;%265;%903;%892;%912;%1317;%903;%265;%349;%518;%533;%903;%465;%202;%200;%465;%463;%878;%465;%460;%870;%86;%465; % selected neuron to generate physical space plot
     laptop_data = 0;
     use_unwrapped_data = 0;
     output_spikes_file = 1; % output file that can be used in rate map plot
@@ -231,6 +240,12 @@ function [spk_t,spikes]=load_spk_times(use_hopper_data, hopper_run, plot_in_spik
                 file_path="/scratch/nsutton2/gc_sim/"+fdr_prefix+hopper_run+"/spikes/in_spikes_recorded.csv";
             else
                 file_path="/scratch/nsutton2/gc_sim/"+fdr_prefix+hopper_run+"/spikes/spikes_recorded.csv";
+            end
+        elseif use_hopper_data==1
+            if plot_in_spikes==1
+                file_path="/mnt/hopper_scratch/nsutton2/gc_sim/"+fdr_prefix+hopper_run+"/spikes/in_spikes_recorded.csv";
+            else
+                file_path="/mnt/hopper_scratch/nsutton2/gc_sim/"+fdr_prefix+hopper_run+"/spikes/spikes_recorded.csv";
             end
         else
             if plot_in_spikes==1
