@@ -1,12 +1,13 @@
 % find distribution of spiking Hz
 
 initOAT;
-hopper_use=0;
-local_run=6;
-hopper_run=3;
+hopper_use=1;
+local_run=3;
+hopper_run=4;
 hopper_local_copy=0;
+fdr_prefix="gc_can_";
 if hopper_use
-    hopper_path=strcat('/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat');
+    hopper_path=strcat('/mnt/hopper_scratch/gc_sim/',fdr_prefix,int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat');
     SpikeReader(hopper_path, false, 'silent');
     spk_data = SpikeReader(hopper_path, false, 'silent');
 else

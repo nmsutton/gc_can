@@ -131,10 +131,12 @@ int main() {
 	sim.setExternalCurrent(EC_LI_II_Multipolar_Pyramidal, ext_dir_initial);
 	//sim.setExternalCurrent(MEC_LII_Basket_Speed, ext_dir_initial);
 	SpikeMonitor* SMexc = sim.setSpikeMonitor(MEC_LII_Stellate, "DEFAULT");
-	#if additional_spk_mon
-		SpikeMonitor* SMinh = sim.setSpikeMonitor(MEC_LII_Basket, "DEFAULT");
+	#if spk_mon_additional
 		SpikeMonitor* SMext = sim.setSpikeMonitor(EC_LI_II_Multipolar_Pyramidal, "DEFAULT");
-		SpikeMonitor* SMspe = sim.setSpikeMonitor(MEC_LII_Basket_Speed, "DEFAULT");
+		SpikeMonitor* SMbsk = sim.setSpikeMonitor(MEC_LII_Basket, "DEFAULT");
+		SpikeMonitor* SMaxa = sim.setSpikeMonitor(EC_LII_Axo_Axonic, "DEFAULT");
+		SpikeMonitor* SMbmu = sim.setSpikeMonitor(EC_LII_Basket_Multipolar, "DEFAULT");
+		SpikeMonitor* SMpyr = sim.setSpikeMonitor(CA1_Pyramidal, "DEFAULT");
 	#endif
 	if (p.record_spikes_file && p.move_animal_onlypos==0) {p.spikes_output_file.open(p.spikes_output_filepath);}
 	if (p.record_in_spikes_file && p.move_animal_onlypos==0) {p.in_spikes_output_file.open(p.in_spikes_output_filepath);}
@@ -144,13 +146,12 @@ int main() {
 	// ---------------- RUN STATE -------------------
 	SMexc->startRecording();
 	SMexc->setPersistentData(true); // keep prior firing when recording is stopped and restarted
-	#if additional_spk_mon
-		SMinh->startRecording();
-		SMinh->setPersistentData(true);
-		SMext->startRecording();
-		SMext->setPersistentData(true);
-		SMspe->startRecording();
-		SMspe->setPersistentData(true);
+	#if spk_mon_additional
+		SMext->startRecording(); SMext->setPersistentData(true);
+		SMbsk->startRecording(); SMbsk->setPersistentData(true);
+		SMaxa->startRecording(); SMaxa->setPersistentData(true);
+		SMbmu->startRecording(); SMbmu->setPersistentData(true);
+		SMpyr->startRecording(); SMpyr->setPersistentData(true);
 	#endif
 	for (int i = 0; i < p.layer_size; i++) {
 		p.gc_firing[i] = init_firings[i]; // set initial firing
@@ -178,11 +179,11 @@ int main() {
 			p.nrn_spk = SMexc->getSpikeVector2D(); // store firing in vector
 			SMexc->startRecording();
 		}
-		#if additional_spk_mon
+		#if spk_mon_additional
 			if (p.record_in_spikes_file && p.move_animal_onlypos==0) {
-				SMinh->stopRecording();
-				p.in_nrn_spk = SMinh->getSpikeVector2D(); // store firing in vector
-				SMinh->startRecording();
+				SMbsk->stopRecording();
+				p.in_nrn_spk = SMbsk->getSpikeVector2D(); // store firing in vector
+				SMbsk->startRecording();
 			}
 		#endif
 		if (p.move_animal_onlypos==0) {
@@ -215,13 +216,12 @@ int main() {
 	SMexc->stopRecording();
 	printf("\n\n");
 	SMexc->print(false); // print firing stats (but not the exact spike times)	
-	#if additional_spk_mon
-		SMext->stopRecording();
-		SMinh->stopRecording();
-		SMspe->stopRecording();
-		SMext->print(false);
-		SMinh->print(false);
-		SMspe->print(false);
+	#if spk_mon_additional
+		SMext->stopRecording(); SMext->print(false);
+		SMbsk->stopRecording(); SMbsk->print(false);
+		SMaxa->stopRecording(); SMaxa->print(false);
+		SMbmu->stopRecording(); SMbmu->print(false);
+		SMpyr->stopRecording(); SMpyr->print(false);
 	#endif
 	if (p.record_spikes_file && p.move_animal_onlypos==0) {p.spikes_output_file.close();}
 	if (p.record_in_spikes_file && p.move_animal_onlypos==0) {p.in_spikes_output_file.close();}

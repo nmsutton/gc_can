@@ -1,5 +1,5 @@
 % create high-resolution trajectory and firing plot
-function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hopper_run,local_run)
+function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hopper_run,local_run,restrict_time)
     close all;
 
     % run parameters
@@ -31,8 +31,7 @@ function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hoppe
     preloaded_XsYs = 0; % use prior loaded Ys and Xs instead of reading them from files
     preloaded_data = 0; % use all prior loaded data. This is Xs, Ys, and spikes.
     output_XsYs_file = 0;
-    create_plot = 1;
-    restrict_time = 0;%2400000;%725000/20;%5000; % 0 for no restriction; in 20ms bins
+    create_plot = 1; 
     timestep = 20;
     orig_xy = 0; % use orig x,y animal positions with no wrapping around or carlsim x,y that wraps around a taurus
     plot_spikes = 1;  
@@ -40,7 +39,7 @@ function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hoppe
     use_spk_reader = 1; % use CARLsim's spike reader rather than seperate spike times file
     preloaded_spk_reader = 0; % use prior loaded spike reader
     spk_bin_size = 10; % spike reader bin size. Note: small bin sizes may take long processing with large spike sets. 40min sim with bin size 1 can take 10min to create plot.
-    sel_nrn = 903;%300;%534;%931;%520;%616;%322;%1372;%1313;%265;%903;%892;%912;%1317;%903;%265;%349;%518;%533;%903;%465;%202;%200;%465;%463;%878;%465;%460;%870;%86;%465; % selected neuron to generate physical space plot
+    sel_nrn = 263;%366;%534;%931;%520;%616;%322;%1372;%1313;%265;%903;%892;%912;%1317;%903;%265;%349;%518;%533;%903;%465;%202;%200;%465;%463;%878;%465;%460;%870;%86;%465; % selected neuron to generate physical space plot
     laptop_data = 0;
     use_unwrapped_data = 0;
     output_spikes_file = 1; % output file that can be used in rate map plot
@@ -107,8 +106,10 @@ function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hoppe
                 x = Xs(1:floor(restrict_time/timestep));
                 y = Ys(1:floor(restrict_time/timestep));            
             else
-                x = Xs(1:restrict_time);
-                y = Ys(1:restrict_time);
+                Xs = Xs(1:restrict_time);
+                Ys = Ys(1:restrict_time);
+                x = Xs;
+                y = Ys;
             end
         end
     else
@@ -118,22 +119,11 @@ function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hoppe
 
     if plot_spikes==1 || output_spikes_file==1
         for i=1:length(spk_t)
-            if restrict_time == 0 
+            if restrict_time == 0 || spk_t(i) < restrict_time
                 if orig_xy==1 || angles_speeds==1
                     spk_x=[spk_x,x(floor(spk_t(i)/timestep))];
     	            spk_y=[spk_y,y(floor(spk_t(i)/timestep))];
                 else 
-                    spk_x=[spk_x,x(spk_t(i))];
-    	            spk_y=[spk_y,y(spk_t(i))];
-                end
-                if output_spikes_file==1
-                    fprintf(recspk_file,"%f,%f,%f\n",spk_t(i),spk_x(i),spk_y(i));
-                end
-            elseif spk_t(i) < restrict_time
-                if orig_xy==1 || angles_speeds==1
-    	            spk_x=[spk_x,x(floor(spk_t(i)/timestep))];
-    	            spk_y=[spk_y,y(floor(spk_t(i)/timestep))];
-                else
                     spk_x=[spk_x,x(spk_t(i))];
     	            spk_y=[spk_y,y(spk_t(i))];
                 end

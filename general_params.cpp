@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 220000;//1440140;//8553860;//1440140//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 20000;//1440140;//8553860;//1440140//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 42;//30;//26;
@@ -91,7 +91,7 @@ struct P {
 	bool record_spikes_file = 0; // write file for grid cell spike times and neuron positions
 	bool record_in_spikes_file = 0; // write file for interneuron spike times and neuron positions
 	bool record_highrestraj = 1; // write files for high resolution trajectory locations
-	#define additional_spk_mon 0 // additional spike monitors
+	#define spk_mon_additional 1 // additional spike monitors
 	#define monitor_voltage 0 // turn voltage monitoring on or off 
 	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
 	bool pc_to_gc = 1; // place cells to grid cells signaling
@@ -104,8 +104,8 @@ struct P {
 	double base_ext = 250;//580;//335;//600;//200;//600;//300;//700;//300;//400;//500;//400;//600;//320;//300.0;//500.0;//10.0;//0.0; // baseline ext input speed level	
 	double speed_signaling = 5.0;//0.3;//2.0;//0.05;//1.8;//3.5;//0.0;//5.0;//0.0;//5.0;//0.3;//1.0;//1.0;//5.0;//5.0;//0.0;//5.0;//1.0;//0.5;//1.0;//0.1; // setting for use of a constant virtual animal speed
 	float dir_to_gc_wt = 0.4;//1.0;//0.4;//0.7;//0.5;//0.4;//1.0;//0.8;//2.0;//0.3;//0.5;//0.9;//0.75; ext_dir to gc weight
-	double mex_hat_multi = 11.76*1.05;//1.2;//1.17;//10.0;//20;//20;//30.0;//10;//1000;//700;//1100; // mexican hat multiplier
-	float gc_to_in_wt = 0.370*1.05;//1.2;//1.17;//0.315;//0.3;//0.28;//0.5;//0.27;//0.2;//0.28;//0.30;//0.315;//0.297;//0.28;//0.28;//200;//50;//600; // gc to interneurons weight
+	double mex_hat_multi = 11.76*2;//1.5;//*1.2;//1.05;//1.2;//1.17;//10.0;//20;//20;//30.0;//10;//1000;//700;//1100; // mexican hat multiplier
+	float gc_to_in_wt = 0.370*2;//1.5;//*1.2;//1.05;//1.2;//1.17;//0.315;//0.3;//0.28;//0.5;//0.27;//0.2;//0.28;//0.30;//0.315;//0.297;//0.28;//0.28;//200;//50;//600; // gc to interneurons weight
 	double spdin2inwt = 0.5;//10;//0.5;//10;
 	double spdex2inwt = 1.0;//1.65;//0.52;//0.5;
 	double spdin2in_curr = 1.0;//1.0;//0;//1;//100;//10;
@@ -136,9 +136,9 @@ struct P {
 	// place cell parameters
 	double theta_freq = 125.0; // theta frequency in Hz
 	double dist_thresh = 5; // distance threshold for only local connections	
-	float pc_to_gc_wt = 0.4;//0.4;//1.0;//0.4;//1.0;//0.4;//0.4;//0.5;//0.4;//1.0;//3.0;//2.5;//2;//4;//5.5; // pc to gc synaptic weight
-	double pc_sig = 2;//2;//1;//1.4;//1;//0.75; // sigma symbol; width of the place feild
-	double pc_level = 400;//400;//2000;//400;//600;//700;//500;//3000;//3000;//2000;//2500;//3000; // place cell firing level
+	float pc_to_gc_wt = 1;//0.4;//0.4;//0.4;//0.4;//1.0;//0.4;//1.0;//0.4;//0.4;//0.5;//0.4;//1.0;//3.0;//2.5;//2;//4;//5.5; // pc to gc synaptic weight
+	double pc_sig = 2;//2;//2;//1;//1.4;//1;//0.75; // sigma symbol; width of the place feild
+	double pc_level = 1000;//2000;//400;//400;//2000;//400;//600;//700;//500;//3000;//3000;//2000;//2500;//3000; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters
