@@ -11,7 +11,7 @@ fdr_prefix="gc_can_"; % folder name prefix for hopper run. "gc_can_" for main di
 restrict_time=0;%6733000;%4328000;%1360000;%500000; % limit time plotted. 0 for no restriction; in 20ms bins
 run_on_hopper=0; % supercomputer run options: run from hopper's system  
 % select neuron to plot
-sel_nrn=600;
+sel_nrn=690;
 
 heat_map = gridscore_sim(p1,p2,local_run,run_on_hopper,use_hopper_data,fdr_prefix, ...
     hopper_run,save_gridscore_file,restrict_time,sel_nrn);
