@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 10000;//1440140;//8553860;//1440140//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 220000;//1440140;//8553860;//1440140//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 30;//42;//30;//26;
@@ -112,7 +112,7 @@ struct P {
 	double spdex2in_curr = 0.35;//0.3;//0.0;//0.3;
 	double dir_init_multi = 1000;//100000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
-	double move_increment = 0.008;//0.005;//0.024;//0.018;//0.005;//0.018; // amount to move in position each move command
+	double move_increment = 0.006;//0.005;//0.024;//0.018;//0.005;//0.018; // amount to move in position each move command
 	vector<float> ext_dir;
 	// interneuron connections
 	int conn_offset = 0; // offset in neuron positions for connections
@@ -137,7 +137,7 @@ struct P {
 	double theta_freq = 125.0; // theta frequency in Hz
 	double dist_thresh = 5; // distance threshold for only local connections	
 	float pc_to_gc_wt = 0.4;//0.4;//0.4;//0.4;//0.4;//0.4;//0.4;//1.0;//0.4;//1.0;//0.4;//0.4;//0.5;//0.4;//1.0;//3.0;//2.5;//2;//4;//5.5; // pc to gc synaptic weight
-	double pc_sig = 3;//3;//4;//2;//2;//1;//1.4;//1;//0.75; // sigma symbol; width of the place feild
+	double pc_sig = 2;//3;//3;//4;//2;//2;//1;//1.4;//1;//0.75; // sigma symbol; width of the place feild
 	double pc_level = 400;//400;//400;//1000;//2000;//400;//400;//2000;//400;//600;//700;//500;//3000;//3000;//2000;//2500;//3000; // place cell firing level
 	vector<float> pc_activity;
 

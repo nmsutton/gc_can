@@ -30,7 +30,8 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	flip_vert = 0; % flip matrix vertically
 
 	if use_carlsim_spikes
-		grid_size = 42;%30; % sqrt of grid size
+        plot_subsect=0; % plot only subsection of total data. this is set by the plot_size variable.
+		grid_size = 30;%42;%30; % sqrt of grid size
 		plot_size = 30; % sqrt of plot size
 		binside = 3;
 		std_smooth_kernel = 3.333;
@@ -157,9 +158,11 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 			xdim = linspace(0,grid_size-1,grid_size);%xdim * 30/360;
 			ydim2 = linspace(0,grid_size-1,grid_size);%ydim2 * 30/360;
 			heat_map = hist3([spike_x, spike_y], 'Edges', {xdim, ydim2});
-			s = (grid_size-plot_size)/2;
-			e = plot_size+s;
-			heat_map = heat_map(s:e, s:e); % crop to intended plot size
+            if plot_subsect
+			    s = (grid_size-plot_size)/2;
+			    e = plot_size+s;
+			    heat_map = heat_map(s:e, s:e); % crop to intended plot size
+            end
 			if use_smoothing
 				heat_map = SmoothMat(heat_map, [5*std_smooth_kernel/binside, 5*std_smooth_kernel/binside], std_smooth_kernel/binside); % smooth the spikes and occupancy with a 5x5 bin gaussian with std=1
 			end

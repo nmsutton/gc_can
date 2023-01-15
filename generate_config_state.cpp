@@ -65,7 +65,7 @@ SomeToSomeConnection* SomeToSomeConn;
 sim.connect(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, "one-to-one", p.dir_to_gc_wt, 1.0f, 
             RangeDelay(1), RadiusRF(-1), SYN_FIXED, 33.082, 20.0f); // 0 DIR
 ////
-float m1 = 1;//1.2;
+float m1 = 1.2;//1;//1.2;
 p.conn_offset = 0;
 if (p.spin2in_active) {
     p.gc_to_in_wt = p.spdin2inwt;
