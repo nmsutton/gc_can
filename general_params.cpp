@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 220000;//1440140;//8553860;//1440140//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 220000;//1440140;//1440140;//8553860;//1440140//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 30;//42;//30;//26;
@@ -22,8 +22,8 @@ struct P {
 	int EC_LI_II_Multipolar_Pyramidal_Group, MEC_LII_Stellate_Group, EC_LII_Axo_Axonic_Group,
 	MEC_LII_Basket_Group, EC_LII_Basket_Multipolar_Group, CA1_Pyramidal_Group, 
 	MEC_LII_Basket_Speed_Group,	MEC_LII_Stellate_Speed_Group;	
-	double pos[2] = {23,29};//{30,18};//{9,17};//{22,8}; // virtual animal position tracker. starting position: {x,y}
-	double bpos[2] = {23,29};//{9,17}; // bump position tracker
+	double pos[2] = {23,29-18};//{30,18};//{9,17};//{22,8}; // virtual animal position tracker. starting position: {x,y}
+	double bpos[2] = {23,29-18};//{9,17}; // bump position tracker
 	double dirs[4] = {0, 90, 180, 270};
 	double mi = 0; // move list index
 	vector<vector<int>> nrn_spk; // for total firing recording
@@ -166,7 +166,7 @@ struct P {
 	int selected_neuron = 465;//378;//372;//465;//372;//11;//465;//232;//465;//10;
 	int selected_in_neuron = 100; // interneuron
 	double grid_pattern_rot = 0;//-15; // angle value for rotation of grid pattern in plot
-	double grid_pattern_scale = 1;//18/22.5; // rescale grid pattern for plot. smaller value makes larger rescale, e.g., 0.8 = 1.25x rescale. animal speed to bump speed conversion. <goal_top_bump_speed>/<goal_top_animal_speed>
+	double grid_pattern_scale = 1;//0.5;//1;//18/22.5; // rescale grid pattern for plot. smaller value makes larger rescale, e.g., 0.8 = 1.25x rescale. animal speed to bump speed conversion. <goal_top_bump_speed>/<goal_top_animal_speed>
 	vector<int> locations_visited; // locations an animal visited
 	double animal_location[x_size*y_size]; // location of animal
 	double animal_location_all[x_size*y_size]; // location of animal

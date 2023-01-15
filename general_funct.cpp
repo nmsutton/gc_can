@@ -133,8 +133,8 @@ void set_pos(P *p, double angle) {
 	*/
 	//angle = angle + 180;
 	vector<double> ver_hor = find_ver_hor(p, angle, &p->move_increment);
-	p->pos[0] = p->pos[0] + ver_hor[1];
-	p->pos[1] = p->pos[1] + ver_hor[0];
+	p->pos[0] = p->pos[0] + (ver_hor[1] * p->grid_pattern_scale);
+	p->pos[1] = p->pos[1] + (ver_hor[0] * p->grid_pattern_scale);
 	angle = angle + p->grid_pattern_rot;
 	if (angle>360) {angle=360-angle;}
 	if (angle<0)   {angle=angle+360;}
