@@ -12,11 +12,11 @@
 %clear all;
 %clc;
 initOAT;
-local_run=1;
 hopper_use=0;
-hopper_run=1;
+local_run=1;
+hopper_run=2;
 if hopper_use
-    hopper_path=strcat('/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat');
+    hopper_path=strcat('/mnt/hopper_scratch/gc_sim/gc_can_',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat');
     SpikeReader(hopper_path, false, 'silent');
     spk_data = SpikeReader(hopper_path, false, 'silent');
 else
@@ -25,8 +25,8 @@ else
 end
 
 delay_frames = false;%true;
-time=12600;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
-bin_size=600;%10; % size of firing bin in ms
+time=20000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
+bin_size=200;%10; % size of firing bin in ms
 t=[0:(1/bin_size):(time*(1/bin_size))];
 x_size = 42;%30; % size of network on x-axis
 y_size = 42;%30; % size of network on y-axis
@@ -50,7 +50,7 @@ set(gcf, 'nextplot', 'replacechildren');
 % Need to change from the default renderer to zbuffer to get it to work right. openGL doesn't work and Painters is way too slow.
 set(gcf, 'renderer', 'zbuffer');
 caxis manual; % allow subsequent plots to use the same color limits
-custom_colormap = load('neuron_space_colormap2.mat');
+custom_colormap = load('neuron_space_colormap.mat');
 
 for frameIndex = 1 : numberOfFrames
 %for frameIndex = (numberOfFrames-200) : (numberOfFrames-10)
@@ -71,6 +71,7 @@ for frameIndex = 1 : numberOfFrames
   %caxis([0 5.5])
   %caxis([0 8.0])
   caxis([0 5.5])
+  %caxis([0 11])
   cb = colorbar;
   set(cb, 'ylim', [0 11.0]); % set colorbar range
   set(gca,'YDir','normal') % set y-axis 0 - end bottom to top
