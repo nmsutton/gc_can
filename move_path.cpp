@@ -292,10 +292,10 @@ void move_fullspace2(CARLsim* sim, P* p) {
 	double speed = p->move_increment*1000;
 	control_speed(speed,p);	
 	double offset = (p->x_size-p->x_size_plot)/2; // offset for plotting
-	p->pos[0]=offset+5;p->pos[1]=offset-5; // set starting point
-	p->bpos[0]=offset+5;p->bpos[1]=offset-5;
-	//p->pos[0]=offset;p->pos[1]=offset; // set starting point
-	//p->bpos[0]=offset;p->bpos[1]=offset;
+	//p->pos[0]=offset+5;p->pos[1]=offset-5; // set starting point
+	//p->bpos[0]=offset+5;p->bpos[1]=offset-5;
+	p->pos[0]=offset;p->pos[1]=offset; // set starting point
+	p->bpos[0]=offset;p->bpos[1]=offset;
 	double angle; double x = p->pos[0]; double y = p->pos[1]; bool move_vert = 0;
 	double angle_rev_h = -1; // flag to reverse angle horizontally
 	double angle_rev_v = 1; // flag to reverse angle vertically

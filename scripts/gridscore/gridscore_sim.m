@@ -2,7 +2,8 @@
 % note: set use_hopper and hopper_run in high_res_traj.m if wanting to use hopper data
 % while running locally.
 % reference: https://www.mathworks.com/matlabcentral/answers/456241-how-to-apply-command-line-arguments-in-matlab
-function heat_map = gridscore_sim(p1,p2,local_run,run_on_hopper,use_hopper_data,fdr_prefix,hopper_run,save_gridscore_file,restrict_time)
+function heat_map = gridscore_sim(p1,p2,local_run,run_on_hopper,use_hopper_data,fdr_prefix, ...
+    hopper_run,save_gridscore_file,restrict_time,sel_nrn)
 	% run_on_hopper: run from hopper's system 
 	% use_hopper_data: access hopper data locally
 	% fdr_prefix: folder name prefix
@@ -22,7 +23,7 @@ function heat_map = gridscore_sim(p1,p2,local_run,run_on_hopper,use_hopper_data,
 	end
 	PWD=pwd;
 	cd ../high_res_traj
-	heat_map=high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hopper_run,local_run,restrict_time);
+	heat_map=high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hopper_run,local_run,restrict_time,sel_nrn);
 	cd(PWD);
 
 	m = []; % empty matrix
