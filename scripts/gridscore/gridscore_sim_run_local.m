@@ -8,7 +8,7 @@ local_run=1; % local run number
 hopper_run=6; % hopper run number
 save_gridscore_file=0; % save gridscore to file
 fdr_prefix="gc_can_"; % folder name prefix for hopper run. "gc_can_" for main dir; "param_explore_iz_" for iz pe.
-restrict_time=90000;%6733000;%4328000;%1360000;%500000; % limit time plotted. 0 for no restriction; in 20ms bins
+restrict_time=0;%6733000;%4328000;%1360000;%500000; % limit time plotted. 0 for no restriction; in 20ms bins
 run_on_hopper=0; % supercomputer run options: run from hopper's system  
 % select neuron to plot
 sel_nrn=600;
