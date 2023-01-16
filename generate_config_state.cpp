@@ -65,7 +65,7 @@ SomeToSomeConnection* SomeToSomeConn;
 sim.connect(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, "one-to-one", p.dir_to_gc_wt, 1.0f, 
             RangeDelay(1), RadiusRF(-1), SYN_FIXED, 33.082, 20.0f); // 0 DIR
 ////
-float m1 = 1.2;//1;//1.2;
+float m1 = 1.89;//1.5;//1.2;//1;//1.2;
 p.conn_offset = 0;
 if (p.spin2in_active) {
     p.gc_to_in_wt = p.spdin2inwt;
@@ -76,6 +76,8 @@ if (p.spex2in_active) {
     p.gc_to_in_wt = p.spdex2inwt;
     SomeToSomeConn = new SomeToSomeConnection(&p);
     sim.connect(MEC_LII_Stellate_Speed, EC_LII_Axo_Axonic, SomeToSomeConn, 8.5*m1, 5.2*m1, SYN_FIXED);    
+    //sim.connect(MEC_LII_Stellate_Speed, EC_LII_Axo_Axonic, "one-to-one", p.spdex2inwt, 1.0f, 
+    //        RangeDelay(1), RadiusRF(-1), SYN_FIXED, 8.5*m1, 5.2*m1); // 0 DIR
 }
 p.gc_to_in_wt = gc2inwt;
 SomeToSomeConn = new SomeToSomeConnection(&p);
@@ -93,6 +95,8 @@ if (p.spex2in_active) {
     p.gc_to_in_wt = p.spdex2inwt;
     SomeToSomeConn = new SomeToSomeConnection(&p);
     sim.connect(MEC_LII_Stellate_Speed, MEC_LII_Basket, SomeToSomeConn, 8.5*m1, 5.2*m1, SYN_FIXED);
+    //sim.connect(MEC_LII_Stellate_Speed, MEC_LII_Basket, "one-to-one", p.spdex2inwt, 1.0f, 
+    //        RangeDelay(1), RadiusRF(-1), SYN_FIXED, 8.5*m1, 5.2*m1); // 0 DIR
 }
 p.gc_to_in_wt = gc2inwt;
 SomeToSomeConn = new SomeToSomeConnection(&p);
@@ -110,6 +114,8 @@ if (p.spex2in_active) {
     p.gc_to_in_wt = p.spdex2inwt;
     SomeToSomeConn = new SomeToSomeConnection(&p);
     sim.connect(MEC_LII_Stellate_Speed, EC_LII_Basket_Multipolar, SomeToSomeConn, 8.5*m1, 5.2*m1, SYN_FIXED);
+    //sim.connect(MEC_LII_Stellate_Speed, EC_LII_Basket_Multipolar, "one-to-one", p.spdex2inwt, 1.0f, 
+    //        RangeDelay(1), RadiusRF(-1), SYN_FIXED, 8.5*m1, 5.2*m1); // 0 DIR
 }
 p.gc_to_in_wt = gc2inwt;
 SomeToSomeConn = new SomeToSomeConnection(&p);
@@ -264,3 +270,63 @@ sim.setSTP(EC_LII_Basket_Multipolar, MEC_LII_Stellate, true, STPu(0.1617, 0.0f),
                                     STPtdGABAb(150.0f, 0.0f), 
                                     STPtrNMDA(0.0f, 0.0f), 
                                     STPtrGABAb(0.0f, 0.0f));
+
+if (p.spin2in_active == 1) {
+sim.setSTP(MEC_LII_Basket_Speed, EC_LII_Axo_Axonic, true, STPu(0.1638, 0.0f),
+                                     STPtauU(57.57, 0.0f),
+                                     STPtauX(119, 0.0f),
+                                     STPtdAMPA(6.205, 0.0f),
+                                     STPtdNMDA(150.0, 0.0f),
+                                     STPtdGABAa(6.0, 0.0f),
+                                     STPtdGABAb(150.0, 0.0f),
+                                     STPtrNMDA(0.0f, 0.0f),
+                                     STPtrGABAb(0.0f, 0.0f));
+sim.setSTP(MEC_LII_Basket_Speed, MEC_LII_Basket, true, STPu(0.1638, 0.0f),
+                                     STPtauU(57.57, 0.0f),
+                                     STPtauX(119, 0.0f),
+                                     STPtdAMPA(6.205, 0.0f),
+                                     STPtdNMDA(150.0, 0.0f),
+                                     STPtdGABAa(6.0, 0.0f),
+                                     STPtdGABAb(150.0, 0.0f),
+                                     STPtrNMDA(0.0f, 0.0f),
+                                     STPtrGABAb(0.0f, 0.0f));
+sim.setSTP(MEC_LII_Basket_Speed, EC_LII_Basket_Multipolar, true, STPu(0.1638, 0.0f),
+                                     STPtauU(57.57, 0.0f),
+                                     STPtauX(119, 0.0f),
+                                     STPtdAMPA(6.205, 0.0f),
+                                     STPtdNMDA(150.0, 0.0f),
+                                     STPtdGABAa(6.0, 0.0f),
+                                     STPtdGABAb(150.0, 0.0f),
+                                     STPtrNMDA(0.0f, 0.0f),
+                                     STPtrGABAb(0.0f, 0.0f));
+}
+
+if (p.spex2in_active == 1) {
+sim.setSTP(MEC_LII_Stellate_Speed, EC_LII_Axo_Axonic, true, STPu(0.1672, 0.0f), 
+                                    STPtauU(49.9201, 0.0f), 
+                                    STPtauX(167.6863, 0.0f), 
+                                    STPtdAMPA(3.0845, 0.0f), 
+                                    STPtdNMDA(150.0, 0.0f), 
+                                    STPtdGABAa(6.0, 0.0f), 
+                                    STPtdGABAb(150.0, 0.0f), 
+                                    STPtrNMDA(0.0f, 0.0f), 
+                                    STPtrGABAb(0.0f, 0.0f));
+sim.setSTP(MEC_LII_Stellate_Speed, MEC_LII_Basket, true, STPu(0.1672, 0.0f), 
+                                    STPtauU(49.9201, 0.0f), 
+                                    STPtauX(152.8565, 0.0f), 
+                                    STPtdAMPA(2.8868, 0.0f), 
+                                    STPtdNMDA(150.0, 0.0f), 
+                                    STPtdGABAa(6.0, 0.0f), 
+                                    STPtdGABAb(150.0, 0.0f), 
+                                    STPtrNMDA(0.0f, 0.0f), 
+                                    STPtrGABAb(0.0f, 0.0f));
+sim.setSTP(MEC_LII_Stellate_Speed, EC_LII_Basket_Multipolar, true, STPu(0.1973, 0.0f), 
+                                    STPtauU(49.9201, 0.0f), 
+                                    STPtauX(136.5698, 0.0f), 
+                                    STPtdAMPA(2.6407, 0.0f), 
+                                    STPtdNMDA(150.0, 0.0f), 
+                                    STPtdGABAa(6.0, 0.0f), 
+                                    STPtdGABAb(150.0, 0.0f), 
+                                    STPtrNMDA(0.0f, 0.0f), 
+                                    STPtrGABAb(0.0f, 0.0f));
+}

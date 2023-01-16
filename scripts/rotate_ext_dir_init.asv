@@ -1,0 +1,11 @@
+% rotate ext_dir_initial
+
+angle=45;
+
+% place array here:
+ext_dir_initial_data=[];
+layer_size=sqrt(size(ext_dir_initial_data,2));
+ext_dir_initial_data2=reshape(ext_dir_initial_data,layer_size,layer_size);
+
+temp7=imrotate(ext_dir_initial_data2,30,'bilinear','crop');
+

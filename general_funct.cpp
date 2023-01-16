@@ -596,6 +596,12 @@ void EISignal(double angle, CARLsim* sim, P* p) {
 		if (p->spex2in_active) {	
 			setExtDir(p,angle,p->spdex2in_curr,1);//100.0,1);//0.075,1);//0.20);
 			sim->setExternalCurrent(p->MEC_LII_Stellate_Speed_Group, p->ext_dir);
+			/*vector<float> ext_dir2;
+			for (int i = 0; i < 300; i++) {
+				//ext_dir2.push_back(ext_dir[i]);
+				ext_dir2.push_back(50.0);
+			}
+			sim->setExternalCurrent(p->MEC_LII_Stellate_Speed_Group, ext_dir2);*/
 		}
 	}	
 }

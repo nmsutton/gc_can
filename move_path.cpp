@@ -292,10 +292,13 @@ void move_fullspace2(CARLsim* sim, P* p) {
 	double speed = p->move_increment*1000;
 	control_speed(speed,p);	
 	double offset = (p->x_size-p->x_size_plot)/2; // offset for plotting
+	offset=2;
 	//p->pos[0]=offset+5;p->pos[1]=offset-5; // set starting point
 	//p->bpos[0]=offset+5;p->bpos[1]=offset-5;
-	p->pos[0]=offset;p->pos[1]=offset; // set starting point
-	p->bpos[0]=offset;p->bpos[1]=offset;
+	//p->pos[0]=offset;p->pos[1]=offset; // set starting point
+	//p->bpos[0]=offset;p->bpos[1]=offset;
+	p->pos[0]=offset;p->pos[1]=p->pos[0]; // set starting point
+	p->bpos[0]=offset;p->bpos[1]=p->bpos[0];
 	double angle; double x = p->pos[0]; double y = p->pos[1]; bool move_vert = 0;
 	double angle_rev_h = -1; // flag to reverse angle horizontally
 	double angle_rev_v = 1; // flag to reverse angle vertically
@@ -306,14 +309,14 @@ void move_fullspace2(CARLsim* sim, P* p) {
 	int v_m_t = (int) ceil((p->sim_time/(double) p->timestep)/(double) (h_m+v_m)); // vertical moves total
 	for (int i = 0; i < (h_m+v_m)*v_m_t; i++) {
 		// horiz move
-		if (x > offset+30) {angle_rev_h = 1;move_vert=1;}
-		else if (x < offset+0) {angle_rev_h = -1;move_vert=1;}
+		if (x > p->x_size-offset) {angle_rev_h = 1;move_vert=1;}
+		else if (x < offset) {angle_rev_h = -1;move_vert=1;}
 		// process indices for horizontal move
 		if (angle_rev_h == -1) {angle = 90;x=x+step_spd;}
 		else {angle = 270;x=x-step_spd;}
 		// vert move
-		if (y > offset+30) {angle_rev_v=-1;}
-		else if (y < offset+0) {angle_rev_v=1;}
+		if (y > p->y_size-offset) {angle_rev_v=-1;}
+		else if (y < offset) {angle_rev_v=1;}
 		// process indices for vertical move
 		if (move_vert) {
 			for (int j = 0; j < v_m; j++) {
