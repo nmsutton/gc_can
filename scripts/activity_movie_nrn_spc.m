@@ -25,7 +25,7 @@ else
 end
 
 delay_frames = false;%true;
-time=140000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
+time=3500000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
 bin_size=200;%10; % size of firing bin in ms
 t=[0:(1/bin_size):(time*(1/bin_size))];
 x_size = 30;%42;%30; % size of network on x-axis
@@ -51,7 +51,7 @@ set(gcf, 'nextplot', 'replacechildren');
 set(gcf, 'renderer', 'zbuffer');
 caxis manual; % allow subsequent plots to use the same color limits
 custom_colormap = load('neuron_space_colormap.mat');
-
+disp(numberOfFrames);
 for frameIndex = 1 : numberOfFrames
 %for frameIndex = (numberOfFrames-200) : (numberOfFrames-10)
   start_frame = 0;

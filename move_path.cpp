@@ -92,9 +92,20 @@ void control_speed(double speed, P* p) {
 		p->speed_signaling = 2.057852 - (2.01749818/(1 + pow((speed/8.060984),4.142584)));
 		p->pc_level = 295.9315 + (513.837/(1 + pow((speed/2.681747),3.170439)));*/
 		p->move_increment = (0.001*speed);
-		p->base_ext = 328.1851 + 264.5679/(1 + pow((speed/9.923302),8.14715));
-		p->speed_signaling = 2.318527 - (2.27162279/(1 + pow((speed/12.15808),4.901232)));
-		p->pc_level = p->base_ext * .71;
+		if (speed <= 18) {
+			p->speed_signaling = .0000000000013434739432049980+(speed*0.15086111110505704)-(0.046652777775061022*pow(speed,2))+(0.0078285108020564598*pow(speed,3))-(0.00050694444441895981*pow(speed,4))+(0.000011622299382164702*pow(speed,5));
+		}
+		else {p->speed_signaling = 2.0;}
+		//p->speed_signaling = p->speed_signaling * 0.375;
+		//p->base_ext = 328.1851 + 264.5679/(1 + pow((speed/9.923302),8.14715));
+		//p->speed_signaling = 2.318527 - (2.27162279/(1 + pow((speed/12.15808),4.901232)));
+		//p->base_ext = 45.06935 + (104.66755/(1 + pow((speed/12.3696),5.882045)));
+		//p->speed_signaling = 2.351559 + (-2.31547713/(1 + pow((speed/10.90842),2.548051)));
+		//if (speed>5) {p->spdex2in_curr = -0.1509171 + (0.550918/(1 + pow((speed/2.824788),1.707051)));}
+		//else {p->spdex2in_curr = 0;}
+		//if (speed>10) {p->pc_level = 2*300;}
+		//else {p->pc_level = 2*300+(speed*-30);}
+		//p->pc_level = p->base_ext * .71;
 		//if (speed<1) {p->speed_signaling=0;}
 		//if (speed>15) {p->speed_signaling=20.0;}
 		//p->spdin2in_curr = 8 + -8/(1 + pow((speed/15.31543),187.0108));
@@ -414,31 +425,43 @@ void move_ramp(CARLsim* sim, P* p) {
 	// test movement with speeds ramping up then down
 
 	vector<double> moves;
-	double angle = 90;
-	double speed = 5; 
-	double top_speed = 22.5;//25;//25;//13;
-	double max_angle = 0;//90;
+	double angle = 90; // initial value
+	double speed = 5;  // initial value
+	double top_speed = 100;//50;//22.5;//25;//25;//13;
+	double max_angle = 720;//360;//90;//0;//90;
 	//int rand_val = rand() % max_angle;
-	int rev_dir_t = 120; // ms to reverse direction
-	bool speed_ramp = 1;
-	bool angle_ramp = 1;
-	double si = (p->t) % rev_dir_t;
+	int rev_speed_t = 500;//120; // ms to reverse speed
+	int rev_angle_t = 120*60; // ms to reverse angle
+	bool speed_ramp = 1; // activate speed ramp
+	bool angle_ramp = 1; // activate angle ramp
+	double si = (p->t) % rev_speed_t;
+	double ai = (p->t) % rev_angle_t;
 
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		if ((p->t) % rev_dir_t == 0) {
-			p->move_rev = p->move_rev * -1;
+		//if (p->t > 20000) {top_speed=5;}
+		// speed
+		if ((p->t) % rev_speed_t == 0) {
+			p->move_rev_s = p->move_rev_s * -1;
 		}
-		if (p->move_rev == 1) {
-			if (speed_ramp) {speed = top_speed * (si/(double) rev_dir_t);}
-			if (angle_ramp) {angle = angle + max_angle*(si/(double) rev_dir_t);}		
+		if (speed_ramp && p->move_rev_s == 1) {
+			speed = top_speed * (si/(double) rev_speed_t);
 		}
-		else {
-			if (speed_ramp) {speed = top_speed * (1-(si/(double) rev_dir_t));}
-			if (angle_ramp) {angle = angle + max_angle*(1-(si/(double) rev_dir_t));}
+		else if (speed_ramp) {
+			speed = top_speed * (1-(si/(double) rev_speed_t));
+		}
+		// angle
+		if ((p->t) % rev_angle_t == 0) {
+			p->move_rev_a = p->move_rev_a * -1;
+		}
+		if (angle_ramp && p->move_rev_a == 1) {
+			angle = angle + max_angle*(ai/(double) rev_angle_t);
+		}
+		else if (angle_ramp) {
+			angle = angle + max_angle*(1-(ai/(double) rev_angle_t));
 		}		
 		if (angle_ramp && angle > 360) {angle = angle - 360;}
-		speed = (top_speed*.45)+(speed*.55);
+		//speed = (top_speed*.45)+(speed*.55);
 		//speed = 0+(speed*.8);
 		control_speed(speed,p);
 		EISignal(angle, sim, p);

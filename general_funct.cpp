@@ -133,14 +133,18 @@ void set_pos(P *p, double angle) {
 	*/
 	//angle = angle + 180;
 	vector<double> ver_hor = find_ver_hor(p, angle, &p->move_increment);
-	p->pos[0] = p->pos[0] + (ver_hor[1] * p->grid_pattern_scale);
-	p->pos[1] = p->pos[1] + (ver_hor[0] * p->grid_pattern_scale);
+	if (p->move_animal==1 || p->move_animal_aug==1 || p->move_animal_onlypos==1) {
+		ver_hor[0] = ver_hor[0] * p->grid_pattern_scale;
+		ver_hor[1] = ver_hor[1] * p->grid_pattern_scale;
+	}
+	p->pos[0] = p->pos[0] + ver_hor[1];
+	p->pos[1] = p->pos[1] + ver_hor[0];
 	angle = angle + p->grid_pattern_rot;
 	if (angle>360) {angle=360-angle;}
 	if (angle<0)   {angle=angle+360;}
 	ver_hor = find_ver_hor(p, angle, &p->move_increment);
-	p->bpos[0] = p->bpos[0] + (ver_hor[1] * p->grid_pattern_scale);
-	p->bpos[1] = p->bpos[1] + (ver_hor[0] * p->grid_pattern_scale);
+	p->bpos[0] = p->bpos[0] + ver_hor[1];
+	p->bpos[1] = p->bpos[1] + ver_hor[0];
 	//printf("angle: %f %f ver_hor[1]:%f %f\n",angle,p->pos[0],ver_hor[1],p->move_increment);
 	//printf("%f ver_hor[0]:%f %f\n",p->pos[1],ver_hor[1],p->move_increment);
 
@@ -541,28 +545,37 @@ void setExtDir(P* p, double angle, double speed, int sc) {
 	if (sc == 2) {for (int i = 0; i < 4; i++) {speeds[i]--;}}
 	//if (sc == true) {speeds[0]=0.01;speeds[1]=0.01;speeds[2]=0.01;speeds[3]=0.01;}
 
+	double base_ext = p->base_ext;
 	for (int i = 0; i < p->layer_size; i++) {
 		if (get_pd(i, p) == 180) {
-			p->ext_dir[i] = p->base_ext*speeds[0];
+			//p->ext_dir[i] = p->base_ext*speeds[0];
+			if (p->noise_active) {noise = get_noise(p);base_ext = base_ext*noise;}
+			p->ext_dir[i] = base_ext*speeds[0];
 		}
 		else if (get_pd(i, p) == 270) {
-			p->ext_dir[i] = p->base_ext*speeds[1];
+			//p->ext_dir[i] = p->base_ext*speeds[1];
+			if (p->noise_active) {noise = get_noise(p);base_ext = base_ext*noise;}
+			p->ext_dir[i] = base_ext*speeds[1];
 		}
 		else if (get_pd(i, p) == 0) {
-			p->ext_dir[i] = p->base_ext*speeds[2];
+			//p->ext_dir[i] = p->base_ext*speeds[2];
+			if (p->noise_active) {noise = get_noise(p);base_ext = base_ext*noise;}
+			p->ext_dir[i] = base_ext*speeds[2];
 		}
 		else if (get_pd(i, p) == 90) {
-			p->ext_dir[i] = p->base_ext*speeds[3];
+			//p->ext_dir[i] = p->base_ext*speeds[3];
+			if (p->noise_active) {noise = get_noise(p);base_ext = base_ext*noise;}
+			p->ext_dir[i] = base_ext*speeds[3];
 		}
 	}
 
 	// noise
-	if (p->noise_active) {
+	/*if (p->noise_active) {
 		for (int i = 0; i < p->layer_size; i++) {		
 			noise = get_noise(p); // add random noise for realism
 			p->ext_dir[i] = p->ext_dir[i]*noise; // change external input by noise value
 		}
-	} 
+	}*/
 	
 	//printf("t:%d n:%f e:%f s:%f w:%f\n",p->t,speeds[0],speeds[1],speeds[2],speeds[3]);
 }

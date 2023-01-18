@@ -8,10 +8,10 @@ local_run=1; % local run number
 hopper_run=6; % hopper run number
 save_gridscore_file=0; % save gridscore to file
 fdr_prefix="gc_can_"; % folder name prefix for hopper run. "gc_can_" for main dir; "param_explore_iz_" for iz pe.
-restrict_time=220000;%6733000;%4328000;%1360000;%500000; % limit time plotted. 0 for no restriction; in 20ms bins
+restrict_time=1550000;%6733000;%4328000;%1360000;%500000; % limit time plotted. 0 for no restriction; in 20ms bins
 run_on_hopper=0; % supercomputer run options: run from hopper's system  
 % select neuron to plot
-sel_nrn=690;%890;%690;
+sel_nrn=465;%127;%237;%127;%10;%680;%690;%890;%690;
 
 heat_map = gridscore_sim(p1,p2,local_run,run_on_hopper,use_hopper_data,fdr_prefix, ...
     hopper_run,save_gridscore_file,restrict_time,sel_nrn);

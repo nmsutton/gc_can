@@ -32,9 +32,18 @@ sim.setNeuronParameters(EC_LI_II_Multipolar_Pyramidal, 204.0f, 0.0f, 0.37f, 0.0f
                                 7.0f, 0.0f, 1); // C,k,vr,vt,a,b,vpeak,c,d
                                 // Ensemble file:  k,a,b,d,C,vr,vt,c,vpeak. 
                                 // 1->2, 2->5, 3->6, 4->9, 5->1, 6->3, 7->4, 8->8, 9->7
-sim.setNeuronParameters(MEC_LII_Stellate, 118.000000f, 0.0f, 0.62f, 0.0f, -58.53f, 0.0f, 
+/*sim.setNeuronParameters(MEC_LII_Stellate, 118.000000f, 0.0f, 0.62f, 0.0f, -58.53f, 0.0f, 
                                 -43.52f, 0.0f, 0.003f, 0.0f, 11.690000f, 0.0f, 11.48f, 0.0f, 
-                                -49.52f, 0.0f, 50.0f, 0.0f, 1);
+                                -49.52f, 0.0f, 50.0f, 0.0f, 1);*/
+/*sim.setNeuronParameters(MEC_LII_Stellate, 118.000000f, 0.0f, 0.62f, 0.0f, -58.53f, 0.0f, 
+                                -43.52f, 0.0f, 0.003f, 0.0f, 11.690000f, 0.0f, 11.48f, 0.0f, 
+                                -49.52f, 0.0f, 119.0f, 0.0f, 1);*/
+sim.setNeuronParameters(MEC_LII_Stellate, 131.000000f, 0.0f, 0.98f, 0.0f, -62.65f, 0.0f, 
+                                -43.6f, 0.0f, 0.005f, 0.0f, 0.0f, 0.0f, 7.85f, 0.0f, 
+                                -52.68f, 0.0f, 10.0f, 0.0f, 1);
+/*sim.setNeuronParameters(MEC_LII_Stellate, 118.000000f, 0.0f, 0.62f, 0.0f, -58.53f, 0.0f, 
+                                -43.52f, 0.0f, 0.003f, 0.0f, 0.0f, 0.0f, 11.48f, 0.0f, 
+                                -49.52f, 0.0f, 10.0f, 0.0f, 1);*/
 sim.setNeuronParameters(EC_LII_Axo_Axonic, 20.0f, 0.0f,  1.0f, 0.0f, -55.0f, 0.0f, 
                                 -40.0f, 0.0f, 0.15f, 0.0f, 8.0f, 0.0f, 25.0f, 0.0f, 
                                 -55.0f, 0.0f, 200.0f, 0.0f, 1); 
