@@ -93,9 +93,11 @@ void control_speed(double speed, P* p) {
 		p->pc_level = 295.9315 + (513.837/(1 + pow((speed/2.681747),3.170439)));*/
 		p->move_increment = (0.001*speed);
 		if (speed <= 18) {
-			p->speed_signaling = .0000000000013434739432049980+(speed*0.15086111110505704)-(0.046652777775061022*pow(speed,2))+(0.0078285108020564598*pow(speed,3))-(0.00050694444441895981*pow(speed,4))+(0.000011622299382164702*pow(speed,5));
+			//p->speed_signaling = .0000000000013434739432049980+(speed*0.15086111110505704)-(0.046652777775061022*pow(speed,2))+(0.0078285108020564598*pow(speed,3))-(0.00050694444441895981*pow(speed,4))+(0.000011622299382164702*pow(speed,5));
+			//p->speed_signaling=0.0005618993199+(0.09361838382*speed)+(0.005125851762*pow(speed,2))+(-0.0009528081425*pow(speed,3))+(3.5344308951201149e-005*pow(speed,4));
+			p->speed_signaling=-2.1443595268841823e-002+(1.9700319806670014e-001*speed)+(-5.4719263691919443e-002*pow(speed,2))+(8.8828871578855023e-003*pow(speed,3))+(-5.7872405498270261e-004*pow(speed,4))+(1.3031859352725142e-005*pow(speed,5));
 		}
-		else {p->speed_signaling = 2.0;}
+		else {p->speed_signaling = 1.5;}
 		//p->speed_signaling = p->speed_signaling * 0.375;
 		//p->base_ext = 328.1851 + 264.5679/(1 + pow((speed/9.923302),8.14715));
 		//p->speed_signaling = 2.318527 - (2.27162279/(1 + pow((speed/12.15808),4.901232)));
@@ -359,9 +361,11 @@ void move_animal(CARLsim* sim, P* p, vector<double> *anim_angles, vector<double>
 void move_circles(CARLsim* sim, P* p) {
 	// movement path
 
+	double speed = 10;//3.587;
 	double angle = 90;
+	int pace = 50;
 	for (int i = 0; i < (p->sim_time/p->animal_ts); i++) {
-		if (i % 20 == 0) {
+		if (i % pace == 0) {
 			angle += 45;
 			//angle += 135;
 			//angle = rand_angle();
@@ -373,7 +377,7 @@ void move_circles(CARLsim* sim, P* p) {
 		p->angles.push_back(angle);
 	}
 	for (int i = 0; i < p->angles.size(); i++) {
-		p->speeds.push_back(3.587);
+		p->speeds.push_back(speed);
 		p->speed_times.push_back(i*20);
 	}
 	p->num_moves = p->angles.size();

@@ -458,18 +458,27 @@ public:
     }
 };
 
+int wrap_around(int i, int max_size) {
+	if (i<0) {i=i+max_size;}
+	else if (i>=max_size) {i=i-max_size;}
+	return i;
+}
+
 class SomeToSomeConnection : public ConnectionGenerator {
 public:
     vector<vector<double>> weights_in;
     double mex_hat_multi;
     int conn_offset, conn_dist;
     float gc_to_in_wt;
+    int x_size; int y_size;
     SomeToSomeConnection(P *p) {
     	this->weights_in = p->weights_in; // set matrix
     	this->mex_hat_multi = p->mex_hat_multi;
     	this->conn_offset = p->conn_offset;
     	this->conn_dist = p->conn_dist;
     	this->gc_to_in_wt = p->gc_to_in_wt;
+    	this->x_size = p->x_size;
+    	this->y_size = p->y_size;
     }
     ~SomeToSomeConnection() {}
  
@@ -479,17 +488,75 @@ public:
             float& delay, bool& connected) {
     		// adjust i and j for multiple neuron types combine into a group
     		//int i_adj = (i * this->conn_dist) + this->conn_offset;
-    		//int j_adj = (j * this->conn_dist) + this->conn_offset;
+    		//int j_adj = (j * this->conn_dist) + this->conn_offset;   
+    		int j_sft; // shifted index 	
+    		//vector<int> shift_x{0, -17, 17,   4, -4, 11, -11}; 
+    		//vector<int> shift_y{0,   4, -4, -17, 17, 11, -11}; 
+    		//vector<int> shift_x{0, -14, 14,   4, -4, 10, -10}; 
+    		//vector<int> shift_y{0,   4, -4, -14, 14, 10, -10}; 
+    		//vector<int> shift_x{0, -14, 14,   4, -4, 12, -12}; 
+    		//vector<int> shift_y{0,   4, -4, -14, 14, 9, -9};
+    		//vector<int> shift_x{0, -14, 14,   4, -4}; 
+    		//vector<int> shift_y{0,   4, -4, -14, 14};
+    		//vector<int> shift_x{0, -14, 14}; 
+    		//vector<int> shift_y{0,   4, -4}; 
+    		//vector<int> shift_x{0, 0,  -1, 16}; 
+    		//vector<int> shift_y{0, 14, -7,  7}; 
+    		//vector<int> shift_x{0}; 
+    		//vector<int> shift_y{0};
+    		//vector<int> shift_x{0, 0,  -14,  6}; 
+    		//vector<int> shift_y{0, 14, -8,  -6}; 
+    		//vector<int> shift_x{0,   0,  0}; 
+    		//vector<int> shift_y{0, -14, 14};
+    		// vector<int> shift_x{0,  -8,  8}; 
+    		// vector<int> shift_y{0, -14, 14};
+    	    vector<int> shift_x{0,  -8,  8, -14}; 
+    		vector<int> shift_y{0, -14, 14, 0};
+			//vector<int> shift_x{0, -14, 14}; 
+    		//vector<int> shift_y{0, 0, 0};
 
     		// assign connections
-    		if (i == ((j * this->conn_dist) + this->conn_offset)) {
+    		/*if (i == ((j * this->conn_dist) + this->conn_offset)) {
     			connected = 1;
     			//printf("i:%d j:%d\n",i,j);
-    		}
-    		else {
+    		}*/
+    		/*else {
     			connected = 0;
+    		}*/    		
+    		j_sft = ((j * this->conn_dist) + this->conn_offset);    		
+    		int ix = i % x_size;
+    		int iy = i / x_size;
+    		int jx = j_sft % x_size;//j % x_size;
+    		int jy = j_sft / x_size;//j / x_size;
+    		ix = wrap_around(ix,x_size); iy = wrap_around(iy,x_size);
+    		jx = wrap_around(jx,x_size); jy = wrap_around(jy,x_size);
+    		int max_dist = 5; 
+    		double wt_fade = 0;
+    		double dist = sqrt((pow((jx-ix),2))+(pow((jy-iy),2)));
+    		connected = 0;
+    		
+    		for (int i2 = 0; i2 < shift_x.size(); i2++) {
+    			j_sft = (((double) j * (double) this->conn_dist) + (double) this->conn_offset) + ((shift_y[i2]*(double) x_size)+shift_x[i]);
+    			j_sft = wrap_around(j_sft,(x_size*y_size));
+    			if (i == j_sft) {
+    				if ((int)ix%2==(int)jx%2&&(int)iy%2==(int)jy%2) {
+						connected = 1;
+    				}
+    			}
     		}
+    		/*
+    		//if (dist==0) {//<1) {    		
+    		if (dist<=max_dist) {
+    			if (ix%2==jx%2&&iy%2==jy%2) {
+    				connected = 1;
+    			}
+    		}
+    		*/
         weight = gc_to_in_wt;
+    	/*if (dist!=0&&max_dist!=0) { 
+    		wt_fade = dist/max_dist;
+    	}
+    	weight = gc_to_in_wt*(1-wt_fade);*/
         maxWt = 10000.0f;
         delay = 1; 
     }

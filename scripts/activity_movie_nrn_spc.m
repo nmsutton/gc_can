@@ -14,7 +14,7 @@
 initOAT;
 hopper_use=0;
 local_run=1;
-hopper_run=2;
+hopper_run=1;
 if hopper_use
     hopper_path=strcat('/mnt/hopper_scratch/gc_sim/gc_can_',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat');
     SpikeReader(hopper_path, false, 'silent');
@@ -25,7 +25,7 @@ else
 end
 
 delay_frames = false;%true;
-time=3500000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
+time=220000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
 bin_size=200;%10; % size of firing bin in ms
 t=[0:(1/bin_size):(time*(1/bin_size))];
 x_size = 30;%42;%30; % size of network on x-axis
@@ -79,6 +79,8 @@ for frameIndex = 1 : numberOfFrames
   if delay_frames == true
       caption = sprintf('Neuron space grid cell firing amounts, t = %.0f ms', ceil((frameIndex+start_frame)/bin_size)*bin_size);
   end
+  %set(gca,'fontsize', 20);
+  %title(caption, 'FontSize', 20);
   title(caption, 'FontSize', 15);
   thisFrame = getframe(gcf);
   myMovie(frameIndex) = thisFrame;
