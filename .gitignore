@@ -21,6 +21,7 @@ data/anim_angles_limited.cpp
 data/anim_speeds_limited.cpp
 data/test_data_angles.cpp
 data/test_data_speeds.cpp
+data/synapse_weights_backup.csv
 scripts/high_res_traj/test_data_angles.cpp
 scripts/high_res_traj/test_data_speeds.cpp
 scripts/high_res_traj/test_data_angles.csv

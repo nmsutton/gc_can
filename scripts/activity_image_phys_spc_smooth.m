@@ -30,8 +30,8 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	flip_vert = 0; % flip matrix vertically
 
 	if use_carlsim_spikes
-        plot_subsect=0; % plot only subsection of total data. this is set by the plot_size variable.
-		grid_size = 30;%42;%30; % sqrt of grid size
+        plot_subsect=1;%0; % plot only subsection of total data. this is set by the plot_size variable.
+		grid_size = 42;%30; % sqrt of grid size
 		plot_size = 30; % sqrt of plot size
 		binside = 3;
 		std_smooth_kernel = 3.333;

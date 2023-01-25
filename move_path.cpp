@@ -92,12 +92,14 @@ void control_speed(double speed, P* p) {
 		p->speed_signaling = 2.057852 - (2.01749818/(1 + pow((speed/8.060984),4.142584)));
 		p->pc_level = 295.9315 + (513.837/(1 + pow((speed/2.681747),3.170439)));*/
 		p->move_increment = (0.001*speed);
-		if (speed <= 18) {
-			//p->speed_signaling = .0000000000013434739432049980+(speed*0.15086111110505704)-(0.046652777775061022*pow(speed,2))+(0.0078285108020564598*pow(speed,3))-(0.00050694444441895981*pow(speed,4))+(0.000011622299382164702*pow(speed,5));
-			//p->speed_signaling=0.0005618993199+(0.09361838382*speed)+(0.005125851762*pow(speed,2))+(-0.0009528081425*pow(speed,3))+(3.5344308951201149e-005*pow(speed,4));
-			p->speed_signaling=-2.1443595268841823e-002+(1.9700319806670014e-001*speed)+(-5.4719263691919443e-002*pow(speed,2))+(8.8828871578855023e-003*pow(speed,3))+(-5.7872405498270261e-004*pow(speed,4))+(1.3031859352725142e-005*pow(speed,5));
+		/*if (speed <= 18) {
+			p->speed_signaling=-0.00003637645684+(-0.007054249055*speed)+(0.02318195180*pow(speed,2))+(-0.004154960540*pow(speed,3))+(0.0003205539613*pow(speed,4))+(-0.000008046504754*pow(speed,5));
 		}
-		else {p->speed_signaling = 1.5;}
+		else {p->speed_signaling = 1.6;}*/
+		if (speed <= 18) {
+			p->speed_signaling=(2.2266573229603745e-003)+((2.0852442092359237e-003)*speed)+((2.3177154963652791e-002)*pow(speed,2))+((-1.3937698255019641e-003)*pow(speed,3))+((-2.6132861715835853e-006)*pow(speed,4))+((1.3259826917312383e-006)*pow(speed,5));
+		}
+		else {p->speed_signaling = 1.7;}
 		//p->speed_signaling = p->speed_signaling * 0.375;
 		//p->base_ext = 328.1851 + 264.5679/(1 + pow((speed/9.923302),8.14715));
 		//p->speed_signaling = 2.318527 - (2.27162279/(1 + pow((speed/12.15808),4.901232)));
@@ -176,7 +178,7 @@ void run_path_onlypos(vector<double> *moves, vector<double> *speeds, vector<int>
 void move_straight(CARLsim* sim, P* p) {
 	// stright line path
 	//control_speed(50,p);
-	double angle = 90;
+	double angle = 180;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
 		control_speed(5,p);	
@@ -305,7 +307,7 @@ void move_fullspace2(CARLsim* sim, P* p) {
 	double speed = p->move_increment*1000;
 	control_speed(speed,p);	
 	double offset = (p->x_size-p->x_size_plot)/2; // offset for plotting
-	offset=2;
+	offset=6;//2;
 	//p->pos[0]=offset+5;p->pos[1]=offset-5; // set starting point
 	//p->bpos[0]=offset+5;p->bpos[1]=offset-5;
 	//p->pos[0]=offset;p->pos[1]=offset; // set starting point
@@ -361,9 +363,9 @@ void move_animal(CARLsim* sim, P* p, vector<double> *anim_angles, vector<double>
 void move_circles(CARLsim* sim, P* p) {
 	// movement path
 
-	double speed = 10;//3.587;
+	double speed = 5;//3.587;
 	double angle = 90;
-	int pace = 50;
+	int pace = 20;//50;
 	for (int i = 0; i < (p->sim_time/p->animal_ts); i++) {
 		if (i % pace == 0) {
 			angle += 45;
