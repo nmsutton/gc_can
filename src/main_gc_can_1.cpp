@@ -193,6 +193,7 @@ int main() {
 				if (p.run_path_onlypos) {run_path_onlypos(&p.angles, &p.speeds, &p.speed_times, p.num_moves, p.num_speeds, &sim, &p);}
 				else {run_path(&p.angles, &p.speeds, &p.speed_times, p.num_moves, p.num_speeds, &sim, &p);}
 			}
+			if (p.move_speed_change) {move_speed_change(&sim, &p);}
 			if (p.move_straight) {move_straight(&sim, &p);}
 			if (p.move_random) {move_random(&sim, &p);}
 			if (p.move_ramp) {move_ramp(&sim, &p);}

@@ -91,15 +91,13 @@ void control_speed(double speed, P* p) {
 		p->base_ext = 186.3885 + (524.6455/(1 + pow((speed/3.737486),2.211211)));
 		p->speed_signaling = 2.057852 - (2.01749818/(1 + pow((speed/8.060984),4.142584)));
 		p->pc_level = 295.9315 + (513.837/(1 + pow((speed/2.681747),3.170439)));*/
-		p->move_increment = (0.001*speed);
-		/*if (speed <= 18) {
-			p->speed_signaling=-0.00003637645684+(-0.007054249055*speed)+(0.02318195180*pow(speed,2))+(-0.004154960540*pow(speed,3))+(0.0003205539613*pow(speed,4))+(-0.000008046504754*pow(speed,5));
+		if (speed <= 24) {
+			p->speed_signaling=(-2.2703071662236850e-003)+((5.3999063499853880e-002)*speed)+((9.1668862388604479e-003)*pow(speed,2))+((-1.2261892078421113e-003)*pow(speed,3))+((5.8415873552304476e-005)*pow(speed,4))+((-8.5140397443536999e-007)*pow(speed,5));
 		}
-		else {p->speed_signaling = 1.6;}*/
-		if (speed <= 18) {
-			p->speed_signaling=(2.2266573229603745e-003)+((2.0852442092359237e-003)*speed)+((2.3177154963652791e-002)*pow(speed,2))+((-1.3937698255019641e-003)*pow(speed,3))+((-2.6132861715835853e-006)*pow(speed,4))+((1.3259826917312383e-006)*pow(speed,5));
+		else if (speed <= 28) {
+			p->speed_signaling=(-2.0716180440729490e+003)+((3.1398611005030739e+002)*speed)+((-1.2350885040772077e+001)*pow(speed,2))+((-1.8920736732209620e-001)*pow(speed,3))+((2.0496182320031441e-002)*pow(speed,4))+((-3.1792001647285316e-004)*pow(speed,5));
 		}
-		else {p->speed_signaling = 1.7;}
+		else {p->speed_signaling = 10;}
 		//p->speed_signaling = p->speed_signaling * 0.375;
 		//p->base_ext = 328.1851 + 264.5679/(1 + pow((speed/9.923302),8.14715));
 		//p->speed_signaling = 2.318527 - (2.27162279/(1 + pow((speed/12.15808),4.901232)));
@@ -176,12 +174,29 @@ void run_path_onlypos(vector<double> *moves, vector<double> *speeds, vector<int>
 }
 
 void move_straight(CARLsim* sim, P* p) {
-	// stright line path
+	// straight line path
 	//control_speed(50,p);
-	double angle = 180;
+	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
 		control_speed(5,p);	
+		EISignal(angle, sim, p);
+	}
+}
+
+void move_speed_change(CARLsim* sim, P* p) {
+	// switch speeds
+	double angle = 90;
+	vector<double> speeds{5, 5};
+	int time_switch = 5000; // time in ms to switch
+	general_input(angle, sim, p);
+	if (p->t % p->move_delay == 0) {
+		if (p->t % time_switch == 0 && p->t != 0) {
+			p->speed_setting += 1;
+			if (p->speed_setting == speeds.size()) {p->speed_setting=0;}
+			printf("speed change t:%d s:%f\n",p->t,speeds[p->speed_setting]);
+		}
+		control_speed(speeds[p->speed_setting],p);		
 		EISignal(angle, sim, p);
 	}
 }
