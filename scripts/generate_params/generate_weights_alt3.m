@@ -16,7 +16,7 @@ cpp_filename = "synapse_weights.cpp";
 output_cpp = 0; output_csv = 0; % these are always init as 0
 if write_to_csv output_csv = fopen(csv_filename,'w'); end
 if write_to_cpp output_cpp = fopen(cpp_filename,'w'); end
-grid_size_target = 42; % target grid size for neuron weights
+grid_size_target = 40;%36;%42; % target grid size for neuron weights
 total_nrns = (grid_size_target^2);%35;%(grid_size^2);% total neurons
 if show_2d_plot total_nrns = 3; end
 grid_size = grid_size_target*3;%90;
@@ -24,17 +24,17 @@ grid_size = grid_size_target*3;%90;
 %    grid_size = 120;
 %end
 iter = 13; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
-start_x_shift = (grid_size/2) - 20;%44;%20;%50;%44;%- 44;%1;%28; -2 = 2 down
-start_y_shift = (grid_size/2) - 20;%44;%20;%50;%44;%- 44;%1;%-4;%28; +2 = 2 left
+start_x_shift = (grid_size/2) - 19;%17;%44;%20;%50;%44;%- 44;%1;%28; -2 = 2 down
+start_y_shift = (grid_size/2) - 19;%17;%44;%20;%50;%44;%- 44;%1;%-4;%28; +2 = 2 left
 highval = 0.00681312463724531;
 highval_thres = 0.004;
 filter_highval = 1; % filter values to convert into high val.
-r_s=1;%(42/30); % ring scale
+r_s=0.8;%0.73;%1.1;%(36/42);%1;%(42/30); % ring scale
 p1=.68;p2=2;p3=2;
 % center size
-p4=52*r_s;%35;%45;%52;%40;%70;%130;%38;%*2.5*1.3;%.55;%.7;%4;%2;%2;%2.5;%2;%*1.4;%1.344;%*2.7*(14/20);%1.4;%*.5; 
+p4=r_s*52;%35;%45;%52;%40;%70;%130;%38;%*2.5*1.3;%.55;%.7;%4;%2;%2;%2.5;%2;%*1.4;%1.344;%*2.7*(14/20);%1.4;%*.5; 
 % center size
-p8=.135*1*r_s;%.135*.9;%1;%.97;%.99;%.11;%.13;%.12;%.14;%.12;%.22;%.2;%.25;%.135; 
+p8=r_s*.135*1.07;%1;%.87;%.135*.9;%1;%.97;%.99;%.11;%.13;%.12;%.14;%.12;%.22;%.2;%.25;%.135; 
 % surround size
 p7=r_s*0.19;%0.18;%0.19;%0.183;%0.19;%0.2;%0.2;%*1.1*.97;%1.04;%1.05;%1.15;%1;%4;%.7;%.9;%.7;%0.174*1.4;%*2.4*(14/20);%1.4;%*.75;%0.15; 
 % surround size

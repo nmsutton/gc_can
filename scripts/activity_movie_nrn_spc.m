@@ -25,11 +25,11 @@ else
 end
 
 delay_frames = false;%true;
-time=60000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
-bin_size=100;%10; % size of firing bin in ms
+time=5000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
+bin_size=100;%200;%10; % size of firing bin in ms
 t=[0:(1/bin_size):(time*(1/bin_size))];
-x_size = 42;%30; % size of network on x-axis
-y_size = 42;%30; % size of network on y-axis
+x_size = 40;%36;%42;%30; % size of network on x-axis
+y_size = 40;%36;%42;%30; % size of network on y-axis
 spk_window = spk_data.readSpikes(bin_size);
 % Set up the movie structure. Preallocate recalledMovie, which will be an array of structures. First get a cell array with all the frames.
 hFigure = figure;
@@ -51,7 +51,7 @@ set(gcf, 'nextplot', 'replacechildren');
 set(gcf, 'renderer', 'zbuffer');
 caxis manual; % allow subsequent plots to use the same color limits
 custom_colormap = load('neuron_space_colormap.mat');
-disp(numberOfFrames);
+%disp(numberOfFrames);
 for frameIndex = 1 : numberOfFrames
 %for frameIndex = (numberOfFrames-200) : (numberOfFrames-10)
   start_frame = 0;

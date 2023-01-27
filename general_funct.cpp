@@ -502,8 +502,6 @@ public:
     		//vector<int> shift_y{0,   4, -4}; 
     		//vector<int> shift_x{0, 0,  -1, 16}; 
     		//vector<int> shift_y{0, 14, -7,  7}; 
-    		// vector<int> shift_x{0}; 
-    		// vector<int> shift_y{0};
     		//vector<int> shift_x{0, 0,  -14,  6}; 
     		//vector<int> shift_y{0, 14, -8,  -6}; 
     		//vector<int> shift_x{0,   0,  0}; 
@@ -534,10 +532,18 @@ public:
     		// vector<int> shift_y{0, -11, 11};
     		// vector<int> shift_x{0,  -11,  11, -32, 32}; 
     		// vector<int> shift_y{0, -11, 11, 11, 11};
-    		vector<int> shift_x{0,  -11,  11, -32, 32, 0}; 
-    		vector<int> shift_y{0, -11, 11, 11, 11, -21};
+    		// vector<int> shift_x{0,  -11,  11, -32, 32, 0}; 
+    		// vector<int> shift_y{0, -11, 11, 11, 11, -21};
     		// vector<int> shift_x{0,  -11,  11}; 
     		// vector<int> shift_y{0, -11, 11};
+    		// vector<int> shift_x{0,  -9, 9, -27, 27}; 
+    		// vector<int> shift_y{0, -9, 9, -9, 9};
+    		// vector<int> shift_x{0,  -9,  9}; 
+    		// vector<int> shift_y{0, -9, 9};
+    		// vector<int> shift_x{0}; 
+    		// vector<int> shift_y{0};
+    		vector<int> shift_x{0,  -10,  10, -30, 30, 20, 20}; 
+    		vector<int> shift_y{0, -10, 10, -10, 10, 0, 20};
 
     		// assign connections
     		/*if (i == ((j * this->conn_dist) + this->conn_offset)) {

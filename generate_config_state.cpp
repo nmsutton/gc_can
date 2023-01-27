@@ -91,6 +91,8 @@ if (p.spex2in_active) {
 p.gc_to_in_wt = gc2inwt;
 SomeToSomeConn = new SomeToSomeConnection(&p);
 sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, SomeToSomeConn, 7.63*m1, 4.67*m1, SYN_FIXED);
+//sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, "one-to-one", 1.0, 1.0f, 
+//            RangeDelay(1), RadiusRF(-1), SYN_FIXED, 33.082, 20.0f);
 MexHatConn = new MexHatConnection(&p);
 sim.connect(EC_LII_Axo_Axonic, MEC_LII_Stellate, MexHatConn, 7.63*m1, 4.67*m1, SYN_FIXED); // 2 IN->GC one-to-many
 ////

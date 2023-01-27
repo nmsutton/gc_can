@@ -187,7 +187,7 @@ void move_straight(CARLsim* sim, P* p) {
 void move_speed_change(CARLsim* sim, P* p) {
 	// switch speeds
 	double angle = 90;
-	vector<double> speeds{5, 5};
+	vector<double> speeds{5, 10};
 	int time_switch = 5000; // time in ms to switch
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
