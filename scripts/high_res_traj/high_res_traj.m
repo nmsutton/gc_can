@@ -1,5 +1,6 @@
 % create high-resolution trajectory and firing plot
-function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hopper_run,local_run,restrict_time,sel_nrn)
+function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hopper_run, ...
+    local_run,restrict_time,sel_nrn,smaller_spk_ticks)
     close all;
 
     % run parameters
@@ -44,7 +45,7 @@ function heat_map = high_res_traj(run_on_hopper,use_hopper_data,fdr_prefix,hoppe
     use_unwrapped_data = 0;
     output_spikes_file = 1; % output file that can be used in rate map plot
     plot_smooth_rm = 1; % plot smoothed rate map
-    smaller_spk_ticks = 2;%2; % Change spike tick visual size; 2 for extra small
+    %smaller_spk_ticks = 2;%2; % Change spike tick visual size; 2 for extra small
     save_traj_plot = 0; % save traj plot to file
     if run_on_hopper==1 save_traj_plot = 1; end
     if plot_in_spikes==1 plot_spikes=1; end

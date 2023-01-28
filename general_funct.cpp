@@ -540,10 +540,16 @@ public:
     		// vector<int> shift_y{0, -9, 9, -9, 9};
     		// vector<int> shift_x{0,  -9,  9}; 
     		// vector<int> shift_y{0, -9, 9};
+    		// vector<int> shift_x{0,  -10,  10, -30, 30, 20, 20}; 
+    		// vector<int> shift_y{0, -10, 10, -10, 10, 0, 20};
+    		vector<int> shift_x{0, 20, -10, 30, 10, 20, 40, -31}; 
+    		vector<int> shift_y{0,  0, -10,  9, 10,  0,  0, -13};
+    		// vector<int> shift_x{0, -10, 10}; 
+    		// vector<int> shift_y{0, -10, 10};
+    		// vector<int> shift_x{0, -2, 2}; 
+    		// vector<int> shift_y{0, -2, 2};
     		// vector<int> shift_x{0}; 
     		// vector<int> shift_y{0};
-    		vector<int> shift_x{0,  -10,  10, -30, 30, 20, 20}; 
-    		vector<int> shift_y{0, -10, 10, -10, 10, 0, 20};
 
     		// assign connections
     		/*if (i == ((j * this->conn_dist) + this->conn_offset)) {
