@@ -12,7 +12,7 @@ restrict_time=220000;%6733000;%4328000;%1360000;%500000; % limit time plotted. 0
 run_on_hopper=0; % supercomputer run options: run from hopper's system  
 smaller_spk_ticks=0; % choose trajectory plot tick size. 2 for extra small.
 % select neuron to plot
-sel_nrn=1250;%410;%820;%516;%1228;%690;%127;%237;%127;%10;%680;%690;%890;%690;
+sel_nrn=810;%810;%300;%1250;%410;%820;%516;%1228;%690;%127;%237;%127;%10;%680;%690;%890;%690;
 
 heat_map = gridscore_sim(p1,p2,local_run,run_on_hopper,use_hopper_data,fdr_prefix, ...
     hopper_run,save_gridscore_file,restrict_time,sel_nrn,smaller_spk_ticks);

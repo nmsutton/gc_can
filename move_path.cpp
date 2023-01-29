@@ -93,28 +93,21 @@ void control_speed(double speed, P* p) {
 		p->pc_level = 295.9315 + (513.837/(1 + pow((speed/2.681747),3.170439)));*/
 		//double angle = (p->angles)[(int) floor(p->mi)];
 		//printf("angle:%f\n",p->prior_angles[0]);
-		p->speed_signaling=0.36;//0.7*0.8333;
+		p->speed_signaling=0.45;//0.55;//0.36;//0.36;//0.7*0.8333;
 		p->base_ext=150;
 		bool reduce = false;
 		for (int i = 0; i < p->prior_angles.size(); i++) {
 			if (i <= (p->t/p->timestep)) {
-				if (p->prior_angles[i]==0) {
+				if (p->prior_angles[i]==0 || p->prior_angles[i]==180) {
 					reduce = true;
 				}
 			}
 		}
 		if (reduce) {
-			p->speed_signaling=p->speed_signaling*0.624;
-			//p->base_ext=250;
-			/*printf("reduce\n");
-			printf("prior_angles: ");
-			for (int j = 0; j < p->prior_angles.size(); j++) {
-				printf("%.2f ",p->prior_angles[j]);
-			}
-			printf("\n");*/
+			p->speed_signaling=p->speed_signaling*1;//.5;//*0.624;
 		}
 		if (p->prior_angles[0]==0 || p->prior_angles[0]==180) {
-			p->speed_signaling=0.36*0.624;
+			p->speed_signaling=p->speed_signaling*1;//.5;//*0.624;//0.36*0.624;
 		}
 		//printf("a:%f\n",p->prior_angles[0]);
 		/*if (speed <= 24) {
@@ -359,7 +352,7 @@ void move_fullspace2(CARLsim* sim, P* p) {
 	double speed = p->move_increment*1000;
 	control_speed(speed,p);	
 	double offset = (p->x_size-p->x_size_plot)/2; // offset for plotting
-	offset=4;//2;
+	offset=5;//2;
 	//p->pos[0]=offset+5;p->pos[1]=offset-5; // set starting point
 	//p->bpos[0]=offset+5;p->bpos[1]=offset-5;
 	//p->pos[0]=offset;p->pos[1]=offset; // set starting point
