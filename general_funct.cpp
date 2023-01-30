@@ -57,10 +57,10 @@ void PrintWeightsAndFiring(P *p) {
 	}
 }
 
-double get_pd(int i, int layer_size) {	
+double get_pd(int i, P *p) {	
 	double pd = 0;
-	int x = i % layer_size;
-	int y = i / layer_size;
+	int x = i % p->x_size;
+	int y = i / p->x_size;
 
 	if (y % 2 == 0) {
 		if (x % 2 == 0) {pd = 180;}
@@ -434,18 +434,20 @@ public:
     void connect(CARLsim* sim, int srcGrp, int i, int destGrp, int j, float& weight, float& maxWt,
             float& delay, bool& connected) {
     		// adjust i for multiple neuron types combine into a group
-    		int i_adj = i;//(i * this->conn_dist) + this->conn_offset;
+    		int i_adj = (i * this->conn_dist) + this->conn_offset;
 
     		// assign connections
     		//if (this->weights_in[i][j] == 1.0) {
     		if (this->weights_in[i_adj][j] == 1.0) {
     			connected = 1; // only connect where matrix value is 1.0 
+    			/*if (i_adj>899) {
+    				printf("i:%d j:%d i_adj:%d\n",i,j,i_adj);
+    			}*/
     			//printf("i:%d j:%d i_adj:%d\n",i,j,i_adj);
     		}
     		else {
     			connected = 0;
     		}
-    		//if (i_adj==1935) {printf("%d\n",this->weights_in[0].size());}
         //weight = mex_hat[i][j]*mex_hat_multi;
         weight = mex_hat[i_adj][j]*mex_hat_multi;
         weight = weight + -0.012;//-0.022;//-0.042;//-0.012;//-0.022;//0.5;//0.0;                
@@ -460,34 +462,6 @@ int wrap_around(int i, int max_size) {
 	if (i<0) {i=i+max_size;}
 	else if (i>=max_size) {i=i-max_size;}
 	return i;
-}
-
-void centroid_shift(int x, int y, int x_size, int y_size, vector<int> * xy) {
-	// find amount to shift centroid index
-
-	int shift_size = 2;
-	int layer_extension = 4;
-	int i_orig = ((y-shift_size) * x_size) + (x-shift_size);	
-	double pd = get_pd(i_orig,x_size);
-	int x_size_2=x_size+layer_extension;
-	int i = (y * x_size_2) + x;
-
-	// find pd shift
-	//if (x==2+39&&y==2) {printf("+++++++++i:%d %f %d\n",i,pd,i_orig);}
-	if (pd == 90.0)      {i += shift_size;}
-	else if (pd == 270.0)  {i -= shift_size;}
-	else if (pd == 180.0) {i += (shift_size*x_size_2);}
-	else if (pd == 0.0)   {i -= (shift_size*x_size_2);}
-	//if (x==2+39&&y==2) {printf("|||||||||i:%d\n",i);}
-
-	// adjust for layer edges
-	if (i < 0) {i += (x_size_2*x_size_2);}
-	else if (i >= (x_size_2*x_size_2)) {i -= (x_size_2*x_size_2);}
-
-	(*xy)[0] = i % x_size_2; // x
-    (*xy)[1] = i / x_size_2; // y
-
-    //if (x==2&&y==2) {printf("|||x:%d y:%d|||\n",(*xy)[0],(*xy)[1]);}
 }
 
 class SomeToSomeConnection : public ConnectionGenerator {
@@ -511,46 +485,132 @@ public:
     // the pure virtual function inherited from base class
     // note that weight, maxWt, delay, and connected are passed by reference
     void connect(CARLsim* sim, int srcGrp, int i, int destGrp, int j, float& weight, float& maxWt,
-            float& delay, bool& connected) { 
-    		int i_sft = 0;//(i * this->conn_dist) + this->conn_offset; // shifted index 
-    		int j_sft = 0;//(j * this->conn_dist) + this->conn_offset; // shifted index;
-    		int j_sft2;
+            float& delay, bool& connected) {
+    		// adjust i and j for multiple neuron types combine into a group
+    		//int i_adj = (i * this->conn_dist) + this->conn_offset;
+    		//int j_adj = (j * this->conn_dist) + this->conn_offset;   
+    		int j_sft; // shifted index 	
+    		//vector<int> shift_x{0, -17, 17,   4, -4, 11, -11}; 
+    		//vector<int> shift_y{0,   4, -4, -17, 17, 11, -11}; 
+    		//vector<int> shift_x{0, -14, 14,   4, -4, 10, -10}; 
+    		// vector<int> shift_y{0,   4, -4, -14, 14, 10, -10}; 
+    		// vector<int> shift_x{0, -14, 14,   4, -4, 12, -12}; 
+    		//vector<int> shift_y{0,   4, -4, -14, 14, 9, -9};
+    		// vector<int> shift_x{0, -14, 14,   4, -4}; 
+    		// vector<int> shift_y{0,   4, -4, -14, 14};
+    		//vector<int> shift_x{0, -14, 14}; 
+    		//vector<int> shift_y{0,   4, -4}; 
+    		//vector<int> shift_x{0, 0,  -1, 16}; 
+    		//vector<int> shift_y{0, 14, -7,  7}; 
+    		//vector<int> shift_x{0, 0,  -14,  6}; 
+    		//vector<int> shift_y{0, 14, -8,  -6}; 
+    		//vector<int> shift_x{0,   0,  0}; 
+    		//vector<int> shift_y{0, -14, 14};
+    		// vector<int> shift_x{0,  -8,  8}; 
+    		// vector<int> shift_y{0, -14, 14};
+    	    // vector<int> shift_x{0,  -8,  8, -14}; 
+    		// vector<int> shift_y{0, -14, 14, 0};
+			//vector<int> shift_x{0, -14, 14}; 
+    		//vector<int> shift_y{0, 0, 0};
+    		// vector<int> shift_x{0,  -12,  12}; 
+    		// vector<int> shift_y{0, -8, 8};
+    		// vector<int> shift_x{0,  10,  10}; 
+    		// vector<int> shift_y{0, -10, 10};
+    		// vector<int> shift_x{0,  -21}; 
+    		// vector<int> shift_y{0, -8};
+    		// vector<int> shift_x{0,  -11,  11}; 
+    		// vector<int> shift_y{0, -5, 5};
+			// vector<int> shift_x{0, 22,  8, -14}; 
+    		// vector<int> shift_y{0, 13, 14,   0};
+    	    // vector<int> shift_x{0,  -8,  8, -16}; 
+    		// vector<int> shift_y{0, -14, 14, 0};  
+    		// vector<int> shift_x{0,  -12,  12}; 
+    		// vector<int> shift_y{0, -20, 20};  		
+    		// vector<int> shift_x{0,  -10,  10}; 
+    		// vector<int> shift_y{0, -11, 11};
+    		// vector<int> shift_x{0,  -11,  11}; 
+    		// vector<int> shift_y{0, -11, 11};
+    		// vector<int> shift_x{0,  -11,  11, -32, 32}; 
+    		// vector<int> shift_y{0, -11, 11, 11, 11};
+    		// vector<int> shift_x{0,  -11,  11, -32, 32, 0}; 
+    		// vector<int> shift_y{0, -11, 11, 11, 11, -21};
+    		// vector<int> shift_x{0,  -11,  11}; 
+    		// vector<int> shift_y{0, -11, 11};
+    		// vector<int> shift_x{0,  -9, 9, -27, 27}; 
+    		// vector<int> shift_y{0, -9, 9, -9, 9};
+    		// vector<int> shift_x{0,  -9,  9}; 
+    		// vector<int> shift_y{0, -9, 9};
+    		// vector<int> shift_x{0,  -10,  10, -30, 30, 20, 20}; 
+    		// vector<int> shift_y{0, -10, 10, -10, 10, 0, 20};
+    		// vector<int> shift_x{0, 20, -10, 30, 10, 20, 40, -31}; 
+    		// vector<int> shift_y{0,  0, -10,  9, 10,  0,  0, -13};
+    		// vector<int> shift_x{0, -10, 10}; 
+    		// vector<int> shift_y{0, -10, 10};
+    		// vector<int> shift_x{0, -2, 2}; 
+    		// vector<int> shift_y{0, -2, 2};
+    		// vector<int> shift_x{0, -2, 2,  2, -2}; 
+    		// vector<int> shift_y{0, -2, 2, -2,  2};
+    		// vector<int> shift_x{0, -2, 2,  2, -2, -4, 4, 4, -4}; 
+    		// vector<int> shift_y{0, -2, 2, -2,  2, -4, 4, -4, 4};
+    		// vector<int> shift_x{0, -2, 2,  2, -2, 2, -2, 0,  0}; 
+    		// vector<int> shift_y{0, -2, 2, -2,  2, 0,  0, 2, -2};
+    		// vector<int> shift_x{0, -3, 3}; 
+    		// vector<int> shift_y{0, -3, 3};
+    		// vector<int> shift_x{0, -8, 8}; 
+    		// vector<int> shift_y{0, -14, 14};
+    		// vector<int> shift_x{0, -6,   6,   6, -6}; 
+    		// vector<int> shift_y{0, -10, 10, -10, 10};
+    		// vector<int> shift_x{0, -6,   6,   6, -6, 10, -10}; 
+    		// vector<int> shift_y{0, -10, 10, -10, 10,  0,   0};
+    		vector<int> shift_x{0, -6,   6,   6, -6}; 
+    		vector<int> shift_y{0, -10, 10, -10, 10};
+    		// vector<int> shift_x{0}; 
+    		// vector<int> shift_y{0};
+
+    		// assign connections
+    		/*if (i == ((j * this->conn_dist) + this->conn_offset)) {
+    			connected = 1;
+    			//printf("i:%d j:%d\n",i,j);
+    		}*/
+    		/*else {
+    			connected = 0;
+    		}*/    		
+    		j_sft = ((j * this->conn_dist) + this->conn_offset);    		
     		int ix = i % x_size;
     		int iy = i / x_size;
-    		// convert from GC layer size to IN layer size
-    		//int ix2 = 
+    		int jx = j_sft % x_size;//j % x_size;
+    		int jy = j_sft / x_size;//j / x_size;
+    		int max_dist = 3;//5; 
+    		double wt_fade = 0;
+    		double dist = sqrt((pow((jx-ix),2))+(pow((jy-iy),2)));
+    		ix = wrap_around(ix,x_size); iy = wrap_around(iy,x_size);
+    		jx = wrap_around(jx,x_size); jy = wrap_around(jy,x_size);
     		connected = 0;
-    		vector<int> xy{0,0};	
-    		// vector<int> centroid_x{ix+2}; 
-    		// vector<int> centroid_y{iy+2};
-    		// vector<int> centroid_x{ix+2, ix+2,       ix+2, ix+2+7, ix+2-7, ix+2+7, ix+2-7}; 
-    		// vector<int> centroid_y{iy+2, ix+2+10, ix+2-10, ix+2-5, ix+2-5, ix+2+5, ix+2+5};
-    		// vector<int> centroid_x{ix+2, ix+2+10, ix+2-13};
-    		// vector<int> centroid_y{iy+2, ix+2+10, ix+2-13};
-    		// vector<int> centroid_x{ix+2, ix+2-6,   ix+2+6,  ix+2+6,  ix+2-6, ix+2+10, ix+2-10}; 
-    		// vector<int> centroid_y{iy+2, iy+2-10, iy+2+10, iy+2-10, iy+2+10,    iy+2,    iy+2};
-    		vector<int> centroid_x{ix+2, ix+2-6,   ix+2+6,  ix+2+6,  ix+2-6}; 
-    		vector<int> centroid_y{iy+2, iy+2-10, iy+2+10, iy+2-10, iy+2+10};
-    		// vector<int> centroid_x{0,  0,   0,  7, -7, 7, -7}; 
-    		// vector<int> centroid_y{0, 10, -10, -5, -5, 5,  5};
-
-    		// apply shifts
-    		for (int ci = 0; ci < centroid_x.size(); ci++) {
-    			centroid_shift(centroid_x[ci], centroid_y[ci], this->x_size, this->y_size, &xy);
-    			centroid_x[ci] = xy[0];
-    			centroid_y[ci] = xy[1];
-    		}
-
-    		for (int i2 = 0; i2 < centroid_x.size(); i2++) {
-    			j_sft2 = (centroid_y[i2]*(x_size+4))+centroid_x[i2];
-    			j_sft2 = wrap_around(j_sft2,(pow((x_size+4),2)));
-    			if (j == j_sft2) {
-					connected = 1;
-					printf("i:%d j:%d i_sft:%d j_sft2:%d pd:%f cx1:%d cy1:%d cx2:%d cy2:%d\n",i,j,i_sft,j_sft2,get_pd(i,x_size),ix+2,iy+2,centroid_x[i2],centroid_y[i2]);
+    		
+    		for (int i2 = 0; i2 < shift_x.size(); i2++) {
+    			j_sft = (((double) j * (double) this->conn_dist) + (double) this->conn_offset) + ((shift_y[i2]*(double) x_size)+shift_x[i2]);
+    			j_sft = wrap_around(j_sft,(x_size*y_size));
+    			if (i == j_sft) {
+    				//if ((int)ix%2==(int)jx%2&&(int)iy%2==(int)jy%2) {
+						connected = 1;
+						//printf("i:%d j:%d j_sft:%d cx1:%d cy1:%d\n",i,j,j_sft,shift_y[i2],shift_x[i]);
+    				//}
     			}
-    			//if(j==1599) {printf("***i:%d i_sft:%d j:%d j_sft2:%d pd:%f x1:%d y1:%d x2:%d y2:%d***\n",i,i_sft,j,j_sft2,get_pd(i,x_size+4),ix+2,iy+2,centroid_x[i2],centroid_y[i2]);}
     		}
+    		/*
+    		//if (dist==0) {//<1) {    		
+    		if (dist<=max_dist) {
+    			if (ix%2==jx%2&&iy%2==jy%2) {
+    				connected = 1;
+    				if (i==820) {printf("jx:%d jy:%d\n",jx,jy);}
+    			}
+    		}
+    		*/
         weight = gc_to_in_wt;
+    	/*if (dist!=0&&max_dist!=0) { 
+    		wt_fade = dist/max_dist;
+    	}
+    	weight = gc_to_in_wt*(1-wt_fade);*/
         maxWt = 10000.0f;
         delay = 1; 
     }
@@ -608,22 +668,22 @@ void setExtDir(P* p, double angle, double speed, int sc) {
 
 	double base_ext = p->base_ext;
 	for (int i = 0; i < p->layer_size; i++) {
-		if (get_pd(i, p->x_size) == 180) {
+		if (get_pd(i, p) == 180) {
 			//p->ext_dir[i] = p->base_ext*speeds[0];
 			if (p->noise_active) {noise = get_noise(p);base_ext = base_ext*noise;}
 			p->ext_dir[i] = base_ext*speeds[0];
 		}
-		else if (get_pd(i, p->x_size) == 270) {
+		else if (get_pd(i, p) == 270) {
 			//p->ext_dir[i] = p->base_ext*speeds[1];
 			if (p->noise_active) {noise = get_noise(p);base_ext = base_ext*noise;}
 			p->ext_dir[i] = base_ext*speeds[1];
 		}
-		else if (get_pd(i, p->x_size) == 0) {
+		else if (get_pd(i, p) == 0) {
 			//p->ext_dir[i] = p->base_ext*speeds[2];
 			if (p->noise_active) {noise = get_noise(p);base_ext = base_ext*noise;}
 			p->ext_dir[i] = base_ext*speeds[2];
 		}
-		else if (get_pd(i, p->x_size) == 90) {
+		else if (get_pd(i, p) == 90) {
 			//p->ext_dir[i] = p->base_ext*speeds[3];
 			if (p->noise_active) {noise = get_noise(p);base_ext = base_ext*noise;}
 			p->ext_dir[i] = base_ext*speeds[3];
