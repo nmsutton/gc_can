@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 220000;//1440140;//1440140;//8553860;//1440140//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 5000;//1440140;//1440140;//8553860;//1440140//40000;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 40;//36;//42;//30;//26;
@@ -13,12 +13,13 @@ struct P {
 	static const int layer_size = x_size * y_size;
 	static const int EC_LI_II_Multipolar_Pyramidal_Count = 1600;//1764;//900;
 	static const int MEC_LII_Stellate_Count = 1600;//1764;//900;
-	static const int EC_LII_Axo_Axonic_Count = 534;//588;//300;
-	static const int MEC_LII_Basket_Count = 533;//588;//300;
-	static const int EC_LII_Basket_Multipolar_Count = 533;//588;//300;
+	static const int EC_LII_Axo_Axonic_Count = 1936;//646;//534;//588;//300;
+	static const int MEC_LII_Basket_Count = 645;//533;//588;//300;
+	static const int EC_LII_Basket_Multipolar_Count = 645;//533;//588;//300;
 	static const int CA1_Pyramidal_Count = 1600;//1764;//900;
 	static const int MEC_LII_Basket_Speed_Count = 1600;//1764;//900;
 	static const int MEC_LII_Stellate_Speed_Count = 1600;//1764;//900;	
+	static const int LE = 4; // IN layer extension size past GC layer size
 	int EC_LI_II_Multipolar_Pyramidal_Group, MEC_LII_Stellate_Group, EC_LII_Axo_Axonic_Group,
 	MEC_LII_Basket_Group, EC_LII_Basket_Multipolar_Group, CA1_Pyramidal_Group, 
 	MEC_LII_Basket_Speed_Group,	MEC_LII_Stellate_Speed_Group;	
@@ -75,8 +76,8 @@ struct P {
 	bool move_animal_aug = 0; // augment animal movement
 	bool move_animal_onlypos = 0; // generate animal movement position but not signaling
 	bool move_speed_change=0; // test series of speed changes
-	bool move_fullspace = 1; // move through whole environment
-	bool move_straight = 0;
+	bool move_fullspace = 0; // move through whole environment
+	bool move_straight = 1;
 	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;
@@ -94,8 +95,8 @@ struct P {
 	bool record_highrestraj = 1; // write files for high resolution trajectory locations
 	#define spk_mon_additional 0 // additional spike monitors
 	#define monitor_voltage 0 // turn voltage monitoring on or off 
-	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
-	bool pc_to_gc = 1; // place cells to grid cells signaling
+	bool pc_active = 0; // pc signaling active. bc->pc->gc can still work even if this is disabled.
+	bool pc_to_gc = 0; // place cells to grid cells signaling
 	bool spin2in_active = 0; // inhibitory speed cells active.	
 	bool spex2in_active = 0; // excitatory speed cells active.	
 	bool bc_to_pc = 0; // boundary cells to place cells signaling
@@ -105,8 +106,8 @@ struct P {
 	double base_ext = 150;//150;//150;//200;//150;//200;//150;//150;//150;//50;//150;//200;//150;//50;//150;//35;//50;//150;//50;//150;//135;//150;//300;//550;//250;//300;//420;//600;//600;//500;//150;//300;//400;//900;//500;//300;//550;//580;//250;//580;//335;//600;//200;//600;//300;//700;//300;//400;//500;//400;//600;//320;//300.0;//500.0;//10.0;//0.0; // baseline ext input speed level	
 	double speed_signaling = 0.55;//0.36;//0.36;//.275;//.325;//0.5;//0.5;//5.0;//0.4;//1.5;//0.5;//0.2;//1.7;//0.3;//0.1;//0.1;//0.3;//0.1;//0.1;//0.1;//0.1;//0.5;//0.1;//0.1;//0.6;//1.5;//0.4;//2.0;//0.6;//2.0;//0.4;//5.0;//0.25;//0.1;//5.0;//0.1;//5.0;//5;//0.2;//1.6;//0.2;//0.05;//0.1;//0.05;//0.5;//20;//5;//0.5;//0.1;//0.1;//0.2;//5.0;//0.3;//2.0;//0.05;//1.8;//3.5;//0.0;//5.0;//0.0;//5.0;//0.3;//1.0;//1.0;//5.0;//5.0;//0.0;//5.0;//1.0;//0.5;//1.0;//0.1; // setting for use of a constant virtual animal speed
 	float dir_to_gc_wt = 1.0;//0.6;//0.6;//1.2;//0.6;//0.3;//0.4;//0.3;//0.4;//0.4;//1.0;//0.4;//0.7;//0.5;//0.4;//1.0;//0.8;//2.0;//0.3;//0.5;//0.9;//0.75; ext_dir to gc weight
-	double mex_hat_multi = 11.76*2.5;//1.7;//1.3;//2.5;//1.3;//1.5;//.8;//0.65;//0.65;//0.7;//0.75;//0.75;//0.5;//.8;//0.5;//0.7;//0.3;//0.6;//1;//0.5;//1;//0.4;//0.5;//1;//1;//.65;//3;//3;//2;//2;//1;//2;//2;//0.75;//0.5;//1;//0.85;//2.5;//1.5;//*1.2;//1.05;//1.2;//1.17;//10.0;//20;//20;//30.0;//10;//1000;//700;//1100; // mexican hat multiplier
-	float gc_to_in_wt = 0.370*2.5;//1.7;//1.3;//2.5;//1.3;//1.5;//.8;//0.65;//0.65;//0.7;//0.75;//0.75;//0.5;//.8;//0.5;//0.7;//0.3;//0.6;//1;//0.5;//1;//0.4;//0.5;//1;//1;//.65;//3;//2;//2;//1;//1;//.8;//1;//3;//3;//1.5;//3;//2;//15;//1;//0.85;//2.5;//1.5;//*1.2;//1.05;//1.2;//1.17;//0.315;//0.3;//0.28;//0.5;//0.27;//0.2;//0.28;//0.30;//0.315;//0.297;//0.28;//0.28;//200;//50;//600; // gc to interneurons weight
+	double mex_hat_multi = 11.76*3;//1.5;//2.5;//2.5;//1.7;//1.3;//2.5;//1.3;//1.5;//.8;//0.65;//0.65;//0.7;//0.75;//0.75;//0.5;//.8;//0.5;//0.7;//0.3;//0.6;//1;//0.5;//1;//0.4;//0.5;//1;//1;//.65;//3;//3;//2;//2;//1;//2;//2;//0.75;//0.5;//1;//0.85;//2.5;//1.5;//*1.2;//1.05;//1.2;//1.17;//10.0;//20;//20;//30.0;//10;//1000;//700;//1100; // mexican hat multiplier
+	float gc_to_in_wt = 0.370*3;//1.5;//2.5;//2.5;//1.7;//1.3;//2.5;//1.3;//1.5;//.8;//0.65;//0.65;//0.7;//0.75;//0.75;//0.5;//.8;//0.5;//0.7;//0.3;//0.6;//1;//0.5;//1;//0.4;//0.5;//1;//1;//.65;//3;//2;//2;//1;//1;//.8;//1;//3;//3;//1.5;//3;//2;//15;//1;//0.85;//2.5;//1.5;//*1.2;//1.05;//1.2;//1.17;//0.315;//0.3;//0.28;//0.5;//0.27;//0.2;//0.28;//0.30;//0.315;//0.297;//0.28;//0.28;//200;//50;//600; // gc to interneurons weight
 	double spdin2inwt = 1;//2;//0.5;//10;//0.5;//10;
 	double spdex2inwt = 10;//10;//50.0;//30.0;//100.0;//1.0;//1.65;//0.52;//0.5;
 	double spdin2in_curr = 1;//1.0;//1.0;//0;//1;//100;//10;
@@ -120,7 +121,7 @@ struct P {
 	int conn_dist = 3; // distance between neurons in connections
 
 	// speed
-	bool auto_speed_control = 1; // automatically adjust parameters to match speed selected
+	bool auto_speed_control = 0; // automatically adjust parameters to match speed selected
 	bool speed_limit = 0; // speed limit on or off
 	double max_speed = 17.5; // max movement speed
 	double speed_conversion = 1;//0.2; // scale animal movement speed data

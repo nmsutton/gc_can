@@ -22,7 +22,7 @@ grid_size_target = 40;%36;%42; % target grid size for neuron weights
 layer_sft=grid_size_target+4; % neuron count to shift center-surround centroid
 post_nrns=grid_size_target^2; % count of post synaptic neurons
 total_nrns = ((grid_size_target+4)^2); %(grid_size_target^2);%35;%(grid_size^2);% total neurons
-if show_2d_plot total_nrns = 3; end
+if show_2d_plot post_nrns=3; total_nrns = post_nrns+4; end
 grid_size = (grid_size_target+4)*3;%90;
 %if alt_weights
 %    grid_size = 120;
@@ -45,7 +45,7 @@ p7=r_s*0.19;%0.18;%0.19;%0.183;%0.19;%0.2;%0.2;%*1.1*.97;%1.04;%1.05;%1.15;%1;%4
 p16=1.08*.95*r_s;%1.08*1.03;%1.03;%.95;%1;%.97;%.99;%0.81;%*1.1*.97;%1.04;%1.05;%1.15;%1;%4;%.7;%.9;%.7;%0.9396*1.4*.9;%*3*(14/20);%1.4;%*.75;%0.81; 
 p5=p3;p6=p4;p9=2;p10=2;p11=2;p12=p4;p13=p11;p14=p11;p15=p12;p17=0.0058;
 p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
-tiling_fraction=0.33333333333*1;%(126/120);%1;%(42/30);%1.05;%*1.04;%0.1;%0.33333333333;%1;%0.33;%0.5; % fraction of standard tiling distance between bumps
+tiling_fraction=0.33333333333*(40.0/44.0);%(126/120);%1;%(42/30);%1.05;%*1.04;%0.1;%0.33333333333;%1;%0.33;%0.5; % fraction of standard tiling distance between bumps
 po=[show_3d_plot,write_to_cpp,sample_matrix,output_cpp,grid_size,iter,tiling_fraction, ...
     grid_size_target,start_x_shift,start_y_shift,layer_sft];
 comb_syn_wts=[];
@@ -85,7 +85,7 @@ if write_to_csv || write_to_cpp
 	end
 	disp("writing to file");
 	if output_cpp fprintf(output_cpp,'static const vector<vector<double>> mex_hat{{'); end
-	for i=0:(length(comb_syn_wts)-1)
+	for i=0:(size(comb_syn_wts,1)-1)
 		for j=1:post_nrns
 			if output_cpp fprintf(output_cpp,'%f',comb_syn_wts(i+1,j)); end
             if output_csv fprintf(output_csv,'%f',comb_syn_wts(i+1,j)); end
