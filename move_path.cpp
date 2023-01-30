@@ -94,7 +94,7 @@ void control_speed(double speed, P* p) {
 		//double angle = (p->angles)[(int) floor(p->mi)];
 		//printf("angle:%f\n",p->prior_angles[0]);
 		//p->base_ext=150;
-		p->speed_signaling=0.5;//45;//0.4;//0.36;//0.7*0.8333;
+		p->speed_signaling=1.2;//0.5;//6;//1.0;//0.5;//45;//0.4;//0.36;//0.7*0.8333;
 		bool change = false;
 		for (int i = 0; i < p->prior_angles.size(); i++) {
 			if (i <= (p->t/p->timestep)) {
@@ -104,7 +104,7 @@ void control_speed(double speed, P* p) {
 			}
 		}
 		if (change) {
-			p->speed_signaling=p->speed_signaling*1.4;//*0.4992*.45;//0.5616;//0.624;
+			p->speed_signaling=p->speed_signaling*0.8;//1;//1.2;//1.4;//*0.4992*.45;//0.5616;//0.624;
 		}
 		/*if (p->prior_angles[0]==0 || p->prior_angles[0]==180) {
 			p->speed_signaling=p->speed_signaling*2;//0.36*0.624;//p->speed_signaling*0.4992*.45;//0.36*0.624;
