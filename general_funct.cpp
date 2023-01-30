@@ -521,8 +521,16 @@ public:
     		//int ix2 = 
     		connected = 0;
     		vector<int> xy{0,0};	
-    		vector<int> centroid_x{ix+2}; 
-    		vector<int> centroid_y{iy+2};
+    		// vector<int> centroid_x{ix+2}; 
+    		// vector<int> centroid_y{iy+2};
+    		// vector<int> centroid_x{ix+2, ix+2,       ix+2, ix+2+7, ix+2-7, ix+2+7, ix+2-7}; 
+    		// vector<int> centroid_y{iy+2, ix+2+10, ix+2-10, ix+2-5, ix+2-5, ix+2+5, ix+2+5};
+    		// vector<int> centroid_x{ix+2, ix+2+10, ix+2-13};
+    		// vector<int> centroid_y{iy+2, ix+2+10, ix+2-13};
+    		// vector<int> centroid_x{ix+2, ix+2-6,   ix+2+6,  ix+2+6,  ix+2-6, ix+2+10, ix+2-10}; 
+    		// vector<int> centroid_y{iy+2, iy+2-10, iy+2+10, iy+2-10, iy+2+10,    iy+2,    iy+2};
+    		vector<int> centroid_x{ix+2, ix+2-6,   ix+2+6,  ix+2+6,  ix+2-6}; 
+    		vector<int> centroid_y{iy+2, iy+2-10, iy+2+10, iy+2-10, iy+2+10};
     		// vector<int> centroid_x{0,  0,   0,  7, -7, 7, -7}; 
     		// vector<int> centroid_y{0, 10, -10, -5, -5, 5,  5};
 
@@ -538,7 +546,7 @@ public:
     			j_sft2 = wrap_around(j_sft2,(pow((x_size+4),2)));
     			if (j == j_sft2) {
 					connected = 1;
-					//printf("i:%d j:%d i_sft:%d j_sft2:%d pd:%f cx1:%d cy1:%d cx2:%d cy2:%d\n",i,j,i_sft,j_sft2,get_pd(i,x_size),ix+2,iy+2,centroid_x[i2],centroid_y[i2]);
+					printf("i:%d j:%d i_sft:%d j_sft2:%d pd:%f cx1:%d cy1:%d cx2:%d cy2:%d\n",i,j,i_sft,j_sft2,get_pd(i,x_size),ix+2,iy+2,centroid_x[i2],centroid_y[i2]);
     			}
     			//if(j==1599) {printf("***i:%d i_sft:%d j:%d j_sft2:%d pd:%f x1:%d y1:%d x2:%d y2:%d***\n",i,i_sft,j,j_sft2,get_pd(i,x_size+4),ix+2,iy+2,centroid_x[i2],centroid_y[i2]);}
     		}
