@@ -582,8 +582,22 @@ public:
     		// vector<int> shift_y{0, -8, 8, -8, 8, -14, 14};
     		// vector<int> shift_x{0, -8, 8}; 
     		// vector<int> shift_y{0, -12, 12};
-    		vector<int> shift_x{0, -8, 8}; 
-    		vector<int> shift_y{0, -12, 12};
+    		// vector<int> shift_x{0, -8, 8}; 
+    		// vector<int> shift_y{0, -12, 12};
+    		// vector<int> shift_x{0, -14, 14}; 
+    		// vector<int> shift_y{0,  -6,  6};
+    		// vector<int> shift_x{0, -14, 14, 10, -10}; 
+    		// vector<int> shift_y{0,  -6,  6, -10,   10};
+    		vector<int> shift_x{0, -14, 14, 10, -10, -2, 2}; 
+    		vector<int> shift_y{0,  -6,  6, -10,   10, -14, 14};
+    		// vector<int> shift_x{0, -14, 14, 7, -11}; 
+    		// vector<int> shift_y{0,  -6,  6, -13, 9};
+    		// vector<int> shift_x{0, -10, 10}; 
+    		// vector<int> shift_y{0, -10, 10};
+    		// vector<int> shift_x{0, -12, 12}; 
+    		// vector<int> shift_y{0, -8, 8};
+    		// vector<int> shift_x{0, 7, -11}; 
+    		// vector<int> shift_y{0, -13, 9};
     		// vector<int> shift_x{0}; 
     		// vector<int> shift_y{0};
 
@@ -647,6 +661,9 @@ vector<double> directional_speeds(P* p, double angle, double speed) {
 		This function translates an angle and speed into what speed in 
 		4 compass directions (N,E,S,W) can create that movement.
 	*/
+	if (p->rotation_mod) {
+		angle = angle + (sin(((angle-45)/360)*4*PI) * p->angle_rot);
+	}
 	double speed_adj = speed;
 	if (speed == 0) {
 		speed_adj = 0; // avoid pow(0,0) when result of 0 is wanted
