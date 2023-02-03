@@ -588,8 +588,10 @@ public:
     		// vector<int> shift_y{0,  -6,  6};
     		// vector<int> shift_x{0, -14, 14, 10, -10}; 
     		// vector<int> shift_y{0,  -6,  6, -10,   10};
-    		vector<int> shift_x{0, -14, 14, 10, -10, -2, 2}; 
-    		vector<int> shift_y{0,  -6,  6, -10,   10, -14, 14};
+    		vector<int> shift_x{0, -14, 14, 10}; 
+    		vector<int> shift_y{0,  -6,  6, -10};
+    		// vector<int> shift_x{0, -14, 14, 10, -10, -2, 2}; 
+    		// vector<int> shift_y{0,  -6,  6, -10,   10, -14, 14};
     		// vector<int> shift_x{0, -14, 14, 7, -11}; 
     		// vector<int> shift_y{0,  -6,  6, -13, 9};
     		// vector<int> shift_x{0, -10, 10}; 
