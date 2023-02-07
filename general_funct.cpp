@@ -588,14 +588,18 @@ public:
     		// vector<int> shift_y{0,  -6,  6};
     		// vector<int> shift_x{0, -14, 14, 10, -10}; 
     		// vector<int> shift_y{0,  -6,  6, -10,   10};
+    		// vector<int> shift_x{0, -14, 14, 12}; 
+    		// vector<int> shift_y{0,  -6,  6, -8};
     		// vector<int> shift_x{0, -14, 14, 12, -12}; 
     		// vector<int> shift_y{0,  -6,  6, -8,   8};
     		// vector<int> shift_x{0, -14, 14, 12, -12, 0,  22}; 
     		// vector<int> shift_y{0,  -6,  6, -8,   8, 15, 14};
-    		vector<int> shift_x{0, -14, 14, 12, -12, 0}; 
-    		vector<int> shift_y{0,  -6,  6, -8,   8, 15};
-    		// vector<int> shift_x{0, -14, 14, 12}; 
-    		// vector<int> shift_y{0,  -6,  6, -8};
+    		// vector<int> shift_x{0, -14, 14, 12, -12, 0}; 
+    		// vector<int> shift_y{0,  -6,  6, -8,   8, 15};
+    		// vector<int> shift_x{0, -14, 14, 12, -12, 2}; 
+    		// vector<int> shift_y{0,  -6,  6, -8,   8, 14}; 
+    		// vector<int> shift_x{0, -14, 14, 12, -12, 2, -2}; 
+    		// vector<int> shift_y{0,  -6,  6, -8,   8, 14, -14};
     		// vector<int> shift_x{0, -14, 14}; 
     		// vector<int> shift_y{0,  -6,  6};
     		// vector<int> shift_x{0, -14, 14, 11, -11}; 
@@ -612,6 +616,14 @@ public:
     		// vector<int> shift_y{0, -8, 8};
     		// vector<int> shift_x{0, 7, -11}; 
     		// vector<int> shift_y{0, -13, 9};
+    		// vector<int> shift_x{0, -12, 12}; 
+    		// vector<int> shift_y{0,  -8,  8};
+    		// vector<int> shift_x{0, -12, 12, -2}; 
+    		// vector<int> shift_y{0,  -6,  6, 12};
+    		// vector<int> shift_x{0, -10, 10,  2}; 
+    		// vector<int> shift_y{0,   6, -6, 12};
+    		vector<int> shift_x{0, -10, 10,  6}; 
+    		vector<int> shift_y{0,   6, -6, 14};
     		// vector<int> shift_x{0}; 
     		// vector<int> shift_y{0};
 
