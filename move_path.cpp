@@ -96,11 +96,11 @@ void control_speed(double speed, P* p) {
 		//p->base_ext=100;
 		
 		if (speed <= 18) {
-			p->speed_signaling=(2.6085951784577972e-004)+((1.6674955604221067e-002)*speed)+((6.3889238953847058e-002)*pow(speed,2))+
-			((-1.6167200616900787e-002)*pow(speed,3))+((1.7337429326611431e-003)*pow(speed,4))+((-8.4795680738430026e-005)*pow(speed,5))+
-			((1.5733017360794851e-006)*pow(speed,6));
+			p->speed_signaling=(-1.1862767227591385e-014)+((9.7525894403114211e-002)*speed)+((-6.8445474663378861e-003)*pow(speed,2))+
+			((8.2202718376030983e-004)*pow(speed,3))+((-1.7167741796971457e-005)*pow(speed,4))+((-3.5536409786937356e-006)*pow(speed,5))+
+			((1.6421013468141743e-007)*pow(speed,6));
 		}
-		else {p->speed_signaling = 2.0;}
+		else {p->speed_signaling = 1.4;}
 
 		// momentum adjustment
 		/*bool change = false;
@@ -215,7 +215,7 @@ void run_path_onlypos(vector<double> *moves, vector<double> *speeds, vector<int>
 
 void move_straight(CARLsim* sim, P* p) {
 	// straight line path
-	double angle = 0;
+	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
 		control_speed(10,p);	

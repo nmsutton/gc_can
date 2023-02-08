@@ -634,8 +634,12 @@ public:
     		// vector<int> shift_y{0, -10, 10,  -2};
     		// vector<int> shift_x{0, -2,   2, -12}; 
     		// vector<int> shift_y{0, -10, 10,  -2};
-    		vector<int> shift_x{0, -2,   2, -12, 12}; 
-    		vector<int> shift_y{0, -10, 10,  -2,  2};
+    		// vector<int> shift_x{0, -2,   2, -12, 12}; 
+    		// vector<int> shift_y{0, -10, 10,  -2,  2};
+    		// vector<int> shift_x{0, -4,   4, -12}; 
+    		// vector<int> shift_y{0, -14, 14,  -4};
+    		vector<int> shift_x{0, -2,   2, -14, 14}; 
+    		vector<int> shift_y{0, -10, 10, -4, 4};
     		// vector<int> shift_x{0}; 
     		// vector<int> shift_y{0};
 
