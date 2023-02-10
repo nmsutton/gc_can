@@ -16,7 +16,7 @@ cpp_filename = "synapse_weights.cpp";
 output_cpp = 0; output_csv = 0; % these are always init as 0
 if write_to_csv output_csv = fopen(csv_filename,'w'); end
 if write_to_cpp output_cpp = fopen(cpp_filename,'w'); end
-grid_size_target = 40;%36;%42; % target grid size for neuron weights
+grid_size_target = 40;%42;%40;%36;%42; % target grid size for neuron weights
 total_nrns = (grid_size_target^2);%35;%(grid_size^2);% total neurons
 if show_2d_plot total_nrns = 3; end
 grid_size = grid_size_target*3;%90;
@@ -24,21 +24,22 @@ grid_size = grid_size_target*3;%90;
 %    grid_size = 120;
 %end
 iter = 13; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
-start_x_shift = (grid_size/2) - 19;%17;%44;%20;%50;%44;%- 44;%1;%28; -2 = 2 down
-start_y_shift = (grid_size/2) - 19;%17;%44;%20;%50;%44;%- 44;%1;%-4;%28; +2 = 2 left
+start_x_shift = (grid_size/2) - 19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%28; -2 = 2 down
+start_y_shift = (grid_size/2) - 19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%-4;%28; +2 = 2 left
 highval = 0.00681312463724531;
 highval_thres = 0.004;
 filter_highval = 1; % filter values to convert into high val.
-r_s=0.8*1.1;%*1.4;%1.5;%0.73;%1.1;%(36/42);%1;%(42/30); % ring scale
-p1=.68;p2=2;p3=2;
+r_s=25/42;%40/42;%0.8*1.1;%*1.4;%1.5;%0.73;%1.1;%(36/42);%1;%(42/30); % ring scale
+p1=20;%.68;
+p2=2;p3=2;
 % center size
-p4=r_s*52;%35;%45;%52;%40;%70;%130;%38;%*2.5*1.3;%.55;%.7;%4;%2;%2;%2.5;%2;%*1.4;%1.344;%*2.7*(14/20);%1.4;%*.5; 
+p4=r_s*60;%90;%r_s*52;%35;%45;%52;%40;%70;%130;%38;%*2.5*1.3;%.55;%.7;%4;%2;%2;%2.5;%2;%*1.4;%1.344;%*2.7*(14/20);%1.4;%*.5; 
 % center size
-p8=r_s*.135*1.02;%1.07;%1;%.87;%.135*.9;%1;%.97;%.99;%.11;%.13;%.12;%.14;%.12;%.22;%.2;%.25;%.135; 
+p8=r_s*80;%100;%30;%r_s*.135*1.02;%1.07;%1;%.87;%.135*.9;%1;%.97;%.99;%.11;%.13;%.12;%.14;%.12;%.22;%.2;%.25;%.135; 
 % surround size
-p7=r_s*0.19;%0.18;%0.19;%0.183;%0.19;%0.2;%0.2;%*1.1*.97;%1.04;%1.05;%1.15;%1;%4;%.7;%.9;%.7;%0.174*1.4;%*2.4*(14/20);%1.4;%*.75;%0.15; 
+p7=r_s*0.15;%r_s*0.19;%0.18;%0.19;%0.183;%0.19;%0.2;%0.2;%*1.1*.97;%1.04;%1.05;%1.15;%1;%4;%.7;%.9;%.7;%0.174*1.4;%*2.4*(14/20);%1.4;%*.75;%0.15; 
 % surround size
-p16=1.08*.95*r_s;%1.08*1.03;%1.03;%.95;%1;%.97;%.99;%0.81;%*1.1*.97;%1.04;%1.05;%1.15;%1;%4;%.7;%.9;%.7;%0.9396*1.4*.9;%*3*(14/20);%1.4;%*.75;%0.81; 
+p16=r_s*0.3;%1.08*.95*r_s;%1.08*1.03;%1.03;%.95;%1;%.97;%.99;%0.81;%*1.1*.97;%1.04;%1.05;%1.15;%1;%4;%.7;%.9;%.7;%0.9396*1.4*.9;%*3*(14/20);%1.4;%*.75;%0.81; 
 p5=p3;p6=p4;p9=2;p10=2;p11=2;p12=p4;p13=p11;p14=p11;p15=p12;p17=0.0058;
 p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
 tiling_fraction=0.33333333333*1;%(126/120);%1;%(42/30);%1.05;%*1.04;%0.1;%0.33333333333;%1;%0.33;%0.5; % fraction of standard tiling distance between bumps

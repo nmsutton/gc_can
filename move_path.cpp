@@ -162,12 +162,12 @@ void run_path(vector<double> *moves, vector<double> *speeds, vector<int> *speed_
 			angle = (*moves)[mi];
 			speed = (*speeds)[mi];
 			// shift all values down 1 index
-			for (int i = p->prior_speeds.size()-1; i >= 0; i--) {
+			/*for (int i = p->prior_speeds.size()-1; i >= 0; i--) {
 				p->prior_speeds[i+1] = p->prior_speeds[i];
 				p->prior_angles[i+1] = p->prior_angles[i];
 			}
 			p->prior_angles[0]=angle;
-			p->prior_speeds[0]=speed;
+			p->prior_speeds[0]=speed;*/
 			//printf("a:%f s:%f\n",angle,speed);
 			control_speed(speed, p);
 			EISignal(angle, sim, p);
@@ -215,7 +215,7 @@ void run_path_onlypos(vector<double> *moves, vector<double> *speeds, vector<int>
 
 void move_straight(CARLsim* sim, P* p) {
 	// straight line path
-	double angle = 90;
+	double angle = 180;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
 		control_speed(10,p);	

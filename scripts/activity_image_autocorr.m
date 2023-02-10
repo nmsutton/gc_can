@@ -4,12 +4,19 @@
 
 addpath /comp_neuro/Software/Github/CMBHOME_github/
 use_carlsim = 1;
-% medium
-%load('/media/nmsutton/StorageDrive7/comp_neuro/holger_data/merged_sessions_ArchTChAT#22_cell1.mat');
-% large
-%load('/media/nmsutton/StorageDrive7/comp_neuro/holger_data/GCaMP6fChAT10_gridCell_mergedSessions.mat');
+load filenames;
 % small:
-load('/media/nmsutton/StorageDrive7/comp_neuro/holger_data/191108_S1_lightVSdarkness_cells11and12.mat');
+%191108_S1_lightVSdarkness_cells11and12.mat
+%file_number=15;
+% medium
+%merged_sessions_ArchTChAT#22_cell1.mat
+file_number=23;
+% large
+%GCaMP6fChAT10_gridCell_mergedSessions.mat
+%file_number=17;
+load(filenames(file_number));
+load tetrodes;
+load cells;
 cell_selection=root.cel;
 if use_carlsim == 0
     load('/media/nmsutton/StorageDrive7/comp_neuro/holger_data/merged_sessions_ArchTChAT#22_cell1.mat');
