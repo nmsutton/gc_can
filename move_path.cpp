@@ -95,10 +95,13 @@ void control_speed(double speed, P* p) {
 		//printf("angle:%f\n",p->prior_angles[0]);
 		//p->base_ext=100;
 		
-		if (speed <= 20) {
-			p->speed_signaling=5.0000000000000003e-002*speed;
+		p->base_ext = 117.3563 + 32.2842/(1 + pow((speed/16.99585),19.24367));
+		p->angle_rot = 5 + 5/(1 + pow((speed/13.95946),286.6025));
+		if (speed <= 13) {
+			p->speed_signaling=(1.2322233243119811e-003)+((1.8944121324025096e-001)*speed)+((-6.1258211662806691e-002)*pow(speed,2))+
+			((9.3562805493128866e-003)*pow(speed,3))+((-3.3859986741967621e-004)*pow(speed,4));
 		}
-		else {p->speed_signaling = 1.0;}
+		else {p->speed_signaling = 3.0;}
 
 		// momentum adjustment
 		/*bool change = false;
@@ -213,10 +216,10 @@ void run_path_onlypos(vector<double> *moves, vector<double> *speeds, vector<int>
 
 void move_straight(CARLsim* sim, P* p) {
 	// straight line path
-	double angle = 180;
+	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(10,p);	
+		control_speed(18.333,p);	
 		EISignal(angle, sim, p);
 	}
 }
