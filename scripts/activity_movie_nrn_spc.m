@@ -14,7 +14,7 @@
 initOAT;
 hopper_use=0;
 local_run=1;
-hopper_run=7;
+hopper_run=8;
 if hopper_use
     hopper_path=strcat('/mnt/hopper_scratch/gc_sim/gc_can_',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat');
     SpikeReader(hopper_path, false, 'silent');
