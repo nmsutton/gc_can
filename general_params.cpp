@@ -71,12 +71,12 @@ struct P {
 	// select movement trajectory
 	bool run_path = 0; // use run_path function. This is auto enabled by functions that use it.
 	bool run_path_onlypos = 0; // only generate movement positions not signaling with run_path function
-	bool move_animal = 1; // use real animal movement positions with neural signaling
+	bool move_animal = 0; // use real animal movement positions with neural signaling
 	bool move_animal_aug = 0; // augment animal movement
 	bool move_animal_onlypos = 0; // generate animal movement position but not signaling
 	bool move_speed_change=0; // test series of speed changes
 	bool move_fullspace = 0; // move through whole environment
-	bool move_straight = 0;
+	bool move_straight = 1;
 	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;
@@ -173,7 +173,7 @@ struct P {
 	int selected_neuron = 465;//378;//372;//465;//372;//11;//465;//232;//465;//10;
 	int selected_in_neuron = 100; // interneuron
 	double grid_pattern_rot = 0;//-15; // angle value for rotation of grid pattern in plot
-	double grid_pattern_scale = 0.95;//1;//0.5;//1;//18/22.5; // rescale grid pattern for plot. smaller value makes larger rescale, e.g., 0.8 = 1.25x rescale. animal speed to bump speed conversion. <goal_top_bump_speed>/<goal_top_animal_speed>
+	double grid_pattern_scale = 1;//0.95;//1;//0.5;//1;//18/22.5; // rescale grid pattern for plot. smaller value makes larger rescale, e.g., 0.8 = 1.25x rescale. animal speed to bump speed conversion. <goal_top_bump_speed>/<goal_top_animal_speed>
 	vector<int> locations_visited; // locations an animal visited
 	double animal_location[x_size*y_size]; // location of animal
 	double animal_location_all[x_size*y_size]; // location of animal

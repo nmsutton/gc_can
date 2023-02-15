@@ -10,10 +10,10 @@ load filenames;
 %file_number=15;
 % medium
 %merged_sessions_ArchTChAT#22_cell1.mat
-file_number=23;
+%file_number=23;
 % large
 %GCaMP6fChAT10_gridCell_mergedSessions.mat
-%file_number=17;
+file_number=17;
 load(filenames(file_number));
 load tetrodes;
 load cells;

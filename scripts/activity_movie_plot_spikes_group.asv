@@ -1,0 +1,54 @@
+initOAT;
+SR = SpikeReader('../results/spk_MEC_LII_Stellate.dat');
+spikes = SR.readSpikes(1); X=[]; Y=[];
+T=size(spikes,1); % time to plot
+fn = 75; % first neuron to plot
+N=50; % number of spikes to plot
+
+% animation
+hFigure = figure;
+hFigure.Position = [100 100 1000 300];
+time_bin = 10;
+numberOfFrames = ((t_end-t_start)-1)*(1/time_bin);
+allTheFrames = cell(numberOfFrames,1);
+vidHeight = 337;
+vidWidth = 442;
+allTheFrames(:) = {zeros(vidHeight, vidWidth, 3, 'uint8')};
+% Next get a cell array with all the colormaps.
+allTheColorMaps = cell(numberOfFrames,1);
+allTheColorMaps(:) = {zeros(256, 3)};
+% Now combine these to make the array of structures.
+myMovie = struct('cdata', allTheFrames, 'colormap', allTheColorMaps); 
+set(gcf, 'nextplot', 'replacechildren'); 
+% Need to change from the default renderer to zbuffer to get it to work right. openGL doesn't work and Painters is way too slow.
+set(gcf, 'renderer', 'zbuffer');
+caxis manual; % allow subsequent plots to use the same color limits
+
+for frameIndex = 1 : time_bin : numberOfFrames
+    cla reset;
+    hAxes = gca;
+    t_start = frameIndex; % start time
+    t_end = t_start+1500; % end time
+    t_range = linspace(t_start,t_end,(t_end-t_start+1));
+    for y=t_start:t_end
+    for x=1:N
+      if spikes(y,x+fn)==1 X=[X;x+fn]; Y=[Y;y]; end
+    end
+    end
+    X=X(Y>=t_start); % clear old times
+    Y=Y(Y>=t_start); % clear old times
+    scatter(Y,X,10);
+    caption = sprintf("Spike Times, t = %.0f ms", frameIndex);
+    title(caption, 'FontSize', 16);
+    axis('tight'); xlabel('Time'); ylabel('Neuron');
+    thisFrame = getframe(gcf);
+    myMovie(frameIndex) = thisFrame;
+end
+
+close(hFigure);
+temp = myMovie(1);
+myMovie(1) = []; % remove first frame causing issues due to wrong size
+v = VideoWriter('./videos/spike_group_movie.avi'); % Create a VideoWriter object to write the video out to a new, different file.
+open(v)
+writeVideo(v,myMovie) % Write the movie object to a new video file.
+close(v)

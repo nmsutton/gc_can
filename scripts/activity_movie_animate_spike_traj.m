@@ -5,11 +5,16 @@ close all;
 % run options
 use_hopper_data = 0;
 local_run=1;
-hopper_run = 3;
+hopper_run = 7;
 plot_spikes = 1; 
+min_x = 3.5;%4.5;
+max_x = min_x+32;%31;
+min_y = 3.5;%4.5;
+max_y = min_y+32;%31;
+tick_size = 20; % spike marker size
 spk_bin_size = 10; % spike reader bin size. Note: small bin sizes may take long processing with large spike sets. 40min sim with bin size 1 can take 10min to create plot.
 % select neuron to plot
-sel_nrn=348;%110;%210;%262;%454;%454;%453;%455;%591;%629;%547;%629;%494;%290;%393;%243;%358;%338;%210;%290;%497;%860;%810;%300;%1250;%410;%820;%516;%1228;%690;
+sel_nrn=100;%348;%110;%210;%262;%454;%454;%453;%455;%591;%629;%547;%629;%494;%290;%393;%243;%358;%338;%210;%290;%497;%860;%810;%300;%1250;%410;%820;%516;%1228;%690;
 spikes=[];
 fdr_prefix="gc_can_"; % folder name prefix for hopper run. "gc_can_" for main dir; "param_explore_iz_" for iz pe.
 restrict_time = 300000; % 0 for no restriction or input time value for restriction
@@ -31,18 +36,6 @@ Ys = readmatrix(strcat('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_projec
 
 % load spike times
 if plot_spikes
-    %{
-    if use_hopper
-        hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/spikes_recorded.csv']);
-        spk_t = readmatrix(hopper_path); 
-    else
-        if laptop_data == 0
-            spk_t = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/output/spikes/spikes_recorded.csv');
-        else
-            spk_t = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_ltop/output/spikes/spikes_recorded.csv');
-        end
-    end
-    %}
     spk_x = []; spk_y = [];
     [spk_t,spikes]=load_spk_times(use_hopper_data, hopper_run, ...
     spk_bin_size, sel_nrn, spikes, ...
@@ -53,17 +46,6 @@ time = restrict_time;
 if restrict_time == 0
     time = length(Xs);
 end
-
-% set plot axes sizes
-min_x = min(Xs(1:time));
-max_x = max(Xs(1:time));
-min_y = min(Ys(1:time));
-max_y = max(Ys(1:time));
-if min_x > 0 min_x = 0; end
-if max_x < 30 max_x = 30; end
-if min_y > 0 min_y = 0; end
-if max_y < 30 max_y = 30; end
-if max_x > max_y max_y = max_x; else max_x = max_y; end % make square
 
 % video
 numberOfFrames = (time/timestep);
@@ -78,45 +60,16 @@ set(gcf, 'nextplot', 'replacechildren');
 set(gcf, 'renderer', 'zbuffer');
 caxis manual;          % allow subsequent plots to use the same color limits
 
-%{
-h = animatedline();
-%hold on
-for t = 1:time
-    hold on
-    if mod(t-1,20) == 0
-        addpoints(h,Xs(t),Ys(t));
-        drawnow
-    end
-    if isempty(find(spk_t==t)) == 0
-        scatter(Xs(t), Ys(t), [], [1,0,0], 'filled');
-        drawnow
-    end
-    caption = sprintf('t = %.0f ms', t);
-    title(caption, 'FontSize', 15);
-    hold off
-    thisFrame = getframe(gcf);
-    myMovie(t) = thisFrame;	
-end
-%hold off
-%}
-
-
-
-%axes('position',[0 0 1 1]);
-%plot1 = scatter(Ys(1:time),Xs(1:time),30,'.');
-
 for t = 1:timestep:time
     clf(hFigure)
 	hold on
     if plot_spikes spikes = find(spk_t < t); end
     %scatter(Xs(1:t),Ys(1:t),10, [.1,.1,.1], 'filled'); % old positions
     line(Xs(1:t),Ys(1:t), 'Color', 'k', 'LineWidth', 1.5)
-    if plot_spikes scatter(Xs(spk_t(spikes)), Ys(spk_t(spikes)), 100, [1,0,0], 'filled'); end % spikes
+    if plot_spikes scatter(Xs(spk_t(spikes)), Ys(spk_t(spikes)), tick_size, [1,0,0], 'filled'); end % spikes
     scatter(Xs(t),Ys(t),100, [0,.5,1], 'filled'); % current position
     caption = sprintf('Virtual Animal Positions and Spikes; t = %.0f ms', t);
     title(caption, 'FontSize', 13);
-    %xlim([min_x max_x])    
-    %ylim([min_y max_y])
     xlim([min_x max_x])    
     ylim([min_y max_y])
     hold off
