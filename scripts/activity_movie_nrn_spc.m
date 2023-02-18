@@ -24,7 +24,7 @@ else
     spk_data = SpikeReader(strcat('/comp_neuro/PhD/gmu/research/simulation/code/gc_can_',int2str(local_run),'/results/spk_MEC_LII_Stellate.dat'), false, 'silent');
 end
 
-delay_frames = true;%false;%true;
+delay_frames = false;%true;
 time=7000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
 bin_size=100;%200;%10; % size of firing bin in ms
 t=[0:(1/bin_size):(time*(1/bin_size))];

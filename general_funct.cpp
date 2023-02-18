@@ -3,6 +3,10 @@
 
 	References: https://stackoverflow.com/questions/34218040/how-to-read-a-csv-file-data-into-an-array
 	https://iq.opengenus.org/split-string-in-cpp/
+	https://www.mathsisfun.com/algebra/trig-finding-angle-right-triangle.html
+	https://www.emathhelp.net/calculators/algebra-2/rotation-calculator/?px=20&py=20&a=-45&u=d&d=cw&qx=0&qy=0
+	https://stackoverflow.com/questions/17530169/get-angle-between-point-and-origin
+	https://math.stackexchange.com/questions/707673/find-angle-in-degrees-from-one-point-to-another-in-2d-space
 */
 
 string to_string(double x);
@@ -91,6 +95,207 @@ double get_opp_pd(int i, P *p) {
 
 	return pd;
 }
+
+int wrap_around(int i, int max_size) {
+	if (i<0) {i=i+max_size;}
+	else if (i>=max_size) {i=i-max_size;}
+	return i;
+}
+
+double r2d(double angle) {
+	// convert from radians to degrees
+
+	angle = (angle/(2*PI))*360;
+
+	return angle;
+}
+
+double d2r(double angle) {
+	// convert from degrees to radians
+
+	angle = (angle/360)*2*PI;
+
+	return angle;
+}
+
+// int wrap_around_rot_rot(int i, int layer_size, double angle) {
+void wrap_around_rot(double* xy, int layer_size) {
+	/* 
+		version of border wrap around with
+		rotated borders
+	*/
+
+	//int i = 1599;
+    //int layer_size = 40;
+    double x = xy[0];
+    double y = xy[1];
+    double angle = 0;//-45; // make this parameter when in real use
+    angle = angle * -1; // flip sign of angle for calculations.
+    bool print_debug = false;
+
+	//double x = double (i % layer_size) + 1;
+	//double y = double (i / layer_size) + 1;
+	//x = 60; y = 20;
+	//x = 20; y = 60;
+	//x = 48.2843; y = -8.2843;
+	//x = 20; y = -20;
+	//x = -8.2843; y = -8.2843;
+	//x = -20; y = 20;
+	//x = -8.2843; y = 48.2843;
+	//x = -6.2843; y = -6.2843;
+	//x = -10; y = 46;
+	double x_new, y_new;
+	double x_c = (layer_size*.5); // non-rotated border center axis
+	double y_c = (layer_size*.5); // non-rotated border center axis
+	bool outside_border = false;
+	int bp = 0; // border point number. TR: 1, BR: 2, BL: 3, TL: 4.
+	int s = 0; // section number
+	angle = d2r(angle); // convert from degrees to radians
+	double adj, opp, a_tr, a_br, a_bl, a_tl;
+	double h_tr, h_br, h_bl, h_tl;
+
+	// compute border points
+	// original points
+	double x_tr_o = (layer_size*.5);
+	double y_tr_o = (layer_size*.5);
+	double x_br_o = (layer_size*.5);
+	double y_br_o = (layer_size*.5)*-1;
+	double x_bl_o = (layer_size*.5)*-1;
+	double y_bl_o = (layer_size*.5)*-1;
+	double x_tl_o = (layer_size*.5)*-1;
+	double y_tl_o = (layer_size*.5);
+	double h = sqrt(pow((layer_size*.5),2)+pow((layer_size*.5),2)); // hypotenuse. length from center to border point.
+	if (print_debug) {cout << "h " << h << "\n";}
+	// rotated points
+	// rotation around center is: x=x*cos(a)-y*sin(a); y=x*sin(a)+y*cos(a)
+	double x_tr = x_c + x_tr_o*cos(angle)-y_tr_o*sin(angle);
+	double y_tr = y_c + x_tr_o*sin(angle)+y_tr_o*cos(angle);
+	double x_tl = x_c + x_tl_o*cos(angle)-y_tl_o*sin(angle);
+	double y_tl = y_c + x_tl_o*sin(angle)+y_tl_o*cos(angle);
+	double x_br = x_c + x_br_o*cos(angle)-y_br_o*sin(angle);
+	double y_br = y_c + x_br_o*sin(angle)+y_br_o*cos(angle);
+	double x_bl = x_c + x_bl_o*cos(angle)-y_bl_o*sin(angle);
+	double y_bl = y_c + x_bl_o*sin(angle)+y_bl_o*cos(angle);
+	if (print_debug) {cout << "angle " << angle << " x_br " << x_br << " y_br " << y_br << " (cos(angle)*h) " << (cos(angle)*h) << " cos(angle) " << cos(angle) << "\n";}
+
+	// compute border area
+	// remove rotation from position
+	h = sqrt(pow((x-x_c),2)+pow((y-y_c),2));
+	if (print_debug) {cout << "h2 " << h << "\n";}
+	double x_nr = x_c + (x-x_c)*cos(angle)-(y-y_c)*sin(angle); // non-rotated position
+	double y_nr = y_c + (x-x_c)*sin(angle)+(y-y_c)*cos(angle);
+	if (print_debug) {cout << "x_nr " << x_nr << " y_nr " << y_nr << "\n";}
+	// check for outside border
+	if (x_nr < 0 || x_nr > layer_size || y_nr < 0 || y_nr > layer_size) {outside_border = true;}
+	if (print_debug) {cout << "outside_border " << outside_border << "\n";}
+
+	// check if position is outside of border
+	if (outside_border) {
+
+	// find wrap section
+	// find angles to border points
+	// angle = atan2(y,x) where y=y_b−y_a, x=x_b−x_a
+	h_tr = sqrt(pow((x-x_tr),2)+pow((y-y_tr),2));
+	adj = abs(x-x_tr); // adjacent border
+	//a_tr = r2d(atan2(y_tr-y,x_tr-x)); // angle with border point as axis
+	//a_tr = r2d(atan2(x_tr*y-y_tr*x,x_tr*x+y_tr*y));
+	a_tr = r2d(atan2(y-y_tr,x-x_tr));
+	h_br = sqrt(pow((x-x_br),2)+pow((y-y_br),2));
+	adj = abs(x-x_br);
+	//a_br = r2d(atan2(y_br-y,x_br-x)); // angle with border point as axis
+	//a_br = r2d(atan2(d2r(x_br)*d2r(y)-d2r(y_br)*d2r(x),d2r(x_br)*d2r(x)+d2r(y_br)*d2r(y)));
+	a_br = r2d(atan2(y-y_br,x-x_br));
+	h_bl = sqrt(pow((x-x_bl),2)+pow((y-y_bl),2));
+	adj = abs(x-x_bl);
+	//a_bl = r2d(atan2(y_bl-y,x_bl-x)); // angle with border point as axis
+	a_bl = r2d(atan2(y-y_bl,x-x_bl));
+	h_tl = sqrt(pow((x-x_tl),2)+pow((y-y_tl),2));
+	adj = abs(x-x_tl);
+	//a_tl = r2d(atan2(y_tl-y,x_tl-x)); // angle with border point as axis
+	a_tl = r2d(atan2(y-y_tl,x-x_tl));
+	if(a_tr<0){a_tr+=360;}
+	if(a_br<0){a_br+=360;}
+	if(a_bl<0){a_bl+=360;}
+	if(a_tl<0){a_tl+=360;}
+	if (print_debug) {
+	cout << "a_tr " << a_tr << " h_tr " << h_tr << " acos(adj/h_tr) " << acos(adj/h_tr) << " adj/h_br " << adj/h_br << " x_tr " << x_tr << " y_tr " << y_tr << " x " << x << " y " << y << "\n"; 
+	cout << "a_br " << a_br << " h_br " << h_br << " acos(0) " << acos(0) << " adj/h_br " << adj/h_br << " x_br " << x_br << " y_br " << y_br << " x " << x << " y " << y << "\n"; 
+	}
+
+	// assign border point
+	if      (a_tr <= 135 && a_tr >= 45) {bp = 1; s = 1;}
+	else if (((a_tr <=  45 && a_tr >= 0) || (a_tr <= 360 && a_tr >= 315)) && (a_br >= 45 && a_br <= 135)) {bp = 1; s = 2;}
+	else if ((a_br <=  45 && a_br >= 0) || (a_br <= 360 && a_br >= 315)) {bp = 2; s = 3;}
+	else if ((a_br <= 315 && a_br >= 225) && ((a_bl >= 315 && a_bl <= 360) || (a_bl >= 0 && a_bl <= 45))) {bp = 2; s = 4;}
+	else if (a_bl <= 315 && a_bl >= 225) {bp = 3; s = 5;}
+	else if ((a_bl <= 225 && a_bl >= 135) && (a_tl >= 225 && a_tl <= 315)) {bp = 3; s = 6;}
+	else if (a_tl <= 225 && a_tl >= 135) {bp = 4; s = 7;}
+	else if ((a_tl <= 135 && a_tl >= 45) && (a_tr >= 135 && a_tr <= 225)) {bp = 4; s = 8;}
+	if (print_debug) {cout << "bp " << bp << " s " << s << "\n";}
+
+	// compute distance from border point
+	double bp_dist = 0;
+	if (bp == 1) {bp_dist = sqrt(pow((x-x_tr),2)+pow((y-y_tr),2));}
+	else if (bp == 2) {bp_dist = sqrt(pow((x-x_br),2)+pow((y-y_br),2));}
+	else if (bp == 3) {bp_dist = sqrt(pow((x-x_bl),2)+pow((y-y_bl),2));}
+	else if (bp == 4) {bp_dist = sqrt(pow((x-x_tl),2)+pow((y-y_tl),2));}
+	if (print_debug) {cout << "bp_dist " << bp_dist << " x_br " << x_br << " y_br " << y_br << "\n";}
+
+	// compute angle from border point
+	double a_bp;
+	if (bp == 1) {a_bp = a_tr;}
+	else if (bp == 2) {a_bp = a_br;}
+	else if (bp == 3) {a_bp = a_bl;}
+	else if (bp == 4) {a_bp = a_tl;}
+
+	// find new border point
+	// TR: 1, BR: 2, BL: 3, TL: 4
+	int new_bp = 0;
+	if      (s == 1) {new_bp = 3;}
+	else if (s == 2) {new_bp = 4;}
+	else if (s == 3) {new_bp = 4;}
+	else if (s == 4) {new_bp = 1;}
+	else if (s == 5) {new_bp = 1;}
+	else if (s == 6) {new_bp = 2;}
+	else if (s == 7) {new_bp = 2;}
+	else if (s == 8) {new_bp = 3;}
+	if (print_debug) {cout << "new_bp " << new_bp << "\n";}
+
+	// output new position relative to new border point
+	/*if      (new_bp==1) {a_bp = a_bl;}
+	else if (new_bp==2) {a_bp = a_tl;}
+	else if (new_bp==3) {a_bp = a_tr;}
+	else if (new_bp==4) {a_bp = a_br;}*/
+	if      (s==1) {a_bp = a_tr;}
+	else if (s==2) {a_bp = a_tr;}
+	else if (s==3) {a_bp = a_br;}
+	else if (s==4) {a_bp = a_br;}
+	else if (s==5) {a_bp = a_bl;}
+	else if (s==6) {a_bp = a_bl;}
+	else if (s==7) {a_bp = a_tl;}
+	else if (s==8) {a_bp = a_tl;}
+	if (print_debug) {cout << "a_bp " << a_bp << " bp_dist " << bp_dist << "\n";}
+    
+    //a_bp = a_bp * -1; // flip sign
+	adj = cos(d2r(a_bp))*bp_dist;
+	opp = sin(d2r(a_bp))*bp_dist;
+	if      (new_bp==1) {x_new = x_tr + adj; y_new = y_tr + opp;}
+	else if (new_bp==2) {x_new = x_br + adj; y_new = y_br + opp;}
+	else if (new_bp==3) {x_new = x_bl + adj; y_new = y_bl + opp;}
+	else if (new_bp==4) {x_new = x_tl + adj; y_new = y_tl + opp;}
+
+	}
+	else {x_new = x; y_new = y;}
+	if (print_debug) {
+	cout << "x_bl: " << x_bl << " y_bl: " << y_bl << " h_bl: " << h_bl << "\n";
+	cout << "adj: " << adj << " opp: " << opp << "\n";
+	cout << "x: " << x_new << " y: " << y_new << "\n";
+	}
+
+	//int i_new = (y_new*layer_size) + x_new;
+	xy[0] = x_new; xy[1] = y_new;
+}
+
 vector<double> find_ver_hor(P *p, double angle, double* h) {
 	//
 	//	Translate angle and distance into proportion of horizonal and 
@@ -131,6 +336,8 @@ void set_pos(P *p, double angle) {
 	/*
 		Angle should be between 0-360 degrees.
 	*/
+
+	double xy[2];
 	//angle = angle + 180;
 	vector<double> ver_hor = find_ver_hor(p, angle, &p->move_increment);
 	if (p->move_animal==1 || p->move_animal_aug==1 || p->move_animal_onlypos==1) {
@@ -149,49 +356,24 @@ void set_pos(P *p, double angle) {
 	//printf("%f ver_hor[0]:%f %f\n",p->pos[1],ver_hor[1],p->move_increment);
 
 	// wrap around twisted taurus
-	if (p->pos[0] >= p->x_size) {
-		p->pos[0] = p->x_size - p->pos[0];
-	}
-	else if (p->pos[0] < 0) {
-		p->pos[0] = p->x_size + p->pos[0];
-	}
-	if (p->pos[1] >= p->y_size) {
-		p->pos[1] = p->y_size - p->pos[1];
-	}
-	else if (p->pos[1] < 0) {
-		p->pos[1] = p->y_size + p->pos[1];
-	}
-	if (p->bpos[0] >= p->x_size) {
-		p->bpos[0] = p->x_size - p->bpos[0];
-	}
-	else if (p->bpos[0] < 0) {
-		p->bpos[0] = p->x_size + p->bpos[0];
-	}
-	if (p->bpos[1] >= p->y_size) {
-		p->bpos[1] = p->y_size - p->bpos[1];
-	}
-	else if (p->bpos[1] < 0) {
-		p->bpos[1] = p->y_size + p->bpos[1];
-	}
-	//taurus_wrap(P *p, double *x, double *y)
+	//p->pos[0] = wrap_around_rot(p->pos[0], p->x_size);
+	//p->pos[1] = wrap_around_rot(p->pos[1], p->y_size);
+	xy[0]=p->pos[0];
+	xy[1]=p->pos[1];	
+	wrap_around_rot(xy, p->x_size);
+	p->pos[0]=xy[0];
+	p->pos[1]=xy[1];
+
+	//p->bpos[0] = wrap_around_rot(p->bpos[0], p->x_size);
+	//p->bpos[1] = wrap_around_rot(p->bpos[1], p->y_size);
+	xy[0]=p->bpos[0];
+	xy[1]=p->bpos[1];
+	wrap_around_rot(xy, p->x_size);
+	p->bpos[0]=xy[0];
+	p->bpos[1]=xy[1];
 
 	if (p->print_move == true) {
 		cout << " move: " << angle << " " << p->pos[0] << " " << p->pos[1] << " t: " << p->t;
-	}
-}
-
-void taurus_wrap(P *p, double* x, double* y) {
-	if (*x >= p->x_size) {
-		*x = p->x_size - *x;
-	}
-	else if (*x < 0) {
-		*x = p->x_size + *x;
-	}
-	if (*y >= p->y_size) {
-		*y = p->y_size - *y;
-	}
-	else if (*y < 0) {
-		*y = p->y_size + *y;
 	}
 }
 
@@ -458,12 +640,6 @@ public:
     }
 };
 
-int wrap_around(int i, int max_size) {
-	if (i<0) {i=i+max_size;}
-	else if (i>=max_size) {i=i-max_size;}
-	return i;
-}
-
 class SomeToSomeConnection : public ConnectionGenerator {
 public:
     vector<vector<double>> weights_in;
@@ -490,6 +666,7 @@ public:
     		//int i_adj = (i * this->conn_dist) + this->conn_offset;
     		//int j_adj = (j * this->conn_dist) + this->conn_offset;   
     		int j_sft; // shifted index 	
+    		double xy[2];
     		//vector<int> shift_x{0, -17, 17,   4, -4, 11, -11}; 
     		//vector<int> shift_y{0,   4, -4, -17, 17, 11, -11}; 
     		//vector<int> shift_x{0, -14, 14,   4, -4, 10, -10}; 
@@ -646,8 +823,8 @@ public:
     		// vector<int> shift_y{0, 20, -20, -20};
     		// vector<int> shift_x{0, -10,  10}; 
     		// vector<int> shift_y{0, -20, -20};
-    		vector<int> shift_x{0, -20,  20}; 
-    		vector<int> shift_y{0, -10, -10};
+    		// vector<int> shift_x{0, -20,  20}; 
+    		// vector<int> shift_y{0, -10, -10};
     		// vector<int> shift_x{0,  20,  20}; 
     		// vector<int> shift_y{0,  10,  -10};
     		// vector<int> shift_x{0, 20};
@@ -662,6 +839,8 @@ public:
     		// vector<int> shift_y{0,  10, -10, 10, -10};
     		// vector<int> shift_x{0,  10, 30}; 
     		// vector<int> shift_y{0, -16, 16};
+    		vector<int> shift_x{0, -8, 8}; 
+    		vector<int> shift_y{0, -12, 12};
     		// vector<int> shift_x{0}; 
     		// vector<int> shift_y{0};
 
@@ -681,13 +860,23 @@ public:
     		int max_dist = 3;//5; 
     		double wt_fade = 0;
     		double dist = sqrt((pow((jx-ix),2))+(pow((jy-iy),2)));
-    		ix = wrap_around(ix,x_size); iy = wrap_around(iy,x_size);
-    		jx = wrap_around(jx,x_size); jy = wrap_around(jy,x_size);
+    		//ix = wrap_around_rot(ix,x_size); iy = wrap_around_rot(iy,x_size);
+    		//jx = wrap_around_rot(jx,x_size); jy = wrap_around_rot(jy,x_size);
+    		xy[0]=ix;xy[1]=iy;
+    		wrap_around_rot(xy,x_size);
+    		ix=xy[0];iy=xy[1];
+    		xy[0]=jx;xy[1]=jy;
+    		wrap_around_rot(xy,x_size);
+    		jx=xy[0];jy=xy[1];
     		connected = 0;
     		
     		for (int i2 = 0; i2 < shift_x.size(); i2++) {
     			j_sft = (((double) j * (double) this->conn_dist) + (double) this->conn_offset) + ((shift_y[i2]*(double) x_size)+shift_x[i2]);
-    			j_sft = wrap_around(j_sft,(x_size*y_size));
+    			//j_sft = wrap_around_rot(j_sft,(x_size*y_size));
+    			xy[0] = j_sft % x_size;//j % x_size;
+    			xy[1] = j_sft / x_size;//j / x_size;
+    			wrap_around_rot(xy,x_size);
+    			j_sft = (xy[1]*x_size) + xy[0];
     			if (i == j_sft) {
     				//if ((int)ix%2==(int)jx%2&&(int)iy%2==(int)jy%2) {
 						connected = 1;

@@ -95,13 +95,13 @@ void control_speed(double speed, P* p) {
 		//printf("angle:%f\n",p->prior_angles[0]);
 		//p->base_ext=100;
 		
-		p->base_ext = 117.3563 + 32.2842/(1 + pow((speed/16.99585),19.24367));
-		p->angle_rot = 5 + 5/(1 + pow((speed/13.95946),286.6025));
-		if (speed <= 13) {
-			p->speed_signaling=(1.2322233243119811e-003)+((1.8944121324025096e-001)*speed)+((-6.1258211662806691e-002)*pow(speed,2))+
-			((9.3562805493128866e-003)*pow(speed,3))+((-3.3859986741967621e-004)*pow(speed,4));
+		p->base_ext = 97.05805 + 51.78325/(1 + pow((speed/14.8896),22.70151));
+		//p->pc_to_gc_wt = 4 + -1/(1 + pow((speed/17),327.6605));
+		//p->pc_level = 400 + -100/(1 + pow((speed/17),430.6036));
+		if (speed <= 18) {
+			p->speed_signaling=(1.8109710365959833e-002)+((-4.0819073165308362e-002)*speed)+((1.0680156279318187e-001)*pow(speed,2))+((-2.7143225562394686e-002)*pow(speed,3))+((2.9140724226967519e-003)*pow(speed,4))+((-1.3591191578436477e-004)*pow(speed,5))+((2.3142295233661705e-006)*pow(speed,6));
 		}
-		else {p->speed_signaling = 3.0;}
+		else {p->speed_signaling = 3.4;}
 
 		// momentum adjustment
 		/*bool change = false;
@@ -216,10 +216,10 @@ void run_path_onlypos(vector<double> *moves, vector<double> *speeds, vector<int>
 
 void move_straight(CARLsim* sim, P* p) {
 	// straight line path
-	double angle = 90;
+	double angle = 0;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(18.333,p);	
+		control_speed(7,p);	
 		EISignal(angle, sim, p);
 	}
 }
