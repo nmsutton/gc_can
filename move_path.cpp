@@ -216,7 +216,7 @@ void run_path_onlypos(vector<double> *moves, vector<double> *speeds, vector<int>
 
 void move_straight(CARLsim* sim, P* p) {
 	// straight line path
-	double angle = 0;
+	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
 		control_speed(7,p);	

@@ -129,8 +129,8 @@ void wrap_around_rot(double* xy, int layer_size) {
     //int layer_size = 40;
     double x = xy[0];
     double y = xy[1];
-    double angle = 0;//-45; // make this parameter when in real use
-    angle = angle * -1; // flip sign of angle for calculations.
+    double r_angle = -90;//-22.5;//-45;//-45; // make this parameter when in real use
+    r_angle = r_angle * -1; // flip sign of angle for calculations.
     bool print_debug = false;
 
 	//double x = double (i % layer_size) + 1;
@@ -150,7 +150,7 @@ void wrap_around_rot(double* xy, int layer_size) {
 	bool outside_border = false;
 	int bp = 0; // border point number. TR: 1, BR: 2, BL: 3, TL: 4.
 	int s = 0; // section number
-	angle = d2r(angle); // convert from degrees to radians
+	r_angle = d2r(r_angle); // convert from degrees to radians
 	double adj, opp, a_tr, a_br, a_bl, a_tl;
 	double h_tr, h_br, h_bl, h_tl;
 
@@ -168,22 +168,22 @@ void wrap_around_rot(double* xy, int layer_size) {
 	if (print_debug) {cout << "h " << h << "\n";}
 	// rotated points
 	// rotation around center is: x=x*cos(a)-y*sin(a); y=x*sin(a)+y*cos(a)
-	double x_tr = x_c + x_tr_o*cos(angle)-y_tr_o*sin(angle);
-	double y_tr = y_c + x_tr_o*sin(angle)+y_tr_o*cos(angle);
-	double x_tl = x_c + x_tl_o*cos(angle)-y_tl_o*sin(angle);
-	double y_tl = y_c + x_tl_o*sin(angle)+y_tl_o*cos(angle);
-	double x_br = x_c + x_br_o*cos(angle)-y_br_o*sin(angle);
-	double y_br = y_c + x_br_o*sin(angle)+y_br_o*cos(angle);
-	double x_bl = x_c + x_bl_o*cos(angle)-y_bl_o*sin(angle);
-	double y_bl = y_c + x_bl_o*sin(angle)+y_bl_o*cos(angle);
-	if (print_debug) {cout << "angle " << angle << " x_br " << x_br << " y_br " << y_br << " (cos(angle)*h) " << (cos(angle)*h) << " cos(angle) " << cos(angle) << "\n";}
+	double x_tr = x_c + x_tr_o*cos(r_angle)-y_tr_o*sin(r_angle);
+	double y_tr = y_c + x_tr_o*sin(r_angle)+y_tr_o*cos(r_angle);
+	double x_tl = x_c + x_tl_o*cos(r_angle)-y_tl_o*sin(r_angle);
+	double y_tl = y_c + x_tl_o*sin(r_angle)+y_tl_o*cos(r_angle);
+	double x_br = x_c + x_br_o*cos(r_angle)-y_br_o*sin(r_angle);
+	double y_br = y_c + x_br_o*sin(r_angle)+y_br_o*cos(r_angle);
+	double x_bl = x_c + x_bl_o*cos(r_angle)-y_bl_o*sin(r_angle);
+	double y_bl = y_c + x_bl_o*sin(r_angle)+y_bl_o*cos(r_angle);
+	if (print_debug) {cout << "r_angle " << r_angle << " x_br " << x_br << " y_br " << y_br << " (cos(r_angle)*h) " << (cos(r_angle)*h) << " cos(r_angle) " << cos(r_angle) << "\n";}
 
 	// compute border area
 	// remove rotation from position
 	h = sqrt(pow((x-x_c),2)+pow((y-y_c),2));
 	if (print_debug) {cout << "h2 " << h << "\n";}
-	double x_nr = x_c + (x-x_c)*cos(angle)-(y-y_c)*sin(angle); // non-rotated position
-	double y_nr = y_c + (x-x_c)*sin(angle)+(y-y_c)*cos(angle);
+	double x_nr = x_c + (x-x_c)*cos(r_angle)-(y-y_c)*sin(r_angle); // non-rotated position
+	double y_nr = y_c + (x-x_c)*sin(r_angle)+(y-y_c)*cos(r_angle);
 	if (print_debug) {cout << "x_nr " << x_nr << " y_nr " << y_nr << "\n";}
 	// check for outside border
 	if (x_nr < 0 || x_nr > layer_size || y_nr < 0 || y_nr > layer_size) {outside_border = true;}
@@ -223,14 +223,35 @@ void wrap_around_rot(double* xy, int layer_size) {
 	}
 
 	// assign border point
-	if      (a_tr <= 135 && a_tr >= 45) {bp = 1; s = 1;}
-	else if (((a_tr <=  45 && a_tr >= 0) || (a_tr <= 360 && a_tr >= 315)) && (a_br >= 45 && a_br <= 135)) {bp = 1; s = 2;}
-	else if ((a_br <=  45 && a_br >= 0) || (a_br <= 360 && a_br >= 315)) {bp = 2; s = 3;}
-	else if ((a_br <= 315 && a_br >= 225) && ((a_bl >= 315 && a_bl <= 360) || (a_bl >= 0 && a_bl <= 45))) {bp = 2; s = 4;}
-	else if (a_bl <= 315 && a_bl >= 225) {bp = 3; s = 5;}
-	else if ((a_bl <= 225 && a_bl >= 135) && (a_tl >= 225 && a_tl <= 315)) {bp = 3; s = 6;}
-	else if (a_tl <= 225 && a_tl >= 135) {bp = 4; s = 7;}
-	else if ((a_tl <= 135 && a_tl >= 45) && (a_tr >= 135 && a_tr <= 225)) {bp = 4; s = 8;}
+	r_angle = r2d(r_angle);
+	//tr >0 <=90
+	//tr >90 <=180
+	if      (a_tr <= 90+r_angle && a_tr > 0+r_angle) {bp = 1; s = 1;}
+	//tr <=0 >=0 || tr<360 tr>=270 && br > 0 && br<=90
+	//tr <=90 >=0 || tr<360 tr>=360 && br > 90 && br<=180
+	else if (((a_tr <= 0+r_angle && a_tr >= 0) || (a_tr < 360 && a_tr >= 270+r_angle)) && 
+			(a_br > 0+r_angle && a_br <= 90+r_angle)) {bp = 1; s = 2;}
+	//br <=0 br>=0 || br<360 br>270
+	//br <=90 br>=0 || br<360 br>360
+	else if ((a_br <= 0+r_angle && a_br >= 0) || (a_br < 360 && a_br > 270+r_angle)) {bp = 2; s = 3;}
+	//br <=270 br>=180 bl>270 bl<360 || bl>=0 bl<=0
+	//br <=360 br>=270 bl>360 bl<360 || bl>=0 bl<=90
+	else if ((a_br <= 270+r_angle && a_br >= 180+r_angle) && 
+			((a_bl > 270+r_angle && a_bl < 360) || (a_bl >= 0 && a_bl <= 0+r_angle))) {bp = 2; s = 4;}
+	//bl <=270 bl>180
+	//bl <=360 bl>270
+	else if (a_bl <= 270+r_angle && a_bl > 180+r_angle) {bp = 3; s = 5;}
+	//bl <=180 bl>=90 tl>180 tl<=270
+	//bl <=270 bl>=180 tl>270 tl<=360
+	else if ((a_bl <= 180+r_angle && a_bl >= 90+r_angle) && 
+			(a_tl > 180+r_angle && a_tl <= 270+r_angle)) {bp = 3; s = 6;}
+	//tl <=180 tl>90
+	//tl <=270 tl>180
+	else if (a_tl <= 180+r_angle && a_tl > 90+r_angle) {bp = 4; s = 7;}
+	//tl <=90 tl>=0 tr>90 tr<=180
+	//tl <=180 tl>=90 tr>180 tr<=270
+	else if ((a_tl <= 90+r_angle && a_tl >= 0+r_angle) && 
+			(a_tr > 90+r_angle && a_tr <= 180+r_angle)) {bp = 4; s = 8;}
 	if (print_debug) {cout << "bp " << bp << " s " << s << "\n";}
 
 	// compute distance from border point
