@@ -102,6 +102,11 @@ int wrap_around(int i, int max_size) {
 	return i;
 }
 
+void wrap_around2(double* i, double max_size) {
+	if (*i>=max_size) {*i=*i-max_size;}
+	else if (*i<0) {*i=*i+max_size;}
+}
+
 double r2d(double angle) {
 	// convert from radians to degrees
 
@@ -129,7 +134,7 @@ void wrap_around_rot(double* xy, int layer_size) {
     //int layer_size = 40;
     double x = xy[0];
     double y = xy[1];
-    double r_angle = -90;//-22.5;//-45;//-45; // make this parameter when in real use
+    double r_angle = 0;//-45;//-22.5;//-45;//-45; // make this parameter when in real use
     r_angle = r_angle * -1; // flip sign of angle for calculations.
     bool print_debug = false;
 
@@ -360,6 +365,7 @@ void set_pos(P *p, double angle) {
 
 	double xy[2];
 	//angle = angle + 180;
+	//angle = angle + p->grid_pattern_rot;
 	vector<double> ver_hor = find_ver_hor(p, angle, &p->move_increment);
 	if (p->move_animal==1 || p->move_animal_aug==1 || p->move_animal_onlypos==1) {
 		ver_hor[0] = ver_hor[0] * p->grid_pattern_scale;
@@ -377,21 +383,21 @@ void set_pos(P *p, double angle) {
 	//printf("%f ver_hor[0]:%f %f\n",p->pos[1],ver_hor[1],p->move_increment);
 
 	// wrap around twisted taurus
-	//p->pos[0] = wrap_around_rot(p->pos[0], p->x_size);
-	//p->pos[1] = wrap_around_rot(p->pos[1], p->y_size);
-	xy[0]=p->pos[0];
+	wrap_around2(&p->pos[0], p->x_size);
+	wrap_around2(&p->pos[1], p->y_size);
+	/*xy[0]=p->pos[0];
 	xy[1]=p->pos[1];	
 	wrap_around_rot(xy, p->x_size);
 	p->pos[0]=xy[0];
-	p->pos[1]=xy[1];
+	p->pos[1]=xy[1];*/
 
-	//p->bpos[0] = wrap_around_rot(p->bpos[0], p->x_size);
-	//p->bpos[1] = wrap_around_rot(p->bpos[1], p->y_size);
-	xy[0]=p->bpos[0];
+	wrap_around2(&p->bpos[0], p->x_size);
+	wrap_around2(&p->bpos[1], p->y_size);
+	/*xy[0]=p->bpos[0];
 	xy[1]=p->bpos[1];
 	wrap_around_rot(xy, p->x_size);
 	p->bpos[0]=xy[0];
-	p->bpos[1]=xy[1];
+	p->bpos[1]=xy[1];*/
 
 	if (p->print_move == true) {
 		cout << " move: " << angle << " " << p->pos[0] << " " << p->pos[1] << " t: " << p->t;
@@ -860,8 +866,18 @@ public:
     		// vector<int> shift_y{0,  10, -10, 10, -10};
     		// vector<int> shift_x{0,  10, 30}; 
     		// vector<int> shift_y{0, -16, 16};
-    		vector<int> shift_x{0, -8, 8}; 
-    		vector<int> shift_y{0, -12, 12};
+    		// vector<int> shift_x{0, -8, 8}; 
+    		// vector<int> shift_y{0, -12, 12};
+    		// vector<int> shift_x{0, -6, 6}; 
+    		// vector<int> shift_y{0, -12, 12};
+    		// vector<int> shift_x{0, -6,   6,  10, -10}; 
+    		// vector<int> shift_y{0, -12, 12, -10,  10};
+    		// vector<int> shift_x{0,   0,  0,  12, -12}; 
+    		// vector<int> shift_y{0, -10, 10, -4,  4};
+    		// vector<int> shift_x{0,   0,  0,  12, -12}; 
+    		// vector<int> shift_y{0, -10, 10, -6,  6};
+    		vector<int> shift_x{0, -10, 10,   4,  -4}; 
+    		vector<int> shift_y{0,   0,  0, -10,  10};
     		// vector<int> shift_x{0}; 
     		// vector<int> shift_y{0};
 
@@ -881,23 +897,23 @@ public:
     		int max_dist = 3;//5; 
     		double wt_fade = 0;
     		double dist = sqrt((pow((jx-ix),2))+(pow((jy-iy),2)));
-    		//ix = wrap_around_rot(ix,x_size); iy = wrap_around_rot(iy,x_size);
-    		//jx = wrap_around_rot(jx,x_size); jy = wrap_around_rot(jy,x_size);
-    		xy[0]=ix;xy[1]=iy;
+    		ix = wrap_around(ix,x_size); iy = wrap_around(iy,x_size);
+    		jx = wrap_around(jx,x_size); jy = wrap_around(jy,x_size);
+    		/*xy[0]=ix;xy[1]=iy;
     		wrap_around_rot(xy,x_size);
     		ix=xy[0];iy=xy[1];
     		xy[0]=jx;xy[1]=jy;
     		wrap_around_rot(xy,x_size);
-    		jx=xy[0];jy=xy[1];
+    		jx=xy[0];jy=xy[1];*/
     		connected = 0;
     		
     		for (int i2 = 0; i2 < shift_x.size(); i2++) {
     			j_sft = (((double) j * (double) this->conn_dist) + (double) this->conn_offset) + ((shift_y[i2]*(double) x_size)+shift_x[i2]);
-    			//j_sft = wrap_around_rot(j_sft,(x_size*y_size));
-    			xy[0] = j_sft % x_size;//j % x_size;
+    			j_sft = wrap_around(j_sft,(x_size*y_size));
+    			/*xy[0] = j_sft % x_size;//j % x_size;
     			xy[1] = j_sft / x_size;//j / x_size;
     			wrap_around_rot(xy,x_size);
-    			j_sft = (xy[1]*x_size) + xy[0];
+    			j_sft = (xy[1]*x_size) + xy[0];*/
     			if (i == j_sft) {
     				//if ((int)ix%2==(int)jx%2&&(int)iy%2==(int)jy%2) {
 						connected = 1;

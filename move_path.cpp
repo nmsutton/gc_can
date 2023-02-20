@@ -95,13 +95,15 @@ void control_speed(double speed, P* p) {
 		//printf("angle:%f\n",p->prior_angles[0]);
 		//p->base_ext=100;
 		
-		p->base_ext = 97.05805 + 51.78325/(1 + pow((speed/14.8896),22.70151));
+		p->base_ext = 200 + 50/(1 + pow((speed/1.048757),479.1371));
 		//p->pc_to_gc_wt = 4 + -1/(1 + pow((speed/17),327.6605));
 		//p->pc_level = 400 + -100/(1 + pow((speed/17),430.6036));
 		if (speed <= 18) {
-			p->speed_signaling=(1.8109710365959833e-002)+((-4.0819073165308362e-002)*speed)+((1.0680156279318187e-001)*pow(speed,2))+((-2.7143225562394686e-002)*pow(speed,3))+((2.9140724226967519e-003)*pow(speed,4))+((-1.3591191578436477e-004)*pow(speed,5))+((2.3142295233661705e-006)*pow(speed,6));
+			p->speed_signaling=(8.2022063009356367e-004)+((-4.3171032793219655e-002)*speed)+((6.5801358951444941e-002)*pow(speed,2))+
+			((-1.7116919355833853e-002)*pow(speed,3))+((2.0826008077314256e-003)*pow(speed,4))+
+			((-1.1563306286996231e-004)*pow(speed,5))+((2.3857107474600122e-006)*pow(speed,6));
 		}
-		else {p->speed_signaling = 3.4;}
+		else {p->speed_signaling = 2.0;}
 
 		// momentum adjustment
 		/*bool change = false;
@@ -219,7 +221,7 @@ void move_straight(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(7,p);	
+		control_speed(18,p);	
 		EISignal(angle, sim, p);
 	}
 }
@@ -362,20 +364,23 @@ void move_fullspace2(CARLsim* sim, P* p) {
 	double speed = p->move_increment*1000;
 	control_speed(speed,p);	
 	double offset = (p->x_size-p->x_size_plot)/2; // offset for plotting
-	offset=5;//2;
+	offset=5;//7;//5;//2;
 	//p->pos[0]=offset+5;p->pos[1]=offset-5; // set starting point
 	//p->bpos[0]=offset+5;p->bpos[1]=offset-5;
-	//p->pos[0]=offset;p->pos[1]=offset; // set starting point
-	//p->bpos[0]=offset;p->bpos[1]=offset;
-	p->pos[0]=offset;p->pos[1]=p->pos[0]; // set starting point
-	p->bpos[0]=offset;p->bpos[1]=p->bpos[0];
+	//double start=18;
+	//p->pos[0]=start;p->pos[1]=start; // set starting point
+	//p->bpos[0]=start;p->bpos[1]=start;
+	p->pos[0]=offset;p->pos[1]=1; // set starting point
+	p->bpos[0]=offset;p->bpos[1]=1;
+	//p->pos[0]=offset;p->pos[1]=p->pos[0]; // set starting point
+	//p->bpos[0]=offset;p->bpos[1]=p->bpos[0];
 	double angle; double x = p->pos[0]; double y = p->pos[1]; bool move_vert = 0;
 	double angle_rev_h = -1; // flag to reverse angle horizontally
 	double angle_rev_v = 1; // flag to reverse angle vertically
 	int ts_per_sec = 1000/p->timestep; // timesteps per second
 	double step_spd = speed/ts_per_sec; // movement per timestep
 	int h_m = ((int) floor((double) p->x_size_plot/speed)*ts_per_sec); // indices for horizontal movement
-	int v_m = (ceil(1000.0/(double) p->timestep)/speed); // indices for vertical movement
+	int v_m = (ceil(1000.0/(double) p->timestep)/speed)*.8; // indices for vertical movement
 	int v_m_t = (int) ceil((p->sim_time/(double) p->timestep)/(double) (h_m+v_m)); // vertical moves total
 	for (int i = 0; i < (h_m+v_m)*v_m_t; i++) {
 		// horiz move
@@ -385,8 +390,9 @@ void move_fullspace2(CARLsim* sim, P* p) {
 		if (angle_rev_h == -1) {angle = 90;x=x+step_spd;}
 		else {angle = 270;x=x-step_spd;}
 		// vert move
-		if (y > p->y_size-offset) {angle_rev_v=-1;}
-		else if (y < offset) {angle_rev_v=1;}
+		if (y > p->y_size-offset) {angle_rev_v=-1;cout<<"vert border "<<y<<"\n";}
+		else {cout<<"non-vert border "<<y<<"\n";}
+		if (y < offset) {angle_rev_v=1;}
 		// process indices for vertical move
 		if (move_vert) {
 			for (int j = 0; j < v_m; j++) {
