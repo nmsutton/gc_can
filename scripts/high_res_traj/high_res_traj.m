@@ -196,7 +196,7 @@ function [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_X
         elseif orig_xy == 0
             Xs = readmatrix(strcat(curr_dir,"/../../output/spikes/highres_pos_x.csv"));
             Ys = readmatrix(strcat(curr_dir,"/../../output/spikes/highres_pos_y.csv"));
-            disp(strcat(curr_dir,"/../../output/spikes/highres_pos_x.csv"))
+            %disp(strcat(curr_dir,"/../../output/spikes/highres_pos_x.csv"))
         else
             load /home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/scripts/high_res_traj/191108_S1_lightVSdarkness_cells11and12_scaleddown_Xs_40min.mat;
             load /home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/scripts/high_res_traj/191108_S1_lightVSdarkness_cells11and12_scaleddown_Ys_40min.mat;
