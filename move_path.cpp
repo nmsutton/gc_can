@@ -94,14 +94,26 @@ void control_speed(double speed, P* p) {
 		//double angle = (p->angles)[(int) floor(p->mi)];
 		//printf("angle:%f\n",p->prior_angles[0]);
 		//p->base_ext=100;
-		
-		p->base_ext = 97.05805 + 51.78325/(1 + pow((speed/14.8896),22.70151));
-		//p->pc_to_gc_wt = 4 + -1/(1 + pow((speed/17),327.6605));
-		//p->pc_level = 400 + -100/(1 + pow((speed/17),430.6036));
-		if (speed <= 18) {
-			p->speed_signaling=(1.8109710365959833e-002)+((-4.0819073165308362e-002)*speed)+((1.0680156279318187e-001)*pow(speed,2))+((-2.7143225562394686e-002)*pow(speed,3))+((2.9140724226967519e-003)*pow(speed,4))+((-1.3591191578436477e-004)*pow(speed,5))+((2.3142295233661705e-006)*pow(speed,6));
+
+		if (speed <= 1.333) {
+			p->base_ext = 280;
 		}
-		else {p->speed_signaling = 3.4;}
+		else if (speed <= 13) {
+			p->base_ext = 91.875 + 108.1262/(1 + pow((speed/8.801352),112.4699));
+		}
+		else {p->base_ext = 50;}
+
+		if (speed <= 8) {
+			p->speed_signaling=(5.8659630917432037e-001)+((-7.1436216184020074e-001)*speed)+((4.3513958997690755e-001)*pow(speed,2))+
+			((-1.1400137752345810e-001)*pow(speed,3))+((1.1929678296514892e-002)*pow(speed,4))+
+			((8.3306558353014003e-006)*pow(speed,5))+((-4.0011858802417683e-005)*pow(speed,6));
+		}
+		else if (speed <= 18) {
+			p->speed_signaling=(-2.3085594580815945e+002)+((9.3371549152078927e+001)*speed)+((-1.4588498611780775e+001)*pow(speed,2))+
+			((1.1019221460399151e+000)*pow(speed,3))+((-4.0216831841004122e-002)*pow(speed,4))+
+			((5.7059980365012353e-004)*pow(speed,5));
+		}
+		else {p->speed_signaling = 6.0;}
 
 		// momentum adjustment
 		/*bool change = false;
@@ -219,7 +231,7 @@ void move_straight(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(5,p);	
+		control_speed(10,p);	
 		EISignal(angle, sim, p);
 	}
 }

@@ -8,7 +8,7 @@ downsample_amount = 10; % amount of downsampling; higher is more
 % extract data
 x=[];y=[];z=[];xyz=[];
 results_data=readmatrix('gridness_score.txt');
-plot_rotation=34.65;%25.005;%.51999;%1.9999;
+plot_rotation=-100;%34.65;%25.005;%.51999;%1.9999;
 rows_number=size(results_data(:,1));
 for i=1:rows_number
 	x=[x results_data(i,2)];
@@ -92,7 +92,8 @@ lighting phong;
 shading interp;
 colorbar EastOutside;
 %campos([0.52,0,200]);
-campos([plot_rotation,0,200]);
+%campos([plot_rotation,0,200]);
+campos([500,0,1000000]);
 
 %xlim([min(x) max(x)])
 %ylim([min(y) max(y)])
@@ -121,9 +122,9 @@ if downsample_colormap
 end
 %colormapeditor
 %axis([min(x) max(x) min(y) max(y)])
-title("Gridness Scores of Tsodyks-Markram U and Tau_f Parameters for Grid Cells", 'FontSize', 11);
+title("Gridness Scores of Tsodyks-Markram U and g Parameters for Grid Cells", 'FontSize', 11);
 axis('tight');
-xlabel('Tsodyks-Markram Tau_f') 
+xlabel('Tsodyks-Markram g') 
 ylabel('Tsodyks-Markram U')
 %xlabel('tau_x value');
 %ylabel('tau_d value');

@@ -75,6 +75,7 @@ sim.connect(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, "one-to-one", p.dir
             RangeDelay(1), RadiusRF(-1), SYN_FIXED, 33.082, 20.0f); // 0 DIR
 ////
 float m1 = 1;//1.89;//1.5;//1.2;//1;//1.2;
+float m2 = 1;
 p.conn_offset = 0;
 if (p.spin2in_active) {
     p.gc_to_in_wt = p.spdin2inwt;
@@ -94,7 +95,7 @@ sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, SomeToSomeConn, 7.63*m1, 4.67*m
 //sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, "one-to-one", 1.0, 1.0f, 
 //            RangeDelay(1), RadiusRF(-1), SYN_FIXED, 33.082, 20.0f);
 MexHatConn = new MexHatConnection(&p);
-sim.connect(EC_LII_Axo_Axonic, MEC_LII_Stellate, MexHatConn, 7.63*m1, 4.67*m1, SYN_FIXED); // 2 IN->GC one-to-many
+sim.connect(EC_LII_Axo_Axonic, MEC_LII_Stellate, MexHatConn, 7.63*m2, 4.67*m2, SYN_FIXED); // 2 IN->GC one-to-many
 ////
 p.conn_offset = 1;
 if (p.spin2in_active) {
@@ -113,7 +114,7 @@ p.gc_to_in_wt = gc2inwt;
 SomeToSomeConn = new SomeToSomeConnection(&p);
 sim.connect(MEC_LII_Stellate, MEC_LII_Basket, SomeToSomeConn, 7.63*m1, 4.67*m1, SYN_FIXED);
 MexHatConn = new MexHatConnection(&p);
-sim.connect(MEC_LII_Basket, MEC_LII_Stellate, MexHatConn, 7.63*m1, 4.67*m1, SYN_FIXED); // 2 IN->GC one-to-many
+sim.connect(MEC_LII_Basket, MEC_LII_Stellate, MexHatConn, 7.63*m2, 4.67*m2, SYN_FIXED); // 2 IN->GC one-to-many
 ////
 p.conn_offset = 2;
 if (p.spin2in_active) {
@@ -132,7 +133,7 @@ p.gc_to_in_wt = gc2inwt;
 SomeToSomeConn = new SomeToSomeConnection(&p);
 sim.connect(MEC_LII_Stellate, EC_LII_Basket_Multipolar, SomeToSomeConn, 7.63*m1, 4.67*m1, SYN_FIXED);
 MexHatConn = new MexHatConnection(&p);
-sim.connect(EC_LII_Basket_Multipolar, MEC_LII_Stellate, MexHatConn, 7.63*m1, 4.67*m1, SYN_FIXED); // 2 IN->GC one-to-many
+sim.connect(EC_LII_Basket_Multipolar, MEC_LII_Stellate, MexHatConn, 7.63*m2, 4.67*m2, SYN_FIXED); // 2 IN->GC one-to-many
 sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
            RangeDelay(1), RadiusRF(-1), SYN_FIXED, 71.14f, 43.59f); // 3 PCs
 // sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
