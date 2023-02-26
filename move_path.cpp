@@ -95,25 +95,20 @@ void control_speed(double speed, P* p) {
 		//printf("angle:%f\n",p->prior_angles[0]);
 		//p->base_ext=100;
 
-		if (speed <= 1.333) {
-			p->base_ext = 280;
+		if (speed <= 18) {
+			p->speed_signaling=(1.7482517482245658e-003)+((1.6949300699459421e-002)*speed)+((1.0493152680578476e-002)*pow(speed,2))+
+			((-1.6062062936946391e-003)*pow(speed,3))+((1.3749271561697563e-004)*pow(speed,4))+
+			((-4.0064102563938748e-006)*pow(speed,5));
 		}
-		else if (speed <= 13) {
-			p->base_ext = 91.875 + 108.1262/(1 + pow((speed/8.801352),112.4699));
-		}
-		else {p->base_ext = 50;}
+		else {p->speed_signaling = 1.2;}
 
 		if (speed <= 8) {
-			p->speed_signaling=(5.8659630917432037e-001)+((-7.1436216184020074e-001)*speed)+((4.3513958997690755e-001)*pow(speed,2))+
-			((-1.1400137752345810e-001)*pow(speed,3))+((1.1929678296514892e-002)*pow(speed,4))+
-			((8.3306558353014003e-006)*pow(speed,5))+((-4.0011858802417683e-005)*pow(speed,6));
+			p->base_ext = 150 + 100/(1 + pow((speed/2.840198),66.7403));
 		}
 		else if (speed <= 18) {
-			p->speed_signaling=(-2.3085594580815945e+002)+((9.3371549152078927e+001)*speed)+((-1.4588498611780775e+001)*pow(speed,2))+
-			((1.1019221460399151e+000)*pow(speed,3))+((-4.0216831841004122e-002)*pow(speed,4))+
-			((5.7059980365012353e-004)*pow(speed,5));
+			p->base_ext = 130 + 20/(1 + pow((speed/16.97024),368.5491));
 		}
-		else {p->speed_signaling = 6.0;}
+		else {p->base_ext = 130;}
 
 		// momentum adjustment
 		/*bool change = false;
@@ -231,7 +226,7 @@ void move_straight(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(10,p);	
+		control_speed(5,p);	
 		EISignal(angle, sim, p);
 	}
 }
@@ -380,10 +375,10 @@ void move_fullspace2(CARLsim* sim, P* p) {
 	//double start=18;
 	//p->pos[0]=start;p->pos[1]=start; // set starting point
 	//p->bpos[0]=start;p->bpos[1]=start;
-	p->pos[0]=offset;p->pos[1]=1; // set starting point
-	p->bpos[0]=offset;p->bpos[1]=1;
-	//p->pos[0]=offset;p->pos[1]=p->pos[0]; // set starting point
-	//p->bpos[0]=offset;p->bpos[1]=p->bpos[0];
+	//p->pos[0]=offset;p->pos[1]=1; // set starting point
+	//p->bpos[0]=offset;p->bpos[1]=1;
+	p->pos[0]=offset;p->pos[1]=p->pos[0]; // set starting point
+	p->bpos[0]=offset;p->bpos[1]=p->bpos[0];
 	double angle; double x = p->pos[0]; double y = p->pos[1]; bool move_vert = 0;
 	double angle_rev_h = -1; // flag to reverse angle horizontally
 	double angle_rev_v = 1; // flag to reverse angle vertically
