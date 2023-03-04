@@ -13,7 +13,7 @@
 %% https://hydroecology.net/resizing-matlab-figures-the-easy-way/
 %% https://www.mathworks.com/matlabcentral/answers/43326-create-figure-without-displaying-it
 
-function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data,fdr_prefix,hopper_run,local_run)
+function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data,fdr_prefix,hopper_run,local_run,x,y)
 	import CMBHOME.Utils.*
 
 	%[root c_ts] = load_spike_times();
@@ -21,6 +21,10 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	use_carlsim_spikes = 1;
 	alt_heatmap = 0;
 	use_smoothing = 1;
+	occupancy_norm = 0; % perform occupancy normalization. this adjusts rates by number of visits to locations.
+	fs_video = 50; % sampling rate from video (samples/sec)
+	omit_islands = 0; % see later comments
+	omit_noocc = 0; % set no occupancy to zero
 	display_plot = 0;
 	save_plot = 0;
 	if run_on_hopper==1 save_plot = 1; end
@@ -32,7 +36,7 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	if use_carlsim_spikes
         plot_subsect=1;%0; % plot only subsection of total data. this is set by the plot_size variable.
 		grid_size = 40;%42;%30; % sqrt of grid size
-		plot_size = 30; % sqrt of plot size
+		plot_size = 31; % sqrt of plot size
 		binside = 3;
 		std_smooth_kernel = 3.333;
 		% use highres_spikes.csv from high_res_traj.m not hopper created text file
@@ -157,15 +161,41 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 		if use_carlsim_spikes
 			xdim = linspace(0,grid_size-1,grid_size);%xdim * 30/360;
 			ydim2 = linspace(0,grid_size-1,grid_size);%ydim2 * 30/360;
-			heat_map = hist3([spike_x, spike_y], 'Edges', {xdim, ydim2});
+			if occupancy_norm 
+				occupancy = hist3([x,y],'Edges',{xdim, ydim2})/fs_video; 
+				no_occupancy = occupancy==0; % mark indeces where there was no occupancy so we can correct after smoothing
+			end
+			heat_map = hist3([spike_x,spike_y],'Edges',{xdim, ydim2});
             if plot_subsect
 			    s = (grid_size-plot_size)/2;
 			    e = plot_size+s;
+                if occupancy_norm
+			        occupancy = occupancy(s:e, s:e); % crop to intended plot size
+			        no_occupancy = no_occupancy(s:e, s:e); % crop to intended plot size
+                end
 			    heat_map = heat_map(s:e, s:e); % crop to intended plot size
             end
+            if omit_islands
+            	% Takes matrix of occupancy values, calculates center of mass of pixels>0,
+				% and then finds all disconnected pixels and sets them = 0
+            	s = regionprops(occupancy>0, {'FilledArea', 'PixelIdxList'});
+				l = numel(s);
+				areas = vertcat(s.FilledArea);
+				[~, inds] = sort(areas);
+				for i = 1:length(inds)-1				    
+				    occupancy(s(inds(i)).PixelIdxList) = 0;				    
+				end
+            end
 			if use_smoothing
-				heat_map = SmoothMat(heat_map, [5*std_smooth_kernel/binside, 5*std_smooth_kernel/binside], std_smooth_kernel/binside); % smooth the spikes and occupancy with a 5x5 bin gaussian with std=1
+				if occupancy_norm
+					heat_map = SmoothMat(heat_map, [5*std_smooth_kernel/binside, 5*std_smooth_kernel/binside], std_smooth_kernel/binside)./SmoothMat(occupancy, [5*std_smooth_kernel/binside, 5*std_smooth_kernel/binside], std_smooth_kernel/binside);
+				else
+					heat_map = SmoothMat(heat_map, [5*std_smooth_kernel/binside, 5*std_smooth_kernel/binside], std_smooth_kernel/binside); % smooth the spikes and occupancy with a 5x5 bin gaussian with std=1
+				end
 			end
+			if omit_noocc
+		        heat_map(no_occupancy) = 0; % set no occupancy to zero
+		    end
 		else
 			[occupancy, xdim, ydim] = root.Occupancy(xdim, ydim, continuize_epochs, binside);
 			ydim2 = ydim - resize_factor;
