@@ -95,22 +95,51 @@ void control_speed(double speed, P* p) {
 		//printf("angle:%f\n",p->prior_angles[0]);
 		//p->base_ext=100;
 
-		if (speed <= 18.5) {
-			p->speed_signaling=(1.6995064002952146e-002)+((1.4130972293000293e-001)*speed)+((-6.1667186604223108e-002)*pow(speed,2))+
-			((1.7832317000675967e-002)*pow(speed,3))+((-1.7749887115718099e-003)*pow(speed,4))+
-			((7.1586111065236179e-005)*pow(speed,5))+((-9.3913377574824048e-007)*pow(speed,6));
+		/*if (speed <= 8.5) {
+			p->speed_signaling=(-1.0871584123391120e-012)+((9.2417321317043222e-002)*speed)+((-4.9887101042173643e-002)*pow(speed,2))+
+			((6.2261268854492749e-003)*pow(speed,3))+((1.5983743747317999e-003)*pow(speed,4))+
+			((-3.7602919754368611e-004)*pow(speed,5))+((2.1307668281863042e-005)*pow(speed,6));
 		}
-		else {p->speed_signaling = 4.0;}
+		else if (speed <= 18) {
+			p->speed_signaling=(1.6385150455384957e+002)+((-7.2756409175034534e+001)*speed)+((1.2921540398997980e+001)*pow(speed,2))+
+			((-1.1712435264074053e+000)*pow(speed,3))+((5.7314837676220892e-002)*pow(speed,4))+
+			((-1.4320774707130865e-003)*pow(speed,5))+((1.4162642261301660e-005)*pow(speed,6));
+		}
+		else {p->speed_signaling = 2.5;}
 
-		if (speed <= 3.5) {
-			p->base_ext = 200;
+		if (speed <= 5) {
+			p->base_ext = 300 + 50/(1 + pow((speed/2.451868),111.3698));
 		}
-		else if (speed <= 18.5) {
-			p->base_ext=(1.5477743189229586e+003)+((-9.3533988889122907e+002)*speed)+((2.4794564694075854e+002)*pow(speed,2))+
-			((-3.3233728548198883e+001)*pow(speed,3))+((2.3765565662367258e+000)*pow(speed,4))+
-			((-8.6584840611928421e-002)*pow(speed,5))+((1.2627068236294391e-003)*pow(speed,6));
+		else if (speed <= 16) {
+			p->base_ext = 248.4952 + 53.1967/(1 + pow((speed/13.70282),17.89149));
 		}
-		else {p->base_ext = 50;}
+		else {p->base_ext = 250;}*/
+
+		if (speed <= 10) {
+			p->speed_signaling=(1.0516761073109393e-015)+((5.5599999999994931e-002)*speed)+((-1.9119999999997708e-002)*pow(speed,2))+
+			((3.5199999999996653e-003)*pow(speed,3))+((-1.6639999999998453e-004)*pow(speed,4));
+		}
+		else if (speed <= 18) {
+			p->speed_signaling=(2.3348863635947605e+000)+((-5.1807196968758240e-001)*speed)+((4.4897727272039917e-002)*pow(speed,2))+
+			((-1.1439393939230362e-003)*pow(speed,3));
+		}
+		else {p->speed_signaling = 0.885;}
+
+		if (speed <= 8) {
+			p->base_ext = 150;
+		}
+		else if (speed <= 18) {
+			p->base_ext = 130 + 20/(1 + pow((speed/16.97024),368.5491));
+		}
+		else {p->base_ext = 130;}
+		//printf("%f %f\n",p->speed_signaling,p->base_ext);
+
+		// if (speed == 5) {p->speed_signaling = 0.15;p->base_ext = 300;} //mex_hat_multi=0.9
+		// if (speed == 10) {p->speed_signaling = 1.3;p->base_ext = 300;}
+		// if (speed == 5) {p->speed_signaling = 0.15;p->base_ext = 350;} //mex_hat_multi=0.7
+		// if (speed == 10) {p->speed_signaling = 0.8;p->base_ext = 225;}
+		// if (speed == 5) {p->speed_signaling = 0.8;p->base_ext = 150;} //mex_hat_multi=1.1
+		// if (speed == 10) {p->speed_signaling = 2.0;p->base_ext = 75;}
 
 		// momentum adjustment
 		/*bool change = false;
@@ -228,7 +257,7 @@ void move_straight(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(5,p);	
+		control_speed(15,p);	
 		EISignal(angle, sim, p);
 	}
 }
@@ -501,13 +530,13 @@ void move_ramp(CARLsim* sim, P* p) {
 	vector<double> moves;
 	double angle = 90; // initial value
 	double speed = 5;  // initial value
-	double top_speed = 100;//50;//22.5;//25;//25;//13;
+	double top_speed = 10;//50;//22.5;//25;//25;//13;
 	double max_angle = 720;//360;//90;//0;//90;
 	//int rand_val = rand() % max_angle;
 	int rev_speed_t = 500;//120; // ms to reverse speed
 	int rev_angle_t = 120*60; // ms to reverse angle
 	bool speed_ramp = 1; // activate speed ramp
-	bool angle_ramp = 1; // activate angle ramp
+	bool angle_ramp = 0; // activate angle ramp
 	double si = (p->t) % rev_speed_t;
 	double ai = (p->t) % rev_angle_t;
 

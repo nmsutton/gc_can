@@ -9,5 +9,5 @@ p1_v=(0.37 0.37 0.37 0.37 0.37)
 p2_v=(0.001 0.001 0.001 0.001 0.001)
 p1_p="\"BLANK\""
 p2_p="\"BLANK\""
-input_path="input/11/3a/6-019-1.json"
-output_path="output/11/3a/6-019-1/local/job.0.Full"
+input_path="input/11/5/6-008-1.json"
+output_path="output/11/5/6-008-1/local/job.0.Full"

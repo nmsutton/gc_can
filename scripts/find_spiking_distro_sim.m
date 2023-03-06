@@ -1,9 +1,9 @@
 % find distribution of spiking Hz
 
 initOAT;
-hopper_use=1;
-local_run=3;
-hopper_run=4;
+hopper_use=0;
+local_run=1;
+hopper_run=7;
 hopper_local_copy=0;
 fdr_prefix="gc_can_";
 if hopper_use
@@ -26,6 +26,7 @@ similarity=1-(similarity/100);
 if 1
     spikes = spk_data.readSpikes(bin_size);
 end
+%spk_x=[spk_x,x(floor(spk_t(i)/timestep))];
 nrn_count = size(spikes(1,:),2);
 spk_count = [];
 sim_seconds = (size(spikes(:,1),1)*bin_size)/1000;

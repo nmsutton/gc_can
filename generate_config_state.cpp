@@ -27,12 +27,15 @@ p.MEC_LII_Basket_Speed_Group = MEC_LII_Basket_Speed; // 6
 p.MEC_LII_Stellate_Speed_Group = MEC_LII_Stellate_Speed; // 7
 
 /* neuron type parameters */
-/*sim.setNeuronParameters(EC_LI_II_Multipolar_Pyramidal, 204.0f, 0.0f, 0.37f, 0.0f, -70.53f, 0.0f, -39.99f, 
-                                0.0f, 0.001f, 0.0f, 0.01f, 0.0f, 3.96f, 0.0f, -54.95f, 0.0f, 
-                                7.0f, 0.0f, 1); // C,k,vr,vt,a,b,vpeak,c,d*/
-sim.setNeuronParameters(EC_LI_II_Multipolar_Pyramidal, 204.0f, 0.0f, 0.37f, 0.0f, -70.53f, 0.0f, -39.99f, 
-                                0.0f, 0.001f, 0.0f, -4.08f, 0.0f, 3.96f, 0.0f, -54.95f, 0.0f, 
-                                13.0f, 0.0f, 1); // C,k,vr,vt,a,b,vpeak,c,d
+// sim.setNeuronParameters(EC_LI_II_Multipolar_Pyramidal, 204.0f, 0.0f, 0.37f, 0.0f, -70.53f, 0.0f, -39.99f, 
+//                                 0.0f, 0.001f, 0.0f, 0.01f, 0.0f, 3.96f, 0.0f, -54.95f, 0.0f, 
+//                                 7.0f, 0.0f, 1); // C,k,vr,vt,a,b,vpeak,c,d
+// sim.setNeuronParameters(EC_LI_II_Multipolar_Pyramidal, 204.0f, 0.0f, 0.37f, 0.0f, -70.53f, 0.0f, -39.99f, 
+//                                 0.0f, 0.001f, 0.0f, -4.08f, 0.0f, 3.96f, 0.0f, -54.95f, 0.0f, 
+//                                 13.0f, 0.0f, 1); // C,k,vr,vt,a,b,vpeak,c,d
+sim.setNeuronParameters(EC_LI_II_Multipolar_Pyramidal, 286.0f, 0.0f, 1.53f, 0.0f, -56.14f, 0.0f, -39.78f, 
+                                0.0f, 0.001f, 0.0f, 0.01f, 0.0f, 18.27f, 0.0f, -49.81f, 0.0f, 
+                                7.0f, 0.0f, 1); // C,k,vr,vt,a,b,vpeak,c,d
                                 // Ensemble file:  k,a,b,d,C,vr,vt,c,vpeak. 
                                 // 1->2, 2->5, 3->6, 4->9, 5->1, 6->3, 7->4, 8->8, 9->7
 sim.setNeuronParameters(MEC_LII_Stellate, 118.000000f, 0.0f, 0.62f, 0.0f, -58.53f, 0.0f, 

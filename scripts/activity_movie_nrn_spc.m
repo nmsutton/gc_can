@@ -54,7 +54,7 @@ custom_colormap = load('neuron_space_colormap.mat');
 %disp(numberOfFrames);
 for frameIndex = 1 : numberOfFrames
 %for frameIndex = (numberOfFrames-200) : (numberOfFrames-10)
-%for frameIndex = 1000 : 1200
+%for frameIndex = 1000 : 1300
   start_frame = 0;
   imgfile = reshape(spk_window(ceil((frameIndex+start_frame)/bin_size),:),[x_size,y_size])';
   if delay_frames == false
