@@ -13,15 +13,16 @@
 %clc;
 initOAT;
 hopper_use=1;
-local_run=1;
-hopper_run=5;
+local_run=4;
+hopper_run=4;
 if hopper_use
     hopper_path=strcat('/mnt/hopper_scratch/gc_sim/gc_can_',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat');
     SpikeReader(hopper_path, false, 'silent');
     spk_data = SpikeReader(hopper_path, false, 'silent');
 else
-    SpikeReader(strcat('/comp_neuro/PhD/gmu/research/simulation/code/gc_can_',int2str(local_run),'/results/spk_MEC_LII_Stellate.dat'), false, 'silent');
-    spk_data = SpikeReader(strcat('/comp_neuro/PhD/gmu/research/simulation/code/gc_can_',int2str(local_run),'/results/spk_MEC_LII_Stellate.dat'), false, 'silent');
+    local_path=strcat('/comp_neuro/PhD/gmu/research/simulation/code/gc_can_',int2str(local_run),'/results/spk_MEC_LII_Stellate.dat');
+    SpikeReader(local_path, false, 'silent');
+    spk_data = SpikeReader(local_path, false, 'silent');
 end
 
 delay_frames = false;%true;
@@ -54,7 +55,7 @@ custom_colormap = load('neuron_space_colormap.mat');
 %disp(numberOfFrames);
 for frameIndex = 1 : numberOfFrames
 %for frameIndex = (numberOfFrames-200) : (numberOfFrames-10)
-%for frameIndex = 1000 : 1300
+%for frameIndex = 20000 : 20300
   start_frame = 0;
   imgfile = reshape(spk_window(ceil((frameIndex+start_frame)/bin_size),:),[x_size,y_size])';
   if delay_frames == false
