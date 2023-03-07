@@ -1,7 +1,7 @@
 % find distribution of spiking Hz
 
 initOAT;
-hopper_use=0;
+hopper_use=1;
 local_run=1;
 hopper_run=7;
 hopper_local_copy=0;

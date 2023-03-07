@@ -115,24 +115,31 @@ void control_speed(double speed, P* p) {
 		}
 		else {p->base_ext = 250;}*/
 
-		if (speed <= 10) {
-			p->speed_signaling=(1.0516761073109393e-015)+((5.5599999999994931e-002)*speed)+((-1.9119999999997708e-002)*pow(speed,2))+
-			((3.5199999999996653e-003)*pow(speed,3))+((-1.6639999999998453e-004)*pow(speed,4));
+		if (speed <= 11.5) {
+			p->speed_signaling=(5.0818356649963686e-004)+((1.1182683961711937e-001)*speed)+((-8.2421198327775475e-002)*pow(speed,2))+
+			((2.8660961719940065e-002)*pow(speed,3))+((-3.3335611768150059e-003)*pow(speed,4))+
+			((1.2891617907416177e-004)*pow(speed,5));
 		}
-		else if (speed <= 18) {
-			p->speed_signaling=(2.3348863635947605e+000)+((-5.1807196968758240e-001)*speed)+((4.4897727272039917e-002)*pow(speed,2))+
-			((-1.1439393939230362e-003)*pow(speed,3));
+		else if (speed < 18) {
+			p->speed_signaling=(7.3525399416978230e+000)+((-9.4325912135717638e-001)*speed)+((3.8521050463073449e-002)*pow(speed,2));
 		}
-		else {p->speed_signaling = 0.885;}
+		else {p->speed_signaling = 2.8;}
 
-		if (speed <= 8) {
-			p->base_ext = 150;
+		if (speed <= 6) {p->base_ext = 150;}
+		else if (speed <= 16) {
+			p->base_ext = (-1.3705121512280298e+003)+((7.9547112113403421e+002)*speed)+((-1.5920810392632649e+002)*pow(speed,2))+
+			((1.5246452108860797e+001)*pow(speed,3))+((-7.0334890233615899e-001)*pow(speed,4))+
+			((1.2536482471297577e-002)*pow(speed,5));
 		}
-		else if (speed <= 18) {
-			p->base_ext = 130 + 20/(1 + pow((speed/16.97024),368.5491));
+		else {p->base_ext = 100;}
+
+		if (speed <= 10) {p->angle_rot = 15;}
+		else if (speed < 18) {
+			p->angle_rot = (1.3243352518977537e+002)+((-1.8557677656919715e+001)*speed)+((1.3381249761830594e-001)*pow(speed,2))+
+			((8.6206227726299878e-002)*pow(speed,3))+((-3.1409338589373859e-003)*pow(speed,4));
 		}
-		else {p->base_ext = 130;}
-		//printf("%f %f\n",p->speed_signaling,p->base_ext);
+		else {p->angle_rot = 15;}
+		//printf("%f %f %f\n",p->speed_signaling,p->base_ext,p->angle_rot);
 
 		// if (speed == 5) {p->speed_signaling = 0.15;p->base_ext = 300;} //mex_hat_multi=0.9
 		// if (speed == 10) {p->speed_signaling = 1.3;p->base_ext = 300;}
@@ -257,7 +264,7 @@ void move_straight(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(15,p);	
+		control_speed(15,p);
 		EISignal(angle, sim, p);
 	}
 }
