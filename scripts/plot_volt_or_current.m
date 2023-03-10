@@ -18,10 +18,10 @@ stel_nS = stel_sR.readSpikes(1); % import spikes with bin of recording size of 1
 bask_nS = bask_sR.readSpikes(1);
 stel_spk_sels = []; bask_spk_sels = [];
 % set run params
-t_start = 17500;%11400;%7000%12400;%8000;%10000;%5000; % start time
-t_end = t_start+1500;%600;%3000;%12800;%13000;%11000;%13000; % end time
-nrns_tot = 1;%3; % number of neurons to plot
-i_start = 100; % starting neuron index
+t_start = 12400;%11400;%7000%12400;%8000;%10000;%5000; % start time
+t_end = t_start+400;%600;%3000;%12800;%13000;%11000;%13000; % end time
+nrns_tot = 3; % number of neurons to plot
+i_start = 51;%100; % starting neuron index
 plot_spikes = 0;
 t_range = linspace(t_start,t_end,(t_end-t_start+1));
 % resize peak params
@@ -36,7 +36,8 @@ min_spk_v2 = -30;%-20; % minimum voltage to be detected as a spike
 min_isi2 = 20; % minimum inter-spike interval
 new_peak2 = 40;%10; % new peak voltage
 resize_params2=[window_size2,min_spk_v2,min_isi2,new_peak2];
-plot_n1=0; plot_n2=1; % choose neurons to plot
+plot_n1=1; plot_n2=1; % choose neurons to plot
+line_width_1=2; line_width_2=2; % plotted line widths
 plot_legend=0; % choose if to plot legend
 
 % extract voltages
@@ -70,8 +71,8 @@ for i=1:nrns_tot
 	j=j+1;
 	s_plot = subplot(plotnum, 1, j);
 	hold on;
-	if plot_n1==1 plot(s_plot, t_range, bask_sels(:,i),'Color','#ff9900','LineWidth',0.5); end
-	if plot_n2==1 plot(s_plot, t_range, stel_sels(:,i),'Color','#80B3FF','LineWidth',0.5); end
+	if plot_n1==1 plot(s_plot, t_range, bask_sels(:,i),'Color','#ff9900','LineWidth',line_width_1); end
+	if plot_n2==1 plot(s_plot, t_range, stel_sels(:,i),'Color','#80B3FF','LineWidth',line_width_2); end
 	hold off;
 	if plot_spikes
 		j=j+1;
