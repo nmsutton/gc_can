@@ -971,6 +971,7 @@ vector<double> directional_speeds(P* p, double angle, double speed) {
 		This function translates an angle and speed into what speed in 
 		4 compass directions (N,E,S,W) can create that movement.
 	*/
+	p->current_angle = angle; // current_angle is tracked before rotation_mod
 	if (p->rotation_mod) {
 		angle = angle + (sin(((angle-45)/360)*4*PI) * p->angle_rot);
 	}
