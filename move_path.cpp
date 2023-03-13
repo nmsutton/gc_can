@@ -115,20 +115,30 @@ void control_speed(double speed, P* p) {
 		}
 		else {p->base_ext = 250;}*/
 
-if (speed <= 18) {
-	p->speed_signaling=(-1.1109085031739780e-003)+((5.6142608252836491e-002)*speed)+((-2.3499797032046049e-002)*pow(speed,2))+
-	((1.0186822248984782e-002)*pow(speed,3))+((-1.3435588490283204e-003)*pow(speed,4))+
-	((7.7492779246967527e-005)*pow(speed,5))+((-1.6079253798113664e-006)*pow(speed,6));
-}
-else {p->speed_signaling = 3.5;}
+		if (speed <= 18) {
+			p->speed_signaling=(6.9183339033075490e-004)+((-5.9781210099676296e-002)*speed)+((1.3465684485107077e-001)*pow(speed,2))+
+			((-3.6802924024026296e-002)*pow(speed,3))+((4.4389788480963125e-003)*pow(speed,4))+
+			((-2.3682342664707815e-004)*pow(speed,5))+((4.6274476332048332e-006)*pow(speed,6));
+		}
+		else {p->speed_signaling = 3.8;}
 
-p->speed_signaling = p->speed_signaling * (1-(abs(sin((p->current_angle/360)*4*PI)) * 0.5714285714));
+		if (speed <= 12.5) {
+			p->speed_signaling = p->speed_signaling * (1+(abs(sin((p->current_angle/360)*4*PI)) * 0.364));
+		}
+		else {p->speed_signaling = p->speed_signaling * (1+(abs(sin((p->current_angle/360)*4*PI)) * 0.842));}
 
-if (speed <= 18) {
-	p->angle_rot=(1.8016000589763991e+001)+((1.5215550592017901e-001)*speed)+((-3.6137041553242016e-002)*pow(speed,2))
-	+((-1.6908913162404578e-003)*pow(speed,3))+((1.0480942383595732e-004)*pow(speed,4));
-}
-else {p->angle_rot=10;}
+		if (speed <= 12.5) {
+			p->base_ext = 150;
+		}
+		else if (speed <= 18) {
+			p->base_ext = (-7.8555999457544510e+002)+((3.1784912372210852e+002)*speed)+((-3.8943024414087240e+001)*pow(speed,2))+
+			((2.0433864986529651e+000)*pow(speed,3))+((-3.9677777610135252e-002)*pow(speed,4));
+		}
+		else {p->base_ext = 70;}
+
+		if (speed > 12.5) {
+			p->base_ext = p->base_ext * (1-(abs(sin((p->current_angle/360)*4*PI)) * 0.143));
+		}
 
 		//printf("%f %f %f %f\n",p->speed_signaling,p->base_ext,p->angle_rot,p->current_angle);
 
@@ -252,10 +262,10 @@ void run_path_onlypos(vector<double> *moves, vector<double> *speeds, vector<int>
 
 void move_straight(CARLsim* sim, P* p) {
 	// straight line path
-	double angle = 45;
+	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(5,p);
+		control_speed(18,p);
 		EISignal(angle, sim, p);
 	}
 }
