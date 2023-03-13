@@ -116,29 +116,13 @@ void control_speed(double speed, P* p) {
 		else {p->base_ext = 250;}*/
 
 		if (speed <= 18) {
-			p->speed_signaling=(6.9183339033075490e-004)+((-5.9781210099676296e-002)*speed)+((1.3465684485107077e-001)*pow(speed,2))+
-			((-3.6802924024026296e-002)*pow(speed,3))+((4.4389788480963125e-003)*pow(speed,4))+
-			((-2.3682342664707815e-004)*pow(speed,5))+((4.6274476332048332e-006)*pow(speed,6));
+			p->speed_signaling=(3.3253568082794527e-003)+((3.8964533975616861e-002)*speed)+((2.3389524215776773e-003)*pow(speed,2))+
+			((-8.5161973106098656e-004)*pow(speed,3))+((7.9071214035761163e-005)*pow(speed,4))+
+			((-2.0277395161398785e-006)*pow(speed,5));
 		}
-		else {p->speed_signaling = 3.8;}
+		else {p->speed_signaling = 1.0;}
 
-		if (speed <= 12.5) {
-			p->speed_signaling = p->speed_signaling * (1+(abs(sin((p->current_angle/360)*4*PI)) * 0.364));
-		}
-		else {p->speed_signaling = p->speed_signaling * (1+(abs(sin((p->current_angle/360)*4*PI)) * 0.842));}
-
-		if (speed <= 12.5) {
-			p->base_ext = 150;
-		}
-		else if (speed <= 18) {
-			p->base_ext = (-7.8555999457544510e+002)+((3.1784912372210852e+002)*speed)+((-3.8943024414087240e+001)*pow(speed,2))+
-			((2.0433864986529651e+000)*pow(speed,3))+((-3.9677777610135252e-002)*pow(speed,4));
-		}
-		else {p->base_ext = 70;}
-
-		if (speed > 12.5) {
-			p->base_ext = p->base_ext * (1-(abs(sin((p->current_angle/360)*4*PI)) * 0.143));
-		}
+		p->speed_signaling = p->speed_signaling * (1+(abs(sin((p->current_angle/360)*4*PI)) * 0.266666667));
 
 		//printf("%f %f %f %f\n",p->speed_signaling,p->base_ext,p->angle_rot,p->current_angle);
 
