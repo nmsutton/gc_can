@@ -12,9 +12,9 @@
 %clear all;
 %clc;
 initOAT;
-hopper_use=1;
+hopper_use=0;
 local_run=1;
-hopper_run=8;
+hopper_run=4;
 if hopper_use
     hopper_path=strcat('/mnt/hopper_scratch/gc_sim/gc_can_',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat');
     SpikeReader(hopper_path, false, 'silent');
@@ -26,10 +26,10 @@ else
 end
 
 delay_frames = false;%true;
-start_time=0;
-time=500000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
+time_start=0;
+time_end=10000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
 bin_size=100;%200;%10; % size of firing bin in ms
-t=[start_time:(1/bin_size):(time*(1/bin_size))];
+t=[(time_start*(1/bin_size)):(1/bin_size):(time_end*(1/bin_size))];
 x_size = 40;%36;%42;%30; % size of network on x-axis
 y_size = 40;%36;%42;%30; % size of network on y-axis
 spk_window = spk_data.readSpikes(bin_size);
@@ -55,9 +55,9 @@ caxis manual; % allow subsequent plots to use the same color limits
 custom_colormap = load('neuron_space_colormap.mat');
 %disp(numberOfFrames);
 for frameIndex = 1 : numberOfFrames
-  imgfile = reshape(spk_window(ceil((frameIndex+(start_time+1))/bin_size),:),[x_size,y_size])';
+  imgfile = reshape(spk_window(ceil((frameIndex+(time_start/bin_size))/bin_size),:),[x_size,y_size])';
   if delay_frames == false
-      imgfile = reshape(spk_window((frameIndex+(start_time+1)),:),[x_size,y_size])';
+      imgfile = reshape(spk_window((frameIndex+(time_start/bin_size)),:),[x_size,y_size])';
   end
   cla reset;
   hAxes = gca;
@@ -75,9 +75,9 @@ for frameIndex = 1 : numberOfFrames
   cb = colorbar;
   set(cb, 'ylim', [0 11.0]); % set colorbar range
   set(gca,'YDir','normal') % set y-axis 0 - end bottom to top
-  caption = sprintf('Neuron space grid cell firing amounts, t = %.0f ms', ((frameIndex+(start_time+1))*bin_size));
+  caption = sprintf('Neuron space grid cell firing amounts, t = %.0f ms', ((frameIndex+(time_start/bin_size))*bin_size));
   if delay_frames == true
-      caption = sprintf('Neuron space grid cell firing amounts, t = %.0f ms', ceil((frameIndex+(start_time+1))/bin_size)*bin_size);
+      caption = sprintf('Neuron space grid cell firing amounts, t = %.0f ms', ceil((frameIndex+(time_start/bin_size))/bin_size)*bin_size);
   end
   %set(gca,'fontsize', 20);
   %title(caption, 'FontSize', 20);
@@ -86,7 +86,7 @@ for frameIndex = 1 : numberOfFrames
   myMovie(frameIndex) = thisFrame;
 end
 close(hFigure);
-temp = myMovie(1);
+%temp = myMovie(1);
 myMovie(1) = []; % remove first frame causing issues due to wrong size
 v = VideoWriter('./videos/firing_neuron_space.avi'); % Create a VideoWriter object to write the video out to a new, different file.
 open(v)

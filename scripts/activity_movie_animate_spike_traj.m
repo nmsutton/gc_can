@@ -7,17 +7,17 @@ use_hopper_data = 0;
 local_run=1;
 hopper_run = 7;
 plot_spikes = 1; 
-min_x = 3.5;%4.5;
-max_x = min_x+32;%31;
-min_y = 3.5;%4.5;
-max_y = min_y+32;%31;
+min_x = 0;%3.5;%4.5;
+max_x = 40;%min_x+32;%31;
+min_y = 0;%3.5;%4.5;
+max_y = 40;%min_y+32;%31;
 tick_size = 20; % spike marker size
 spk_bin_size = 10; % spike reader bin size. Note: small bin sizes may take long processing with large spike sets. 40min sim with bin size 1 can take 10min to create plot.
 % select neuron to plot
-sel_nrn=100;%348;%110;%210;%262;%454;%454;%453;%455;%591;%629;%547;%629;%494;%290;%393;%243;%358;%338;%210;%290;%497;%860;%810;%300;%1250;%410;%820;%516;%1228;%690;
+sel_nrn=7;%100;%348;%110;%210;%262;%454;%454;%453;%455;%591;%629;%547;%629;%494;%290;%393;%243;%358;%338;%210;%290;%497;%860;%810;%300;%1250;%410;%820;%516;%1228;%690;
 spikes=[];
 fdr_prefix="gc_can_"; % folder name prefix for hopper run. "gc_can_" for main dir; "param_explore_iz_" for iz pe.
-restrict_time = 300000; % 0 for no restriction or input time value for restriction
+restrict_time = 367000;%300000; % 0 for no restriction or input time value for restriction
 timestep=20;
 hFigure = figure;
 

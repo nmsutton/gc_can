@@ -116,13 +116,11 @@ void control_speed(double speed, P* p) {
 		else {p->base_ext = 250;}*/
 
 		if (speed <= 18) {
-			p->speed_signaling=(3.3253568082794527e-003)+((3.8964533975616861e-002)*speed)+((2.3389524215776773e-003)*pow(speed,2))+
-			((-8.5161973106098656e-004)*pow(speed,3))+((7.9071214035761163e-005)*pow(speed,4))+
-			((-2.0277395161398785e-006)*pow(speed,5));
+			p->speed_signaling=(-1.1713047153950832e-003)+((9.3733326167102227e-002)*speed)+((-2.7208085871537738e-002)*pow(speed,2))+
+			((6.7350172773121483e-003)*pow(speed,3))+((-6.4669723141370819e-004)*pow(speed,4))+((2.6561940417268894e-005)*pow(speed,5))+
+			((-3.8880494970062695e-007)*pow(speed,6));
 		}
-		else {p->speed_signaling = 1.0;}
-
-		p->speed_signaling = p->speed_signaling * (1+(abs(sin((p->current_angle/360)*4*PI)) * 0.266666667));
+		else {p->speed_signaling = 1.5;}
 
 		//printf("%f %f %f %f\n",p->speed_signaling,p->base_ext,p->angle_rot,p->current_angle);
 
@@ -249,7 +247,7 @@ void move_straight(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(18,p);
+		control_speed(5,p);
 		EISignal(angle, sim, p);
 	}
 }
@@ -392,7 +390,7 @@ void move_fullspace2(CARLsim* sim, P* p) {
 	double speed = p->move_increment*1000;
 	control_speed(speed,p);	
 	double offset = (p->x_size-p->x_size_plot)/2; // offset for plotting
-	offset=5;//7;//5;//2;
+	offset=0;//5;//7;//5;//2;
 	//p->pos[0]=offset+5;p->pos[1]=offset-5; // set starting point
 	//p->bpos[0]=offset+5;p->bpos[1]=offset-5;
 	//double start=18;
