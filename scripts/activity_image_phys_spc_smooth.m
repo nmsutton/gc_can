@@ -21,9 +21,9 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	use_carlsim_spikes = 1;
 	alt_heatmap = 0;
 	use_smoothing = 1;
-	occupancy_norm = 0; % perform occupancy normalization. this adjusts rates by number of visits to locations.
-	omit_islands = 0; % see later comments
-	omit_noocc = 0; % set no occupancy to zero
+	occupancy_norm = 1; % perform occupancy normalization. this adjusts rates by number of visits to locations.
+	omit_islands = 1; % see later comments
+	omit_noocc = 1; % set no occupancy to zero
 	fs_video = 50; % sampling rate from video (samples/sec)
 	display_plot = 0;
 	save_plot = 0;
@@ -34,7 +34,7 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	flip_vert = 0; % flip matrix vertically
 
 	if use_carlsim_spikes
-        plot_subsect=0;%0; % plot only subsection of total data. this is set by the plot_size variable.
+        plot_subsect=1;%0; % plot only subsection of total data. this is set by the plot_size variable.
 		grid_size = 40;%42;%30; % sqrt of grid size
 		plot_size = 31; % sqrt of plot size
 		binside = 3;
@@ -167,7 +167,7 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 			end
 			heat_map = hist3([spike_x,spike_y],'Edges',{xdim, ydim2});
             if plot_subsect
-			    s = (grid_size-plot_size)/2;
+			    s = ((grid_size-plot_size)/2)-1;
 			    e = plot_size+s;
                 if occupancy_norm
 			        occupancy = occupancy(s:e, s:e); % crop to intended plot size
