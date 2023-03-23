@@ -167,7 +167,7 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 			end
 			heat_map = hist3([spike_x,spike_y],'Edges',{xdim, ydim2});
             if plot_subsect
-			    s = ((grid_size-plot_size)/2)-1;
+			    s = ((grid_size-plot_size)/2);
 			    e = plot_size+s;
                 if occupancy_norm
 			        occupancy = occupancy(s:e, s:e); % crop to intended plot size

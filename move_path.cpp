@@ -116,11 +116,19 @@ void control_speed(double speed, P* p) {
 		else {p->base_ext = 250;}*/
 
 		if (speed <= 18) {
-			p->speed_signaling=(-1.1713047153950832e-003)+((9.3733326167102227e-002)*speed)+((-2.7208085871537738e-002)*pow(speed,2))+
-			((6.7350172773121483e-003)*pow(speed,3))+((-6.4669723141370819e-004)*pow(speed,4))+((2.6561940417268894e-005)*pow(speed,5))+
-			((-3.8880494970062695e-007)*pow(speed,6));
+			p->speed_signaling=(1.7482517482245658e-003)+((1.6949300699459421e-002)*speed)+((1.0493152680578476e-002)*pow(speed,2))+
+			((-1.6062062936946391e-003)*pow(speed,3))+((1.3749271561697563e-004)*pow(speed,4))+
+			((-4.0064102563938748e-006)*pow(speed,5));
 		}
-		else {p->speed_signaling = 1.5;}
+		else {p->speed_signaling = 1.2;}
+
+		if (speed <= 8) {
+			p->base_ext = 150 + 100/(1 + pow((speed/2.840198),66.7403));
+		}
+		else if (speed <= 18) {
+			p->base_ext = 130 + 20/(1 + pow((speed/16.97024),368.5491));
+		}
+		else {p->base_ext = 130;}
 
 		//printf("%f %f %f %f\n",p->speed_signaling,p->base_ext,p->angle_rot,p->current_angle);
 
