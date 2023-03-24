@@ -48,6 +48,10 @@ scripts/generate_params/*.cpp
 scripts/generate_params/*.csv
 scripts/*.jpg
 scripts/*.png
+scripts/gridscore/*.jpg
+scripts/gridscore/*.png
+scripts/high_res_traj/*.jpg
+scripts/high_res_traj/*.png
 data/mex_hat_bup.cpp
 data/mex_hat.cpp
 data/synapse_weights.cpp
