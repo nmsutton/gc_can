@@ -42,7 +42,7 @@ run_sim(){
 
 	# generate results reports
 	cd ../gridscore/ &&
-	matlab -nodisplay -r "gridscore_sim $p1 $p2 $local_run $run_on_hopper $use_hopper_data $fdr_prefix $hopper_run $save_gridscore_file; exit" &&
+	matlab -nodisplay -r "gridscore_sim_function $p1 $p2 $local_run $run_on_hopper $use_hopper_data $fdr_prefix $hopper_run $save_gridscore_file; exit" &&
 	cd ../param_explore/
 	#echo "run sim"
 }
