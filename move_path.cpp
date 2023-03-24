@@ -398,7 +398,7 @@ void move_fullspace2(CARLsim* sim, P* p) {
 	double speed = p->move_increment*1000;
 	control_speed(speed,p);	
 	double offset = (p->x_size-p->x_size_plot)/2; // offset for plotting
-	offset=5;//7;//5;//2;
+	offset=4;//7;//5;//2;
 	//p->pos[0]=offset+5;p->pos[1]=offset-5; // set starting point
 	//p->bpos[0]=offset+5;p->bpos[1]=offset-5;
 	//double start=18;
