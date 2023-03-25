@@ -1,7 +1,6 @@
 % create high-resolution trajectory and firing plot
 close all;
 
-% run parameters
 if run_on_hopper==1
     curr_dir=pwd;
     cd /home/nsutton2/git/OAT_CS4/
@@ -59,14 +58,14 @@ if output_XsYs_file==1
 end
 
 % load trajectory path
-if preloaded_XsYs == 0 && preloaded_data == 0
+if preloaded_XsYs == 0 && preloaded_data == 0 && run_real_recordings == 0
     Xs = []; Ys = [];
     [Xs,Ys,animal_angles,animal_speeds]=loadTraj(angles_speeds, preloaded_XsYs, ...
         orig_xy, laptop_data, use_unwrapped_data, use_hopper_data, hopper_run, ...
         run_on_hopper, fdr_prefix, local_run, curr_dir);
 end
 
-if plot_spikes==1 && preloaded_data == 0
+if plot_spikes==1 && preloaded_data == 0 && run_real_recordings == 0
     spk_x = []; spk_y = [];
     [spk_t,spikes]=load_spk_times(use_hopper_data, hopper_run, plot_in_spikes, laptop_data, ...
         use_spk_reader, spk_bin_size, sel_nrn, preloaded_spk_reader, spikes, run_on_hopper, ...
@@ -120,6 +119,8 @@ if plot_spikes==1 || output_spikes_file==1
             if orig_xy==1 || angles_speeds==1
                 spk_x=[spk_x,x(floor(spk_t(i)/timestep))];
 	            spk_y=[spk_y,y(floor(spk_t(i)/timestep))];
+            elseif run_real_recordings == 1
+                % variables already processed
             else 
                 spk_x=[spk_x,x(spk_t(i))];
 	            spk_y=[spk_y,y(spk_t(i))];
@@ -153,7 +154,8 @@ end
 
 if plot_smooth_rm==1
     cd ..
-    heat_map=activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data,fdr_prefix,hopper_run,local_run,x,y);
+    heat_map=activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data,fdr_prefix,...
+        hopper_run,local_run,x,y,run_real_recordings,plot_subsect,grid_size,plot_size);
     cd high_res_traj
 end
 

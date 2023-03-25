@@ -13,7 +13,8 @@
 %% https://hydroecology.net/resizing-matlab-figures-the-easy-way/
 %% https://www.mathworks.com/matlabcentral/answers/43326-create-figure-without-displaying-it
 
-function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data,fdr_prefix,hopper_run,local_run,x,y)
+function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data, ...
+    fdr_prefix,hopper_run,local_run,x,y,run_real_recordings,plot_subsect,grid_size,plot_size)
 	import CMBHOME.Utils.*
 
 	%[root c_ts] = load_spike_times();
@@ -32,19 +33,17 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	limit_time = 0;
 	rot90deg = 0; % rotate matrix 90 degrees clockwise
 	flip_vert = 0; % flip matrix vertically
+    real_env_size=360; % units of real animal enviornment from recordings
+    conversion_factor=660; % factor for converting from real recordings
 
 	if use_carlsim_spikes
-        plot_subsect=1;%0; % plot only subsection of total data. this is set by the plot_size variable.
-		grid_size = 40;%42;%30; % sqrt of grid size
-		plot_size = 31; % sqrt of plot size
 		binside = 3;
 		std_smooth_kernel = 3.333;
 		% use highres_spikes.csv from high_res_traj.m not hopper created text file
 	    %hopper_use=0                                                                      ; % enable hopper folder or use local folder
 	    %hopper_run=5;
 	    %hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/spikes_recorded.csv']);
-	else
-		grid_size = 32;
+    else
 		spike_x = root.cel_x{1,1};
 		resize_factor = 660;
 		spike_y = root.cel_y{1,1}-resize_factor;
@@ -65,14 +64,14 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	        %if use_laptop == 0
 	        if false
 		        %carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/output/spikes/spikes_recorded.csv');
-	        else
+            else
 	            curr_dir = pwd;
                 %if use_hopper_data==0 run_number=local_run; else run_number=hopper_run; end
                 %curr_dir = replace(curr_dir,"gc_can_1",strcat(fdr_prefix,int2str(run_number)));
                 %curr_dir = replace(curr_dir,"code/1","code/gc_can_1");
                 cd(curr_dir);
-	            carlsim_spikes = readmatrix(curr_dir+"/high_res_traj/highres_spikes.csv");
                 disp(curr_dir+"/high_res_traj/highres_spikes.csv");
+	            carlsim_spikes = readmatrix(curr_dir+"/high_res_traj/highres_spikes.csv");
 	        end
 	    end
 		if alt_heatmap
@@ -82,6 +81,12 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 			if use_carlsim_spikes
 				spike_x = carlsim_spikes(1:end,3);
 				spike_y = carlsim_spikes(1:end,2);
+                if run_real_recordings==1
+                    spike_x=(spike_x-conversion_factor)*(grid_size/real_env_size);
+                    spike_y=spike_y*(grid_size/real_env_size);
+                    x=x*(grid_size/real_env_size);
+                    y=(y-conversion_factor)*(grid_size/real_env_size);
+                end
 			else
 				spike_x = carlsim_spikes(1:end,3)*(360/30);
 				spike_y = carlsim_spikes(1:end,2)*(360/30);
@@ -164,7 +169,7 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 			if occupancy_norm 
 				occupancy = hist3([x,y],'Edges',{xdim, ydim2})/fs_video; 
 				no_occupancy = occupancy==0; % mark indeces where there was no occupancy so we can correct after smoothing
-			end
+            end
 			heat_map = hist3([spike_x,spike_y],'Edges',{xdim, ydim2});
             if plot_subsect
 			    s = ((grid_size-plot_size)/2);

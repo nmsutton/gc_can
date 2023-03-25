@@ -1,0 +1,7 @@
+% script to plot real animal data and get gridscore
+run_real_recordings=0; 
+plot_subsect=1;
+grid_size=32;
+plot_size=30;
+extract_x_y_spk;
+gridscore_sim_run_local;
