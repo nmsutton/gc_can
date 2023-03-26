@@ -35,6 +35,7 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	flip_vert = 0; % flip matrix vertically
     real_env_size=360; % units of real animal enviornment from recordings
     conversion_factor=660; % factor for converting from real recordings
+    timestep=20; % recordings timestep of samples in ms
 
 	if use_carlsim_spikes
 		binside = 3;
@@ -171,6 +172,7 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 				no_occupancy = occupancy==0; % mark indeces where there was no occupancy so we can correct after smoothing
             end
 			heat_map = hist3([spike_x,spike_y],'Edges',{xdim, ydim2});
+            if run_real_recordings==0 heat_map = heat_map*timestep; end
             if plot_subsect
 			    s = ((grid_size-plot_size)/2);
 			    e = plot_size+s;
@@ -190,6 +192,9 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 				for i = 1:length(inds)-1				    
 				    occupancy(s(inds(i)).PixelIdxList) = 0;				    
 				end
+            end
+            if occupancy_norm
+            	occupancy=occupancy';
             end
 			if use_smoothing
 				if occupancy_norm
