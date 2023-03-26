@@ -14,12 +14,16 @@ function heat_map = gridscore_sim_function(p1,p2,local_run,run_on_hopper,use_hop
 	hopper_run=str2num([string(hopper_run)]); % hopper run number
 	save_gridscore_file=str2num([string(save_gridscore_file)]); % save gridscore to file
 
-	fdr_prefix="gc_can_"; % folder name prefix for hopper run. "gc_can_" for main dir; "param_explore_iz_" for iz pe.
+	fdr_prefix="param_explore_iz_"; % folder name prefix for hopper run. "gc_can_" for main dir; "param_explore_iz_" for iz pe.
 	restrict_time=0; % limit time plotted. 0 for no restriction; in 20ms bins
 	smaller_spk_ticks=1; % choose trajectory plot tick size. 2 for extra small.
 	preloaded_spk_reader=0; % save time of loading spike reader by using prior loaded one
 	plot_spikes = 1; % turn off spike plotting when only movement trajectory is desired to be plotted
 	sel_nrn=1577; % select neuron to plot
+	if ~exist('run_real_recordings','var') run_real_recordings=0; end % run parameters for real recordings
+	if ~exist('plot_subsect','var') plot_subsect=1; end % plot only subsection of total data. this is set by the plot_size variable.
+	if ~exist('grid_size','var') grid_size=40; end % sqrt of grid size
+	if ~exist('plot_size','var') plot_size=31; end % sqrt of plot size
 
 	gridscore_sim
 	exitcode = 0;
