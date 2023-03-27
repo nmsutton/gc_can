@@ -30,7 +30,7 @@ chg_prm(){
 run_sim(){
 	# run CARLsim
 	export curr_dir=$PWD;
-	if [ run_on_hopper == 0 ]; then
+	if [ $run_on_hopper == 0 ]; then
 		command="cd ../../../../.build/projects/$fdr_prefix$local_run/"
 	else
 		command="cd ../../../../.build/projects/$fdr_prefix$hopper_run/"
