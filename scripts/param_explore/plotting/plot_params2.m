@@ -8,9 +8,9 @@ downsample_amount = 10; % amount of downsampling; higher is more
 % extract data
 x=[];y=[];z=[];xyz=[];
 results_data=readmatrix('gridness_score.txt');
-plot_rotation_factor_1=-100000;%500;%1000;%34.65;%25.005;%.51999;%1.9999;
-plot_rotation_factor_2=100000;%20000;%100000;%200;
-rev_axes=1; % reverse axes plotting direction
+plot_rotation_factor_1=34.68;%34.6;%376;%-100000;%500;%1000;%34.65;%25.005;%.51999;%1.9999;
+plot_rotation_factor_2=100000;%800;%100000;%20000;%100000;%200;
+rev_axes=0; % reverse axes plotting direction
 rows_number=size(results_data(:,1));
 for i=1:rows_number
 	x=[x results_data(i,2)];
@@ -124,10 +124,10 @@ if downsample_colormap
 end
 %colormapeditor
 %axis([min(x) max(x) min(y) max(y)])
-title("Gridness Scores of Izhikevich C and Vpeak Parameters for Grid Cells", 'FontSize', 11);
+title("Gridness Scores of Tsodyks-Markram U and tau_u Parameters for Grid Cells", 'FontSize', 11);
 axis('tight');
-xlabel('Izhikevich C') 
-ylabel('Izhikevich Vpeak')
+xlabel('Izhikevich U') 
+ylabel('Izhikevich tau_u')
 if rev_axes
     set(gca,'YDir','reverse')
 end
