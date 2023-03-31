@@ -614,7 +614,7 @@ void setInExcConns(CARLsim* sim, P *p) {
 		for (int j = 0; j < p->layer_size; j++) {
 			//if (mex_hat[i][j] != 0.0) {
 			//if ((double) mex_hat[i][j] >= 0.006) {
-			if ((double) mex_hat[i][j] >= 0.002) {
+			if ((double) mex_hat[i][j] >= p->lowval_thresh) {
 				p->weights_in[i][j] = 1;
 				//printf("i:%d j:%d\n",i,j);
 				counter++;
@@ -628,11 +628,12 @@ void setInExcConns(CARLsim* sim, P *p) {
 class MexHatConnection : public ConnectionGenerator {
 public:
     vector<vector<double>> weights_in;
-    double mex_hat_multi;
+    double mex_hat_multi, syn_wgt_shift;
     int conn_offset, conn_dist;
     MexHatConnection(P *p) {
     	this->weights_in = p->weights_in; // set matrix
     	this->mex_hat_multi = p->mex_hat_multi;
+    	this->syn_wgt_shift = p->syn_wgt_shift;
     	this->conn_offset = p->conn_offset;
     	this->conn_dist = p->conn_dist;
     }
@@ -659,7 +660,7 @@ public:
     		}
         //weight = mex_hat[i][j]*mex_hat_multi;
         weight = mex_hat[i_adj][j]*mex_hat_multi;
-        weight = weight + -0.012;//-0.022;//-0.042;//-0.012;//-0.022;//0.5;//0.0;                
+        weight = weight + syn_wgt_shift;//-0.022;//-0.042;//-0.012;//-0.022;//0.5;//0.0;                
         //weight = mex_hat[i_adj][j]*mex_hat_multi;
         //if (weight < 0) {weight = 0;}
         maxWt = 10000.0f;
@@ -850,8 +851,8 @@ public:
     		// vector<int> shift_y{0, 20, -20, -20};
     		// vector<int> shift_x{0, -10,  10}; 
     		// vector<int> shift_y{0, -20, -20};
-    		// vector<int> shift_x{0, -20,  20}; 
-    		// vector<int> shift_y{0, -10, -10};
+    		vector<int> shift_x{0, -20,  20}; 
+    		vector<int> shift_y{0, -10, -10};
     		// vector<int> shift_x{0,  20,  20}; 
     		// vector<int> shift_y{0,  10,  -10};
     		// vector<int> shift_x{0, 20};
@@ -900,8 +901,8 @@ public:
     		// vector<int> shift_y{0, -12, 12, 0, 0};
     		// vector<int> shift_x{0, -8, 8}; 
     		// vector<int> shift_y{0, -12, 12};
-    		vector<int> shift_x{0, -2,   2, -14, 14}; 
-    		vector<int> shift_y{0, -10, 10, -4, 4};
+    		// vector<int> shift_x{0, -2,   2, -14, 14}; 
+    		// vector<int> shift_y{0, -10, 10, -4, 4};
     		// vector<int> shift_x{0}; 
     		// vector<int> shift_y{0};
 

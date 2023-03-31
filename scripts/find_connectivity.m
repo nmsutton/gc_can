@@ -1,6 +1,6 @@
 % find connectivity
 
-thresh=.002;
+thresh=.001;%.002;
 
 weights=readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_1/scripts/generate_params/synapse_weights.csv');
 %tot_conn=find(weights>=.thresh);

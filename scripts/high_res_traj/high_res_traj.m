@@ -211,6 +211,8 @@ function [spk_t,spikes]=load_spk_times(use_hopper_data, hopper_run, plot_in_spik
             else
                 file_path="/mnt/hopper_scratch/gc_sim/"+fdr_prefix+hopper_run+"/results/spk_MEC_LII_Basket.dat";                
             end
+            %disp("hopper data");
+            %disp(file_path);
         else
             if plot_in_spikes==0
                 file_path = strcat(curr_dir,"/../../results/spk_MEC_LII_Stellate.dat");
