@@ -73,6 +73,7 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
                 cd(curr_dir);
                 disp(curr_dir+"/high_res_traj/highres_spikes.csv");
 	            carlsim_spikes = readmatrix(curr_dir+"/high_res_traj/highres_spikes.csv");
+	            if size(carlsim_spikes)==0 disp("error: no spikes detected"); quit; end % quit if no spikes are recorded
 	        end
 	    end
 		if alt_heatmap

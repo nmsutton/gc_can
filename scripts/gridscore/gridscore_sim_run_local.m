@@ -8,13 +8,13 @@ clear keep_vars;
 % general run options
 p1=0; % param explore parameter for file naming
 p2=0; % param explore parameter for file naming
-use_hopper_data=1; % access hopper data locally
+use_hopper_data=0; % access hopper data locally
 local_run=1; % local run number
 hopper_run=2; % hopper run number
 save_gridscore_file=0; % save gridscore to file
-fdr_prefix="gc_can_"; % folder name prefix for hopper run. "gc_can_" for main dir; "param_explore_iz_" for iz pe.
+fdr_prefix="param_explore_iz_"; % folder name prefix for hopper run. "gc_can_" for main dir; "param_explore_iz_" for iz pe.
 if ~exist('restrict_time','var')
-restrict_time=000;%6733000;%4328000;%1360000;%500000; % limit time plotted. 0 for no restriction; in 20ms bins
+restrict_time=0000;%6733000;%4328000;%1360000;%500000; % limit time plotted. 0 for no restriction; in 20ms bins
 end
 run_on_hopper=0; % supercomputer run options: run from hopper's system  
 smaller_spk_ticks=1; % choose trajectory plot tick size. 2 for extra small.
