@@ -23,6 +23,7 @@ cd(PWD);
 m = []; % empty matrix
 [HDgridScore,gridness3Score]=get_HDGridScore(m,m,m,heat_map);
 fprintf("HDgridScore: %f; Gridness3Score: %f\n",HDgridScore,gridness3Score);
+fprintf("Mean firing rate: %f; Peak firing rate: %f\n",mean(mean(heat_map)),max(max(heat_map)));
 if save_gridscore_file==1
 	gridness_file = fopen('../param_explore/output/gridness_score.txt','at'); % append file
 	c = clock;

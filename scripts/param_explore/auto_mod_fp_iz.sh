@@ -35,9 +35,9 @@ run_ea(){
 	#echo "" >> $results_file # newline
 }
 
-for i in {0..4} 
+for i in {0..6} 
 do
-for j in {0..4} 
+for j in {0..6} 
 do
 	# update params
 	sed -i "$pat1${p1_p}$pat2${p1_p}$pat3${p1_v[$i]}, ${p1_v[$i]}$pat4" $ea_input_filepath
