@@ -10,7 +10,7 @@ x=[];y=[];z=[];xyz=[];
 p1_column=3;
 p2_column=4;
 plot_rotation_factor_1=10;%34.68;%34.6;%376;%-100000;%500;%1000;%34.65;%25.005;%.51999;%1.9999;
-plot_rotation_factor_2=500;%100000;%800;%100000;%20000;%100000;%200;
+plot_rotation_factor_2=10;%100000;%800;%100000;%20000;%100000;%200;
 results_data=readmatrix('param_records_ea_iz.txt');
 rev_axes=0; % reverse axes plotting direction
 rows_number=size(results_data(:,1));
