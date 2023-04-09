@@ -48,9 +48,9 @@ run_sim(){
 }
 
 # run all param combinations
-for i in {0..4} 
+for i in {0..8} 
 do
-for j in {0..4} 
+for j in {0..8} 
 do
 	# param change	
 	echo "processing p1: $i; p2: $j";
