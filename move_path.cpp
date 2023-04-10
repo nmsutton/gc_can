@@ -96,11 +96,11 @@ void control_speed(double speed, P* p) {
 		//p->base_ext=100;
 
 		if (speed <= 18) {
-			p->speed_signaling=(-1.1965197976996577e-003)+((1.2168696574789817e-001)*speed)+((-9.9789784679189739e-003)*pow(speed,2))+
-			((2.8043793420825169e-003)*pow(speed,3))+((-3.2568216115795405e-004)*pow(speed,4))+((1.6348777221157604e-005)*pow(speed,5))+
-			((-2.9737364801764938e-007)*pow(speed,6));
+			p->speed_signaling=(-8.7155547656808208e-004)+((9.8000157379856206e-002)*speed)+((-4.9309171335887060e-003)*pow(speed,2))+
+			((1.2925433505156657e-003)*pow(speed,3))+((-1.4272948675234890e-004)*pow(speed,4))+((6.7691752679018136e-006)*pow(speed,5))+
+			((-1.1546955122305338e-007)*pow(speed,6));
 		}
-		else {p->speed_signaling = 1.9;}
+		else {p->speed_signaling = 1.583333333;}
 
 		if (speed <= 18) {
 			p->base_ext=149.4899 + 50.5474/(1 + pow((speed/12.50101),21.73262));
@@ -223,7 +223,7 @@ void move_straight(CARLsim* sim, P* p) {
 	double angle = 90;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(18,p);
+		control_speed(5,p);
 		EISignal(angle, sim, p);
 	}
 }
