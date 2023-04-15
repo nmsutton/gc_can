@@ -14,7 +14,7 @@
 %% https://www.mathworks.com/matlabcentral/answers/43326-create-figure-without-displaying-it
 
 function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data, ...
-    fdr_prefix,hopper_run,local_run,x,y,run_real_recordings,plot_subsect,grid_size,plot_size)
+    fdr_prefix,hopper_run,local_run,x,y,run_real_recordings,plot_subsect,grid_size,plot_size,save_plot)
 	import CMBHOME.Utils.*
 
 	%[root c_ts] = load_spike_times();
@@ -27,7 +27,6 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	omit_noocc = 1; % set no occupancy to zero
 	fs_video = 50; % sampling rate from video (samples/sec)
 	display_plot = 0;
-	save_plot = 0;
 	if run_on_hopper==1 save_plot = 1; end
 	%use_laptop = 0;
 	limit_time = 0;
@@ -254,7 +253,7 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	if display_plot == 0
 		set(fig,'visible','on');
 	end
-	if save_plot
+	if str2num([string(save_plot)])==1
 		c = clock;
 		hr = mod(c(4),12);
 		output_filename = sprintf("ratemap_%.0f-%.0f-%.0f_%.0f-%.0f-%.0f.png",hr,c(5),c(6),c(2),c(3),c(1));

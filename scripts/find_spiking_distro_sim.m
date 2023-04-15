@@ -3,7 +3,7 @@
 initOAT;
 hopper_use=1;
 local_run=1;
-hopper_run=2;
+hopper_run=4;
 hopper_local_copy=0;
 fdr_prefix="gc_can_";
 if hopper_use

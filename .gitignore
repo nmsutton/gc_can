@@ -39,6 +39,7 @@ scripts/high_res_traj/anim_trajy.csv
 scripts/high_res_traj/highres_spikes.csv
 scripts/high_res_traj/*.jpg
 scripts/high_res_traj/*.png
+scripts/high_res_traj/*.csv
 scripts/generate_weights/examples
 scripts/generate_weights/*.jpg
 scripts/generate_weights/*.png
@@ -50,10 +51,11 @@ scripts/*.jpg
 scripts/*.png
 scripts/gridscore/*.jpg
 scripts/gridscore/*.png
-scripts/high_res_traj/*.jpg
-scripts/high_res_traj/*.png
 data/mex_hat_bup.cpp
 data/mex_hat.cpp
 data/synapse_weights.cpp
 data/synapse_weights.csv
 data/*.csv
+scripts/param_explore/plotting/*.jpg
+scripts/param_explore/plotting/*.png
+scripts/param_explore/plotting/*.jpeg

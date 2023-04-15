@@ -22,9 +22,10 @@ cd(PWD);
 
 m = []; % empty matrix
 [HDgridScore,gridness3Score]=get_HDGridScore(m,m,m,heat_map);
+avg_firing_rate=mean(mean(heat_map));
 fprintf("HDgridScore: %f; Gridness3Score: %f\n",HDgridScore,gridness3Score);
-fprintf("Mean firing rate: %f; Peak firing rate: %f\n",mean(mean(heat_map)),max(max(heat_map)));
-if save_gridscore_file==1
+fprintf("Mean firing rate: %f; Peak firing rate: %f\n",avg_firing_rate,max(max(heat_map)));
+if str2num([string(save_gridscore_file)])==1
 	gridness_file = fopen('../param_explore/output/gridness_score.txt','at'); % append file
 	c = clock;
 	hr = mod(c(4),12);
@@ -32,5 +33,10 @@ if save_gridscore_file==1
     if isnan(HDgridScore) HDgridScore=0; end
     fprintf(gridness_file,"%s,a_%f,b_%f,%f,%f\n",output_time,p1,p2,HDgridScore,gridness3Score);
 	fclose(gridness_file);
+end
+if str2num([string(save_firingrate_file)])==1
+	firingrate_file = fopen('../firing_rate_records.txt','at'); % append file
+	fprintf(firingrate_file,"%f\n",avg_firing_rate);
+	fclose(firingrate_file);
 end
 exitcode = 0;

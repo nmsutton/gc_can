@@ -13,6 +13,7 @@ end
 % Avoid points in trajectory that are at the time of wrapping around. 
 % Set them to NaN to avoid lines being drawn that span a full axis of
 % the plot in an unwanted way.
+%{
 for i=2:length(Xs)
     d = euc_d(Xs(i-1),Ys(i-1),Xs(i),Ys(i));
     if d > thresh
@@ -20,6 +21,7 @@ for i=2:length(Xs)
         Ys(i)=NaN;
     end
 end
+%}
 
 line(Xs, Ys, 'Color', 'k', 'LineWidth', 1.0), hold on;
 
@@ -36,7 +38,7 @@ axis off
 set(gca, 'Box', 'on')
 xs = [min(min(x)) max(max(x))];
 ys = [min(min(y)) max(max(y))];
-if save_traj_plot
+if str2num([string(save_traj_plot)])==1
     c = clock;
     hr = mod(c(4),12);
     output_filename = sprintf("traj_%.0f-%.0f-%.0f_%.0f-%.0f-%.0f.png",hr,c(5),c(6),c(2),c(3),c(1));

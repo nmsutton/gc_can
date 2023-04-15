@@ -29,19 +29,17 @@ angles_speeds = 0; % load angles and speeds or x,y position coordinates
 preloaded_XsYs = 0; % use prior loaded Ys and Xs instead of reading them from files
 preloaded_data = 0; % use all prior loaded data. This is Xs, Ys, and spikes.
 output_XsYs_file = 0;
-create_plot = 1; 
+if ~exist('create_plot','var') create_plot = 1; end
 timestep = 20;
 orig_xy = 0; % use orig x,y animal positions with no wrapping around or carlsim x,y that wraps around a taurus  
 plot_in_spikes = 0; % plot interneuron spikes
 use_spk_reader = 1; % use CARLsim's spike reader rather than seperate spike times file
 spk_bin_size = 10; % spike reader bin size. Note: small bin sizes may take long processing with large spike sets. 40min sim with bin size 1 can take 10min to create plot.
-%sel_nrn = 400;%263;%366;%534;%931;%520;%616;%322;%1372;%1313;%265;%903;%892;%912;%1317;%903;%265;%349;%518;%533;%903;%465;%202;%200;%465;%463;%878;%465;%460;%870;%86;%465; % selected neuron to generate physical space plot
 laptop_data = 0;
 use_unwrapped_data = 0;
 output_spikes_file = 1; % output file that can be used in rate map plot
 plot_smooth_rm = 1; % plot smoothed rate map
-%smaller_spk_ticks = 2;%2; % Change spike tick visual size; 2 for extra small
-save_traj_plot = 0; % save traj plot to file
+if ~exist('save_traj_plot','var') save_traj_plot = 0; end % save traj plot to file
 if run_on_hopper==1 save_traj_plot = 1; end
 if plot_in_spikes==1 plot_spikes=1; end
 if plot_spikes==0 output_spikes_file = 0; end
@@ -155,7 +153,7 @@ end
 if plot_smooth_rm==1
     cd ..
     heat_map=activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data,fdr_prefix,...
-        hopper_run,local_run,x,y,run_real_recordings,plot_subsect,grid_size,plot_size);
+        hopper_run,local_run,x,y,run_real_recordings,plot_subsect,grid_size,plot_size,save_plot);
     cd high_res_traj
 end
 
@@ -220,8 +218,8 @@ function [spk_t,spikes]=load_spk_times(use_hopper_data, hopper_run, plot_in_spik
                 file_path = strcat(curr_dir,"/../../results/spk_MEC_LII_Basket.dat");
             end
         end
-        if preloaded_spk_reader==0 spk_data = SpikeReader(file_path, false, 'silent'); end
-        if preloaded_spk_reader==0 spikes = spk_data.readSpikes(spk_bin_size); end
+        if str2num([string(preloaded_spk_reader)])==0 spk_data = SpikeReader(file_path, false, 'silent'); end
+        if str2num([string(preloaded_spk_reader)])==0 spikes = spk_data.readSpikes(spk_bin_size); end
         spk_t=find(spikes(:,sel_nrn)~=0);
         spk_t=spk_t*spk_bin_size;
     else
