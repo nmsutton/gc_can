@@ -13,6 +13,9 @@ sel_nrn=593;%1381;%1381;%979;%506;%979;%506;%1381;%455;%1287;%670;%669;%1248;%66
 smaller_spk_ticks=1; % choose trajectory plot tick size. 2 for extra small.
 p1=0; p2=0; % param explore parameter for file naming
 save_gridscore_file=0; % save gridscore to file
+save_plot=0;
+save_traj_plot=0;
+save_firingrate_file=0;
 if ~exist('run_real_recordings','var') run_real_recordings=0; end % run parameters for real recordings
 if ~exist('plot_subsect','var') plot_subsect=1; end % plot only subsection of total data. this is set by the plot_size variable.
 if ~exist('grid_size','var') grid_size=40; end % sqrt of grid size
