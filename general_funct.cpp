@@ -737,6 +737,8 @@ public:
 		vector<int> cent_y{0, -12, 12};
 		// vector<int> cent_x{0, -13, 2}; // centroid (center of pixels) positions for each center-surround distribution (ring) via interneuron connections
 		// vector<int> cent_y{0, -16, 7};
+		// vector<int> cent_x{0, -8,   6,   6, 14, 36, -14}; // centroid (center of pixels) positions for each center-surround distribution (ring) via interneuron connections
+		// vector<int> cent_y{0, -12, 12, -12,  0, 11,   0};
 		vector<int> cent_j;
 		GetINConns(i, this->x_size, this->layer_size_in, this->conn_dist, this->conn_offset, 
 			&cent_x, &cent_y, &cent_j);

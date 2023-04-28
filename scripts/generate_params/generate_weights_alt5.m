@@ -8,7 +8,6 @@ write_to_csv = 1; % needed for running on supercomputer
 write_to_cpp = 0; % alternative file for running locally (not supercomputer)
 show_2d_plot = 0;
 show_3d_plot = 0;
-alt_weights = 0; % use alt synapse_weights matrix
 
 % params
 csv_filename = "synapse_weights.csv";
@@ -21,9 +20,6 @@ grid_size_target = 40;%42;%40;%36;%42; % target grid size for neuron weights
 total_nrns = ((grid_size_target+4)^2);%(grid_size_target^2);%35;%(grid_size^2);% total neurons
 if show_2d_plot total_nrns = 3; end
 grid_size = (grid_size_target+4)*3;%90;
-%if alt_weights
-%    grid_size = 120;
-%end
 iter = 13; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
 start_x_shift = (grid_size/2) - 21;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%28; -2 = 2 down
 start_y_shift = (grid_size/2) - 21;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%-4;%28; +2 = 2 left
@@ -35,7 +31,7 @@ r_s=1; % ring scale
 p1=.68;%20;%20;%.68;
 p2=2;p3=2;
 % center size
-p4=r_s*38*3;%200;%190;%160;%130;%90;%r_s*52;%35;%45;%52;%40;%70;%130;%38;%*2.5*1.3;%.55;%.7;%4;%2;%2;%2.5;%2;%*1.4;%1.344;%*2.7*(14/20);%1.4;%*.5; 
+p4=r_s*38*1.6;%200;%190;%160;%130;%90;%r_s*52;%35;%45;%52;%40;%70;%130;%38;%*2.5*1.3;%.55;%.7;%4;%2;%2;%2.5;%2;%*1.4;%1.344;%*2.7*(14/20);%1.4;%*.5; 
 % center size
 p8=r_s*0.135;%230;%220;%190;%160;%70;%r_s*.135*1.02;%r_s*.135*1.07;%1;%.87;%.135*.9;%1;%.97;%.99;%.11;%.13;%.12;%.14;%.12;%.22;%.2;%.25;%.135; 
 % surround size
@@ -69,9 +65,6 @@ end
 
 % write to file and create matrix
 if write_to_csv || write_to_cpp
-    if alt_weights == 0
-	    synapse_weights=nrn_syn_wts(start_x_shift,start_y_shift,filter_highval,highval,highval_thres,p,po);
-    end
 	for i=0:(total_nrns-1)
 		synapse_weights2=rotate_weights(po,Rz,synapse_weights);
 		synapse_weights3=shift_weights(po,i,synapse_weights2);
@@ -114,9 +107,6 @@ if sample_matrix
 	po(2)=0; % turn off file writing for sample
     start_y_shift = start_y_shift + 4;
     start_x_shift = start_x_shift - 1;
-    if alt_weights == 0
-	    synapse_weights=nrn_syn_wts(start_x_shift,start_y_shift,filter_highval,highval,highval_thres,p,po);
-    end
 	synapse_weights2=rotate_weights(po,Rz,synapse_weights);
 	synapse_weights3=shift_weights(po,1,synapse_weights2);
 	synapse_weights4=crop_weights(po,synapse_weights3);
