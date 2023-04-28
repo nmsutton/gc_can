@@ -102,7 +102,7 @@ int main() {
 		p.animal_location_all[i] = 0.0; // initialize
 	}
 	// initialize matrix
-	vector<vector<double>> weights_in_temp(p.layer_size, vector<double>(p.layer_size)); // set size
+	vector<vector<double>> weights_in_temp(p.layer_size_in, vector<double>(p.layer_size)); // set size
 	p.weights_in = weights_in_temp;
 	for (int i = 0; i < p.layer_size; i++) {
 		for (int j = 0; j < p.layer_size; j++) {p.weights_in[i][j] = 0.0;}

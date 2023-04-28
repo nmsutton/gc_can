@@ -3,7 +3,7 @@
 % select data to use
 load filenames;load tetrodes;load cells;
 % file_number 15 = small, 23 = medium, 17 = large
-file_number=12;%15;%23;
+file_number=15;%15;%23;
 
 run_real_recordings=1; 
 plot_subsect=1;

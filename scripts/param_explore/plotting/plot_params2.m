@@ -8,16 +8,16 @@ downsample_amount = 1;%4;%10; % amount of downsampling; higher is more
 % extract data
 x=[];y=[];z=[];xyz=[];
 results_data=readmatrix('gridness_score.txt');
-plot_rotation_factor_1=100000;%62.5000;%10000000;%4000000;%34.68;%34.6;%376;%-100000;%500;%1000;%34.65;%25.005;%.51999;%1.9999;
-plot_rotation_factor_2=30000000;%100000;%30000000;%3.8634;%5000000;%5000000;%800;%100000;%20000;%100000;%200;
+plot_rotation_factor_1=100000;%100000;%62.5000;%10000000;%4000000;%34.68;%34.6;%376;%-100000;%500;%1000;%34.65;%25.005;%.51999;%1.9999;
+plot_rotation_factor_2=200000;%30000000;%100000;%30000000;%3.8634;%5000000;%5000000;%800;%100000;%20000;%100000;%200;
 plot_rotation_factor_3=0;%-3.1667;%0;
 hco_default_point=[11.69,3]; % yellow; location of default hco value [p1,p2]
 sim_used_point=[11.69,0]; % red; location of value used in sim [p1,p2]
 hco_2std_range1=[2.004487459,5.844264053]; % purple; location of edge of hco 2std range
 hco_2std_range2=[0.6773862189,3.084456527];
-show_selected_points=1; % plot the additional points
-rev_axes_y=0; % reverse axes plotting direction
-rev_axes_x=0;
+show_selected_points=0; % plot the additional points
+rev_axes_y=1; % reverse axes plotting direction
+rev_axes_x=1;
 rows_number=size(results_data(:,1));
 for i=1:rows_number
 	x=[x results_data(i,2)];
@@ -118,9 +118,9 @@ if downsample_colormap
 end
 %colormapeditor
 % Tsodyks-Markram or Izhikevich
-title("Gridness Scores of Tsodyks-Markram g and tau_d Parameters for Grid Cells", 'FontSize', 11);
+title("Gridness Scores of Izhikevich b and d Parameters for Grid Cells", 'FontSize', 11);
 axis('tight');
-xlabel('Tsodyks-Markram d') 
-ylabel('Tsodyks-Markram b')
+xlabel('Izhikevich d') 
+ylabel('Izhikevich b')
 if rev_axes_y set(gca,'YDir','reverse'); end
 if rev_axes_x set(gca,'XDir','reverse'); end

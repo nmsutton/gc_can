@@ -92,8 +92,11 @@ sim.setNeuronParameters(MEC_LII_Stellate_Speed, 118.000000f, 0.0f, 0.62f, 0.0f, 
 //                                 0.0f, 483.0f, 0.0f, 0);
                                 // C,k,vr,vt,a,b,vpeak,c,d
 sim.setNeuronParameters(CA1_Pyramidal, 530.0f, 0.0f, 1.7382527828120673f, 0.0f, -69.97816841048154f, 0.0f, -57.42740032f, 
-                                0.0f, 0.0028211397234640546f, 0.0f, -0.7818603847193373f, 0.0f, 24.44743634f, 0.0f, -60.35222718f, 
-                                0.0f, 25.0f, 0.0f, 0);
+                               0.0f, 0.0028211397234640546f, 0.0f, -0.7818603847193373f, 0.0f, 24.44743634f, 0.0f, -60.35222718f, 
+                               0.0f, 25.0f, 0.0f, 0);
+// sim.setNeuronParameters(CA1_Pyramidal, 528.0f, 0.0f, 1.15f, 0.0f, -50.04f, 0.0f, -46.54f, 
+//                                 0.0f, 0.01f, 0.0f, -0.32f, 0.0f, 29.22f, 0.0f, -50.63f, 
+//                                 0.0f, 283.0f, 0.0f, 0);
 
 /* neuron connection parameters */
 setInExcConns(&sim, &p);
@@ -101,70 +104,74 @@ double gc2inwt = p.gc_to_in_wt;
 MexHatConnection* MexHatConn;
 SomeToSomeConnection* SomeToSomeConn;    
 sim.connect(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, "one-to-one", p.dir_to_gc_wt, 1.0f, 
-            RangeDelay(1), RadiusRF(-1), SYN_FIXED, 33.082, 20.0f); // 0 DIR
+            RangeDelay(1), RadiusRF(-1), SYN_FIXED, (33.082*.47*1.331314709), (20.0*.47*1.331314709)); // 0 DIR
 ////
-float m1 = 1;//1.89;//1.5;//1.2;//1;//1.2;
-float m2 = 1;
+float m1 = 0.370*0.8*7.63;//*1.320675526;//1;//1.89;//1.5;//1.2;//1;//1.2;
+float m1_slow = m1*0.6120576671;
+float m2 = 11.76*0.8*7.63;//*(0.005537614433/0.00681312463724531);//1;
+float m2_slow = m2*0.6120576671;
 p.conn_offset = 0;
 if (p.spin2in_active) {
     p.gc_to_in_wt = p.spdin2inwt;
     SomeToSomeConn = new SomeToSomeConnection(&p);
-    sim.connect(MEC_LII_Basket_Speed, EC_LII_Axo_Axonic, SomeToSomeConn, 7.63*m1, 4.67*m1, SYN_FIXED);
+    sim.connect(MEC_LII_Basket_Speed, EC_LII_Axo_Axonic, SomeToSomeConn, m1, m1_slow, SYN_FIXED);
 }
 if (p.spex2in_active) {
     p.gc_to_in_wt = p.spdex2inwt;
     SomeToSomeConn = new SomeToSomeConnection(&p);
-    sim.connect(MEC_LII_Stellate_Speed, EC_LII_Axo_Axonic, SomeToSomeConn, 7.63*m1, 4.67*m1, SYN_FIXED);    
+    sim.connect(MEC_LII_Stellate_Speed, EC_LII_Axo_Axonic, SomeToSomeConn, m1, m1_slow, SYN_FIXED);    
     //sim.connect(MEC_LII_Stellate_Speed, EC_LII_Axo_Axonic, "one-to-one", p.spdex2inwt, 1.0f, 
     //        RangeDelay(1), RadiusRF(-1), SYN_FIXED, 8.5*m1, 5.2*m1); // 0 DIR
 }
 p.gc_to_in_wt = gc2inwt;
 SomeToSomeConn = new SomeToSomeConnection(&p);
-sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, SomeToSomeConn, 7.63*m1, 4.67*m1, SYN_FIXED);
+sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, SomeToSomeConn, m1, m1_slow, SYN_FIXED);
 //sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, "one-to-one", 1.0, 1.0f, 
 //            RangeDelay(1), RadiusRF(-1), SYN_FIXED, 33.082, 20.0f);
 MexHatConn = new MexHatConnection(&p);
-sim.connect(EC_LII_Axo_Axonic, MEC_LII_Stellate, MexHatConn, 7.63*m2, 4.67*m2, SYN_FIXED); // 2 IN->GC one-to-many
+sim.connect(EC_LII_Axo_Axonic, MEC_LII_Stellate, MexHatConn, m2, m2_slow, SYN_FIXED); // 2 IN->GC one-to-many
 ////
 p.conn_offset = 1;
 if (p.spin2in_active) {
     p.gc_to_in_wt = p.spdin2inwt;
     SomeToSomeConn = new SomeToSomeConnection(&p);
-    sim.connect(MEC_LII_Basket_Speed, MEC_LII_Basket, SomeToSomeConn, 7.63*m1, 4.67*m1, SYN_FIXED);
+    sim.connect(MEC_LII_Basket_Speed, MEC_LII_Basket, SomeToSomeConn, m1, m1_slow, SYN_FIXED);
 }
 if (p.spex2in_active) {
     p.gc_to_in_wt = p.spdex2inwt;
     SomeToSomeConn = new SomeToSomeConnection(&p);
-    sim.connect(MEC_LII_Stellate_Speed, MEC_LII_Basket, SomeToSomeConn, 7.63*m1, 4.67*m1, SYN_FIXED);
+    sim.connect(MEC_LII_Stellate_Speed, MEC_LII_Basket, SomeToSomeConn, m1, m1_slow, SYN_FIXED);
     //sim.connect(MEC_LII_Stellate_Speed, MEC_LII_Basket, "one-to-one", p.spdex2inwt, 1.0f, 
     //        RangeDelay(1), RadiusRF(-1), SYN_FIXED, 8.5*m1, 5.2*m1); // 0 DIR
 }
 p.gc_to_in_wt = gc2inwt;
 SomeToSomeConn = new SomeToSomeConnection(&p);
-sim.connect(MEC_LII_Stellate, MEC_LII_Basket, SomeToSomeConn, 7.63*m1, 4.67*m1, SYN_FIXED);
+sim.connect(MEC_LII_Stellate, MEC_LII_Basket, SomeToSomeConn, m1, m1_slow, SYN_FIXED);
 MexHatConn = new MexHatConnection(&p);
-sim.connect(MEC_LII_Basket, MEC_LII_Stellate, MexHatConn, 7.63*m2, 4.67*m2, SYN_FIXED); // 2 IN->GC one-to-many
+sim.connect(MEC_LII_Basket, MEC_LII_Stellate, MexHatConn, m2, m2_slow, SYN_FIXED); // 2 IN->GC one-to-many
 ////
 p.conn_offset = 2;
 if (p.spin2in_active) {
     p.gc_to_in_wt = p.spdin2inwt;
     SomeToSomeConn = new SomeToSomeConnection(&p);
-    sim.connect(MEC_LII_Basket_Speed, EC_LII_Basket_Multipolar, SomeToSomeConn, 7.63*m1, 4.67*m1, SYN_FIXED);
+    sim.connect(MEC_LII_Basket_Speed, EC_LII_Basket_Multipolar, SomeToSomeConn, m1, m1_slow, SYN_FIXED);
 }
 if (p.spex2in_active) {
     p.gc_to_in_wt = p.spdex2inwt;
     SomeToSomeConn = new SomeToSomeConnection(&p);
-    sim.connect(MEC_LII_Stellate_Speed, EC_LII_Basket_Multipolar, SomeToSomeConn, 7.63*m1, 4.67*m1, SYN_FIXED);
+    sim.connect(MEC_LII_Stellate_Speed, EC_LII_Basket_Multipolar, SomeToSomeConn, m1, m1_slow, SYN_FIXED);
     //sim.connect(MEC_LII_Stellate_Speed, EC_LII_Basket_Multipolar, "one-to-one", p.spdex2inwt, 1.0f, 
     //        RangeDelay(1), RadiusRF(-1), SYN_FIXED, 8.5*m1, 5.2*m1); // 0 DIR
 }
 p.gc_to_in_wt = gc2inwt;
 SomeToSomeConn = new SomeToSomeConnection(&p);
-sim.connect(MEC_LII_Stellate, EC_LII_Basket_Multipolar, SomeToSomeConn, 7.63*m1, 4.67*m1, SYN_FIXED);
+sim.connect(MEC_LII_Stellate, EC_LII_Basket_Multipolar, SomeToSomeConn, m1, m1_slow, SYN_FIXED);
 MexHatConn = new MexHatConnection(&p);
-sim.connect(EC_LII_Basket_Multipolar, MEC_LII_Stellate, MexHatConn, 7.63*m2, 4.67*m2, SYN_FIXED); // 2 IN->GC one-to-many
+sim.connect(EC_LII_Basket_Multipolar, MEC_LII_Stellate, MexHatConn, m2, m2_slow, SYN_FIXED); // 2 IN->GC one-to-many
+//sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
+//           RangeDelay(1), RadiusRF(-1), SYN_FIXED, (71.14*0.170), (43.59*0.170)); // 3 PCs
 sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
-           RangeDelay(1), RadiusRF(-1), SYN_FIXED, 71.14f, 43.59f); // 3 PCs
+           RangeDelay(1), RadiusRF(-1), SYN_FIXED, (71.14*0.170), (43.59*0.170)); // 3 PCs
 // sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
 //            RangeDelay(1), RadiusRF(-1), SYN_FIXED, 34.27, 21.0f); // 3 PCs 
 /*sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
@@ -181,6 +188,15 @@ sim.setSTP(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, true, STPu(0.1802, 0
                                      STPtdGABAb(150.0, 0.0f),
                                      STPtrNMDA(0.0f, 0.0f),
                                      STPtrGABAb(0.0f, 0.0f));
+// sim.setSTP(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, true, STPu(0.1802, 0.0f),
+//                                      STPtauU(35.73788179, 0.0f),
+//                                      STPtauX(418.4899027, 0.0f),
+//                                      STPtdAMPA(3.468416701, 0.0f),
+//                                      STPtdNMDA(150.0, 0.0f),
+//                                      STPtdGABAa(6.0, 0.0f),
+//                                      STPtdGABAb(150.0, 0.0f),
+//                                      STPtrNMDA(0.0f, 0.0f),
+//                                      STPtrGABAb(0.0f, 0.0f));
 sim.setSTP(CA1_Pyramidal, MEC_LII_Stellate, true, STPu(0.1231, 0.0f),
                                      STPtauU(49.71, 0.0f),
                                      STPtauX(153.4, 0.0f),
@@ -190,6 +206,15 @@ sim.setSTP(CA1_Pyramidal, MEC_LII_Stellate, true, STPu(0.1231, 0.0f),
                                      STPtdGABAb(150.0, 0.0f),
                                      STPtrNMDA(0.0f, 0.0f),
                                      STPtrGABAb(0.0f, 0.0f));
+// sim.setSTP(CA1_Pyramidal, MEC_LII_Stellate, true, STPu(0.1436820457, 0.0f),
+//                                      STPtauU(44.06299214, 0.0f),
+//                                      STPtauX(304.2250189, 0.0f),
+//                                      STPtdAMPA(3.854910895, 0.0f),
+//                                      STPtdNMDA(150.0, 0.0f),
+//                                      STPtdGABAa(6.0, 0.0f),
+//                                      STPtdGABAb(150.0, 0.0f),
+//                                      STPtrNMDA(0.0f, 0.0f),
+//                                      STPtrGABAb(0.0f, 0.0f));
 sim.setSTP(MEC_LII_Stellate, EC_LII_Axo_Axonic, true, STPu(0.1672, 0.0f), 
                                     STPtauU(49.9201, 0.0f), 
                                     STPtauX(167.6863, 0.0f), 

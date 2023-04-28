@@ -2,11 +2,11 @@
 % Plot using custom bin width.
 % d1, d2, etc. are distributions of firing rates.
 
-bin_width = 0.4;%0.5;%11;
+bin_width = 1.0;%0.3;%0.4;%0.5;%11;
 fr_data3;
 
 %dc=[d1,d1,d1,d1,d1,d1,d1,d2,d3,d3,d3,d3,d3,d3,d4,d4,d4,d5,d5,d5,d5,d5,d5,d6,d6,d6]; % combined distributions
-%dc=[d1,d2];
+%dc=[d1,d2,d3];
 dc=real_dc;
 %bins=linspace(0, 5, bin_width);
 %hc = histcounts(dc,bins);
