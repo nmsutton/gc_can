@@ -67,30 +67,12 @@ double get_pd(int i, int x_size) {
 	int y = i / x_size;
 
 	if (y % 2 == 0) {
-		if (x % 2 == 0) {pd = 180;}
-		else {pd = 0;}
-	}
-	else {
 		if (x % 2 == 0) {pd = 90;}
-		else {pd = 270;}		
-	}
-
-	return pd;
-}
-
-double get_opp_pd(int i, int x_size) {	
-	/* returns opposite preferred direction */
-	double pd;
-	int x = i % x_size;
-	int y = i / x_size;
-
-	if (y % 2 == 0) {
-		if (x % 2 == 0) {pd = 0;}
-		else {pd = 180;}
+		else {pd = 270;}
 	}
 	else {
-		if (x % 2 == 0) {pd = 270;}
-		else {pd = 90;}		
+		if (x % 2 == 0) {pd = 180;}
+		else {pd = 0;}		
 	}
 
 	return pd;
@@ -673,16 +655,19 @@ void GetINConns(int grc_i, int x_size, int layer_size, int conn_dist, int conn_o
 	// Return which INs should be connected given a GrC index in its neural layer
 
 	double grc_pd;
-	int cent_j_entry;
+	int cent_j_entry, cent_size;
 	int x_size_in = sqrt(layer_size);
+	int new_x, new_y, new_i, entry_x, entry_y;
+	int x_srt = 7; // starting position for x
+	int y_srt = 7;
 
 	// find pd for gc_i in x_size
 	grc_pd = get_pd(grc_i, x_size);
 
 	// adjust for positioning in combined IN layer (all IN layers combined)
 	for (int i = 0; i < cent_x->size(); i++) {
-		cent_x->at(i) = cent_x->at(i) + 2;
-		cent_y->at(i) = cent_y->at(i) + 2;
+		cent_x->at(i) = cent_x->at(i) + x_srt;
+		cent_y->at(i) = cent_y->at(i) + y_srt;
 	}
 
 	// based on pd, adjust which interneuron indices are selected
@@ -700,7 +685,31 @@ void GetINConns(int grc_i, int x_size, int layer_size, int conn_dist, int conn_o
 		// add original indices to shifted indices
 		cent_x->at(i) = cent_x->at(i) + grc_x;
 		cent_y->at(i) = cent_y->at(i) + grc_y;
-		//cent_j_entry = ((grc_y + cent_y->at(i)) * x_size_in) + (grc_x + cent_x->at(i));
+	}
+
+	// generate additional center-surround rings for wrap around neural layer effect
+	cent_size=(int) cent_x->size(); // save size before number of entries are expanded
+	for (int i = 0; i < cent_size; i++) {
+		for (int j = 0; j < 3; j++) {
+			for (int k = 0; k < 3; k++) {
+				new_x=cent_x->at(i)+(-x_size+(x_size*k));
+				new_y=cent_y->at(i)+(-x_size+(x_size*j));
+				//if (new_i>=0 && new_i<layer_size && (j!=1&&k!=1)) { // check within layer indices. also avoid duplicating original centroid point
+				if (j == 1 && k == 1) {/*skip original centroid location*/}
+				else if (new_x>=0 && new_x<x_size_in &&
+				    new_y>=0 && new_y<x_size_in) {
+					//new_i=((cent_y->at(i)+(-x_size+(x_size*j)))*x_size_in)+cent_x->at(i)+(-x_size+(x_size*k));
+					//entry_x=new_i%x_size_in;
+					//entry_y=new_i/x_size_in;
+					cent_x->push_back(new_x);
+					cent_y->push_back(new_y);
+				}
+			}
+		}
+	}
+
+	// find cent_i
+	for (int i = 0; i < cent_x->size(); i++) {
 		cent_j_entry = (cent_y->at(i) * x_size_in) + cent_x->at(i);
 		cent_j_entry = wrap_around(cent_j_entry, layer_size);
 		cent_j->push_back(cent_j_entry);
@@ -731,6 +740,7 @@ public:
     void connect(CARLsim* sim, int srcGrp, int i, int destGrp, int j, float& weight, float& maxWt,
             float& delay, bool& connected) {
     	int j_sft;
+    	vector<int> cent_j;
 		// vector<int> cent_x{0}; // centroid (center of pixels) positions for each center-surround distribution (ring) via interneuron connections
 		// vector<int> cent_y{0};
 		vector<int> cent_x{0, -8, 8}; // centroid (center of pixels) positions for each center-surround distribution (ring) via interneuron connections
@@ -739,7 +749,6 @@ public:
 		// vector<int> cent_y{0, -16, 7};
 		// vector<int> cent_x{0, -8,   6,   6, 14, 36, -14}; // centroid (center of pixels) positions for each center-surround distribution (ring) via interneuron connections
 		// vector<int> cent_y{0, -12, 12, -12,  0, 11,   0};
-		vector<int> cent_j;
 		GetINConns(i, this->x_size, this->layer_size_in, this->conn_dist, this->conn_offset, 
 			&cent_x, &cent_y, &cent_j);
 
@@ -748,7 +757,7 @@ public:
 		for (int i2 = 0; i2 < cent_x.size(); i2++) {
 			j_sft = (j * this->conn_dist) + this->conn_offset;
 			if (j_sft == cent_j[i2]) {connected = 1;}
-			if (j_sft == cent_j[i2] && i == 1599) {printf("i:%d j_sft:%d c_x:%d c_y:%d pd:%f\n",i,j_sft,cent_x[i2],cent_y[i2],get_pd(i,x_size));}
+			if (j_sft == cent_j[i2] && i == 0) {printf("i:%d j_sft:%d c_x:%d c_y:%d pd:%f cent_count:%d\n",i,j_sft,cent_x[i2],cent_y[i2],get_pd(i,x_size),cent_x.size());}
 		}
         maxWt = 10000.0f;
         delay = 1; 
