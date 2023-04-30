@@ -104,9 +104,10 @@ double gc2inwt = p.gc_to_in_wt;
 MexHatConnection* MexHatConn;
 SomeToSomeConnection* SomeToSomeConn;    
 sim.connect(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, "one-to-one", p.dir_to_gc_wt, 1.0f, 
-            RangeDelay(1), RadiusRF(-1), SYN_FIXED, (33.082*.47*1.331314709), (20.0*.47*1.331314709)); // 0 DIR
+            RangeDelay(1), RadiusRF(-1), SYN_FIXED, (33.082*.47), (20.0*.47)); // 0 DIR
+            // RangeDelay(1), RadiusRF(-1), SYN_FIXED, (33.082*.47*1.331314709), (20.0*.47*1.331314709)); // 0 DIR
 ////
-float m1 = 0.370*0.8*7.63*0.42;//;10;//0.42;//;//*3;//*0.42;//*1.320675526;//1;//1.89;//1.5;//1.2;//1;//1.2;
+float m1 = 0.370*0.8*7.63*0.5;//0.6;//0.42;//1.1;//0.5;//0.366;//0.45;//0.6;//0.45;//0.366;//0.42;//;10;//0.42;//;//*3;//*0.42;//*1.320675526;//1;//1.89;//1.5;//1.2;//1;//1.2;
 float m1_slow = m1*0.6120576671;
 float m2 = 11.76*0.8*7.63;//*(0.005537614433/0.00681312463724531);//1;
 float m2_slow = m2*0.6120576671;

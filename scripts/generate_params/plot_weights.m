@@ -1,26 +1,35 @@
 % view weight design options
 
-weights_type=["custom_tiled","full_tiled"];
-%selection="full_tiled";
 selection="custom_tiled";
-
-x_size_in = 60;
+%selection="full_tiled";
+weights_type=["custom_tiled","full_tiled"];
+x_size_in = 50;%60;
 x_size = 40;
 
 if selection == weights_type(1)
-    use_nowp = 1; % select to use some non-wrapping centroids
-    x_srt = 31;%30;%8;%31;%8;
-    y_srt = 30;%17;%7;%30;%7;  
+    use_nowp = 0; % select to use some non-wrapping centroids
+    x_srt = 31;%6;%8;%30;%8;%31;%8;
+    y_srt = 30;%5;%7;%17;%7;%30;%7; 
+%     x_srt = 31;
+%     y_srt = 30;
     cent_x=[];
     cent_y=[]; 
+%     cent_x=[0];
+% 	  cent_y=[0];
 %     cent_x=[0, -8, 8];
 % 	  cent_y=[0, -12, 12];
+    cent_x=[0, -8,  -8, 6,   6];
+    cent_y=[0, -12, 12, 12, -12]; 
 %     cent_x=[0, -8,   6,   6, 14, 36, -14];
 %     cent_y=[0, -12, 12, -12,  0, 11,   0];    
 %     cent_x=[0, -8,   6,   6, 14, 36, -14, -8,  -20];
 %     cent_y=[0, -12, 12, -12,  0, 11,   0, 12,  -12];    
-    cent_x=[0, -8,   6,   6, 14, 36, -14, -8];
-    cent_y=[0, -12, 12, -12,  0, 11,   0, 12]; 
+%     cent_x=[0, -8,   6,   6, 14, 36, -14, -8];
+%     cent_y=[0, -12, 12, -12,  0, 11,   0, 12];
+%     cent_x=[0, -8,  -8, 6,   6,  14, -14];
+%     cent_y=[0, -12, 12, 12, -12,  0,   0];
+%     cent_x=[0, -8,  -8, 6,   6];
+%     cent_y=[0, -12, 12, 12, -12];
     cent_x_nowp=[0, 14, -14]; % centroid with no wrapping
     cent_y_nowp=[-24, -24, -24];
     
@@ -68,6 +77,8 @@ if selection == weights_type(2)
     end
 end
 
+fprintf("centroids number: %d\n",length(cent_x));
+
 plot_cent=zeros(x_size, x_size);
 
 for i=1:length(cent_x)
@@ -86,11 +97,11 @@ end
 function [cent_x,cent_y]=add_cents(cent_x, cent_y, x_size, x_size_in)
 	cent_size=length(cent_x);
 	for i=1:cent_size
-		for j=1:3
-			for k=1:3
-				new_x=cent_x(i)+(-x_size+(x_size*k));
-				new_y=cent_y(i)+(-x_size+(x_size*j));
-				if (j == 1 && k == 1) %{ skip %} ; end
+		for j=1:9
+			for k=1:9
+				new_x=cent_x(i)+((-x_size*2)+(x_size*k));
+				new_y=cent_y(i)+((-x_size*2)+(x_size*j));
+				if (j == 5 && k == 5) %{ skip %} ; end
 				elseif new_x>=0 && new_x<x_size_in && ...
 				       new_y>=0 && new_y<x_size_in
 				    cent_x=[cent_x,new_x];

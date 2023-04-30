@@ -96,11 +96,11 @@ void control_speed(double speed, P* p) {
 		//p->base_ext=100;
 
 		if (speed <= 18) {
-			p->speed_signaling=(-3.0138070373199963e-003)+((1.4391507887313262e-001)*speed)+((-2.8079730785811215e-002)*pow(speed,2))+
-			    ((7.1366327231580399e-003)*pow(speed,3))+((-7.7264678752499713e-004)*pow(speed,4))+((3.7379043918523145e-005)*pow(speed,5))+
-			    ((-6.6834553638021279e-007)*pow(speed,6));
+			p->speed_signaling=(-6.2793297977606771e-003)+((4.2768314183816319e-001)*speed)+((-1.7717389340208811e-001)*pow(speed,2))+
+			    ((3.7236922677595194e-002)*pow(speed,3))+((-3.5806563121212561e-003)*pow(speed,4))+((1.5906120235443491e-004)*pow(speed,5))+
+			    ((-2.6469215564420587e-006)*pow(speed,6));
 		}
-		else {p->speed_signaling = 1.9;}
+		else {p->speed_signaling = 2.1;}
 
 		if (speed <= 18) {
 			p->base_ext=149.4899 + 50.5474/(1 + pow((speed/12.50101),21.73262));
@@ -220,7 +220,7 @@ void run_path_onlypos(vector<double> *moves, vector<double> *speeds, vector<int>
 
 void move_straight(CARLsim* sim, P* p) {
 	// straight line path
-	double angle = 270;
+	double angle = 90;//45;//33.75;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
 		control_speed(5,p);

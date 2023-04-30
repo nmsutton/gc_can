@@ -658,8 +658,8 @@ void GetINConns(int grc_i, int x_size, int layer_size, int conn_dist, int conn_o
 	int cent_j_entry, cent_size;
 	int x_size_in = sqrt(layer_size);
 	int new_x, new_y, new_i, entry_x, entry_y;
-	int x_srt = 7; // starting position for x
-	int y_srt = 7;
+	int x_srt = 5;//7; // starting position for x
+	int y_srt = 5;//7;
 
 	// find pd for gc_i in x_size
 	grc_pd = get_pd(grc_i, x_size);
@@ -690,10 +690,10 @@ void GetINConns(int grc_i, int x_size, int layer_size, int conn_dist, int conn_o
 	// generate additional center-surround rings for wrap around neural layer effect
 	cent_size=(int) cent_x->size(); // save size before number of entries are expanded
 	for (int i = 0; i < cent_size; i++) {
-		for (int j = 0; j < 3; j++) {
-			for (int k = 0; k < 3; k++) {
-				new_x=cent_x->at(i)+(-x_size+(x_size*k));
-				new_y=cent_y->at(i)+(-x_size+(x_size*j));
+		for (int j = 0; j < 9; j++) {
+			for (int k = 0; k < 9; k++) {
+				new_x=cent_x->at(i)+((-x_size*2)+(x_size*k));
+				new_y=cent_y->at(i)+((-x_size*2)+(x_size*j));
 				//if (new_i>=0 && new_i<layer_size && (j!=1&&k!=1)) { // check within layer indices. also avoid duplicating original centroid point
 				if (j == 1 && k == 1) {/*skip original centroid location*/}
 				else if (new_x>=0 && new_x<x_size_in &&
@@ -779,6 +779,8 @@ public:
     int conn_offset, conn_dist;
     float gc_to_in_wt;
     int x_size, y_size, layer_size_in;
+    //vector<int> grc_to_in_conns;
+    ofstream in_conns_file;
     SomeToSomeConnection(P *p) {
     	this->weights_in = p->weights_in; // set matrix
     	this->mex_hat_multi = p->mex_hat_multi;
@@ -788,6 +790,8 @@ public:
     	this->x_size = p->x_size;
     	this->y_size = p->y_size;
     	this->layer_size_in = p->layer_size_in;
+    	//this->grc_to_in_conns = p->grc_to_in_conns;
+    	//this->in_conns_file = p->in_conns_file;
     }
     ~SomeToSomeConnection() {}
  
@@ -795,11 +799,13 @@ public:
     // note that weight, maxWt, delay, and connected are passed by reference
     void connect(CARLsim* sim, int srcGrp, int i, int destGrp, int j, float& weight, float& maxWt,
             float& delay, bool& connected) {
-    	bool use_nowp = 1; // select to use some non-wrapping centroids
-    	int j_sft;
+    	bool use_nowp = 0; // select to use some non-wrapping centroids
+    	int j_sft, cent_j_wrap;
+		vector<int> cent_x_nowp{0,    14, -14}; // centroid with no wrapping
+		vector<int> cent_y_nowp{-24, -24, -24};
     	vector<int> cent_j;
-	    int x_srt = 7;
-	    int y_srt = 7;
+	    int x_srt = 5;//7;
+	    int y_srt = 5;//7;
 		// vector<int> cent_x{0}; // centroid (center of pixels) positions for each center-surround distribution (ring) via interneuron connections
 		// vector<int> cent_y{0};
 		// vector<int> cent_x{0, -8, 8}; 
@@ -814,8 +820,12 @@ public:
 		// vector<int> cent_y{0, -12, 12, -12,  0, 11,   0, 12, -12};
 		// vector<int> cent_x{0, -8,   6,   6, 14, 36, -14, 8, 0, 14, -14};
 		// vector<int> cent_y{0, -12, 12, -12,  0, 11,   0, 12,-24,-24,-24};
-		vector<int> cent_x_nowp{0,    14, -14}; // centroid with no wrapping
-		vector<int> cent_y_nowp{-24, -24, -24};
+		// vector<int> cent_x{0, -8,  -8, 6,   6,  14, -14};
+		// vector<int> cent_y{0, -12, 12, 12, -12,  0,   0};
+		// vector<int> cent_x{0, -8,  -8, 6,   6};
+		// vector<int> cent_y{0, -12, 12, 12, -12};
+		// vector<int> cent_x{0, -8,  -8, 14, -14};
+		// vector<int> cent_y{0, -12, 12, 0,    0};
 		GetINConns(i, this->x_size, this->layer_size_in, this->conn_dist, this->conn_offset, 
 			&cent_x, &cent_y, &cent_j);
 
@@ -834,13 +844,17 @@ public:
 
 		connected = 0;
 		weight = gc_to_in_wt;		
+		j_sft = (j * this->conn_dist) + this->conn_offset;
 		for (int i2 = 0; i2 < cent_x.size(); i2++) {
-			j_sft = (j * this->conn_dist) + this->conn_offset;
-			if (j_sft == cent_j[i2]) {connected = 1;}
-			if (j_sft == cent_j[i2] && i == 0) {printf("i:%d j_sft:%d c_x:%d c_y:%d pd:%f cent_count:%d\n",i,j_sft,cent_x[i2],cent_y[i2],get_pd(i,x_size),cent_x.size());}
+			cent_j_wrap = wrap_around(cent_j[i2],this->layer_size_in);
+			//if (j_sft == cent_j[i2]) {connected = 1;}
+			if (j_sft == cent_j_wrap) {connected = 1;}
+			if (j_sft == cent_j_wrap && i == 0) {printf("i:%d j_sft:%d c_x:%d c_y:%d pd:%f cent_count:%d\n",i,j_sft,cent_x[i2],cent_y[i2],get_pd(i,x_size),cent_x.size());}
 		}
         maxWt = 10000.0f;
         delay = 1; 
+        // report centroid counts
+		if(j_sft==0) {printf("%d,",cent_x.size());}
     }
 };
 
