@@ -28,7 +28,7 @@ end
 
 delay_frames = false;%true;
 time_start=0;
-time_end=7000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
+time_end=3000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
 bin_size=100;%100;%200;%10; % size of firing bin in ms
 t=[(time_start*(1/bin_size)):(1/bin_size):(time_end*(1/bin_size))];
 x_size = 40;%36;%42;%30; % size of network on x-axis

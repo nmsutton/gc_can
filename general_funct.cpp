@@ -716,6 +716,62 @@ void GetINConns(int grc_i, int x_size, int layer_size, int conn_dist, int conn_o
 	}
 }
 
+void GetINConnsFull(int grc_i, int x_size, int layer_size, int conn_dist, int conn_offset, 
+	vector<int> *cent_x, vector<int> *cent_y, vector<int> *cent_j) {
+	// Return which INs should be connected given a GrC index in its neural layer
+
+    int x_sft = 62;//60;//58;
+    int y_sft = 59;//60;//58;
+    int x_srt = -x_sft+7;
+    int y_srt = -y_sft+7;
+    double ring_size=14;
+    double tiling_scale=1.7;//1.45;//1.4;
+    double spacing_scale=0.333;
+    int x_tiles=20;//16;
+    int y_tiles=20;//16;
+    int x_size_in = sqrt(layer_size);
+    int new_x, new_y;
+    double grc_pd;
+	int cent_j_entry;
+
+	// find j indices
+	int grc_x = grc_i % x_size;
+	int grc_y = grc_i / x_size;
+	// add original indices to shifted indices
+	x_srt = x_srt + grc_x;
+	y_srt = y_srt + grc_y;
+
+    for (int i = 0; i < y_tiles; i++) {
+    	for (int j = 0; j < x_tiles; j++) {
+            new_x=(int) floor((double) i*(ring_size*tiling_scale*spacing_scale));
+            new_y=(int) floor((double) j*(ring_size*tiling_scale));
+            if (i % 2 == 0) {new_y = (int) floor((double) new_y - ((ring_size*tiling_scale)/2));}
+            if (new_x>0 && new_x<=x_size_in && new_y>0 && new_y<=x_size_in) {
+            	cent_x->push_back(new_x);
+            	cent_y->push_back(new_y);
+            }
+		}
+    }
+
+	// find pd for gc_i in x_size
+	grc_pd = get_pd(grc_i, x_size);
+
+	// based on pd, adjust which interneuron indices are selected
+	for (int i = 0; i < cent_x->size(); i++) {
+		if 		(grc_pd == 0) 	{cent_y->at(i) = cent_y->at(i) - 2;}
+		else if (grc_pd == 90) 	{cent_x->at(i) = cent_x->at(i) + 2;}
+		else if (grc_pd == 180) {cent_y->at(i) = cent_y->at(i) + 2;}
+		else if (grc_pd == 270) {cent_x->at(i) = cent_x->at(i) - 2;}
+	}
+
+	// find cent_i
+	for (int i = 0; i < cent_x->size(); i++) {
+		cent_j_entry = (cent_y->at(i) * x_size_in) + cent_x->at(i);
+		cent_j_entry = wrap_around(cent_j_entry, layer_size);
+		cent_j->push_back(cent_j_entry);
+	}
+}
+
 class SomeToSomeConnection : public ConnectionGenerator {
 public:
     vector<vector<double>> weights_in;
@@ -739,18 +795,42 @@ public:
     // note that weight, maxWt, delay, and connected are passed by reference
     void connect(CARLsim* sim, int srcGrp, int i, int destGrp, int j, float& weight, float& maxWt,
             float& delay, bool& connected) {
+    	bool use_nowp = 1; // select to use some non-wrapping centroids
     	int j_sft;
     	vector<int> cent_j;
+	    int x_srt = 7;
+	    int y_srt = 7;
 		// vector<int> cent_x{0}; // centroid (center of pixels) positions for each center-surround distribution (ring) via interneuron connections
 		// vector<int> cent_y{0};
-		vector<int> cent_x{0, -8, 8}; // centroid (center of pixels) positions for each center-surround distribution (ring) via interneuron connections
-		vector<int> cent_y{0, -12, 12};
-		// vector<int> cent_x{0, -13, 2}; // centroid (center of pixels) positions for each center-surround distribution (ring) via interneuron connections
+		// vector<int> cent_x{0, -8, 8}; 
+		// vector<int> cent_y{0, -12, 12};
+		// vector<int> cent_x{0, -13, 2}; 
 		// vector<int> cent_y{0, -16, 7};
-		// vector<int> cent_x{0, -8,   6,   6, 14, 36, -14}; // centroid (center of pixels) positions for each center-surround distribution (ring) via interneuron connections
+		// vector<int> cent_x{0, -8,   6,   6, 14, 36, -14};
 		// vector<int> cent_y{0, -12, 12, -12,  0, 11,   0};
+		vector<int> cent_x{0, -8,   6,   6, 14, 36, -14, 8};
+		vector<int> cent_y{0, -12, 12, -12,  0, 11,   0, 12};
+		// vector<int> cent_x{0, -8,   6,   6, 14, 36, -14, 8, -20};
+		// vector<int> cent_y{0, -12, 12, -12,  0, 11,   0, 12, -12};
+		// vector<int> cent_x{0, -8,   6,   6, 14, 36, -14, 8, 0, 14, -14};
+		// vector<int> cent_y{0, -12, 12, -12,  0, 11,   0, 12,-24,-24,-24};
+		vector<int> cent_x_nowp{0,    14, -14}; // centroid with no wrapping
+		vector<int> cent_y_nowp{-24, -24, -24};
 		GetINConns(i, this->x_size, this->layer_size_in, this->conn_dist, this->conn_offset, 
 			&cent_x, &cent_y, &cent_j);
+
+		// vector<int> cent_x;
+		// vector<int> cent_y;
+		// GetINConnsFull(i, this->x_size, this->layer_size_in, this->conn_dist, this->conn_offset, 
+		// 	&cent_x, &cent_y, &cent_j);
+
+		// add centroids with no wrapping
+	    if (use_nowp == 1) {
+	        for (int i2 = 0; i2 < cent_x_nowp.size(); i2++) {
+	            cent_x.push_back(cent_x_nowp[i]+x_srt);
+	            cent_y.push_back(cent_y_nowp[i]+y_srt);
+	        }
+	    }
 
 		connected = 0;
 		weight = gc_to_in_wt;		
