@@ -871,15 +871,15 @@ public:
 		// low weight centroids
 		if (false) {
 			vector<int> cent_j_loww;
-			// vector<int> cent_x_loww{6,   6,  14, -14};
-			// vector<int> cent_y_loww{12, -12,  0,   0};
-			vector<int> cent_x_loww{6, -6};
-			vector<int> cent_y_loww{-12, 12};
+			vector<int> cent_x_loww{-6,   6,  14, -14};
+			vector<int> cent_y_loww{12, -12,  0,   0};
+			// vector<int> cent_x_loww{6, -6};
+			// vector<int> cent_y_loww{-12, 12};
 			GetINConns(i, this->x_size, this->layer_size_in, this->conn_dist, this->conn_offset, 
 				&cent_x_loww, &cent_y_loww, &cent_j_loww);
 			for (int i2 = 0; i2 < cent_x.size(); i2++) {
 				if (j_sft == cent_j_loww[i2]) {connected = 1;}
-				weight = gc_to_in_wt*0.8746922984;;//*0.3650494369;//*.5;//*0.3650494369;
+				weight = gc_to_in_wt;//*0.73;//*0.8746922984;;//*0.3650494369;//*.5;//*0.3650494369;
 				if (j_sft == cent_j_loww[i2] && i == 0) {printf("low w i:%d j_sft:%d c_x:%d c_y:%d pd:%f cent_count:%d\n",i,j_sft,cent_x_loww[i2],cent_y_loww[i2],get_pd(i,x_size),cent_x_loww.size());}
 			}
 		}

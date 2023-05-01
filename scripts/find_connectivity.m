@@ -13,5 +13,6 @@ end
 min_conn=min(ind_conn);
 max_conn=max(ind_conn);
 avg_conn=mean(ind_conn);
+std_conn=std(ind_conn);
 
-fprintf("avg:%.2f%% min:%.2f%% max:%.2f%%\n",avg_conn/length(weights)*100,min_conn/length(weights)*100,max_conn/length(weights)*100);
+fprintf("avg:%.2f%% min:%.2f%% max:%.2f%% std:%.2f%%\n",avg_conn/length(weights)*100,min_conn/length(weights)*100,max_conn/length(weights)*100,std_conn/length(weights)*100);
