@@ -855,7 +855,7 @@ public:
 	    }
 
 		connected = 0;
-		weight = gc_to_in_wt*0.8746922984;		
+		weight = gc_to_in_wt;//*0.8746922984;		
 		j_sft = (j * this->conn_dist) + this->conn_offset;
 		for (int i2 = 0; i2 < cent_x.size(); i2++) {
 			//cent_j_wrap = wrap_around(cent_j[i2],this->layer_size_in);

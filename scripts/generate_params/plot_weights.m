@@ -34,8 +34,8 @@ if selection == weights_type(1)
 %     cent_y=[0, -12, 12, 12, -12,  0,   0, 12];
 %     cent_x=[0, -7,  7, -7, 7];
 %     cent_y=[0, -12, 12, 12, -12];
-    cent_x=[0, -8,  8,   6,  -6];
-    cent_y=[0, -12, 12, -12, 12];
+    cent_x=[0, -8,  8,   6,  -6, 14, -14];
+    cent_y=[0, -12, 12, -12, 12, 0, 0];
 %     cent_x_nowp=[0, 14, -14]; % centroid with no wrapping
 %     cent_y_nowp=[-24, -24, -24];
 %     cent_x_nowp=[-8,   8]; % centroid with no wrapping
