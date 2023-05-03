@@ -47,6 +47,8 @@ scripts/generate_weights/synapse_weights.cpp
 scripts/generate_weights/synapse_weights.csv
 scripts/generate_params/*.cpp
 scripts/generate_params/*.csv
+scripts/generate_params/*.jpg
+scripts/generate_params/*.png
 scripts/*.jpg
 scripts/*.png
 scripts/gridscore/*.jpg

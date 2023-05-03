@@ -123,6 +123,10 @@ struct P {
 	int conn_dist = 3; // distance between neurons in connections
 	double lowval_thresh = 0.001;//0.002; // cut off threshold for low weight center-surround synaptic connections.
 	double syn_wgt_shift = -0.012*(1/(11.76*0.8)); // synaptic weight shift for center-surround connections.
+	int x_srt = 5; // offset for starting position of center-surround centroid in target layer size compared to full layer size
+	int y_srt = 5;
+	int use_nowp = 0; // select to use some non-wrapping centroids
+	int use_loww = 0; // select to use some low-weight centroids
 
 	// speed
 	bool auto_speed_control = 1; // automatically adjust parameters to match speed selected
@@ -181,4 +185,49 @@ struct P {
 	vector<int> locations_visited; // locations an animal visited
 	double animal_location[x_size*y_size]; // location of animal
 	double animal_location_all[x_size*y_size]; // location of animal
+
+	// center-surround centroid positions
+    // centroid (center of pixels) positions for each center-surround distribution (ring) via interneuron connections
+	// vector<int> cent_x{0}; 
+	// vector<int> cent_y{0};
+	// vector<int> cent_x{0, -8, 8}; 
+	// vector<int> cent_y{0, -12, 12};
+	// vector<int> cent_x{0, 6, 6}; 
+	// vector<int> cent_y{0, -12, 12};
+	// vector<int> cent_x{0, -13, 2}; 
+	// vector<int> cent_y{0, -16, 7};
+	// vector<int> cent_x{0, -8,   6,   6, 14, 36, -14};
+	// vector<int> cent_y{0, -12, 12, -12,  0, 11,   0};
+	// vector<int> cent_x{0, -8,   6,   6, 14, 36, -14, 8};
+	// vector<int> cent_y{0, -12, 12, -12,  0, 11,   0, 12};
+	// vector<int> cent_x{0, -8,   6,   6, 14, 36, -14, 8, -20};
+	// vector<int> cent_y{0, -12, 12, -12,  0, 11,   0, 12, -12};
+	// vector<int> cent_x{0, -8,   6,   6, 14, 36, -14, 8, 0, 14, -14};
+	// vector<int> cent_y{0, -12, 12, -12,  0, 11,   0, 12,-24,-24,-24};
+	// vector<int> cent_x{0, -8,  8, 6,   6,  14, -14};
+	// vector<int> cent_y{0, -12, 12, 12, -12,  0,   0};
+	// vector<int> cent_x{0, -8,  8, 6,   6};
+	// vector<int> cent_y{0, -12, 12, 12, -12};
+	// vector<int> cent_x{0, -8,  8, 14, -14};
+	// vector<int> cent_y{0, -12, 12, 0,    0};
+	// vector<int> cent_x{0, -8,  8,    6, -6, -14, 14};
+	// vector<int> cent_y{0, -12, 12, -12, 12,   0,  0};
+	// vector<int> cent_x{0, -8,  8,    6, -6, -14, 14, -22, 22};
+	// vector<int> cent_y{0, -12, 12, -12, 12,   0,  0, -12, 12};
+	// vector<int> cent_x{0,  -8,  8,   6, -6, 14, -14, -22, -22,  22, 22};
+	// vector<int> cent_y{0, -12, 12, -12, 12,  0,   0, -12,  12, -12, 12};
+	vector<int> cent_x{0,  -8,  8,   6, -6, 14, -14, -22, -22,  22, 22, -28, 28};
+	vector<int> cent_y{0, -12, 12, -12, 12,  0,   0, -12,  12, -12, 12,   0,  0};
+
+	// centroids with no wrapping
+	// vector<int> cent_x_nowp{0,    14, -14}; 
+	// vector<int> cent_y_nowp{-24, -24, -24};
+	// vector<int> cent_x_nowp{6,   6,  14, -14};
+	// vector<int> cent_y_nowp{12, -12,  0,   0};
+	vector<int> cent_x_nowp{-8,  -8,  14, -14, 28, -28, 20,  20, 34, 34};
+	vector<int> cent_y_nowp{12, -12,  0,   0,  0,   0, 12, -12, 12, -12};
+
+	// low weight centroids
+	vector<int> cent_x_loww{-6,   6,  14, -14};
+	vector<int> cent_y_loww{12, -12,  0,   0};
 };

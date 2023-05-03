@@ -651,23 +651,20 @@ public:
 };
 
 void GetINConns(int grc_i, int x_size, int layer_size, int conn_dist, int conn_offset, 
-	vector<int> *cent_x, vector<int> *cent_y, vector<int> *cent_j) {
+	vector<int> *cent_x, vector<int> *cent_y, vector<int> *cent_j, int x_srt, int y_srt) {
 	// Return which INs should be connected given a GrC index in its neural layer
 
-	double grc_pd;
-	int cent_j_entry, cent_size;
+	int cent_j_entry, cent_size, new_x, new_y, new_i, entry_x, entry_y;
 	int x_size_in = sqrt(layer_size);
-	int new_x, new_y, new_i, entry_x, entry_y;
-	int x_srt = 5;//7; // starting position for x
-	int y_srt = 5;//7;
-
-	// find pd for gc_i in x_size
-	grc_pd = get_pd(grc_i, x_size);
+	double grc_pd = get_pd(grc_i, x_size); // find pd for gc_i in x_size
 
 	// adjust for positioning in combined IN layer (all IN layers combined)
+	// also adjust for starting positions (e.g., x_srt) aligning rings with target layer size.
+	int grc_x = grc_i % x_size;
+	int grc_y = grc_i / x_size;
 	for (int i = 0; i < cent_x->size(); i++) {
-		cent_x->at(i) = cent_x->at(i) + x_srt;
-		cent_y->at(i) = cent_y->at(i) + y_srt;
+		cent_x->at(i) = cent_x->at(i) + x_srt + grc_x;
+		cent_y->at(i) = cent_y->at(i) + y_srt + grc_y;
 	}
 
 	// based on pd, adjust which interneuron indices are selected
@@ -678,15 +675,6 @@ void GetINConns(int grc_i, int x_size, int layer_size, int conn_dist, int conn_o
 		else if (grc_pd == 270) {cent_x->at(i) = cent_x->at(i) - 2;}
 	}
 
-	// find j indices
-	int grc_x = grc_i % x_size;
-	int grc_y = grc_i / x_size;
-	for (int i = 0; i < cent_x->size(); i++) {
-		// add original indices to shifted indices
-		cent_x->at(i) = cent_x->at(i) + grc_x;
-		cent_y->at(i) = cent_y->at(i) + grc_y;
-	}
-
 	// generate additional center-surround rings for wrap around neural layer effect
 	cent_size=(int) cent_x->size(); // save size before number of entries are expanded
 	for (int i = 0; i < cent_size; i++) {
@@ -694,13 +682,9 @@ void GetINConns(int grc_i, int x_size, int layer_size, int conn_dist, int conn_o
 			for (int k = 0; k < 9; k++) {
 				new_x=cent_x->at(i)+((-x_size*2)+(x_size*k));
 				new_y=cent_y->at(i)+((-x_size*2)+(x_size*j));
-				//if (new_i>=0 && new_i<layer_size && (j!=1&&k!=1)) { // check within layer indices. also avoid duplicating original centroid point
 				if (cent_x->at(i) == new_x && cent_y->at(i) == new_y) {/*skip original centroid location*/}
-				else if (new_x>=0 && new_x<x_size_in &&
-				    new_y>=0 && new_y<x_size_in) {
-					//new_i=((cent_y->at(i)+(-x_size+(x_size*j)))*x_size_in)+cent_x->at(i)+(-x_size+(x_size*k));
-					//entry_x=new_i%x_size_in;
-					//entry_y=new_i/x_size_in;
+				else if (new_x>=0 && new_x<x_size_in 
+				     &&  new_y>=0 && new_y<x_size_in) {
 					cent_x->push_back(new_x);
 					cent_y->push_back(new_y);
 				}
@@ -716,82 +700,14 @@ void GetINConns(int grc_i, int x_size, int layer_size, int conn_dist, int conn_o
 	}
 }
 
-void GetINConnsFull(int grc_i, int x_size, int layer_size, int conn_dist, int conn_offset, 
-	vector<int> *cent_x, vector<int> *cent_y, vector<int> *cent_j) {
-	// Return which INs should be connected given a GrC index in its neural layer
-
-    int x_sft = 62;//60;//58;
-    int y_sft = 59;//60;//58;
-    int x_srt = -x_sft+7;
-    int y_srt = -y_sft+7;
-    double ring_size=14;
-    double tiling_scale=1.7;//1.45;//1.4;
-    double spacing_scale=0.333;
-    int x_tiles=20;//16;
-    int y_tiles=20;//16;
-    int x_size_in = sqrt(layer_size);
-    int new_x, new_y;
-    double grc_pd;
-	int cent_j_entry;
-
-	// find j indices
-	int grc_x = grc_i % x_size;
-	int grc_y = grc_i / x_size;
-	// add original indices to shifted indices
-	x_srt = x_srt + grc_x;
-	y_srt = y_srt + grc_y;
-
-    for (int i = 0; i < y_tiles; i++) {
-    	for (int j = 0; j < x_tiles; j++) {
-            new_x=(int) floor((double) i*(ring_size*tiling_scale*spacing_scale));
-            new_y=(int) floor((double) j*(ring_size*tiling_scale));
-            if (i % 2 == 0) {new_y = (int) floor((double) new_y - ((ring_size*tiling_scale)/2));}
-            if (new_x>0 && new_x<=x_size_in && new_y>0 && new_y<=x_size_in) {
-            	cent_x->push_back(new_x);
-            	cent_y->push_back(new_y);
-            }
-		}
-    }
-
-	// find pd for gc_i in x_size
-	grc_pd = get_pd(grc_i, x_size);
-
-	// based on pd, adjust which interneuron indices are selected
-	for (int i = 0; i < cent_x->size(); i++) {
-		if 		(grc_pd == 0) 	{cent_y->at(i) = cent_y->at(i) - 2;}
-		else if (grc_pd == 90) 	{cent_x->at(i) = cent_x->at(i) + 2;}
-		else if (grc_pd == 180) {cent_y->at(i) = cent_y->at(i) + 2;}
-		else if (grc_pd == 270) {cent_x->at(i) = cent_x->at(i) - 2;}
-	}
-
-	// find cent_i
-	for (int i = 0; i < cent_x->size(); i++) {
-		cent_j_entry = (cent_y->at(i) * x_size_in) + cent_x->at(i);
-		cent_j_entry = wrap_around(cent_j_entry, layer_size);
-		cent_j->push_back(cent_j_entry);
-	}
-}
-
 class SomeToSomeConnection : public ConnectionGenerator {
 public:
-    vector<vector<double>> weights_in;
-    double mex_hat_multi;
     int conn_offset, conn_dist;
-    float gc_to_in_wt;
-    int x_size, y_size, layer_size_in;
-    //vector<int> grc_to_in_conns;
-    ofstream in_conns_file;
+    struct P *p;
     SomeToSomeConnection(P *p) {
-    	this->weights_in = p->weights_in; // set matrix
-    	this->mex_hat_multi = p->mex_hat_multi;
     	this->conn_offset = p->conn_offset;
     	this->conn_dist = p->conn_dist;
-    	this->gc_to_in_wt = p->gc_to_in_wt;
-    	this->x_size = p->x_size;
-    	this->y_size = p->y_size;
-    	this->layer_size_in = p->layer_size_in;
-    	//this->grc_to_in_conns = p->grc_to_in_conns;
-    	//this->in_conns_file = p->in_conns_file;
+    	this->p = p;
     }
     ~SomeToSomeConnection() {}
  
@@ -799,94 +715,46 @@ public:
     // note that weight, maxWt, delay, and connected are passed by reference
     void connect(CARLsim* sim, int srcGrp, int i, int destGrp, int j, float& weight, float& maxWt,
             float& delay, bool& connected) {
-    	bool use_nowp = 0; // select to use some non-wrapping centroids
-    	int j_sft, cent_j_wrap;
-		// vector<int> cent_x_nowp{0,    14, -14}; // centroid with no wrapping
-		// vector<int> cent_y_nowp{-24, -24, -24};
-		// vector<int> cent_x_nowp{6,   6,  14, -14};
-		// vector<int> cent_y_nowp{12, -12,  0,   0};
-		vector<int> cent_x_nowp{-8,  -8,  14, -14, 28, -28, 20,  20, 34, 34};
-		vector<int> cent_y_nowp{12, -12,  0,   0,  0,   0, 12, -12, 12, -12};
-    	vector<int> cent_j;
-	    int x_srt = 5;//7;
-	    int y_srt = 5;//7;
-	    // centroid (center of pixels) positions for each center-surround distribution (ring) via interneuron connections
-		// vector<int> cent_x{0}; 
-		// vector<int> cent_y{0};
-		// vector<int> cent_x{0, -8, 8}; 
-		// vector<int> cent_y{0, -12, 12};
-		// vector<int> cent_x{0, 6, 6}; 
-		// vector<int> cent_y{0, -12, 12};
-		// vector<int> cent_x{0, -13, 2}; 
-		// vector<int> cent_y{0, -16, 7};
-		// vector<int> cent_x{0, -8,   6,   6, 14, 36, -14};
-		// vector<int> cent_y{0, -12, 12, -12,  0, 11,   0};
-		// vector<int> cent_x{0, -8,   6,   6, 14, 36, -14, 8};
-		// vector<int> cent_y{0, -12, 12, -12,  0, 11,   0, 12};
-		// vector<int> cent_x{0, -8,   6,   6, 14, 36, -14, 8, -20};
-		// vector<int> cent_y{0, -12, 12, -12,  0, 11,   0, 12, -12};
-		// vector<int> cent_x{0, -8,   6,   6, 14, 36, -14, 8, 0, 14, -14};
-		// vector<int> cent_y{0, -12, 12, -12,  0, 11,   0, 12,-24,-24,-24};
-		// vector<int> cent_x{0, -8,  8, 6,   6,  14, -14};
-		// vector<int> cent_y{0, -12, 12, 12, -12,  0,   0};
-		// vector<int> cent_x{0, -8,  8, 6,   6};
-		// vector<int> cent_y{0, -12, 12, 12, -12};
-		// vector<int> cent_x{0, -8,  8, 14, -14};
-		// vector<int> cent_y{0, -12, 12, 0,    0};
-		// vector<int> cent_x{0, -8,  8,    6, -6, -14, 14};
-		// vector<int> cent_y{0, -12, 12, -12, 12,   0,  0};
-		// vector<int> cent_x{0, -8,  8,    6, -6, -14, 14, -22, 22};
-		// vector<int> cent_y{0, -12, 12, -12, 12,   0,  0, -12, 12};
-		// vector<int> cent_x{0,  -8,  8,   6, -6, 14, -14, -22, -22,  22, 22};
-		// vector<int> cent_y{0, -12, 12, -12, 12,  0,   0, -12,  12, -12, 12};
-		vector<int> cent_x{0,  -8,  8,   6, -6, 14, -14, -22, -22,  22, 22, -28, 28};
-		vector<int> cent_y{0, -12, 12, -12, 12,  0,   0, -12,  12, -12, 12,   0,  0};
-		GetINConns(i, this->x_size, this->layer_size_in, this->conn_dist, this->conn_offset, 
-			&cent_x, &cent_y, &cent_j);
+		maxWt = 10000.0f; delay = 1; connected = 0;
+		weight = p->gc_to_in_wt; int j_sft, cent_j_wrap;
+    	vector<int> cent_x, cent_y, cent_j;
 
-		// vector<int> cent_x;
-		// vector<int> cent_y;
-		// GetINConnsFull(i, this->x_size, this->layer_size_in, this->conn_dist, this->conn_offset, 
-		// 	&cent_x, &cent_y, &cent_j);
+    	// create local copy of centroids arrays that will be expanded depending on grc_i
+    	cent_x = p->cent_x; cent_y = p->cent_y;
 
-		// add centroids with no wrapping
-	    if (use_nowp == 1) {
-	        for (int i2 = 0; i2 < cent_x_nowp.size(); i2++) {
-	        	if (cent_x_nowp[i]+x_srt>0 && cent_x_nowp[i]+x_srt<sqrt(this->layer_size_in)
-	        	&&  cent_y_nowp[i]+y_srt>0 && cent_y_nowp[i]+y_srt<sqrt(this->layer_size_in)) {
-		            cent_x.push_back(cent_x_nowp[i]+x_srt);
-		            cent_y.push_back(cent_y_nowp[i]+y_srt);
+    	// add more centroids for center-surround ring wrap around effect
+		GetINConns(i, p->x_size, p->layer_size_in, this->conn_dist, this->conn_offset, 
+			&cent_x, &cent_y, &cent_j, p->x_srt, p->y_srt);
+
+		// add centroids with no wrap around effect
+	    if (p->use_nowp == 1) {
+	    	vector<int> cent_x_nowp = p->cent_x_nowp; vector<int> cent_y_nowp = p->cent_y_nowp;
+	    	for (int i2 = 0; i2 < cent_x_nowp.size(); i2++) {
+	        	if (cent_x_nowp[i]+p->x_srt>0 && cent_x_nowp[i]+p->x_srt<sqrt(p->layer_size_in)
+	        	&&  cent_y_nowp[i]+p->y_srt>0 && cent_y_nowp[i]+p->y_srt<sqrt(p->layer_size_in)) {
+		            cent_x.push_back(cent_x_nowp[i]+p->x_srt);
+		            cent_y.push_back(cent_y_nowp[i]+p->y_srt);
 	        	}
 	        }
 	    }
-
-		connected = 0;
-		weight = gc_to_in_wt;//*0.8746922984;		
+		
+		// select connections
 		j_sft = (j * this->conn_dist) + this->conn_offset;
 		for (int i2 = 0; i2 < cent_x.size(); i2++) {
-			//cent_j_wrap = wrap_around(cent_j[i2],this->layer_size_in);
 			if (j_sft == cent_j[i2]) {connected = 1;}
-			//if (j_sft == cent_j_wrap) {connected = 1;}
-			if (j_sft == cent_j[i2] && i == 0) {printf("i:%d j_sft:%d c_x:%d c_y:%d pd:%f cent_count:%d\n",i,j_sft,cent_x[i2],cent_y[i2],get_pd(i,x_size),cent_x.size());}
+			if (j_sft == cent_j[i2] && i == 0) {printf("i:%d j_sft:%d c_x:%d c_y:%d pd:%f cent_count:%d\n",i,j_sft,cent_x[i2],cent_y[i2],get_pd(i,p->x_size),cent_x.size());}
 		}
-        maxWt = 10000.0f;
-        delay = 1; 
-        // report centroid counts
-		//if(j_sft==0) {printf("%d,",cent_x.size());}
 
-		// low weight centroids
-		if (false) {
+		// add low weight centroids
+		if (p->use_loww == 1) {
 			vector<int> cent_j_loww;
-			vector<int> cent_x_loww{-6,   6,  14, -14};
-			vector<int> cent_y_loww{12, -12,  0,   0};
-			// vector<int> cent_x_loww{6, -6};
-			// vector<int> cent_y_loww{-12, 12};
-			GetINConns(i, this->x_size, this->layer_size_in, this->conn_dist, this->conn_offset, 
-				&cent_x_loww, &cent_y_loww, &cent_j_loww);
+			vector<int> cent_x_loww = p->cent_x_loww; vector<int> cent_y_loww = p->cent_y_loww;
+			GetINConns(i, p->x_size, p->layer_size_in, this->conn_dist, this->conn_offset, 
+				&cent_x_loww, &cent_y_loww, &cent_j_loww, p->x_srt, p->y_srt);
 			for (int i2 = 0; i2 < cent_x.size(); i2++) {
 				if (j_sft == cent_j_loww[i2]) {connected = 1;}
-				weight = gc_to_in_wt;//*0.73;//*0.8746922984;;//*0.3650494369;//*.5;//*0.3650494369;
-				if (j_sft == cent_j_loww[i2] && i == 0) {printf("low w i:%d j_sft:%d c_x:%d c_y:%d pd:%f cent_count:%d\n",i,j_sft,cent_x_loww[i2],cent_y_loww[i2],get_pd(i,x_size),cent_x_loww.size());}
+				weight = p->gc_to_in_wt*0.73;//*0.8746922984;;//*0.3650494369;//*.5;//*0.3650494369;
+				if (j_sft == cent_j_loww[i2] && i == 0) {printf("low w i:%d j_sft:%d c_x:%d c_y:%d pd:%f cent_count:%d\n",i,j_sft,cent_x_loww[i2],cent_y_loww[i2],get_pd(i,p->x_size),cent_x_loww.size());}
 			}
 		}
     }
