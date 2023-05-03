@@ -2,8 +2,11 @@
 
 thresh=.001;%.002;
 
-weights=readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_1/scripts/generate_params/synapse_weights.csv');
+%weights=readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_1/scripts/generate_params/synapse_weights.csv');
+weights=readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_1/data/synapse_weights.csv');
 %tot_conn=find(weights>=.thresh);
+
+grc_layer=size(weights,2);
 
 ind_conn=[];
 for i=1:length(weights)
@@ -15,4 +18,4 @@ max_conn=max(ind_conn);
 avg_conn=mean(ind_conn);
 std_conn=std(ind_conn);
 
-fprintf("avg:%.2f%% min:%.2f%% max:%.2f%% std:%.2f%%\n",avg_conn/length(weights)*100,min_conn/length(weights)*100,max_conn/length(weights)*100,std_conn/length(weights)*100);
+fprintf("avg:%.2f%% min:%.2f%% max:%.2f%% std:%.2f%%\n",avg_conn/grc_layer*100,min_conn/grc_layer*100,max_conn/grc_layer*100,std_conn/grc_layer*100);

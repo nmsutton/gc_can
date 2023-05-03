@@ -217,10 +217,10 @@ void run_path_onlypos(vector<double> *moves, vector<double> *speeds, vector<int>
 
 void move_straight(CARLsim* sim, P* p) {
 	// straight line path
-	double angle = 90;//90;//225;//135;//90;//315;//135;//225;//45;//90;//45;//33.75;
+	double angle = 90;//90;//90;//225;//135;//90;//315;//135;//225;//45;//90;//45;//33.75;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(5,p);
+		control_speed(18,p);
 		EISignal(angle, sim, p);
 	}
 }

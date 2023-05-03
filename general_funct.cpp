@@ -833,8 +833,14 @@ public:
 		// vector<int> cent_y{0, -12, 12, 12, -12};
 		// vector<int> cent_x{0, -8,  8, 14, -14};
 		// vector<int> cent_y{0, -12, 12, 0,    0};
-		vector<int> cent_x{0, -8,  8,    6, -6, -14, 14};
-		vector<int> cent_y{0, -12, 12, -12, 12,   0,  0};
+		// vector<int> cent_x{0, -8,  8,    6, -6, -14, 14};
+		// vector<int> cent_y{0, -12, 12, -12, 12,   0,  0};
+		// vector<int> cent_x{0, -8,  8,    6, -6, -14, 14, -22, 22};
+		// vector<int> cent_y{0, -12, 12, -12, 12,   0,  0, -12, 12};
+		// vector<int> cent_x{0,  -8,  8,   6, -6, 14, -14, -22, -22,  22, 22};
+		// vector<int> cent_y{0, -12, 12, -12, 12,  0,   0, -12,  12, -12, 12};
+		vector<int> cent_x{0,  -8,  8,   6, -6, 14, -14, -22, -22,  22, 22, -28, 28};
+		vector<int> cent_y{0, -12, 12, -12, 12,  0,   0, -12,  12, -12, 12,   0,  0};
 		GetINConns(i, this->x_size, this->layer_size_in, this->conn_dist, this->conn_offset, 
 			&cent_x, &cent_y, &cent_j);
 

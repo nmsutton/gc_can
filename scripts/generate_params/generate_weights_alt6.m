@@ -21,8 +21,8 @@ total_nrns = grid_size_ref^2;%(grid_size_target^2);%35;%(grid_size^2);% total ne
 if show_2d_plot total_nrns = 3; end
 grid_size = grid_size_ref*3;%90;
 iter = 13; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
-start_x_shift = (grid_size/2) - 24;%19;%26;%6;%26;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%28; -2 = 2 down
-start_y_shift = (grid_size/2) - 24;%19;%26;%6;%26;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%-4;%28; +2 = 2 left
+start_x_shift = (grid_size/2) - 24;%5;%24;%19;%26;%6;%26;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%28; -2 = 2 down
+start_y_shift = (grid_size/2) - 24;%5;%24;%19;%26;%6;%26;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%-4;%28; +2 = 2 left
 highval = 0.00681312463724531;
 highval_thres = 0.004;
 filter_highval = 1;%1; % filter values to convert into high val.
