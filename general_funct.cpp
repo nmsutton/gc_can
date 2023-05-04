@@ -743,6 +743,7 @@ public:
 		for (int i2 = 0; i2 < cent_x.size(); i2++) {
 			if (j_sft == cent_j[i2]) {connected = 1;}
 			if (j_sft == cent_j[i2] && i == 0) {printf("i:%d j_sft:%d c_x:%d c_y:%d pd:%f cent_count:%d\n",i,j_sft,cent_x[i2],cent_y[i2],get_pd(i,p->x_size),cent_x.size());}
+			if (p->print_in_conn_stats == 1 && j_sft == cent_j[i2]) {p->in_conns.at(i)=p->in_conns.at(i)+1.0;}
 		}
 
 		// add low weight centroids
@@ -923,3 +924,17 @@ void ParseCentSurrCSV(string filepath, vector<vector<double>> *cent_surr)
 	if(!data.is_open()) {cout << "Failed to open file" << endl;}
 	while(getline(data,line)) {cent_surr->push_back(SplitStr(line));}
 };
+
+void get_stats(vector<double> values, vector<double> * stats) {
+	double sum = 0.0, std_temp = 0.0, mean, std, min = values[0], max = min;
+
+	for (int i = 0; i < values.size(); i++) {sum += values[i];}
+	mean = sum / (double) values.size();
+	for (int i = 0; i < values.size(); i++) {
+		std_temp += pow(values[i] - mean, 2);
+		if (values[i] < min) {min = values[i];}
+		if (values[i] > max) {max = values[i];}
+	}
+	std = sqrt(std_temp/(double)values.size());
+	stats->push_back(mean);stats->push_back(std);stats->push_back(min);stats->push_back(max);
+}

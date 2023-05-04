@@ -114,6 +114,7 @@ int main() {
 		p.locations_visited.push_back(0);
 		p.locations_sortind.push_back(0);
 		p.locations_amounts.push_back(0);
+		p.in_conns.push_back(0);
 	}
 	#if hopper_run
 		#if import_animal_data
@@ -142,6 +143,12 @@ int main() {
 	if (p.record_in_spikes_file && p.move_animal_onlypos==0) {p.in_spikes_output_file.open(p.in_spikes_output_filepath);}
 	if (p.record_highrestraj) {p.highres_pos_x_file.open(p.highres_pos_x_filepath);}
 	if (p.record_highrestraj) {p.highres_pos_y_file.open(p.highres_pos_y_filepath);}
+
+	if (p.print_in_conn_stats) {
+		vector<double> stats;
+		get_stats(p.in_conns, &stats);
+	    printf("GrC->IN Connections: avg=%02f std=%02f min=%02f max=%02f\n\n",stats[0],stats[1],stats[2],stats[3]);
+	}
 
 	// ---------------- RUN STATE -------------------
 	SMexc->startRecording();
