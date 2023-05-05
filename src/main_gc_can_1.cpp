@@ -114,8 +114,9 @@ int main() {
 		p.locations_visited.push_back(0);
 		p.locations_sortind.push_back(0);
 		p.locations_amounts.push_back(0);
-		p.in_conns.push_back(0);
+		if (p.print_conn_stats) {p.in_conns.push_back(0);}
 	}
+	if (p.print_conn_stats) {for (int i = 0; i < p.layer_size_in; i++) {p.gc_conns.push_back(0);}}
 	#if hopper_run
 		#if import_animal_data
 			vector<double> anim_angles = ParseCSV(p.anim_angles_csv);
@@ -144,10 +145,12 @@ int main() {
 	if (p.record_highrestraj) {p.highres_pos_x_file.open(p.highres_pos_x_filepath);}
 	if (p.record_highrestraj) {p.highres_pos_y_file.open(p.highres_pos_y_filepath);}
 
-	if (p.print_in_conn_stats) {
-		vector<double> stats;
-		get_stats(p.in_conns, &stats);
-	    printf("GrC->IN Connections: avg=%02f std=%02f min=%02f max=%02f\n\n",stats[0],stats[1],stats[2],stats[3]);
+	if (p.print_conn_stats) {
+		vector<double> in_stats, gc_stats;
+		get_stats(p.in_conns, &in_stats);
+		get_stats(p.gc_conns, &gc_stats);
+	    printf("GrC->IN Connections: avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n\n",in_stats[0],in_stats[1],in_stats[2],in_stats[3],in_stats[4],in_stats[5],in_stats[6]);
+	    printf("IN->GrC Connections: avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n\n",gc_stats[0],gc_stats[1],gc_stats[2],gc_stats[3],gc_stats[4],gc_stats[5],gc_stats[6]);
 	}
 
 	// ---------------- RUN STATE -------------------

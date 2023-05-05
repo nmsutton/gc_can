@@ -23,10 +23,13 @@ grid_size = grid_size_ref*3;%90;
 iter = 13; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
 start_x_shift = (grid_size/2) - 24;%5;%24;%19;%26;%6;%26;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%28; -2 = 2 down
 start_y_shift = (grid_size/2) - 24;%5;%24;%19;%26;%6;%26;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%-4;%28; +2 = 2 left
-highval = 0.00681312463724531;
-highval_thres = 0.004;
-filter_highval = 1;%1; % filter values to convert into high val.
 rescale_weights = 1; % rescale weights to match highval
+shift_down = 1; % apply subtraction to all weight values to shift them down
+filter_lowval = 1; % avoid creating weights below this value
+highval = 0.00681312463724531;
+syn_wgt_shift = 0.001275510204;
+lowval_thres = 0.0;%0.001;
+conversion_mult = 114.7*1.574395603;
 r_s=1; % ring scale
 p1=.68;%20;%20;%.68;
 p2=2;p3=2;
@@ -53,7 +56,7 @@ Rz = [cos(a) -sin(a) 0; sin(a) cos(a) 0; 0 0 1]; % rotate along Z axis. See refe
 
 % plot
 if show_3d_plot
-	synapse_weights = nrn_syn_wts(start_x_shift,start_y_shift,filter_highval,highval,highval_thres,p,po);
+	synapse_weights = nrn_syn_wts(start_x_shift,start_y_shift,highval,p,po);
 	%[synapse_weights2, synapse_weights3]=rotate_weights(po,Rz,synapse_weights);
 	synapse_weights2=reshape(synapse_weights,grid_size,grid_size);
 	[X,Y] = meshgrid(1:1:grid_size_target);
@@ -66,7 +69,7 @@ end
 
 % write to file and create matrix
 if write_to_csv || write_to_cpp
-	synapse_weights=nrn_syn_wts(start_x_shift,start_y_shift,filter_highval,highval,highval_thres,p,po);
+	synapse_weights=nrn_syn_wts(start_x_shift,start_y_shift,highval,p,po);
 	for i=0:(total_nrns-1)
 		synapse_weights2=reshape(synapse_weights,grid_size,grid_size);
 		synapse_weights3=shift_weights(po,i,synapse_weights2);
@@ -79,8 +82,15 @@ if write_to_csv || write_to_cpp
 	end
 	if rescale_weights == 1
 		weight_scale = highval/max(max(comb_syn_wts)); % difference between target highval and original matrix highval
-		comb_syn_wts = comb_syn_wts * weight_scale;
-	end
+		comb_syn_wts = comb_syn_wts * weight_scale; % multiplier scale
+        if shift_down == 1
+            comb_syn_wts = comb_syn_wts - syn_wgt_shift; % subtraction shift
+        end
+        if filter_lowval == 1
+            comb_syn_wts(find(comb_syn_wts<lowval_thres))=0; % non-negative rectifier
+        end
+        comb_syn_wts = comb_syn_wts * conversion_mult; % conversion for g constant
+    end
 	disp("writing to file");
 	if output_cpp fprintf(output_cpp,'static const vector<vector<double>> mex_hat{{'); end
 	for i=0:(total_nrns-1)
@@ -168,7 +178,7 @@ function synapse_weights4=crop_weights(po,synapse_weights3)
     end
 end
 
-function synapse_weights=nrn_syn_wts(x_shift,y_shift,filter_highval,highval,highval_thres,p,po,synapse_weights);
+function synapse_weights=nrn_syn_wts(x_shift,y_shift,highval,p,po,synapse_weights);
 	% generate all synapse weights for one neuron
 
    	grid_size=po(5);iter=po(6);synapse_weights=[];
@@ -177,7 +187,7 @@ function synapse_weights=nrn_syn_wts(x_shift,y_shift,filter_highval,highval,high
 			z=0;
 			for i=0:(iter-1)
 				for j=0:(iter-1)
-					z=z+cent_surr(x,y,x_shift,y_shift,filter_highval,highval,highval_thres,p);
+					z=z+cent_surr(x,y,x_shift,y_shift,highval,p);
 				end
 			end
 			synapse_weights = [synapse_weights,z];
@@ -185,7 +195,7 @@ function synapse_weights=nrn_syn_wts(x_shift,y_shift,filter_highval,highval,high
 	end	
 end
 
-function z=cent_surr(x,y,x_shift,y_shift,filter_highval,highval,highval_thres,p)
+function z=cent_surr(x,y,x_shift,y_shift,highval,p)
 	% center-surround function
 	x=(x-x_shift);
 	y=(y-y_shift);

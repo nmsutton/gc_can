@@ -6,7 +6,7 @@
 sample_matrix = 0;
 write_to_csv = 1; % needed for running on supercomputer
 write_to_cpp = 0; % alternative file for running locally (not supercomputer)
-show_2d_plot = 1;
+show_2d_plot = 0;
 show_3d_plot = 0;
 
 % params
@@ -15,17 +15,21 @@ cpp_filename = "synapse_weights.cpp";
 output_cpp = 0; output_csv = 0; % these are always init as 0
 if write_to_csv output_csv = fopen(csv_filename,'w'); end
 if write_to_cpp output_cpp = fopen(cpp_filename,'w'); end
-grid_size_ref = 60;%44; % reference grid size to position shift the center-surround distro for each neuron
+grid_size_ref = 50;%60;%44; % reference grid size to position shift the center-surround distro for each neuron
 grid_size_target = 40;%42;%40;%36;%42; % target grid size for neuron weights
-total_nrns = grid_size_target+((grid_size_ref-grid_size_target)/2)^2;%(grid_size_target^2);%35;%(grid_size^2);% total neurons
+total_nrns = grid_size_ref^2;%(grid_size_target^2);%35;%(grid_size^2);% total neurons
 if show_2d_plot total_nrns = 3; end
-grid_size = (grid_size_target+((grid_size_ref-grid_size_target)/2))*3;%90;
+grid_size = grid_size_ref*3;%90;
 iter = 13; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
-start_x_shift = (grid_size/2) - 21;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%28; -2 = 2 down
-start_y_shift = (grid_size/2) - 21;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%-4;%28; +2 = 2 left
+start_x_shift = (grid_size/2) - 24;%5;%24;%19;%26;%6;%26;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%28; -2 = 2 down
+start_y_shift = (grid_size/2) - 24;%5;%24;%19;%26;%6;%26;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%-4;%28; +2 = 2 left
 highval = 0.00681312463724531;
+syn_wgt_shift = 0.001275510204;
+shift_down = 1; % apply subtraction to all weight values to shift them down
 highval_thres = 0.004;
 filter_highval = 1;%1; % filter values to convert into high val.
+lowval_thres = 0.0;%0.001;
+filter_lowval = 1; % avoid creating weights below 
 rescale_weights = 1; % rescale weights to match highval
 r_s=1; % ring scale
 p1=.68;%20;%20;%.68;
@@ -35,7 +39,7 @@ p4=r_s*38*1.6;%200;%190;%160;%130;%90;%r_s*52;%35;%45;%52;%40;%70;%130;%38;%*2.5
 % center size
 p8=r_s*0.135;%230;%220;%190;%160;%70;%r_s*.135*1.02;%r_s*.135*1.07;%1;%.87;%.135*.9;%1;%.97;%.99;%.11;%.13;%.12;%.14;%.12;%.22;%.2;%.25;%.135; 
 % surround size
-p7=r_s*0.15;%.3;%0.15;%r_s*0.19;%0.18;%0.19;%0.183;%0.19;%0.2;%0.2;%*1.1*.97;%1.04;%1.05;%1.15;%1;%4;%.7;%.9;%.7;%0.174*1.4;%*2.4*(14/20);%1.4;%*.75;%0.15; 
+p7=r_s*0.15;%0.13;%0.15;%.3;%0.15;%r_s*0.19;%0.18;%0.19;%0.183;%0.19;%0.2;%0.2;%*1.1*.97;%1.04;%1.05;%1.15;%1;%4;%.7;%.9;%.7;%0.174*1.4;%*2.4*(14/20);%1.4;%*.75;%0.15; 
 % surround size
 p16=r_s*0.81;%0.3;%1.08*.95*r_s;%1.08*1.03;%1.03;%.95;%1;%.97;%.99;%0.81;%*1.1*.97;%1.04;%1.05;%1.15;%1;%4;%.7;%.9;%.7;%0.9396*1.4*.9;%*3*(14/20);%1.4;%*.75;%0.81; 
 p5=p3;p6=p4;p9=2;p10=2;p11=2;p12=p4;p13=p11;p14=p11;p15=p12;p17=0.0058;
@@ -79,7 +83,13 @@ if write_to_csv || write_to_cpp
 	end
 	if rescale_weights == 1
 		weight_scale = highval/max(max(comb_syn_wts)); % difference between target highval and original matrix highval
-		comb_syn_wts = comb_syn_wts * weight_scale;
+		comb_syn_wts = comb_syn_wts * weight_scale; % multiplier scale
+        if shift_down == 1
+            comb_syn_wts = comb_syn_wts - syn_wgt_shift; % subtraction shift
+        end
+        if filter_lowval == 1
+            comb_syn_wts(find(comb_syn_wts<0))=0; % non-negative rectifier
+        end
 	end
 	disp("writing to file");
 	if output_cpp fprintf(output_cpp,'static const vector<vector<double>> mex_hat{{'); end

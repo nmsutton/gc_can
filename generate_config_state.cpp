@@ -109,8 +109,6 @@ sim.connect(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, "one-to-one", p.dir
 ////
 float m1 = 0.370*0.8*7.63*.365;//0.5;//.365;//.5;//0.8746922984;//*0.5;//1.0;//0.6;//0.5;//0.6;//0.42;//1.1;//0.5;//0.366;//0.45;//0.6;//0.45;//0.366;//0.42;//;10;//0.42;//;//*3;//*0.42;//*1.320675526;//1;//1.89;//1.5;//1.2;//1;//1.2;
 float m1_slow = m1*0.6120576671;
-float m2 = 11.76*0.8*7.63;//*(0.005537614433/0.00681312463724531);//1;
-float m2_slow = m2*0.6120576671;
 p.conn_offset = 0;
 if (p.spin2in_active) {
     p.gc_to_in_wt = p.spdin2inwt;
@@ -130,7 +128,7 @@ sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, SomeToSomeConn, m1, m1_slow, SY
 //sim.connect(MEC_LII_Stellate, EC_LII_Axo_Axonic, "one-to-one", 1.0, 1.0f, 
 //            RangeDelay(1), RadiusRF(-1), SYN_FIXED, 33.082, 20.0f);
 MexHatConn = new MexHatConnection(&p);
-sim.connect(EC_LII_Axo_Axonic, MEC_LII_Stellate, MexHatConn, m2, m2_slow, SYN_FIXED); // 2 IN->GC one-to-many
+sim.connect(EC_LII_Axo_Axonic, MEC_LII_Stellate, MexHatConn, p.in_to_grc_g_fast, p.in_to_grc_g_slow, SYN_FIXED); // 2 IN->GC one-to-many
 ////
 p.conn_offset = 1;
 if (p.spin2in_active) {
@@ -149,7 +147,7 @@ p.gc_to_in_wt = gc2inwt;
 SomeToSomeConn = new SomeToSomeConnection(&p);
 sim.connect(MEC_LII_Stellate, MEC_LII_Basket, SomeToSomeConn, m1, m1_slow, SYN_FIXED);
 MexHatConn = new MexHatConnection(&p);
-sim.connect(MEC_LII_Basket, MEC_LII_Stellate, MexHatConn, m2, m2_slow, SYN_FIXED); // 2 IN->GC one-to-many
+sim.connect(MEC_LII_Basket, MEC_LII_Stellate, MexHatConn, p.in_to_grc_g_fast, p.in_to_grc_g_slow, SYN_FIXED); // 2 IN->GC one-to-many
 ////
 p.conn_offset = 2;
 if (p.spin2in_active) {
@@ -168,7 +166,7 @@ p.gc_to_in_wt = gc2inwt;
 SomeToSomeConn = new SomeToSomeConnection(&p);
 sim.connect(MEC_LII_Stellate, EC_LII_Basket_Multipolar, SomeToSomeConn, m1, m1_slow, SYN_FIXED);
 MexHatConn = new MexHatConnection(&p);
-sim.connect(EC_LII_Basket_Multipolar, MEC_LII_Stellate, MexHatConn, m2, m2_slow, SYN_FIXED); // 2 IN->GC one-to-many
+sim.connect(EC_LII_Basket_Multipolar, MEC_LII_Stellate, MexHatConn, p.in_to_grc_g_fast, p.in_to_grc_g_slow, SYN_FIXED); // 2 IN->GC one-to-many
 //sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
 //           RangeDelay(1), RadiusRF(-1), SYN_FIXED, (71.14*0.170), (43.59*0.170)); // 3 PCs
 sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 

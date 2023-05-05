@@ -594,30 +594,22 @@ void setInExcConns(CARLsim* sim, P *p) {
 	// assign connectivity
 	for (int i = 0; i < p->layer_size_in; i++) {
 		for (int j = 0; j < p->layer_size; j++) {
-			//if (mex_hat[i][j] != 0.0) {
-			//if ((double) mex_hat[i][j] >= 0.006) {
-			if ((double) mex_hat[i][j] >= p->lowval_thresh) {
+			if ((double) mex_hat[i][j] > 0.0) {
 				p->weights_in[i][j] = 1;
-				//printf("i:%d j:%d\n",i,j);
-				//counter++;
 			}
 		}
 	}
-	//printf("counter:%d\n",counter);
 }
 
 // custom ConnectionGenerator
 class MexHatConnection : public ConnectionGenerator {
 public:
-    vector<vector<double>> weights_in;
-    double mex_hat_multi, syn_wgt_shift;
     int conn_offset, conn_dist;
+    struct P *p;
     MexHatConnection(P *p) {
-    	this->weights_in = p->weights_in; // set matrix
-    	this->mex_hat_multi = p->mex_hat_multi;
-    	this->syn_wgt_shift = p->syn_wgt_shift;
     	this->conn_offset = p->conn_offset;
     	this->conn_dist = p->conn_dist;
+    	this->p = p;
     }
     ~MexHatConnection() {}
  
@@ -625,28 +617,17 @@ public:
     // note that weight, maxWt, delay, and connected are passed by reference
     void connect(CARLsim* sim, int srcGrp, int i, int destGrp, int j, float& weight, float& maxWt,
             float& delay, bool& connected) {
+    	maxWt = 10000.0f; delay = 1; connected = 0; weight = 0;
+    	
 		// adjust i for multiple neuron types combine into a group
 		int i_adj = (i * this->conn_dist) + this->conn_offset;
 
 		// assign connections
-		//if (this->weights_in[i][j] == 1.0) {
-		if (this->weights_in[i_adj][j] == 1.0) {
+		if (p->weights_in[i_adj][j] == 1.0) {
 			connected = 1; // only connect where matrix value is 1.0 
-			// if (i_adj>899) {
-			// 	printf("*** i:%d j:%d i_adj:%d\n",i,j,i_adj);
-			// }
-			//printf("i:%d j:%d i_adj:%d\n",i,j,i_adj);
+			weight = mex_hat[i_adj][j];
+			if (p->print_conn_stats == 1) {p->gc_conns.at(i_adj)=p->gc_conns.at(i_adj)+1.0;}
 		}
-		else {
-			connected = 0;
-		}
-        //weight = mex_hat[i][j]*mex_hat_multi;
-        weight = mex_hat[i_adj][j]*mex_hat_multi;
-        weight = weight + syn_wgt_shift;//-0.022;//-0.042;//-0.012;//-0.022;//0.5;//0.0;                
-        //weight = mex_hat[i_adj][j]*mex_hat_multi;
-        //if (weight < 0) {weight = 0;}
-        maxWt = 10000.0f;
-        delay = 1; 
     }
 };
 
@@ -743,7 +724,7 @@ public:
 		for (int i2 = 0; i2 < cent_x.size(); i2++) {
 			if (j_sft == cent_j[i2]) {connected = 1;}
 			if (j_sft == cent_j[i2] && i == 0) {printf("i:%d j_sft:%d c_x:%d c_y:%d pd:%f cent_count:%d\n",i,j_sft,cent_x[i2],cent_y[i2],get_pd(i,p->x_size),cent_x.size());}
-			if (p->print_in_conn_stats == 1 && j_sft == cent_j[i2]) {p->in_conns.at(i)=p->in_conns.at(i)+1.0;}
+			if (p->print_conn_stats == 1 && j_sft == cent_j[i2]) {p->in_conns.at(i)=p->in_conns.at(i)+1.0;}
 		}
 
 		// add low weight centroids
@@ -926,15 +907,17 @@ void ParseCentSurrCSV(string filepath, vector<vector<double>> *cent_surr)
 };
 
 void get_stats(vector<double> values, vector<double> * stats) {
-	double sum = 0.0, std_temp = 0.0, mean, std, min = values[0], max = min;
+	double sum = 0.0, std_temp = 0.0, mean, std, min = values[0], max = min, min_i, max_i;
 
 	for (int i = 0; i < values.size(); i++) {sum += values[i];}
 	mean = sum / (double) values.size();
 	for (int i = 0; i < values.size(); i++) {
 		std_temp += pow(values[i] - mean, 2);
-		if (values[i] < min) {min = values[i];}
-		if (values[i] > max) {max = values[i];}
+		if (values[i] < min) {min = values[i];min_i=i;}
+		if (values[i] > max) {max = values[i];max_i=i;}
 	}
 	std = sqrt(std_temp/(double)values.size());
-	stats->push_back(mean);stats->push_back(std);stats->push_back(min);stats->push_back(max);
+	stats->push_back(mean);stats->push_back(std);stats->push_back(min);
+	stats->push_back(max);stats->push_back((double) values.size());
+	stats->push_back(min_i);stats->push_back(max_i);
 }
