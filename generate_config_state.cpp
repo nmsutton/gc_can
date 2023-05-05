@@ -104,7 +104,7 @@ double gc2inwt = p.gc_to_in_wt;
 MexHatConnection* MexHatConn;
 SomeToSomeConnection* SomeToSomeConn;    
 sim.connect(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, "one-to-one", p.dir_to_gc_wt, 1.0f, 
-            RangeDelay(1), RadiusRF(-1), SYN_FIXED, (33.082*.47*.8), (20.0*.47*.8)); // 0 DIR
+            RangeDelay(1), RadiusRF(-1), SYN_FIXED, (33.082*.47*1.09), (20.0*.47*1.09)); // 0 DIR
             // RangeDelay(1), RadiusRF(-1), SYN_FIXED, (33.082*.47*1.331314709), (20.0*.47*1.331314709)); // 0 DIR
 ////
 float m1 = 0.370*0.8*7.63*.365;//0.5;//.365;//.5;//0.8746922984;//*0.5;//1.0;//0.6;//0.5;//0.6;//0.42;//1.1;//0.5;//0.366;//0.45;//0.6;//0.45;//0.366;//0.42;//;10;//0.42;//;//*3;//*0.42;//*1.320675526;//1;//1.89;//1.5;//1.2;//1;//1.2;
@@ -170,7 +170,7 @@ sim.connect(EC_LII_Basket_Multipolar, MEC_LII_Stellate, MexHatConn, p.in_to_grc_
 //sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
 //           RangeDelay(1), RadiusRF(-1), SYN_FIXED, (71.14*0.170), (43.59*0.170)); // 3 PCs
 sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
-           RangeDelay(1), RadiusRF(-1), SYN_FIXED, (71.14*0.170), (43.59*0.170)); // 3 PCs
+           RangeDelay(1), RadiusRF(-1), SYN_FIXED, (71.14*0.180), (43.59*0.180)); // 3 PCs
 // sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
 //            RangeDelay(1), RadiusRF(-1), SYN_FIXED, 34.27, 21.0f); // 3 PCs 
 /*sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", p.pc_to_gc_wt, 1.0f, 
