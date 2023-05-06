@@ -697,7 +697,7 @@ public:
     void connect(CARLsim* sim, int srcGrp, int i, int destGrp, int j, float& weight, float& maxWt,
             float& delay, bool& connected) {
 		maxWt = 10000.0f; delay = 1; connected = 0;
-		weight = p->gc_to_in_wt; int j_sft, cent_j_wrap;
+		weight = p->grc_to_in_wt; int j_sft, cent_j_wrap;
     	vector<int> cent_x, cent_y, cent_j;
 
     	// create local copy of centroids arrays that will be expanded depending on grc_i
@@ -735,7 +735,7 @@ public:
 				&cent_x_loww, &cent_y_loww, &cent_j_loww, p->x_srt, p->y_srt);
 			for (int i2 = 0; i2 < cent_x.size(); i2++) {
 				if (j_sft == cent_j_loww[i2]) {connected = 1;}
-				weight = p->gc_to_in_wt*0.73;//*0.8746922984;;//*0.3650494369;//*.5;//*0.3650494369;
+				weight = p->grc_to_in_wt*0.73;//*0.8746922984;;//*0.3650494369;//*.5;//*0.3650494369;
 				if (j_sft == cent_j_loww[i2] && i == 0) {printf("low w i:%d j_sft:%d c_x:%d c_y:%d pd:%f cent_count:%d\n",i,j_sft,cent_x_loww[i2],cent_y_loww[i2],get_pd(i,p->x_size),cent_x_loww.size());}
 			}
 		}

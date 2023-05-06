@@ -95,18 +95,18 @@ void control_speed(double speed, P* p) {
 		//printf("angle:%f\n",p->prior_angles[0]);
 		//p->base_ext=100;
 
-		if (speed <= 19) {
-			p->speed_signaling=(1.3412206761563322e-002)+((1.6474305557182045e-001)*speed)+((-8.6167699409767623e-002)*pow(speed,2))+
-			    ((3.1495732910633470e-002)*pow(speed,3))+((-5.0378775529799497e-003)*pow(speed,4))+((4.0197021956174593e-004)*pow(speed,5))+
-			    ((-1.5703667678916057e-005)*pow(speed,6))+((2.3970986655945225e-007)*pow(speed,7));
+		if (speed <= 16.0) {
+			p->speed_signaling=(1.5709508185807096e-002)+((1.3679647136233192e-001)*speed)+((-4.6743562795191443e-002)*pow(speed,2))+
+			    ((1.3075247031491788e-002)*pow(speed,3))+((-1.4215656492033467e-003)*pow(speed,4))+((6.5944678342583010e-005)*pow(speed,5))+
+			    ((-1.0711869565415748e-006)*pow(speed,6));
 		}
-		else if (speed <= 32) {
-			p->speed_signaling=(2.3744227206236400e+002)+((-4.1526709174150263e+001)*speed)+((2.6996808896416957e+000)*pow(speed,2))+
-			    ((-7.7020296960444393e-002)*pow(speed,3))+((8.2544439133176674e-004)*pow(speed,4));
+		else if (speed <= 32.0) {
+			p->speed_signaling=(1.7327580193446259e+001)+((-2.6062540726955867e+000)*speed)+((1.5474953852566278e-001)*pow(speed,2))+
+			    ((-4.1475018624656784e-003)*pow(speed,3))+((5.4725768583337804e-005)*pow(speed,4));
 		}
 		else {p->speed_signaling = 15.0;}
 
-		p->base_ext=150 + 50/(1 + pow((speed/15.1),500));
+		p->base_ext=150 + 50/(1 + pow((speed/13),40));
 
 		// momentum adjustment
 		/*bool change = false;
