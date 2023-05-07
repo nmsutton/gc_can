@@ -618,7 +618,7 @@ public:
     void connect(CARLsim* sim, int srcGrp, int i, int destGrp, int j, float& weight, float& maxWt,
             float& delay, bool& connected) {
     	maxWt = 10000.0f; delay = 1; connected = 0; weight = 0;
-    	
+
 		// adjust i for multiple neuron types combine into a group
 		int i_adj = (i * this->conn_dist) + this->conn_offset;
 
@@ -700,45 +700,54 @@ public:
 		weight = p->grc_to_in_wt; int j_sft, cent_j_wrap;
     	vector<int> cent_x, cent_y, cent_j;
 
-    	// create local copy of centroids arrays that will be expanded depending on grc_i
-    	cent_x = p->cent_x; cent_y = p->cent_y;
+    	#if use_saved_g_to_i_conns
+    		j_sft = (j * this->conn_dist) + this->conn_offset;
+    		if (in_conns_list[i][j_sft] == 1) {connected = 1;}
+    	#else
+	    	// calculate grc to in connections instead of using a saved list of them
+	    	// create local copy of centroids arrays that will be expanded depending on grc_i
+	    	cent_x = p->cent_x; cent_y = p->cent_y;
 
-    	// add more centroids for center-surround ring wrap around effect
-		GetINConns(i, p->x_size, p->layer_size_in, this->conn_dist, this->conn_offset, 
-			&cent_x, &cent_y, &cent_j, p->x_srt, p->y_srt);
-
-		// add centroids with no wrap around effect
-	    if (p->use_nowp == 1) {
-	    	vector<int> cent_x_nowp = p->cent_x_nowp; vector<int> cent_y_nowp = p->cent_y_nowp;
-	    	for (int i2 = 0; i2 < cent_x_nowp.size(); i2++) {
-	        	if (cent_x_nowp[i]+p->x_srt>0 && cent_x_nowp[i]+p->x_srt<sqrt(p->layer_size_in)
-	        	&&  cent_y_nowp[i]+p->y_srt>0 && cent_y_nowp[i]+p->y_srt<sqrt(p->layer_size_in)) {
-		            cent_x.push_back(cent_x_nowp[i]+p->x_srt);
-		            cent_y.push_back(cent_y_nowp[i]+p->y_srt);
-	        	}
-	        }
-	    }
-		
-		// select connections
-		j_sft = (j * this->conn_dist) + this->conn_offset;
-		for (int i2 = 0; i2 < cent_x.size(); i2++) {
-			if (j_sft == cent_j[i2]) {connected = 1;}
-			if (j_sft == cent_j[i2] && i == 0) {printf("i:%d j_sft:%d c_x:%d c_y:%d pd:%f cent_count:%d\n",i,j_sft,cent_x[i2],cent_y[i2],get_pd(i,p->x_size),cent_x.size());}
-			if (p->print_conn_stats == 1 && j_sft == cent_j[i2]) {p->in_conns.at(i)=p->in_conns.at(i)+1.0;}
-		}
-
-		// add low weight centroids
-		if (p->use_loww == 1) {
-			vector<int> cent_j_loww;
-			vector<int> cent_x_loww = p->cent_x_loww; vector<int> cent_y_loww = p->cent_y_loww;
+	    	// add more centroids for center-surround ring wrap around effect
 			GetINConns(i, p->x_size, p->layer_size_in, this->conn_dist, this->conn_offset, 
-				&cent_x_loww, &cent_y_loww, &cent_j_loww, p->x_srt, p->y_srt);
+				&cent_x, &cent_y, &cent_j, p->x_srt, p->y_srt);
+
+			// add centroids with no wrap around effect
+		    if (p->use_nowp == 1) {
+		    	vector<int> cent_x_nowp = p->cent_x_nowp; vector<int> cent_y_nowp = p->cent_y_nowp;
+		    	for (int i2 = 0; i2 < cent_x_nowp.size(); i2++) {
+		        	if (cent_x_nowp[i]+p->x_srt>0 && cent_x_nowp[i]+p->x_srt<sqrt(p->layer_size_in)
+		        	&&  cent_y_nowp[i]+p->y_srt>0 && cent_y_nowp[i]+p->y_srt<sqrt(p->layer_size_in)) {
+			            cent_x.push_back(cent_x_nowp[i]+p->x_srt);
+			            cent_y.push_back(cent_y_nowp[i]+p->y_srt);
+		        	}
+		        }
+		    }
+			
+			// select connections
+			j_sft = (j * this->conn_dist) + this->conn_offset;
 			for (int i2 = 0; i2 < cent_x.size(); i2++) {
-				if (j_sft == cent_j_loww[i2]) {connected = 1;}
-				weight = p->grc_to_in_wt*0.73;//*0.8746922984;;//*0.3650494369;//*.5;//*0.3650494369;
-				if (j_sft == cent_j_loww[i2] && i == 0) {printf("low w i:%d j_sft:%d c_x:%d c_y:%d pd:%f cent_count:%d\n",i,j_sft,cent_x_loww[i2],cent_y_loww[i2],get_pd(i,p->x_size),cent_x_loww.size());}
+				if (j_sft == cent_j[i2]) {
+					connected = 1;
+					if (p->print_conn_stats == 1) {p->in_conns.at(i)=p->in_conns.at(i)+1.0;}
+					if (p->save_grc_to_in_conns == 1) {p->in_conns_binary[i][j_sft]=1.0;}
+					if (i == 0) {printf("i:%d j_sft:%d c_x:%d c_y:%d pd:%f cent_count:%d\n",i,j_sft,cent_x[i2],cent_y[i2],get_pd(i,p->x_size),cent_x.size());}
+				}
 			}
-		}
+
+			// add low weight centroids
+			if (p->use_loww == 1) {
+				vector<int> cent_j_loww;
+				vector<int> cent_x_loww = p->cent_x_loww; vector<int> cent_y_loww = p->cent_y_loww;
+				GetINConns(i, p->x_size, p->layer_size_in, this->conn_dist, this->conn_offset, 
+					&cent_x_loww, &cent_y_loww, &cent_j_loww, p->x_srt, p->y_srt);
+				for (int i2 = 0; i2 < cent_x.size(); i2++) {
+					if (j_sft == cent_j_loww[i2]) {connected = 1;}
+					weight = p->grc_to_in_wt*0.73;//*0.8746922984;;//*0.3650494369;//*.5;//*0.3650494369;
+					if (j_sft == cent_j_loww[i2] && i == 0) {printf("low w i:%d j_sft:%d c_x:%d c_y:%d pd:%f cent_count:%d\n",i,j_sft,cent_x_loww[i2],cent_y_loww[i2],get_pd(i,p->x_size),cent_x_loww.size());}
+				}
+			}
+		#endif
     }
 };
 
@@ -886,6 +895,22 @@ vector<double> SplitStr(string str)
     return entries;
 }
 
+vector<int> SplitStrInts(string str)
+{
+	vector<int> entries;
+	string deli = ",";
+    int start = 0;
+    int end = str.find(deli);
+    while (end != -1) {
+        entries.push_back(stoi(str.substr(start, end - start)));
+        start = end + deli.size();
+        end = str.find(deli, start);
+    }
+    entries.push_back(stoi(str.substr(start, end - start)));
+
+    return entries;
+}
+
 vector<double> ParseCSV(string filepath)
 {
     ifstream data(filepath);
@@ -897,14 +922,29 @@ vector<double> ParseCSV(string filepath)
     return parsedRow;
 };
 
-void ParseCentSurrCSV(string filepath, vector<vector<double>> *cent_surr)
+void ParseCSV(string filepath, vector<vector<double>> *matrix)
 {
 	ifstream data(filepath);
     string line;
     vector<double> parsedRow;
 	if(!data.is_open()) {cout << "Failed to open file" << endl;}
-	while(getline(data,line)) {cent_surr->push_back(SplitStr(line));}
+	while(getline(data,line)) {matrix->push_back(SplitStr(line));}
 };
+
+void ParseCSVInts(string filepath, vector<vector<int>> *matrix)
+{
+	string line, val;
+	ifstream f(filepath);
+	int i = 0;
+	vector<int> v;
+
+	if(!f.is_open()) {cout << "Failed to open file" << endl;}
+	while (getline(f, line)) {
+		v.clear(); v=SplitStrInts(line);
+		for (int j = 0; j < v.size(); j++) {(*matrix)[i][j]=v[j];}
+	    i++;
+	}
+}
 
 void get_stats(vector<double> values, vector<double> * stats) {
 	double sum = 0.0, std_temp = 0.0, mean, std, min = values[0], max = min, min_i, max_i;
@@ -920,4 +960,17 @@ void get_stats(vector<double> values, vector<double> * stats) {
 	stats->push_back(mean);stats->push_back(std);stats->push_back(min);
 	stats->push_back(max);stats->push_back((double) values.size());
 	stats->push_back(min_i);stats->push_back(max_i);
+}
+
+void write_grc_to_in_file(P *p) {
+	p->grc_to_in_file.open(p->grc_to_in_filepath);
+	for (int i = 0; i < p->layer_size; i++) {
+		for (int j = 0; j < p->layer_size_in; j++) {
+			if (p->in_conns_binary[i][j]==1) {p->grc_to_in_file << "1";}
+			else {p->grc_to_in_file << "0";}
+			if (j != (p->layer_size_in-1)) {p->grc_to_in_file << ",";}
+		}
+		if (i != (p->layer_size-1)) {p->grc_to_in_file << "\n";}
+	}
+	p->grc_to_in_file.close();
 }

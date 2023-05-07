@@ -78,6 +78,9 @@ using namespace std;
 		#include "../data/synapse_weights.cpp"
 	#endif
 #endif
+#if use_saved_g_to_i_conns
+	vector<vector<int>> in_conns_list;
+#endif
 #include "../place_cells.cpp"
 #include "../general_funct.cpp"
 #include "../move_path.cpp"
@@ -93,7 +96,13 @@ int main() {
 	//CARLsim sim("gc can", CPU_MODE, USER);
 	int n_num;
 	#if hopper_run
-		ParseCentSurrCSV("./data/synapse_weights.csv", &mex_hat);
+		ParseCSV("./data/synapse_weights.csv", &mex_hat);
+	#endif
+	#if use_saved_g_to_i_conns
+		vector<vector<int>> weights_in_temp3(p.layer_size, vector<int>(p.layer_size_in));
+		in_conns_list = weights_in_temp3;
+		for (int i = 0; i < p.layer_size; i++) {for (int j = 0; j < p.layer_size_in; j++) {in_conns_list[i][j]=0.0;}}
+		ParseCSVInts("./data/grc_to_in_conns.csv", &in_conns_list);
 	#endif
 	std::vector<std::vector<float>> inec_weights;
 	double noise_addit_freq = 0.0;
@@ -105,7 +114,12 @@ int main() {
 	vector<vector<double>> weights_in_temp(p.layer_size_in, vector<double>(p.layer_size)); // set size
 	p.weights_in = weights_in_temp;
 	for (int i = 0; i < p.layer_size; i++) {
-		for (int j = 0; j < p.layer_size; j++) {p.weights_in[i][j] = 0.0;}
+		for (int j = 0; j < p.layer_size; j++) {p.weights_in[i][j]=0.0;}
+	}
+	vector<vector<int>> weights_in_temp2(p.layer_size, vector<int>(p.layer_size_in));
+	p.in_conns_binary = weights_in_temp2;
+	for (int i = 0; i < p.layer_size; i++) {
+		for (int j = 0; j < p.layer_size_in; j++) {p.in_conns_binary[i][j]=0.0;}
 	}
 	vector<float> temp_vector(p.layer_size); // set vector size
 	p.ext_dir = temp_vector;
@@ -152,6 +166,7 @@ int main() {
 	    printf("GrC->IN Connections: avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n\n",in_stats[0],in_stats[1],in_stats[2],in_stats[3],in_stats[4],in_stats[5],in_stats[6]);
 	    printf("IN->GrC Connections: avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n\n",gc_stats[0],gc_stats[1],gc_stats[2],gc_stats[3],gc_stats[4],gc_stats[5],gc_stats[6]);
 	}
+	if (p.save_grc_to_in_conns) {write_grc_to_in_file(&p);}
 
 	// ---------------- RUN STATE -------------------
 	SMexc->startRecording();

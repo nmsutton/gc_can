@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 8485920;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 7000;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 40;//36;//42;//30;//26;
@@ -72,12 +72,12 @@ struct P {
 	// select movement trajectory
 	bool run_path = 0; // use run_path function. This is auto enabled by functions that use it.
 	bool run_path_onlypos = 0; // only generate movement positions not signaling with run_path function
-	bool move_animal = 1; // use real animal movement positions with neural signaling
+	bool move_animal = 0; // use real animal movement positions with neural signaling
 	bool move_animal_aug = 0; // augment animal movement
 	bool move_animal_onlypos=0; // generate animal movement position but not signaling
 	bool move_speed_change=0; // test series of speed changes
 	bool move_fullspace = 0; // move through whole environment
-	bool move_straight = 0;
+	bool move_straight = 1;
 	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;
@@ -106,7 +106,7 @@ struct P {
 	double fast_to_slow_ratio = 0.38/0.62;
 	double dir_to_grc_g_fast = 33.082*.47*1.11;
 	double dir_to_grc_g_slow = dir_to_grc_g_fast*fast_to_slow_ratio;
-	double grc_to_in_g_fast = 0.370*0.8*7.63*.365;	
+	double grc_to_in_g_fast = 0.370*0.8*7.63*.36505;	
 	double grc_to_in_g_slow = grc_to_in_g_fast*fast_to_slow_ratio;	
 	double in_to_grc_g_fast = 0.6259622633;
 	double in_to_grc_g_slow = in_to_grc_g_fast*fast_to_slow_ratio;
@@ -125,6 +125,15 @@ struct P {
 	bool print_conn_stats = 0; // print connectivity statistics
 	vector<double> in_conns; // count of grid cell to interneuron connections
 	vector<double> gc_conns; // count of interneuron to grid cell connections
+	#define use_saved_g_to_i_conns 1 // use prior saved grc to in connection list instead of computing new one
+	#if use_saved_g_to_i_conns
+		bool save_grc_to_in_conns = 0;
+	#else
+		bool save_grc_to_in_conns = 1; // write out file with grid cell to interneuron connections
+	#endif
+	vector<vector<int>> in_conns_binary; // binary flag for presence of grid cell to interneuron connections
+	string grc_to_in_filepath = "./data/grc_to_in_conns.csv";
+	ofstream grc_to_in_file;
 
 	// speed
 	bool auto_speed_control = 1; // automatically adjust parameters to match speed selected
@@ -149,10 +158,10 @@ struct P {
 	// place cell parameters
 	double theta_freq = 125.0; // theta frequency in Hz
 	double dist_thresh = 5; // distance threshold for only local connections	
-	float pc_to_grc_g_fast = 71.14*0.170;
+	float pc_to_grc_g_fast = 71.14*0.180;
 	float pc_to_grc_g_slow = pc_to_grc_g_fast*fast_to_slow_ratio;
 	double pc_sig = 2.5;//2;//1.5;//2;//1.5;//2;//1.5;//2;//1.2;//1.8;//1.6;//2;//4;//2;//1.2;//2;//2;//4;//2;//3;//3;//4;//2;//2;//1;//1.4;//1;//0.75; // sigma symbol; width of the place feild
-	double pc_level = 170;//230;//170;//400;//170;//100;//160;//130;//120;//150;//190;//170;//750;//180;//200;//190;//230;//180;//240;//300;//750;//660;//220;//300;//750;//240;//300;//300;//260;//300;//270;//240;//300;//240;//350;//240;//400;//300;//270;//220;//250;//200;//220;//300;//220;//1000;//220;//200;//300;//200;//220;//250;//300;//300*0.48;//300;//300;//300;//400;//300;//400;//500;//400;//600;//1000;//300;//600;//300;//600;//400;//300;//600;//400;//600;//300;//400;//600;//400;//400;//400;//1000;//2000;//400;//400;//2000;//400;//600;//700;//500;//3000;//3000;//2000;//2500;//3000; // place cell firing level
+	double pc_level = 180;//230;//170;//400;//170;//100;//160;//130;//120;//150;//190;//170;//750;//180;//200;//190;//230;//180;//240;//300;//750;//660;//220;//300;//750;//240;//300;//300;//260;//300;//270;//240;//300;//240;//350;//240;//400;//300;//270;//220;//250;//200;//220;//300;//220;//1000;//220;//200;//300;//200;//220;//250;//300;//300*0.48;//300;//300;//300;//400;//300;//400;//500;//400;//600;//1000;//300;//600;//300;//600;//400;//300;//600;//400;//600;//300;//400;//600;//400;//400;//400;//1000;//2000;//400;//400;//2000;//400;//600;//700;//500;//3000;//3000;//2000;//2500;//3000; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters
@@ -189,7 +198,7 @@ struct P {
 	// neuron vs location parameters
 	int selected_neuron = 465;//378;//372;//465;//372;//11;//465;//232;//465;//10;
 	int selected_in_neuron = 100; // interneuron
-	double grid_pattern_rot = -33.75;//0;//5;//0;//-33.75;//0;//-33.75;//-45;//-33.75;//-45;//0;//-45;//-22.5;//-45;//0;//15;//15;//-15; // angle value for rotation of grid pattern in plot
+	double grid_pattern_rot = 0;//-33.75;//0;//5;//0;//-33.75;//0;//-33.75;//-45;//-33.75;//-45;//0;//-45;//-22.5;//-45;//0;//15;//15;//-15; // angle value for rotation of grid pattern in plot
 	double grid_pattern_scale = 1;//0.95;//1;//0.5;//1;//18/22.5; // rescale grid pattern for plot. smaller value makes larger rescale, e.g., 0.8 = 1.25x rescale. animal speed to bump speed conversion. <goal_top_bump_speed>/<goal_top_animal_speed>
 	vector<int> locations_visited; // locations an animal visited
 	double animal_location[x_size*y_size]; // location of animal

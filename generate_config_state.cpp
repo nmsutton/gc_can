@@ -30,26 +30,8 @@ p.MEC_LII_Stellate_Speed_Group = MEC_LII_Stellate_Speed; // 7
 sim.setNeuronParameters(EC_LI_II_Multipolar_Pyramidal, 375.0f, 0.0f, 0.37f, 0.0f, -70.53f, 0.0f, -39.99f, 
                                 0.0f, 0.001f, 0.0f, 0.01f, 0.0f, 3.96f, 0.0f, -54.95f, 0.0f, 
                                 7.0f, 0.0f, 0); // C,k,vr,vt,a,b,vpeak,c,d
-// sim.setNeuronParameters(EC_LI_II_Multipolar_Pyramidal, 204.0f, 0.0f, 0.37f, 0.0f, -70.53f, 0.0f, -39.99f, 
-//                                 0.0f, 0.001f, 0.0f, -4.08f, 0.0f, 3.96f, 0.0f, -54.95f, 0.0f, 
-//                                 13.0f, 0.0f, 0); // C,k,vr,vt,a,b,vpeak,c,d
-// sim.setNeuronParameters(EC_LI_II_Multipolar_Pyramidal, 286.0f, 0.0f, 1.53f, 0.0f, -56.14f, 0.0f, -39.78f, 
-//                                 0.0f, 0.001f, 0.0f, 0.01f, 0.0f, 18.27f, 0.0f, -49.81f, 0.0f, 
-//                                 7.0f, 0.0f, 0); // C,k,vr,vt,a,b,vpeak,c,d
                                 // Ensemble file:  k,a,b,d,C,vr,vt,c,vpeak. 
                                 // 1->2, 2->5, 3->6, 4->9, 5->1, 6->3, 7->4, 8->8, 9->7
-// sim.setNeuronParameters(MEC_LII_Stellate, 131.000000f, 0.0f, 0.98f, 0.0f, -62.65f, 0.0f, 
-//                                 -43.6f, 0.0f, 0.004f, 0.0f, -23.77f, 0.0f, 7.85f, 0.0f, 
-//                                 -52.68f, 0.0f, 119.0f, 0.0f, 0);
-// sim.setNeuronParameters(MEC_LII_Stellate, 131.000000f, 0.0f, 0.98f, 0.0f, -62.65f, 0.0f, 
-//                                 -43.6f, 0.0f, 0.005f, 0.0f, 0.0f, 0.0f, 7.85f, 0.0f, 
-//                                 -52.68f, 0.0f, 10.0f, 0.0f, 0);
-// sim.setNeuronParameters(MEC_LII_Stellate, 118.000000f, 0.0f, 0.62f, 0.0f, -58.53f, 0.0f, 
-//                                 -43.52f, 0.0f, 0.005f, 0.0f, 11.69f, 0.0f, 11.48f, 0.0f, 
-//                                 -49.52f, 0.0f, 3.0f, 0.0f, 0);
-// sim.setNeuronParameters(MEC_LII_Stellate, 118.000000f, 0.0f, 0.62f, 0.0f, -58.53f, 0.0f, 
-//                                 -43.52f, 0.0f, 0.005f, 0.0f, 8.0f, 0.0f, 11.48f, 0.0f, 
-//                                 -49.52f, 0.0f, 8.5f, 0.0f, 0);
 sim.setNeuronParameters(MEC_LII_Stellate, 118.000000f, 0.0f, 0.62f, 0.0f, -58.53f, 0.0f, 
                                 -43.52f, 0.0f, 0.005f, 0.0f, 11.69f, 0.0f, 11.48f, 0.0f, 
                                 -49.52f, 0.0f, 0.0f, 0.0f, 0);
@@ -69,34 +51,9 @@ sim.setNeuronParameters(MEC_LII_Stellate_Speed, 118.000000f, 0.0f, 0.62f, 0.0f, 
                                 0.0f, 0.005f, 0.0f, 11.690000f, 0.0f, 11.48f, 0.0f, -49.52f, 0.0f, 
                                 50.0f, 0.0f, 0);
                                 // C,k,vr,vt,a,b,vpeak,c,d
-// sim.setNeuronParameters(CA1_Pyramidal, 204.0f, 0.0f, 0.76f, 0.0f, -69.36f, 0.0f, -39.99f, 
-//                                 0.0f, 0.001f, 0.0f, 0.01f, 0.0f, 25.46f, 0.0f, -54.95f, 
-//                                 0.0f, 16.0f, 0.0f, 0);
-// sim.setNeuronParameters(CA1_Pyramidal, 334.0f, 0.0f, 1.56f, 0.0f, -69.36f, 0.0f, -53.22f, 
-//                                 0.0f, 0.0f, 0.0f, -17.25f, 0.0f, 25.46f, 0.0f, -60.22f, 
-//                                 0.0f, 16.0f, 0.0f, 0);
-// sim.setNeuronParameters(CA1_Pyramidal, 204.0f, 0.0f, 0.37f, 0.0f, -70.53f, 0.0f, -39.99f, 
-//                                 0.0f, 0.001f, 0.0f, 0.01f, 0.0f, 3.96f, 0.0f, -54.95f, 0.0f, 
-//                                 7.0f, 0.0f, 0);
-// sim.setNeuronParameters(CA1_Pyramidal, 1169.0f, 0.0f, 0.76f, 0.0f, -63.21f, 0.0f, -32.94f, 
-//                                 0.0f, 0.001f, 0.0f, 18.93f, 0.0f, 59.92f, 0.0f, -41.15f, 
-//                                 0.0f, 24.0f, 0.0f, 0);
-// sim.setNeuronParameters(CA1_Pyramidal, 302.0f, 0.0f, 1.7054968952326925f, 0.0f, -69.92430397896125f, 0.0f, -57.33313161f, 
-//                                 0.0f, 0.0011921182805996267f, 0.0f, -2.8383619240678364f, 0.0f, 24.88998748f, 0.0f, -60.37396346f, 
-//                                 0.0f, 18.0f, 0.0f, 0);
-// sim.setNeuronParameters(CA1_Pyramidal, 23.0f, 0.0f, 1.25f, 0.0f, -69.75f, 0.0f, -46.56f, 
-//                                 0.0f, 0.001f, 0.0f, -38.7f, 0.0f, 24.57f, 0.0f, -54.88f, 
-//                                 0.0f, 43.0f, 0.0f, 0);
-// sim.setNeuronParameters(CA1_Pyramidal, 506.0f, 0.0f, 5.89f, 0.0f, -62.16f, 0.0f, -48.42f, 
-//                                 0.0f, 0.081f, 0.0f, -15.09f, 0.0f, 32.77f, 0.0f, -52.21f, 
-//                                 0.0f, 483.0f, 0.0f, 0);
-                                // C,k,vr,vt,a,b,vpeak,c,d
 sim.setNeuronParameters(CA1_Pyramidal, 530.0f, 0.0f, 1.7382527828120673f, 0.0f, -69.97816841048154f, 0.0f, -57.42740032f, 
                                0.0f, 0.0028211397234640546f, 0.0f, -0.7818603847193373f, 0.0f, 24.44743634f, 0.0f, -60.35222718f, 
                                0.0f, 25.0f, 0.0f, 0);
-// sim.setNeuronParameters(CA1_Pyramidal, 528.0f, 0.0f, 1.15f, 0.0f, -50.04f, 0.0f, -46.54f, 
-//                                 0.0f, 0.01f, 0.0f, -0.32f, 0.0f, 29.22f, 0.0f, -50.63f, 
-//                                 0.0f, 283.0f, 0.0f, 0);
 
 /* neuron connection parameters */
 setInExcConns(&sim, &p);
@@ -169,15 +126,6 @@ sim.setSTP(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, true, STPu(0.1802, 0
                                      STPtdGABAb(150.0, 0.0f),
                                      STPtrNMDA(0.0f, 0.0f),
                                      STPtrGABAb(0.0f, 0.0f));
-// sim.setSTP(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, true, STPu(0.1802, 0.0f),
-//                                      STPtauU(35.73788179, 0.0f),
-//                                      STPtauX(418.4899027, 0.0f),
-//                                      STPtdAMPA(3.468416701, 0.0f),
-//                                      STPtdNMDA(150.0, 0.0f),
-//                                      STPtdGABAa(6.0, 0.0f),
-//                                      STPtdGABAb(150.0, 0.0f),
-//                                      STPtrNMDA(0.0f, 0.0f),
-//                                      STPtrGABAb(0.0f, 0.0f));
 sim.setSTP(CA1_Pyramidal, MEC_LII_Stellate, true, STPu(0.1231, 0.0f),
                                      STPtauU(49.71, 0.0f),
                                      STPtauX(153.4, 0.0f),
@@ -187,15 +135,6 @@ sim.setSTP(CA1_Pyramidal, MEC_LII_Stellate, true, STPu(0.1231, 0.0f),
                                      STPtdGABAb(150.0, 0.0f),
                                      STPtrNMDA(0.0f, 0.0f),
                                      STPtrGABAb(0.0f, 0.0f));
-// sim.setSTP(CA1_Pyramidal, MEC_LII_Stellate, true, STPu(0.1436820457, 0.0f),
-//                                      STPtauU(44.06299214, 0.0f),
-//                                      STPtauX(304.2250189, 0.0f),
-//                                      STPtdAMPA(3.854910895, 0.0f),
-//                                      STPtdNMDA(150.0, 0.0f),
-//                                      STPtdGABAa(6.0, 0.0f),
-//                                      STPtdGABAb(150.0, 0.0f),
-//                                      STPtrNMDA(0.0f, 0.0f),
-//                                      STPtrGABAb(0.0f, 0.0f));
 sim.setSTP(MEC_LII_Stellate, EC_LII_Axo_Axonic, true, STPu(0.1672, 0.0f), 
                                     STPtauU(49.9201, 0.0f), 
                                     STPtauX(167.6863, 0.0f), 

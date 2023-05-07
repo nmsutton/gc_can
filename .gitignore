@@ -57,6 +57,7 @@ data/mex_hat_bup.cpp
 data/mex_hat.cpp
 data/synapse_weights.cpp
 data/synapse_weights.csv
+data/grc_to_in_conns.csv
 data/*.csv
 scripts/param_explore/plotting/*.jpg
 scripts/param_explore/plotting/*.png

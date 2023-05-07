@@ -69,15 +69,15 @@ do
 	chg_prm &&		
 	# param change
 	export p2=$j &&
-	export param_file=$param_file1 &&
+	export param_file=$param_file2 &&
 	export param_pattern=$param_pattern2 &&
 	export value_change=" \"${param2_vals[$j]}\"" &&
 	chg_prm &&
-	export param_file=$param_file1 &&
+	export param_file=$param_file2 &&
 	export param_pattern=$param_pattern4 &&
 	export value_change=" \"${param4_vals[$j]}\"" &&
 	chg_prm &&
-	export param_file=$param_file1 &&
+	export param_file=$param_file2 &&
 	export param_pattern=$param_pattern6 &&
 	export value_change=" \"${param6_vals[$j]}\"" &&
 	chg_prm &&	
