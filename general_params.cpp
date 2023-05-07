@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 7000;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 8485920;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 40;//36;//42;//30;//26;
@@ -72,12 +72,12 @@ struct P {
 	// select movement trajectory
 	bool run_path = 0; // use run_path function. This is auto enabled by functions that use it.
 	bool run_path_onlypos = 0; // only generate movement positions not signaling with run_path function
-	bool move_animal = 0; // use real animal movement positions with neural signaling
+	bool move_animal = 1; // use real animal movement positions with neural signaling
 	bool move_animal_aug = 0; // augment animal movement
 	bool move_animal_onlypos=0; // generate animal movement position but not signaling
 	bool move_speed_change=0; // test series of speed changes
 	bool move_fullspace = 0; // move through whole environment
-	bool move_straight = 1;
+	bool move_straight = 0;
 	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;
@@ -104,7 +104,7 @@ struct P {
 	double base_ext = 150; // baseline ext input speed level	
 	double speed_signaling = 15.0000; // setting for use of a constant virtual animal speed
 	double fast_to_slow_ratio = 0.38/0.62;
-	double dir_to_grc_g_fast = 33.082*.47*1.11;
+	double dir_to_grc_g_fast = 33.082*.47*1.1;
 	double dir_to_grc_g_slow = dir_to_grc_g_fast*fast_to_slow_ratio;
 	double grc_to_in_g_fast = 0.370*0.8*7.63*.36505;	
 	double grc_to_in_g_slow = grc_to_in_g_fast*fast_to_slow_ratio;	
@@ -198,7 +198,7 @@ struct P {
 	// neuron vs location parameters
 	int selected_neuron = 465;//378;//372;//465;//372;//11;//465;//232;//465;//10;
 	int selected_in_neuron = 100; // interneuron
-	double grid_pattern_rot = 0;//-33.75;//0;//5;//0;//-33.75;//0;//-33.75;//-45;//-33.75;//-45;//0;//-45;//-22.5;//-45;//0;//15;//15;//-15; // angle value for rotation of grid pattern in plot
+	double grid_pattern_rot = -33.75;//0;//5;//0;//-33.75;//0;//-33.75;//-45;//-33.75;//-45;//0;//-45;//-22.5;//-45;//0;//15;//15;//-15; // angle value for rotation of grid pattern in plot
 	double grid_pattern_scale = 1;//0.95;//1;//0.5;//1;//18/22.5; // rescale grid pattern for plot. smaller value makes larger rescale, e.g., 0.8 = 1.25x rescale. animal speed to bump speed conversion. <goal_top_bump_speed>/<goal_top_animal_speed>
 	vector<int> locations_visited; // locations an animal visited
 	double animal_location[x_size*y_size]; // location of animal
