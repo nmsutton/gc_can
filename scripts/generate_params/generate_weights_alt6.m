@@ -6,7 +6,7 @@
 sample_matrix = 0;
 write_to_csv = 1; % needed for running on supercomputer
 write_to_cpp = 0; % alternative file for running locally (not supercomputer)
-show_2d_plot = 0;
+only_show_plot_preview = 0;
 show_3d_plot = 0;
 
 % params
@@ -18,11 +18,11 @@ if write_to_cpp output_cpp = fopen(cpp_filename,'w'); end
 grid_size_ref = 50;%60;%44; % reference grid size to position shift the center-surround distro for each neuron
 grid_size_target = 40;%42;%40;%36;%42; % target grid size for neuron weights
 total_nrns = grid_size_ref^2;%(grid_size_target^2);%35;%(grid_size^2);% total neurons
-if show_2d_plot total_nrns = 3; end
+if only_show_plot_preview total_nrns = 3; end
 grid_size = grid_size_ref*3;%90;
 iter = 13; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
-start_x_shift = (grid_size/2) - 24;%5;%24;%19;%26;%6;%26;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%28; -2 = 2 down
-start_y_shift = (grid_size/2) - 24;%5;%24;%19;%26;%6;%26;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%-4;%28; +2 = 2 left
+start_x_shift = (grid_size/2) - 24;%24;%5;%24;%19;%26;%6;%26;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%28; -2 = 2 down
+start_y_shift = (grid_size/2) - 24;%24;%5;%24;%19;%26;%6;%26;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%-4;%28; +2 = 2 left
 rescale_weights = 1; % rescale weights to match highval
 shift_down = 1; % apply subtraction to all weight values to shift them down
 filter_lowval = 1; % avoid creating weights below this value
@@ -30,20 +30,20 @@ highval = 0.00681312463724531;
 syn_wgt_shift = 0.001275510204;
 lowval_thres = 0.0;%0.001;
 conversion_mult = 114.7*1.574395603;
-r_s=1; % ring scale
-p1=.68;%20;%20;%.68;
+r_s=20/42;%1; % ring scale
+p1=20;%.68;%20;%20;%.68;
 p2=2;p3=2;
 % center size
-p4=r_s*38*1.6;%200;%190;%160;%130;%90;%r_s*52;%35;%45;%52;%40;%70;%130;%38;%*2.5*1.3;%.55;%.7;%4;%2;%2;%2.5;%2;%*1.4;%1.344;%*2.7*(14/20);%1.4;%*.5; 
+p4=r_s*180;%38*1.6;%200;%190;%160;%130;%90;%r_s*52;%35;%45;%52;%40;%70;%130;%38;%*2.5*1.3;%.55;%.7;%4;%2;%2;%2.5;%2;%*1.4;%1.344;%*2.7*(14/20);%1.4;%*.5; 
 % center size
-p8=r_s*0.135;%230;%220;%190;%160;%70;%r_s*.135*1.02;%r_s*.135*1.07;%1;%.87;%.135*.9;%1;%.97;%.99;%.11;%.13;%.12;%.14;%.12;%.22;%.2;%.25;%.135; 
+p8=r_s*210;%0.135;%230;%220;%190;%160;%70;%r_s*.135*1.02;%r_s*.135*1.07;%1;%.87;%.135*.9;%1;%.97;%.99;%.11;%.13;%.12;%.14;%.12;%.22;%.2;%.25;%.135; 
 % surround size
-p7=r_s*0.15;%0.13;%0.15;%.3;%0.15;%r_s*0.19;%0.18;%0.19;%0.183;%0.19;%0.2;%0.2;%*1.1*.97;%1.04;%1.05;%1.15;%1;%4;%.7;%.9;%.7;%0.174*1.4;%*2.4*(14/20);%1.4;%*.75;%0.15; 
+p7=r_s*0.5;%0.15;%0.13;%0.15;%.3;%0.15;%r_s*0.19;%0.18;%0.19;%0.183;%0.19;%0.2;%0.2;%*1.1*.97;%1.04;%1.05;%1.15;%1;%4;%.7;%.9;%.7;%0.174*1.4;%*2.4*(14/20);%1.4;%*.75;%0.15; 
 % surround size
-p16=r_s*0.81;%0.3;%1.08*.95*r_s;%1.08*1.03;%1.03;%.95;%1;%.97;%.99;%0.81;%*1.1*.97;%1.04;%1.05;%1.15;%1;%4;%.7;%.9;%.7;%0.9396*1.4*.9;%*3*(14/20);%1.4;%*.75;%0.81; 
+p16=r_s*0.3;%0.81;%0.3;%1.08*.95*r_s;%1.08*1.03;%1.03;%.95;%1;%.97;%.99;%0.81;%*1.1*.97;%1.04;%1.05;%1.15;%1;%4;%.7;%.9;%.7;%0.9396*1.4*.9;%*3*(14/20);%1.4;%*.75;%0.81; 
 p5=p3;p6=p4;p9=2;p10=2;p11=2;p12=p4;p13=p11;p14=p11;p15=p12;p17=0.0058;
 p=[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17];
-tiling_fraction=0.33333333333*1.04*(40/42)*(40/44);%(126/120);%1;%(42/30);%1.05;%*1.04;%0.1;%0.33333333333;%1;%0.33;%0.5; % fraction of standard tiling distance between bumps
+tiling_fraction=0.33333333333*1;%1.04*(40/42)*(40/44);%(126/120);%1;%(42/30);%1.05;%*1.04;%0.1;%0.33333333333;%1;%0.33;%0.5; % fraction of standard tiling distance between bumps
 po=[show_3d_plot,write_to_cpp,sample_matrix,output_cpp,grid_size,iter,tiling_fraction, ...
     grid_size_target,start_x_shift,start_y_shift,grid_size_ref];
 comb_syn_wts=[];
@@ -111,7 +111,7 @@ if write_to_csv || write_to_cpp
 		end
 	end
 	if output_cpp fprintf(output_cpp,'}};'); end
-    if show_2d_plot
+    if only_show_plot_preview
         imagesc(reshape(comb_syn_wts(1,1:end),grid_size_target,grid_size_target));
     end
 end
