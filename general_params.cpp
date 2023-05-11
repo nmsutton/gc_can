@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 7000;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 8553860;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 40;//36;//42;//30;//26;
@@ -13,9 +13,9 @@ struct P {
 	static const int layer_size = x_size * y_size;
 	static const int EC_LI_II_Multipolar_Pyramidal_Count = 1600;//1764;//900;
 	static const int MEC_LII_Stellate_Count = 1600;//1764;//900;
-	static const int EC_LII_Axo_Axonic_Count = 834;//1200;//646;//534;//588;//300;
-	static const int MEC_LII_Basket_Count = 833;//1200;//645;//533;//588;//300;
-	static const int EC_LII_Basket_Multipolar_Count = 833;//1200;//645;//533;//588;//300;
+	static const int EC_LII_Axo_Axonic_Count = 1200;//834;//1200;//646;//534;//588;//300;
+	static const int MEC_LII_Basket_Count = 1200;//833;//1200;//645;//533;//588;//300;
+	static const int EC_LII_Basket_Multipolar_Count = 1200;//833;//1200;//645;//533;//588;//300;
 	static const int layer_size_in = EC_LII_Axo_Axonic_Count+MEC_LII_Basket_Count+EC_LII_Basket_Multipolar_Count;
 	static const int CA1_Pyramidal_Count = 1600;//1764;//900;
 	static const int MEC_LII_Basket_Speed_Count = 1600;//1764;//900;
@@ -23,8 +23,8 @@ struct P {
 	int EC_LI_II_Multipolar_Pyramidal_Group, MEC_LII_Stellate_Group, EC_LII_Axo_Axonic_Group,
 	MEC_LII_Basket_Group, EC_LII_Basket_Multipolar_Group, CA1_Pyramidal_Group, 
 	MEC_LII_Basket_Speed_Group,	MEC_LII_Stellate_Speed_Group;	
-	double pos[2] = {27.5,12.5};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{28.5,16.75};//{21,27};//{23.5,12.5};//{27.5,12.5};//{28.5,16.75};//{26.5,12.5};//{30,20};//{22,7.75};//{30,18};//{9,17};//{22,8}; // virtual animal position tracker. starting position: {x,y}
-	double bpos[2] = {27.5,12.5};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{28.5,16.75};//{21,27};//{23.5,12.5};//{27.5,12.5};//{28.5,16.75};//{26.5,12.5};//{30,20};//{22,7.75};//{9,17}; // bump position tracker
+	double pos[2] = {28.5,16.75};//{27.5,12.5};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{28.5,16.75};//{21,27};//{23.5,12.5};//{27.5,12.5};//{28.5,16.75};//{26.5,12.5};//{30,20};//{22,7.75};//{30,18};//{9,17};//{22,8}; // virtual animal position tracker. starting position: {x,y}
+	double bpos[2] = {28.5,16.75};//{27.5,12.5};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{28.5,16.75};//{21,27};//{23.5,12.5};//{27.5,12.5};//{28.5,16.75};//{26.5,12.5};//{30,20};//{22,7.75};//{9,17}; // bump position tracker
 	double dirs[4] = {0, 90, 180, 270};
 	double mi = 0; // move list index
 	vector<vector<int>> nrn_spk; // for total firing recording
@@ -72,12 +72,12 @@ struct P {
 	// select movement trajectory
 	bool run_path = 0; // use run_path function. This is auto enabled by functions that use it.
 	bool run_path_onlypos = 0; // only generate movement positions not signaling with run_path function
-	bool move_animal = 0; // use real animal movement positions with neural signaling
+	bool move_animal = 1; // use real animal movement positions with neural signaling
 	bool move_animal_aug = 0; // augment animal movement
 	bool move_animal_onlypos=0; // generate animal movement position but not signaling
 	bool move_speed_change=0; // test series of speed changes
 	bool move_fullspace = 0; // move through whole environment
-	bool move_straight = 1;
+	bool move_straight = 0;
 	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;
@@ -103,30 +103,30 @@ struct P {
 
 	// values for synapse activites
 	double base_ext = 250;//200; // baseline ext input speed level	
-	double speed_signaling = 0.6;//1.0; // setting for use of a constant virtual animal speed
+	double speed_signaling = 1.1;//0.6;//1.0; // setting for use of a constant virtual animal speed
 	double fast_to_slow_ratio = 0.38/0.62;
 	double dir_to_grc_g_fast = 33.082*1.1*.5;//*.47;
 	double dir_to_grc_g_slow = dir_to_grc_g_fast*fast_to_slow_ratio;
-	double grc_to_in_g_fast = 0.370*0.8*7.63*0.8;//.36505;	
+	double grc_to_in_g_fast = 0.370*0.8*7.63*1.0;//.36505;	
 	double grc_to_in_g_slow = grc_to_in_g_fast*fast_to_slow_ratio;	
 	double in_to_grc_g_fast = 0.6259622633;
 	double in_to_grc_g_slow = in_to_grc_g_fast*fast_to_slow_ratio;
 	double dir_init_multi = 10;//1000;//100000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
-	double move_increment = 0.0035;//0.01;//0.018;//0.007;//0.018;//0.006;//0.005;//0.024;//0.018;//0.005;//0.018; // amount to move in position each move command
+	double move_increment = 0.011;//0.01;//0.018;//0.007;//0.018;//0.006;//0.005;//0.024;//0.018;//0.005;//0.018; // amount to move in position each move command
 	vector<float> ext_dir;
 	// interneuron connections
 	int conn_offset = 0; // offset in neuron positions for connections
 	int conn_dist = 3; // distance between neurons in connections
-	int x_srt = 5; // offset for starting position of center-surround centroid in target layer size compared to full layer size
-	int y_srt = 5; //layer_size_in
+	int x_srt = 10;//5; // offset for starting position of center-surround centroid in target layer size compared to full layer size
+	int y_srt = 10;//5; //layer_size_in
 	float grc_to_in_wt = 1.0; // grc to interneurons weight
 	int use_nowp = 0; // select to use some non-wrapping centroids
 	int use_loww = 0; // select to use some low-weight centroids
 	bool print_conn_stats = 0; // print connectivity statistics
 	vector<double> in_conns; // count of grid cell to interneuron connections
 	vector<double> gc_conns; // count of interneuron to grid cell connections
-	#define use_saved_g_to_i_conns 0 // use prior saved grc to in connection list instead of computing new one
+	#define use_saved_g_to_i_conns 1 // use prior saved grc to in connection list instead of computing new one
 	#if use_saved_g_to_i_conns
 		bool save_grc_to_in_conns = 0;
 	#else
@@ -137,7 +137,7 @@ struct P {
 	ofstream grc_to_in_file;
 
 	// speed
-	bool auto_speed_control = 0; // automatically adjust parameters to match speed selected
+	bool auto_speed_control = 1; // automatically adjust parameters to match speed selected
 	bool speed_limit = 0; // speed limit on or off
 	double max_speed = 17.5; // max movement speed
 	double speed_conversion = 1;//0.2; // scale animal movement speed data
@@ -159,10 +159,10 @@ struct P {
 	// place cell parameters
 	double theta_freq = 125.0; // theta frequency in Hz
 	double dist_thresh = 7;//5; // distance threshold for only local connections	
-	float pc_to_grc_g_fast = 71.14*0.180;
+	float pc_to_grc_g_fast = 71.14*0.130;//0.180;
 	float pc_to_grc_g_slow = pc_to_grc_g_fast*fast_to_slow_ratio;
 	double pc_sig = 7;//2.5;//2;//1.5;//2;//1.5;//2;//1.5;//2;//1.2;//1.8;//1.6;//2;//4;//2;//1.2;//2;//2;//4;//2;//3;//3;//4;//2;//2;//1;//1.4;//1;//0.75; // sigma symbol; width of the place feild
-	double pc_level = 180;//230;//170;//400;//170;//100;//160;//130;//120;//150;//190;//170;//750;//180;//200;//190;//230;//180;//240;//300;//750;//660;//220;//300;//750;//240;//300;//300;//260;//300;//270;//240;//300;//240;//350;//240;//400;//300;//270;//220;//250;//200;//220;//300;//220;//1000;//220;//200;//300;//200;//220;//250;//300;//300*0.48;//300;//300;//300;//400;//300;//400;//500;//400;//600;//1000;//300;//600;//300;//600;//400;//300;//600;//400;//600;//300;//400;//600;//400;//400;//400;//1000;//2000;//400;//400;//2000;//400;//600;//700;//500;//3000;//3000;//2000;//2500;//3000; // place cell firing level
+	double pc_level = 130;//180;//230;//170;//400;//170;//100;//160;//130;//120;//150;//190;//170;//750;//180;//200;//190;//230;//180;//240;//300;//750;//660;//220;//300;//750;//240;//300;//300;//260;//300;//270;//240;//300;//240;//350;//240;//400;//300;//270;//220;//250;//200;//220;//300;//220;//1000;//220;//200;//300;//200;//220;//250;//300;//300*0.48;//300;//300;//300;//400;//300;//400;//500;//400;//600;//1000;//300;//600;//300;//600;//400;//300;//600;//400;//600;//300;//400;//600;//400;//400;//400;//1000;//2000;//400;//400;//2000;//400;//600;//700;//500;//3000;//3000;//2000;//2500;//3000; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters
@@ -239,6 +239,10 @@ struct P {
 	// vector<int> cent_y{0, -12, 12, -12, 12,  0,   0, -12,  12, -12, 12,   0,  0};
 	vector<int> cent_x{0, -20,  20}; 
     vector<int> cent_y{0, -10, -10};
+	// vector<int> cent_x{0, -20,  20, -20,  20}; 
+    // vector<int> cent_y{0, -10, -10,  10,  10};
+	// vector<int> cent_x{0, -20,  20, -20}; 
+    // vector<int> cent_y{0, -10, -10, 10};
 
 	// centroids with no wrapping
 	// vector<int> cent_x_nowp{0,    14, -14}; 

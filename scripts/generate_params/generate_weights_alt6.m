@@ -15,14 +15,14 @@ cpp_filename = "synapse_weights.cpp";
 output_cpp = 0; output_csv = 0; % these are always init as 0
 if write_to_csv output_csv = fopen(csv_filename,'w'); end
 if write_to_cpp output_cpp = fopen(cpp_filename,'w'); end
-grid_size_ref = 50;%60;%44; % reference grid size to position shift the center-surround distro for each neuron
+grid_size_ref = 60;%60;%44; % reference grid size to position shift the center-surround distro for each neuron
 grid_size_target = 40;%42;%40;%36;%42; % target grid size for neuron weights
 total_nrns = grid_size_ref^2;%(grid_size_target^2);%35;%(grid_size^2);% total neurons
 if only_show_plot_preview total_nrns = 3; end
 grid_size = grid_size_ref*3;%90;
 iter = 13; % iterations to run cent-surr function. i.e., number of tiled cent-surr dist. along an axis. e.g., value 5 creates 5x5 cent-surr circles in the weights plot.
-start_x_shift = (grid_size/2) - 24;%24;%5;%24;%19;%26;%6;%26;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%28; -2 = 2 down
-start_y_shift = (grid_size/2) - 24;%24;%5;%24;%19;%26;%6;%26;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%-4;%28; +2 = 2 left
+start_x_shift = (grid_size/2) - 29;%24;%5;%24;%19;%26;%6;%26;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%28; -2 = 2 down
+start_y_shift = (grid_size/2) - 29;%24;%5;%24;%19;%26;%6;%26;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%-4;%28; +2 = 2 left
 rescale_weights = 1; % rescale weights to match highval
 shift_down = 1; % apply subtraction to all weight values to shift them down
 filter_lowval = 1; % avoid creating weights below this value
@@ -30,8 +30,8 @@ highval = 0.00681312463724531;
 syn_wgt_shift = 0.001275510204;
 lowval_thres = 0.0;%0.001;
 conversion_mult = 114.7*1.574395603;
-r_s=20/42;%1; % ring scale
-p1=20;%.68;%20;%20;%.68;
+r_s=10/42;%20/42;%1; % ring scale
+p1=10;%20;%.68;%20;%20;%.68;
 p2=2;p3=2;
 % center size
 p4=r_s*180;%38*1.6;%200;%190;%160;%130;%90;%r_s*52;%35;%45;%52;%40;%70;%130;%38;%*2.5*1.3;%.55;%.7;%4;%2;%2;%2.5;%2;%*1.4;%1.344;%*2.7*(14/20);%1.4;%*.5; 

@@ -3,14 +3,16 @@
 selection="custom_tiled";
 %selection="full_tiled";
 weights_type=["custom_tiled","full_tiled"];
-x_size_in = 50;%60;
+x_size_in = 60;%50;%60;
 x_size = 40;
 x_srt = ((x_size_in-x_size)/2)+1;%6;%6;%8;%30;%8;%31;%8;
 y_srt = ((x_size_in-x_size)/2);%5;%5;%7;%17;%7;%30;%7; 
-% x_srt = 31;
-% y_srt = 30;
+x_srt = 31;
+y_srt = 30;
+x_srt = 18;
+y_srt = 5;
 create_plot = 1;
-report_stats = 1;
+report_stats = 0;
 use_nowp = 0; % select to use some non-wrapping centroids
 grc_layer = x_size*x_size;
 in_layer = x_size_in*x_size_in;
@@ -49,8 +51,12 @@ y_srt_stats=y_srt;
 %     cent_y=[0, -12, 12, -12, 12,  0,   0, -12,  12,  0,   0];
 %     cent_x=[0,  -8,  8,   6, -6, 14, -14, -22, 22];
 %     cent_y=[0, -12, 12, -12, 12,  0,   0, -12,  12];
-cent_x=[0,  -8,  8,   6, -6, 14, -14, -22, -22,  22, 22, -28, 28];
-cent_y=[0, -12, 12, -12, 12,  0,   0, -12,  12, -12, 12,   0,  0];
+% cent_x=[0,  -8,  8,   6, -6, 14, -14, -22, -22,  22, 22, -28, 28];
+% cent_y=[0, -12, 12, -12, 12,  0,   0, -12,  12, -12, 12,   0,  0];
+cent_x=[0, -20,  20]; 
+cent_y=[0, -10, -10];
+% cent_x=[0, -20,  20, -20,  20]; 
+% cent_y=[0, -10, -10,  10,  10];
 
 % centroids with no wrapping params
 cent_x_nowp=[-8,  -8,  14, -14, 28, -28, 20,  20, 34, 34]; 
@@ -116,7 +122,12 @@ end
 if create_plot==1 imagesc(plot_cent); end
 
 % report stats
-fprintf("centroids number: %d\n",length(cent_x));
+fprintf("centroids number: %d\ncentroids: ",length(cent_x));
+for i=1:length(cent_x)
+    fprintf("(%d,",cent_x(i));
+    fprintf("%d) ",cent_y(i));
+end
+fprintf("\n");
 if report_stats==1
     total_cents=find_stats(x_size, x_size_in, cent_x, cent_y, x_srt, y_srt);
     min_conn=min(total_cents);
