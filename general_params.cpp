@@ -103,9 +103,9 @@ struct P {
 
 	// values for synapse activites
 	double base_ext = 250;//200; // baseline ext input speed level	
-	double speed_signaling = 1.1;//0.6;//1.0; // setting for use of a constant virtual animal speed
+	double speed_signaling = 0.35;//0.6;//1.0; // setting for use of a constant virtual animal speed
 	double fast_to_slow_ratio = 0.38/0.62;
-	double dir_to_grc_g_fast = 33.082*1.1*.5;//*.47;
+	double dir_to_grc_g_fast = 33.082*1.1*.31;//.5;//*.47;
 	double dir_to_grc_g_slow = dir_to_grc_g_fast*fast_to_slow_ratio;
 	double grc_to_in_g_fast = 0.370*0.8*7.63*1.0;//.36505;	
 	double grc_to_in_g_slow = grc_to_in_g_fast*fast_to_slow_ratio;	
@@ -113,7 +113,7 @@ struct P {
 	double in_to_grc_g_slow = in_to_grc_g_fast*fast_to_slow_ratio;
 	double dir_init_multi = 10;//1000;//100000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
-	double move_increment = 0.011;//0.01;//0.018;//0.007;//0.018;//0.006;//0.005;//0.024;//0.018;//0.005;//0.018; // amount to move in position each move command
+	double move_increment = 0.015;//0.01;//0.018;//0.007;//0.018;//0.006;//0.005;//0.024;//0.018;//0.005;//0.018; // amount to move in position each move command
 	vector<float> ext_dir;
 	// interneuron connections
 	int conn_offset = 0; // offset in neuron positions for connections
@@ -159,10 +159,10 @@ struct P {
 	// place cell parameters
 	double theta_freq = 125.0; // theta frequency in Hz
 	double dist_thresh = 7;//5; // distance threshold for only local connections	
-	float pc_to_grc_g_fast = 71.14*0.130;//0.180;
+	float pc_to_grc_g_fast = 71.14*0.110;//0.130;//0.180;
 	float pc_to_grc_g_slow = pc_to_grc_g_fast*fast_to_slow_ratio;
-	double pc_sig = 7;//2.5;//2;//1.5;//2;//1.5;//2;//1.5;//2;//1.2;//1.8;//1.6;//2;//4;//2;//1.2;//2;//2;//4;//2;//3;//3;//4;//2;//2;//1;//1.4;//1;//0.75; // sigma symbol; width of the place feild
-	double pc_level = 130;//180;//230;//170;//400;//170;//100;//160;//130;//120;//150;//190;//170;//750;//180;//200;//190;//230;//180;//240;//300;//750;//660;//220;//300;//750;//240;//300;//300;//260;//300;//270;//240;//300;//240;//350;//240;//400;//300;//270;//220;//250;//200;//220;//300;//220;//1000;//220;//200;//300;//200;//220;//250;//300;//300*0.48;//300;//300;//300;//400;//300;//400;//500;//400;//600;//1000;//300;//600;//300;//600;//400;//300;//600;//400;//600;//300;//400;//600;//400;//400;//400;//1000;//2000;//400;//400;//2000;//400;//600;//700;//500;//3000;//3000;//2000;//2500;//3000; // place cell firing level
+	double pc_sig = 7; // sigma symbol; width of the place feild
+	double pc_level = 110;//80; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters
