@@ -106,7 +106,7 @@ struct P {
 	double fast_to_slow_ratio = 0.38/0.62;
 	double dir_to_grc_g_fast = 33.082*1.1*.35;//.47;
 	double dir_to_grc_g_slow = dir_to_grc_g_fast*fast_to_slow_ratio;
-	double grc_to_in_g_fast = 0.370*0.8*7.63*0.8;//.36505;	
+	double grc_to_in_g_fast = 0.370*0.8*7.63*0.45;//.36505;//0.4;//.36505;//0.5;//.36505;//0.65;//0.8;//.36505;//0.5;//0.8;//0.5;//0.9;//0.8;//.36505;	
 	double grc_to_in_g_slow = grc_to_in_g_fast*fast_to_slow_ratio;	
 	double in_to_grc_g_fast = 0.6259622633*1;//1;//1;
 	double in_to_grc_g_slow = in_to_grc_g_fast*fast_to_slow_ratio;
@@ -198,7 +198,7 @@ struct P {
 	// neuron vs location parameters
 	int selected_neuron = 465;//378;//372;//465;//372;//11;//465;//232;//465;//10;
 	int selected_in_neuron = 100; // interneuron
-	double grid_pattern_rot = 15;//-33.75;//0;//15.0;//-33.75;//0;//5;//0;//-33.75;//0;//-33.75;//-45;//-33.75;//-45;//0;//-45;//-22.5;//-45;//0;//15;//15;//-15; // angle value for rotation of grid pattern in plot
+	double grid_pattern_rot = 15;//0;//15;//-33.75;//0;//15.0;//-33.75;//0;//5;//0;//-33.75;//0;//-33.75;//-45;//-33.75;//-45;//0;//-45;//-22.5;//-45;//0;//15;//15;//-15; // angle value for rotation of grid pattern in plot
 	double grid_pattern_scale = 1;//0.95;//1;//0.5;//1;//18/22.5; // rescale grid pattern for plot. smaller value makes larger rescale, e.g., 0.8 = 1.25x rescale. animal speed to bump speed conversion. <goal_top_bump_speed>/<goal_top_animal_speed>
 	vector<int> locations_visited; // locations an animal visited
 	double animal_location[x_size*y_size]; // location of animal
@@ -272,8 +272,32 @@ struct P {
 	// vector<int> cent_y{0,   0,   0,  0, -10, -10, -10,  10,  10, 10, 20, 20, 20};
 	// vector<int> cent_x{0,  12, -12,  -6,   6,  6, -6, 12, 0, -12,  12,   0, -12};
 	// vector<int> cent_y{0,   0,   0, -10, -10, 10, 10, 20, 20, 20, -20, -20, -20};
-	vector<int> cent_x{0, -6,  6, 6, -6, 12, -12};
-	vector<int> cent_y{0, -10, 10, -10, 10, 0, 0};
+	// vector<int> cent_x{0, -6,  6, 6, -6, 12, -12};
+	// vector<int> cent_y{0, -10, 10, -10, 10, 0, 0};
+	// vector<int> cent_x{0, -8,  8, -6,   6, -14, 14};
+	// vector<int> cent_y{0, -12, 12, 12, -12, 0, 0};
+	// vector<int> cent_x{0, -7,  7, -6,   6, -13, 13};
+	// vector<int> cent_y{0, -12, 12, 12, -12,  0,  0};
+	// vector<int> cent_x{0, -13, 13, -26, 26, -7,   6, -20, 19, 7, -6, -19, 20};
+	// vector<int> cent_y{0,   0,  0,   0,  0, -12, -12, -12, -12, 12, 12, 12, 12};
+	// vector<int> cent_x{0, -12, 12,  6, -6, -18, 18,   6,  -6, -18,  18,  0, -12,  12};
+	// vector<int> cent_y{0,   0,  0, 10, 10,  10, 10, -10, -10, -10, -10, -20, -20, -20};
+	// vector<int> cent_x{0, -12, 12,  6, -6, -18, 18,   6,  -6, -18,  18,  0};
+	// vector<int> cent_y{0,   0,  0, 10, 10,  10, 10, -10, -10, -10, -10, -20};
+	// vector<int> cent_x{0, -12, 12,  6, -6, 18,   6,  -6, -18,  0, -12,  12};
+	// vector<int> cent_y{0,   0,  0, 10, 10, 10, -10, -10, -10, -20, -20, -20};
+	// vector<int> cent_x{0, -12, 12,  6, -6, 30,   6,  -6, -30,  0, -24,  24};
+	// vector<int> cent_y{0,   0,  0, 10, 10, 10, -10, -10, -10, -20, -20, -20};
+	// vector<int> cent_x{0, -12, 12,  6, -6, 30,   6,  -6, -30,  0};
+	// vector<int> cent_y{0,   0,  0, 10, 10, 10, -10, -10, -10, -20};
+	// vector<int> cent_x{0, -12, 12, -24, 24, 6, -6,   6,  -6};
+	// vector<int> cent_y{0,   0,  0,   0,  0, 10, 10, -10, -10};
+	// vector<int> cent_x{0, -12, 12, 6, -6,  18,  6,  -6, -18};
+	// vector<int> cent_y{0,   0,  0, 10, 10, 10, -10, -10, -10};
+	// vector<int> cent_x{0, -12, 12, 6, -6,  18, -18, 6,  -6, -18, 18};
+	// vector<int> cent_y{0,   0,  0, 10, 10, 10, 10, -10, -10, -10, -10};
+	vector<int> cent_x{0, -12, 12, 6, -6,  6,  -6, 12, -12};
+	vector<int> cent_y{0,   0,  0, 10, 10, -10, -10, 20, -20};
 
 	// centroids with no wrapping
 	// vector<int> cent_x_nowp{0,    14, -14}; 
