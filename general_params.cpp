@@ -125,7 +125,7 @@ struct P {
 	bool print_conn_stats = 1; // print connectivity statistics
 	vector<double> in_conns; // count of grid cell to interneuron connections
 	vector<double> gc_conns; // count of interneuron to grid cell connections
-	#define use_saved_g_to_i_conns 1 // use prior saved grc to in connection list instead of computing new one
+	#define use_saved_g_to_i_conns 0 // use prior saved grc to in connection list instead of computing new one
 	#if use_saved_g_to_i_conns
 		bool save_grc_to_in_conns = 0;
 	#else
@@ -296,8 +296,10 @@ struct P {
 	// vector<int> cent_y{0,   0,  0, 10, 10, 10, -10, -10, -10};
 	// vector<int> cent_x{0, -12, 12, 6, -6,  18, -18, 6,  -6, -18, 18};
 	// vector<int> cent_y{0,   0,  0, 10, 10, 10, 10, -10, -10, -10, -10};
-	vector<int> cent_x{0, -12, 12, 6, -6,  6,  -6, 12, -12};
-	vector<int> cent_y{0,   0,  0, 10, 10, -10, -10, 20, -20};
+	// vector<int> cent_x{0, -12, 12, 6,  -6,   6,  -6, 12, -12,   0};
+	// vector<int> cent_y{0,   0,  0, 10, 10, -10, -10, 20, -20, -20};
+	vector<int> cent_x{0, -12, 12, 6,  -6,   6,  -6, 12, 0,  -12,   0};
+	vector<int> cent_y{0,   0,  0, 10, 10, -10, -10, 20, 20, -20, -20};
 
 	// centroids with no wrapping
 	// vector<int> cent_x_nowp{0,    14, -14}; 
