@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 7000;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 250000;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 40;//36;//42;//30;//26;
@@ -76,8 +76,8 @@ struct P {
 	bool move_animal_aug = 0; // augment animal movement
 	bool move_animal_onlypos=0; // generate animal movement position but not signaling
 	bool move_speed_change=0; // test series of speed changes
-	bool move_fullspace = 0; // move through whole environment
-	bool move_straight = 1;
+	bool move_fullspace = 1; // move through whole environment
+	bool move_straight = 0;
 	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;
@@ -104,9 +104,9 @@ struct P {
 	double base_ext = 250;//250; // baseline ext input speed level	
 	double speed_signaling = 0.5;//.5; // setting for use of a constant virtual animal speed
 	double fast_to_slow_ratio = 0.38/0.62;
-	double dir_to_grc_g_fast = 33.082*1.1*.35;//.47;
+	double dir_to_grc_g_fast = 33.082*1.1*.4;//.35;//.4;//.35;//.47;
 	double dir_to_grc_g_slow = dir_to_grc_g_fast*fast_to_slow_ratio;
-	double grc_to_in_g_fast = 0.370*0.8*7.63*0.65;//0.55;//0.5;//0.6;//0.45;//.36505;//0.4;//.36505;//0.5;//.36505;//0.65;//0.8;//.36505;//0.5;//0.8;//0.5;//0.9;//0.8;//.36505;	
+	double grc_to_in_g_fast = 0.370*0.8*7.63*0.65;//0.65;//0.55;//0.5;//0.6;//0.45;//.36505;//0.4;//.36505;//0.5;//.36505;//0.65;//0.8;//.36505;//0.5;//0.8;//0.5;//0.9;//0.8;//.36505;	
 	double grc_to_in_g_slow = grc_to_in_g_fast*fast_to_slow_ratio;	
 	double in_to_grc_g_fast = 0.6259622633*1;//1;//1;
 	double in_to_grc_g_slow = in_to_grc_g_fast*fast_to_slow_ratio;
@@ -125,7 +125,7 @@ struct P {
 	bool print_conn_stats = 1; // print connectivity statistics
 	vector<double> in_conns; // count of grid cell to interneuron connections
 	vector<double> gc_conns; // count of interneuron to grid cell connections
-	#define use_saved_g_to_i_conns 1 // use prior saved grc to in connection list instead of computing new one
+	#define use_saved_g_to_i_conns 0 // use prior saved grc to in connection list instead of computing new one
 	#if use_saved_g_to_i_conns
 		bool save_grc_to_in_conns = 0;
 	#else
@@ -302,8 +302,8 @@ struct P {
 	// vector<int> cent_y{0,   0,  0, 10, 10, 10, -10, -10, -10, 20, 20, -20, -20};
 	// vector<int> cent_x{0, -12, 12, 6,  -6, 6,  -6,  12, 0,  -12,   0, 24, -24};
 	// vector<int> cent_y{0,   0,  0, 10, 10, -10, -10, 20, 20, -20, -20, 20, -24};
-	vector<int> cent_x{0, -12, 12, 6,  -6, 6,  -6,  12, 0,  -12,   0, 6, -6};
-	vector<int> cent_y{0,   0,  0, 10, 10, -10, -10, 20, 20, -20, -20, 30, -30};
+	vector<int> cent_x{0, -12, 12, 6,  -6, 6,  -6,  12, 0,  -12,   0,  18, -18};
+	vector<int> cent_y{0,   0,  0, 10, 10, -10, -10, 20, 20, -20, -20, 30,  30};
 
 	// centroids with no wrapping
 	// vector<int> cent_x_nowp{0,    14, -14}; 
