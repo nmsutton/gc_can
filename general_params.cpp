@@ -104,9 +104,9 @@ struct P {
 	double base_ext = 250;//250; // baseline ext input speed level	
 	double speed_signaling = 0.5;//.5; // setting for use of a constant virtual animal speed
 	double fast_to_slow_ratio = 0.38/0.62;
-	double dir_to_grc_g_fast = 33.082*1.1*.4;//.35;//.4;//.35;//.47;
+	double dir_to_grc_g_fast = 33.082*1.1*.35;//.4;//.35;//.47;
 	double dir_to_grc_g_slow = dir_to_grc_g_fast*fast_to_slow_ratio;
-	double grc_to_in_g_fast = 0.370*0.8*7.63*0.65;//0.65;//0.55;//0.5;//0.6;//0.45;//.36505;//0.4;//.36505;//0.5;//.36505;//0.65;//0.8;//.36505;//0.5;//0.8;//0.5;//0.9;//0.8;//.36505;	
+	double grc_to_in_g_fast = 0.370*0.8*7.63*0.45;//0.65;//0.55;//0.5;//0.6;//0.45;//.36505;//0.4;//.36505;//0.5;//.36505;//0.65;//0.8;//.36505;//0.5;//0.8;//0.5;//0.9;//0.8;//.36505;	
 	double grc_to_in_g_slow = grc_to_in_g_fast*fast_to_slow_ratio;	
 	double in_to_grc_g_fast = 0.6259622633*1;//1;//1;
 	double in_to_grc_g_slow = in_to_grc_g_fast*fast_to_slow_ratio;
@@ -298,12 +298,14 @@ struct P {
 	// vector<int> cent_y{0,   0,  0, 10, 10, 10, 10, -10, -10, -10, -10};
 	// vector<int> cent_x{0, -12, 12, 6,  -6,   6,  -6, 12, -12,   0};
 	// vector<int> cent_y{0,   0,  0, 10, 10, -10, -10, 20, -20, -20};
+	vector<int> cent_x{0, -12, 12, 6,  -6,   6,  -6, 12, 0, -12,   0};
+	vector<int> cent_y{0,   0,  0, 10, 10, -10, -10, 20, 20, -20, -20};
 	// vector<int> cent_x{0, -12, 12, 6,  -6, 18,  6,  -6,  -18, 12, 0,  -12,   0};
 	// vector<int> cent_y{0,   0,  0, 10, 10, 10, -10, -10, -10, 20, 20, -20, -20};
 	// vector<int> cent_x{0, -12, 12, 6,  -6, 6,  -6,  12, 0,  -12,   0, 24, -24};
 	// vector<int> cent_y{0,   0,  0, 10, 10, -10, -10, 20, 20, -20, -20, 20, -24};
-	vector<int> cent_x{0, -12, 12, 6,  -6, 6,  -6,  12, 0,  -12,   0,  18, -18};
-	vector<int> cent_y{0,   0,  0, 10, 10, -10, -10, 20, 20, -20, -20, 30,  30};
+	// vector<int> cent_x{0, -12, 12, 6,  -6, 6,  -6,  12, 0,  -12,   0,  18, -18};
+	// vector<int> cent_y{0,   0,  0, 10, 10, -10, -10, 20, 20, -20, -20, 30,  30};
 
 	// centroids with no wrapping
 	// vector<int> cent_x_nowp{0,    14, -14}; 
