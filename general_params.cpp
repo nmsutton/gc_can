@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 250000;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 1440140;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 40;//36;//42;//30;//26;
@@ -72,11 +72,11 @@ struct P {
 	// select movement trajectory
 	bool run_path = 0; // use run_path function. This is auto enabled by functions that use it.
 	bool run_path_onlypos = 0; // only generate movement positions not signaling with run_path function
-	bool move_animal = 0; // use real animal movement positions with neural signaling
+	bool move_animal = 1; // use real animal movement positions with neural signaling
 	bool move_animal_aug = 0; // augment animal movement
 	bool move_animal_onlypos=0; // generate animal movement position but not signaling
 	bool move_speed_change=0; // test series of speed changes
-	bool move_fullspace = 1; // move through whole environment
+	bool move_fullspace = 0; // move through whole environment
 	bool move_straight = 0;
 	bool move_circles = 0;
 	bool move_random = 0;
@@ -102,7 +102,7 @@ struct P {
 
 	// values for synapse activites
 	double base_ext = 250;//250; // baseline ext input speed level	
-	double speed_signaling = 0.5;//.5; // setting for use of a constant virtual animal speed
+	double speed_signaling = 0.3;//.5; // setting for use of a constant virtual animal speed
 	double fast_to_slow_ratio = 0.38/0.62;
 	double dir_to_grc_g_fast = 33.082*1.1*.35;//.4;//.35;//.47;
 	double dir_to_grc_g_slow = dir_to_grc_g_fast*fast_to_slow_ratio;
@@ -112,7 +112,7 @@ struct P {
 	double in_to_grc_g_slow = in_to_grc_g_fast*fast_to_slow_ratio;
 	double dir_init_multi = 10;//1000;//100000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
-	double move_increment = 0.005;//0.01;//0.018;//0.007;//0.018;//0.006;//0.005;//0.024;//0.018;//0.005;//0.018; // amount to move in position each move command
+	double move_increment = 0.002;//0.01;//0.018;//0.007;//0.018;//0.006;//0.005;//0.024;//0.018;//0.005;//0.018; // amount to move in position each move command
 	vector<float> ext_dir;
 	// interneuron connections
 	int conn_offset = 0; // offset in neuron positions for connections
@@ -125,7 +125,7 @@ struct P {
 	bool print_conn_stats = 1; // print connectivity statistics
 	vector<double> in_conns; // count of grid cell to interneuron connections
 	vector<double> gc_conns; // count of interneuron to grid cell connections
-	#define use_saved_g_to_i_conns 0 // use prior saved grc to in connection list instead of computing new one
+	#define use_saved_g_to_i_conns 1 // use prior saved grc to in connection list instead of computing new one
 	#if use_saved_g_to_i_conns
 		bool save_grc_to_in_conns = 0;
 	#else
@@ -136,7 +136,7 @@ struct P {
 	ofstream grc_to_in_file;
 
 	// speed
-	bool auto_speed_control = 0; // automatically adjust parameters to match speed selected
+	bool auto_speed_control = 1; // automatically adjust parameters to match speed selected
 	bool speed_limit = 0; // speed limit on or off
 	double max_speed = 17.5; // max movement speed
 	double speed_conversion = 1;//0.2; // scale animal movement speed data
