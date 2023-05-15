@@ -101,18 +101,18 @@ struct P {
 	bool pc_to_gc = 1; // place cells to grid cells signaling
 
 	// values for synapse activites
-	double base_ext = 250;//250; // baseline ext input speed level	
-	double speed_signaling = 0.3;//.5; // setting for use of a constant virtual animal speed
+	double base_ext = 550;//200;//250; // baseline ext input speed level	
+	double speed_signaling = 1.0;//.5; // setting for use of a constant virtual animal speed
 	double fast_to_slow_ratio = 0.38/0.62;
 	double dir_to_grc_g_fast = 33.082*1.1*.35;//.4;//.35;//.47;
 	double dir_to_grc_g_slow = dir_to_grc_g_fast*fast_to_slow_ratio;
-	double grc_to_in_g_fast = 0.370*0.8*7.63*0.45;//0.65;//0.55;//0.5;//0.6;//0.45;//.36505;//0.4;//.36505;//0.5;//.36505;//0.65;//0.8;//.36505;//0.5;//0.8;//0.5;//0.9;//0.8;//.36505;	
+	double grc_to_in_g_fast = 0.370*0.8*7.63*0.6;//0.8;//0.5;//0.8;//.36505;//0.45;//0.65;//0.55;//0.5;//0.6;//0.45;//.36505;//0.4;//.36505;//0.5;//.36505;//0.65;//0.8;//.36505;//0.5;//0.8;//0.5;//0.9;//0.8;//.36505;	
 	double grc_to_in_g_slow = grc_to_in_g_fast*fast_to_slow_ratio;	
-	double in_to_grc_g_fast = 0.6259622633*1;//1;//1;
+	double in_to_grc_g_fast = 0.6259622633;
 	double in_to_grc_g_slow = in_to_grc_g_fast*fast_to_slow_ratio;
 	double dir_init_multi = 10;//1000;//100000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
-	double move_increment = 0.002;//0.01;//0.018;//0.007;//0.018;//0.006;//0.005;//0.024;//0.018;//0.005;//0.018; // amount to move in position each move command
+	double move_increment = 0.001;//0.01;//0.018;//0.007;//0.018;//0.006;//0.005;//0.024;//0.018;//0.005;//0.018; // amount to move in position each move command
 	vector<float> ext_dir;
 	// interneuron connections
 	int conn_offset = 0; // offset in neuron positions for connections
@@ -198,7 +198,7 @@ struct P {
 	// neuron vs location parameters
 	int selected_neuron = 465;//378;//372;//465;//372;//11;//465;//232;//465;//10;
 	int selected_in_neuron = 100; // interneuron
-	double grid_pattern_rot = 15;//0;//15;//-33.75;//0;//15.0;//-33.75;//0;//5;//0;//-33.75;//0;//-33.75;//-45;//-33.75;//-45;//0;//-45;//-22.5;//-45;//0;//15;//15;//-15; // angle value for rotation of grid pattern in plot
+	double grid_pattern_rot = 0;//15;//0;//15;//-33.75;//0;//15.0;//-33.75;//0;//5;//0;//-33.75;//0;//-33.75;//-45;//-33.75;//-45;//0;//-45;//-22.5;//-45;//0;//15;//15;//-15; // angle value for rotation of grid pattern in plot
 	double grid_pattern_scale = 1;//0.95;//1;//0.5;//1;//18/22.5; // rescale grid pattern for plot. smaller value makes larger rescale, e.g., 0.8 = 1.25x rescale. animal speed to bump speed conversion. <goal_top_bump_speed>/<goal_top_animal_speed>
 	vector<int> locations_visited; // locations an animal visited
 	double animal_location[x_size*y_size]; // location of animal
@@ -298,14 +298,20 @@ struct P {
 	// vector<int> cent_y{0,   0,  0, 10, 10, 10, 10, -10, -10, -10, -10};
 	// vector<int> cent_x{0, -12, 12, 6,  -6,   6,  -6, 12, -12,   0};
 	// vector<int> cent_y{0,   0,  0, 10, 10, -10, -10, 20, -20, -20};
-	vector<int> cent_x{0, -12, 12, 6,  -6,   6,  -6, 12, 0, -12,   0};
-	vector<int> cent_y{0,   0,  0, 10, 10, -10, -10, 20, 20, -20, -20};
+	// vector<int> cent_x{0, -12, 12, 6,  -6,   6,  -6, 12, 0, -12,   0};
+	// vector<int> cent_y{0,   0,  0, 10, 10, -10, -10, 20, 20, -20, -20};
 	// vector<int> cent_x{0, -12, 12, 6,  -6, 18,  6,  -6,  -18, 12, 0,  -12,   0};
 	// vector<int> cent_y{0,   0,  0, 10, 10, 10, -10, -10, -10, 20, 20, -20, -20};
 	// vector<int> cent_x{0, -12, 12, 6,  -6, 6,  -6,  12, 0,  -12,   0, 24, -24};
 	// vector<int> cent_y{0,   0,  0, 10, 10, -10, -10, 20, 20, -20, -20, 20, -24};
 	// vector<int> cent_x{0, -12, 12, 6,  -6, 6,  -6,  12, 0,  -12,   0,  18, -18};
 	// vector<int> cent_y{0,   0,  0, 10, 10, -10, -10, 20, 20, -20, -20, 30,  30};
+	// vector<int> cent_x{0, -12, 12, 6,  -6,   6,  -6};
+	// vector<int> cent_y{0,   0,  0, 10, 10, -10, -10};
+	// vector<int> cent_x{0, -2,   2, -14, 14}; 
+	// vector<int> cent_y{0, -10, 10, -4, 4};
+	vector<int> cent_x{0, -2,   2, -14, 14, 10, -10}; 
+	vector<int> cent_y{0, -10, 10, -4, 4, -8, 8};
 
 	// centroids with no wrapping
 	// vector<int> cent_x_nowp{0,    14, -14}; 
