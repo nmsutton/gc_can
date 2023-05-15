@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 1440140;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 7000;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 40;//36;//42;//30;//26;
@@ -72,12 +72,12 @@ struct P {
 	// select movement trajectory
 	bool run_path = 0; // use run_path function. This is auto enabled by functions that use it.
 	bool run_path_onlypos = 0; // only generate movement positions not signaling with run_path function
-	bool move_animal = 1; // use real animal movement positions with neural signaling
+	bool move_animal = 0; // use real animal movement positions with neural signaling
 	bool move_animal_aug = 0; // augment animal movement
 	bool move_animal_onlypos=0; // generate animal movement position but not signaling
 	bool move_speed_change=0; // test series of speed changes
 	bool move_fullspace = 0; // move through whole environment
-	bool move_straight = 0;
+	bool move_straight = 1;
 	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;
@@ -97,12 +97,12 @@ struct P {
 	#define monitor_voltage 0 // turn voltage monitoring on or off 
 	int rotation_mod = 0; // modify direction signaling to accomidate a rotated grid pattern
 	double angle_rot = 0.0;//11;//10;//20;//20;//20;//15;//30;//20;//20;//0;//20;//32;//10;//-30;//-10;//-18;//0;//-16;//-15;//18;//20;//18;//18;//19;//20;//11;//+4.5;//+7; // angle in degrees of rotation offset to use in rotation_mod
-	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
-	bool pc_to_gc = 1; // place cells to grid cells signaling
+	bool pc_active = 0; // pc signaling active. bc->pc->gc can still work even if this is disabled.
+	bool pc_to_gc = 0; // place cells to grid cells signaling
 
 	// values for synapse activites
 	double base_ext = 550;//200;//250; // baseline ext input speed level	
-	double speed_signaling = 1.0;//.5; // setting for use of a constant virtual animal speed
+	double speed_signaling = 0.5;//.5; // setting for use of a constant virtual animal speed
 	double fast_to_slow_ratio = 0.38/0.62;
 	double dir_to_grc_g_fast = 33.082*1.1*.35;//.4;//.35;//.47;
 	double dir_to_grc_g_slow = dir_to_grc_g_fast*fast_to_slow_ratio;
@@ -136,7 +136,7 @@ struct P {
 	ofstream grc_to_in_file;
 
 	// speed
-	bool auto_speed_control = 1; // automatically adjust parameters to match speed selected
+	bool auto_speed_control = 0; // automatically adjust parameters to match speed selected
 	bool speed_limit = 0; // speed limit on or off
 	double max_speed = 17.5; // max movement speed
 	double speed_conversion = 1;//0.2; // scale animal movement speed data
@@ -158,10 +158,10 @@ struct P {
 	// place cell parameters
 	double theta_freq = 125.0; // theta frequency in Hz
 	double dist_thresh = 5; // distance threshold for only local connections	
-	float pc_to_grc_g_fast = 71.14*0.180;//0.220;//0.180;//0.4;//0.180;//0.155;//0.180;
+	float pc_to_grc_g_fast = 71.14*0.210;//0.220;//0.180;//0.4;//0.180;//0.155;//0.180;
 	float pc_to_grc_g_slow = pc_to_grc_g_fast*fast_to_slow_ratio;
 	double pc_sig = 1.5;//2.0;//1.5;//2.5;//2;//1.5;//2;//1.5;//2;//1.5;//2;//1.2;//1.8;//1.6;//2;//4;//2;//1.2;//2;//2;//4;//2;//3;//3;//4;//2;//2;//1;//1.4;//1;//0.75; // sigma symbol; width of the place feild
-	double pc_level = 180;//220;//180;//400;//180; // place cell firing level
+	double pc_level = 210;//220;//180;//400;//180; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters
@@ -310,8 +310,10 @@ struct P {
 	// vector<int> cent_y{0,   0,  0, 10, 10, -10, -10};
 	// vector<int> cent_x{0, -2,   2, -14, 14}; 
 	// vector<int> cent_y{0, -10, 10, -4, 4};
-	vector<int> cent_x{0, -2,   2, -14, 14, 10, -10}; 
-	vector<int> cent_y{0, -10, 10, -4, 4, -8, 8};
+	// vector<int> cent_x{0, -2,   2, -14, 14, 10, -10}; 
+	// vector<int> cent_y{0, -10, 10, -4, 4, -8, 8};
+	vector<int> cent_x{0, -2,   2, -14, 14, 10, -10,   6, -6}; 
+	vector<int> cent_y{0, -10, 10,  -4,  4, -8,   8, -18, 18};
 
 	// centroids with no wrapping
 	// vector<int> cent_x_nowp{0,    14, -14}; 
