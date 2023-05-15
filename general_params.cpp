@@ -101,18 +101,18 @@ struct P {
 	bool pc_to_gc = 0; // place cells to grid cells signaling
 
 	// values for synapse activites
-	double base_ext = 550;//200;//250; // baseline ext input speed level	
-	double speed_signaling = 0.5;//.5; // setting for use of a constant virtual animal speed
+	double base_ext = 750;//550;//200;//250; // baseline ext input speed level	
+	double speed_signaling = 0.85;//.5; // setting for use of a constant virtual animal speed
 	double fast_to_slow_ratio = 0.38/0.62;
-	double dir_to_grc_g_fast = 33.082*1.1*.35;//.4;//.35;//.47;
+	double dir_to_grc_g_fast = 33.082*1.1*.15;//.35;//.4;//.35;//.47;
 	double dir_to_grc_g_slow = dir_to_grc_g_fast*fast_to_slow_ratio;
-	double grc_to_in_g_fast = 0.370*0.8*7.63*0.6;//0.8;//0.5;//0.8;//.36505;//0.45;//0.65;//0.55;//0.5;//0.6;//0.45;//.36505;//0.4;//.36505;//0.5;//.36505;//0.65;//0.8;//.36505;//0.5;//0.8;//0.5;//0.9;//0.8;//.36505;	
+	double grc_to_in_g_fast = 0.370*0.8*7.63*0.8;//0.6;//0.8;//0.5;//0.8;//.36505;//0.45;//0.65;//0.55;//0.5;//0.6;//0.45;//.36505;//0.4;//.36505;//0.5;//.36505;//0.65;//0.8;//.36505;//0.5;//0.8;//0.5;//0.9;//0.8;//.36505;	
 	double grc_to_in_g_slow = grc_to_in_g_fast*fast_to_slow_ratio;	
 	double in_to_grc_g_fast = 0.6259622633;
 	double in_to_grc_g_slow = in_to_grc_g_fast*fast_to_slow_ratio;
 	double dir_init_multi = 10;//1000;//100000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
-	double move_increment = 0.001;//0.01;//0.018;//0.007;//0.018;//0.006;//0.005;//0.024;//0.018;//0.005;//0.018; // amount to move in position each move command
+	double move_increment = 0.0085;//0.01;//0.018;//0.007;//0.018;//0.006;//0.005;//0.024;//0.018;//0.005;//0.018; // amount to move in position each move command
 	vector<float> ext_dir;
 	// interneuron connections
 	int conn_offset = 0; // offset in neuron positions for connections
@@ -158,10 +158,10 @@ struct P {
 	// place cell parameters
 	double theta_freq = 125.0; // theta frequency in Hz
 	double dist_thresh = 5; // distance threshold for only local connections	
-	float pc_to_grc_g_fast = 71.14*0.210;//0.220;//0.180;//0.4;//0.180;//0.155;//0.180;
+	float pc_to_grc_g_fast = 71.14*0.120;//0.180;//0.220;//0.180;//0.4;//0.180;//0.155;//0.180;
 	float pc_to_grc_g_slow = pc_to_grc_g_fast*fast_to_slow_ratio;
 	double pc_sig = 1.5;//2.0;//1.5;//2.5;//2;//1.5;//2;//1.5;//2;//1.5;//2;//1.2;//1.8;//1.6;//2;//4;//2;//1.2;//2;//2;//4;//2;//3;//3;//4;//2;//2;//1;//1.4;//1;//0.75; // sigma symbol; width of the place feild
-	double pc_level = 210;//220;//180;//400;//180; // place cell firing level
+	double pc_level = 120;//180;//220;//180;//400;//180; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters
