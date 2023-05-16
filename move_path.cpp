@@ -96,10 +96,11 @@ void control_speed(double speed, P* p) {
 		//p->base_ext=100;
 
 		if (speed <= 18.0) {
-			p->speed_signaling=(-4.9398419382784553e-015)+((2.5313864451024987e-002)*speed)+((5.5989491690925193e-003)*pow(speed,2))+
-			((-4.0003258390201130e-004)*pow(speed,3))+((8.6999022482481231e-006)*pow(speed,4));
+			p->speed_signaling=(-3.9835576041607991e-004)+((2.4376623559662899e-002)*speed)+((9.2010202374512677e-003)*pow(speed,2))+
+			((-3.5173652202432531e-003)*pow(speed,3))+((5.1783084614573632e-004)*pow(speed,4))+((-3.1463124026832336e-005)*pow(speed,5))+
+			((6.8635405323674877e-007)*pow(speed,6));
 		}
-		else {p->speed_signaling = 0.85;}
+		else {p->speed_signaling = 1.15;}
 
 		// momentum adjustment
 		/*bool change = false;
