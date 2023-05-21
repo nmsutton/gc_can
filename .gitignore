@@ -77,3 +77,4 @@ scripts/param_explore/output/archive/*.jpeg
 */archive/*.jpg
 */archive/*.png
 */archive/*.jpeg
+scripts/firing_rate_records.txt
