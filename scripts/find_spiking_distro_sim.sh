@@ -4,5 +4,6 @@
 # This can be run from the command line without the matlab gui.
 #
 # Settings should be set in gridscore_sim_function.m.
+module load matlab # load matlab on remote computer
 
 matlab -nodisplay -r "find_spiking_distro_sim; exit"

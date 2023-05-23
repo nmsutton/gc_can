@@ -13,8 +13,8 @@
 %clc;
 initOAT;
 hopper_use=1;
-local_run=1;
-hopper_run=5;
+local_run=6;
+hopper_run=4;
 fdr_prefix="gc_can_";%"param_explore_iz_";
 if hopper_use
     hopper_path=strcat('/mnt/hopper_scratch/gc_sim/gc_can_',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat');
@@ -28,7 +28,7 @@ end
 
 delay_frames = false;%true;
 time_start=0;
-time_end=7000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
+time_end=20000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
 bin_size=100;%100;%200;%10; % size of firing bin in ms
 t=[(time_start*(1/bin_size)):(1/bin_size):(time_end*(1/bin_size))];
 x_size = 40;%36;%42;%30; % size of network on x-axis
