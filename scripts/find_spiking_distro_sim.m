@@ -1,8 +1,8 @@
 function find_spiking_distro_sim()
     fdr_prefix="gc_can_"; % folder name prefix
     use_hopper_data=1; % access hopper data locally
-    local_run=8; % local run number
-    hopper_run=8; % hopper run number
+    local_run=5; % local run number
+    hopper_run=5; % hopper run number
     save_gridscore_file=1; % save gridscore to file
     run_on_hopper=0; % run from hopper's system 
     p1=0;
