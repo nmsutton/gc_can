@@ -95,18 +95,19 @@ void control_speed(double speed, P* p) {
 		//printf("angle:%f\n",p->prior_angles[0]);
 		//p->base_ext=100;
 
-		if (speed <= 3.333) {
-			p->speed_signaling=(-9.5461832883003694e-015)+((1.5260787795927672e-001)*speed)+((-1.9577093813249291e-001)*pow(speed,2))+
-			    ((1.3478882077103232e-001)*pow(speed,3))+((-2.3698134214790050e-002)*pow(speed,4));
+		if (speed <= 10.333) {
+			p->speed_signaling=(-1.0471920686105382e-003)+((1.5897546430058587e-001)*speed)+((-6.9718995926837890e-002)*pow(speed,2))+
+			    ((3.1190384860628906e-002)*pow(speed,3))+((-9.3221909336734209e-003)*pow(speed,4))+((1.5746377610480376e-003)*pow(speed,5))+
+			    ((-1.3191479136807538e-004)*pow(speed,6))+((4.2702302561510860e-006)*pow(speed,7));
 		}
-		else if (speed <= 21.333) {
-			p->speed_signaling=(-9.7642564157464093e+000)+((7.9060582963142059e+000)*speed)+((-2.4228286793204354e+000)*pow(speed,2))+
-			    ((3.9633316211753050e-001)*pow(speed,3))+((-3.7240401211555967e-002)*pow(speed,4))+((2.0171107391062210e-003)*pow(speed,5))+
-			    ((-5.8541537775438019e-005)*pow(speed,6))+((7.0494848028101336e-007)*pow(speed,7));
+		else if (speed <= 22.0) {
+			p->speed_signaling=(-7.5870038513288398e+002)+((3.4369775586689138e+002)*speed)+((-6.5946889303764266e+001)*pow(speed,2))+
+			    ((6.9544904670806451e+000)*pow(speed,3))+((-4.3528020464431599e-001)*pow(speed,4))+((1.6173417183418304e-002)*pow(speed,5))+
+			    ((-3.3041888615056441e-004)*pow(speed,6))+((2.8644447649002268e-006)*pow(speed,7));
 		}
-		else {p->speed_signaling = 3.0;}
+		else {p->speed_signaling = 2.7;}
 
-		p->base_ext = 200 + 50/(1 + pow(speed/3.333,150));
+		p->base_ext = 250 + 50/(1 + pow(speed/10.333,70));
 
 		// momentum adjustment
 		/*bool change = false;
@@ -224,7 +225,7 @@ void move_straight(CARLsim* sim, P* p) {
 	double angle = 90;//90;//120;//105;//22.5;//90;//75;//56.25;//67;//22.5;//75;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(20,p);
+		control_speed(15,p);
 		EISignal(angle, sim, p);
 	}
 }
