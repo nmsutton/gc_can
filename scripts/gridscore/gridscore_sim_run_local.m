@@ -3,7 +3,7 @@ preloaded_spk_reader=0; % save time of loading spike reader by using prior loade
 if preloaded_spk_reader==0 && ~exist('keep_vars','var') clear all; preloaded_spk_reader=0; end; clear keep_vars;
 use_hopper_data=1; % access hopper data locally
 local_run=2; % local run number
-hopper_run=5; % hopper run number
+hopper_run=6; % hopper run number
 fdr_prefix="gc_can_";%"gc_can_"; % folder name prefix for hopper run. "gc_can_" for main dir; "param_explore_iz_" for iz pe.
 if ~exist('restrict_time','var')
 restrict_time=000;%6733000;%4328000;%1360000;%500000; % limit time plotted. 0 for no restriction; in 20ms bins
