@@ -114,7 +114,7 @@ sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", 1.0f, 1.0f,
            RangeDelay(1), RadiusRF(-1), SYN_FIXED, p.pc_to_grc_g_fast, p.pc_to_grc_g_slow); // 3 PCs
 
 /* STP parameters */
-// Keivan data conversion: g = conductance; t_d = STPtdAMPA or STPtdGABAa; u = U; t_f = tauU; t_r = tauX; 
+// Keivan data conversion: g = conductance; t_d = STPtdAMPA or STPtdGABAa; t_r = tauX; t_f = tauU; u = U;
 sim.setSTP(EC_LI_II_Multipolar_Pyramidal, MEC_LII_Stellate, true, STPu(0.1802, 0.0f),
                                      STPtauU(49.9201, 0.0f),
                                      STPtauX(152.8565, 0.0f),
@@ -229,5 +229,10 @@ sim.setSTP(MEC_LII_Stellate_Speed, EC_LII_Basket_Multipolar, true, STPu(0.1973, 
     sim.setNeuronMonitor(MEC_LII_Stellate,"DEFAULT");
     sim.setNeuronMonitor(MEC_LII_Basket,"DEFAULT");
     sim.setNeuronMonitor(CA1_Pyramidal,"DEFAULT");
-    //sim.setNeuronMonitor(MEC_LII_Basket_Speed,"DEFAULT");
+#endif
+
+#if monitor_voltage2
+    sim.setNeuronMonitor(EC_LII_Axo_Axonic,"DEFAULT");
+    sim.setNeuronMonitor(EC_LII_Basket_Multipolar,"DEFAULT");
+    sim.setNeuronMonitor(EC_LI_II_Multipolar_Pyramidal,"DEFAULT");
 #endif
