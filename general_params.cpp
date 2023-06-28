@@ -23,8 +23,8 @@ struct P {
 	int EC_LI_II_Multipolar_Pyramidal_Group, MEC_LII_Stellate_Group, EC_LII_Axo_Axonic_Group,
 	MEC_LII_Basket_Group, EC_LII_Basket_Multipolar_Group, CA1_Pyramidal_Group, 
 	MEC_LII_Basket_Speed_Group,	MEC_LII_Stellate_Speed_Group;	
-	double pos[2] = {7,8};//{27.5,12.5};//{21,27};//{28.5,16.75};//{27.5,12.5};//{21,27};//{21,23};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{28.5,16.75};//{21,27};//{23.5,12.5};//{27.5,12.5};//{28.5,16.75};//{26.5,12.5};//{30,20};//{22,7.75};//{30,18};//{9,17};//{22,8}; // virtual animal position tracker. starting position: {x,y}
-	double bpos[2] = {7,8};//{27.5,12.5};//{21,27};//{28.5,16.75};//{27.5,12.5};//{21,27};//{21,23};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{28.5,16.75};//{21,27};//{23.5,12.5};//{27.5,12.5};//{28.5,16.75};//{26.5,12.5};//{30,20};//{22,7.75};//{9,17}; // bump position tracker
+	double pos[2] = {5,6};//{27.5,12.5};//{21,27};//{28.5,16.75};//{27.5,12.5};//{21,27};//{21,23};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{28.5,16.75};//{21,27};//{23.5,12.5};//{27.5,12.5};//{28.5,16.75};//{26.5,12.5};//{30,20};//{22,7.75};//{30,18};//{9,17};//{22,8}; // virtual animal position tracker. starting position: {x,y}
+	double bpos[2] = {5,6};//{27.5,12.5};//{21,27};//{28.5,16.75};//{27.5,12.5};//{21,27};//{21,23};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{28.5,16.75};//{21,27};//{23.5,12.5};//{27.5,12.5};//{28.5,16.75};//{26.5,12.5};//{30,20};//{22,7.75};//{9,17}; // bump position tracker
 	double dirs[4] = {0, 90, 180, 270};
 	double mi = 0; // move list index
 	vector<vector<int>> nrn_spk; // for total firing recording
@@ -199,7 +199,7 @@ struct P {
 	// neuron vs location parameters
 	int selected_neuron = 465;//378;//372;//465;//372;//11;//465;//232;//465;//10;
 	int selected_in_neuron = 100; // interneuron
-	double grid_pattern_rot = -33.75;//0;//-40;//0;//-40;//0;//15;//0;//15;//-33.75;//0;//15.0;//-33.75;//0;//5;//0;//-33.75;//0;//-33.75;//-45;//-33.75;//-45;//0;//-45;//-22.5;//-45;//0;//15;//15;//-15; // angle value for rotation of grid pattern in plot
+	double grid_pattern_rot = -7.0;//-33.75;//0;//-40;//0;//-40;//0;//15;//0;//15;//-33.75;//0;//15.0;//-33.75;//0;//5;//0;//-33.75;//0;//-33.75;//-45;//-33.75;//-45;//0;//-45;//-22.5;//-45;//0;//15;//15;//-15; // angle value for rotation of grid pattern in plot
 	double grid_pattern_scale = 1;//0.95;//1;//0.5;//1;//18/22.5; // rescale grid pattern for plot. smaller value makes larger rescale, e.g., 0.8 = 1.25x rescale. animal speed to bump speed conversion. <goal_top_bump_speed>/<goal_top_animal_speed>
 	vector<int> locations_visited; // locations an animal visited
 	double animal_location[x_size*y_size]; // location of animal
