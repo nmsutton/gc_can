@@ -29,6 +29,10 @@ if plot_spikes && smaller_spk_ticks==1
     scatter(spk_x, spk_y, 15, [1,0,0], 'filled'), hold off
 elseif plot_spikes && smaller_spk_ticks==2
     scatter(spk_x, spk_y, 4, [1,0,0], 'filled'), hold off
+elseif plot_spikes && smaller_spk_ticks==3
+    scatter(spk_x, spk_y, 2, [1,0,0], 'filled'), hold off
+elseif plot_spikes && smaller_spk_ticks==4
+    scatter(spk_x, spk_y, 1, [1,0,0], 'filled'), hold off
 elseif plot_spikes
     scatter(spk_x, spk_y, [], [1,0,0], 'filled'), hold off
 end

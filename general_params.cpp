@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 8485920;//8485920;//1440140;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 7029780;//8485920;//8485920;//1440140;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 40;//36;//42;//30;//26;
@@ -23,8 +23,8 @@ struct P {
 	int EC_LI_II_Multipolar_Pyramidal_Group, MEC_LII_Stellate_Group, EC_LII_Axo_Axonic_Group,
 	MEC_LII_Basket_Group, EC_LII_Basket_Multipolar_Group, CA1_Pyramidal_Group, 
 	MEC_LII_Basket_Speed_Group,	MEC_LII_Stellate_Speed_Group;	
-	double pos[2] = {27.5,12.5};//{21,27};//{28.5,16.75};//{27.5,12.5};//{21,27};//{21,23};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{28.5,16.75};//{21,27};//{23.5,12.5};//{27.5,12.5};//{28.5,16.75};//{26.5,12.5};//{30,20};//{22,7.75};//{30,18};//{9,17};//{22,8}; // virtual animal position tracker. starting position: {x,y}
-	double bpos[2] = {27.5,12.5};//{21,27};//{28.5,16.75};//{27.5,12.5};//{21,27};//{21,23};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{28.5,16.75};//{21,27};//{23.5,12.5};//{27.5,12.5};//{28.5,16.75};//{26.5,12.5};//{30,20};//{22,7.75};//{9,17}; // bump position tracker
+	double pos[2] = {7,8};//{27.5,12.5};//{21,27};//{28.5,16.75};//{27.5,12.5};//{21,27};//{21,23};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{28.5,16.75};//{21,27};//{23.5,12.5};//{27.5,12.5};//{28.5,16.75};//{26.5,12.5};//{30,20};//{22,7.75};//{30,18};//{9,17};//{22,8}; // virtual animal position tracker. starting position: {x,y}
+	double bpos[2] = {7,8};//{27.5,12.5};//{21,27};//{28.5,16.75};//{27.5,12.5};//{21,27};//{21,23};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{28.5,16.75};//{21,27};//{23.5,12.5};//{27.5,12.5};//{28.5,16.75};//{26.5,12.5};//{30,20};//{22,7.75};//{9,17}; // bump position tracker
 	double dirs[4] = {0, 90, 180, 270};
 	double mi = 0; // move list index
 	vector<vector<int>> nrn_spk; // for total firing recording
@@ -123,7 +123,7 @@ struct P {
 	float grc_to_in_wt = 1.0; // grc to interneurons weight
 	int use_nowp = 0; // select to use some non-wrapping centroids
 	int use_loww = 0; // select to use some low-weight centroids
-	bool print_conn_stats = 1; // print connectivity statistics
+	bool print_conn_stats = 0; // print connectivity statistics
 	vector<double> in_conns; // count of grid cell to interneuron connections
 	vector<double> gc_conns; // count of interneuron to grid cell connections
 	#define use_saved_g_to_i_conns 1 // use prior saved grc to in connection list instead of computing new one

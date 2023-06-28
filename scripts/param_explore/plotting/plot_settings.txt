@@ -1,0 +1,36 @@
+Settings used to generate plots
+_______________________________
+iz_a_k
+
+plot_rotation_factor_1=1000;
+plot_rotation_factor_2=100000;
+plot_rotation_factor_3=0;
+______________________________
+iz_b_d
+
+plot_rotation_factor_1=1000;
+plot_rotation_factor_2=1000000;
+plot_rotation_factor_3=0;
+______________________________
+tm_taux_tauu
+
+plot_rotation_factor_1=394;
+plot_rotation_factor_2=2000;
+plot_rotation_factor_3=0;
+______________________________
+tm_g_taud
+
+plot_rotation_factor_1=1000;
+plot_rotation_factor_2=1000000;
+plot_rotation_factor_3=0;
+hco_default_point=[1.34093683911765,4.46436029019608]; % yellow; location of default hco value [p1,p2]
+sim_used_point=[1.050074411,3.0845]; % red; location of value used in sim [p1,p2]
+hco_2std_range1=[0.6773862189,3.084456527]; % purple; location of edge of hco 2std range
+hco_2std_range2=[1.952544646,5.844264053];
+______________________________
+fp_iz: b_d
+
+plot_rotation_factor_1=1000;
+plot_rotation_factor_2=10000000;
+plot_rotation_factor_3=0;
+______________________________
