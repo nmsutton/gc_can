@@ -199,7 +199,7 @@ struct P {
 	// neuron vs location parameters
 	int selected_neuron = 465;//378;//372;//465;//372;//11;//465;//232;//465;//10;
 	int selected_in_neuron = 100; // interneuron
-	double grid_pattern_rot = -50.625;//-45.0;//-20.0;//-33.75;//0;//-40;//0;//-40;//0;//15;//0;//15;//-33.75;//0;//15.0;//-33.75;//0;//5;//0;//-33.75;//0;//-33.75;//-45;//-33.75;//-45;//0;//-45;//-22.5;//-45;//0;//15;//15;//-15; // angle value for rotation of grid pattern in plot
+	double grid_pattern_rot = -52;//-45.0;//-20.0;//-33.75;//0;//-40;//0;//-40;//0;//15;//0;//15;//-33.75;//0;//15.0;//-33.75;//0;//5;//0;//-33.75;//0;//-33.75;//-45;//-33.75;//-45;//0;//-45;//-22.5;//-45;//0;//15;//15;//-15; // angle value for rotation of grid pattern in plot
 	double grid_pattern_scale = 1;//0.95;//1;//0.5;//1;//18/22.5; // rescale grid pattern for plot. smaller value makes larger rescale, e.g., 0.8 = 1.25x rescale. animal speed to bump speed conversion. <goal_top_bump_speed>/<goal_top_animal_speed>
 	vector<int> locations_visited; // locations an animal visited
 	double animal_location[x_size*y_size]; // location of animal
