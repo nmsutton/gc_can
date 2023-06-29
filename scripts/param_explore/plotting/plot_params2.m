@@ -8,14 +8,14 @@ downsample_amount = 1;%4;%10; % amount of downsampling; higher is more
 % extract data
 x=[];y=[];z=[];xyz=[];
 results_data=readmatrix('gridness_score.txt');
-plot_rotation_factor_1=1000;
-plot_rotation_factor_2=1000000;
+plot_rotation_factor_1=10000;
+plot_rotation_factor_2=300000;
 plot_rotation_factor_3=0;
-hco_default_point=[1.34093683911765,4.46436029019608]; % yellow; location of default hco value [p1,p2]
-sim_used_point=[1.050074411,3.0845]; % red; location of value used in sim [p1,p2]
+hco_default_point=[11.69,3]; % yellow; location of default hco value [p1,p2]
+sim_used_point=[11.69,0]; % red; location of value used in sim [p1,p2]
 hco_2std_range1=[0.6773862189,3.084456527]; % purple; location of edge of hco 2std range
 hco_2std_range2=[1.952544646,5.844264053];
-show_selected_points=0; % plot the additional points
+show_selected_points=1; % plot the additional points
 show_only_sel_points=0; % only show additional points
 rev_axes_y=0; % reverse axes plotting direction
 rev_axes_x=0;
@@ -123,12 +123,12 @@ ylim([min(results_data(:,2)) max(results_data(:,2))]);
 xlim([min(results_data(:,3)) max(results_data(:,3))]);
 end
 % Tsodyks-Markram or Izhikevich
-title("Gridness Scores of Tsodyks-Markram g and tau_d Parameters for Grid Cells", 'FontSize', 11);
-xlabel('Tsodyks-Markram tau_d') 
-ylabel('Tsodyks-Markram g')
-% title("Gridness Scores of Izhikevich a and k Parameters for Grid Cells", 'FontSize', 11);
-% xlabel('Izhikevich k') 
-% ylabel('Izhikevich a')
+% title("Gridness Scores of Tsodyks-Markram g and tau_d Parameters for Grid Cells", 'FontSize', 11);
+% xlabel('Tsodyks-Markram tau_d') 
+% ylabel('Tsodyks-Markram g')
+title("Gridness Scores of Izhikevich b and d Parameters for Grid Cells", 'FontSize', 11);
+xlabel('Izhikevich d') 
+ylabel('Izhikevich b')
 axis('tight');
 if rev_axes_y set(gca,'YDir','reverse'); end
 if rev_axes_x set(gca,'XDir','reverse'); end

@@ -8,8 +8,8 @@ plot_rotation_factor_3=0;
 ______________________________
 iz_b_d
 
-plot_rotation_factor_1=1000;
-plot_rotation_factor_2=1000000;
+plot_rotation_factor_1=10000;
+plot_rotation_factor_2=300000;
 plot_rotation_factor_3=0;
 ______________________________
 tm_taux_tauu
