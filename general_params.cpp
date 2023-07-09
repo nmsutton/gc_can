@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 7029780;//8485920;//8485920;//1440140;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 3631180;//8485920;//8485920;//1440140;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 40;//36;//42;//30;//26;
@@ -23,8 +23,8 @@ struct P {
 	int EC_LI_II_Multipolar_Pyramidal_Group, MEC_LII_Stellate_Group, EC_LII_Axo_Axonic_Group,
 	MEC_LII_Basket_Group, EC_LII_Basket_Multipolar_Group, CA1_Pyramidal_Group, 
 	MEC_LII_Basket_Speed_Group,	MEC_LII_Stellate_Speed_Group;	
-	double pos[2] = {5,6};//{27.5,12.5};//{21,27};//{28.5,16.75};//{27.5,12.5};//{21,27};//{21,23};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{28.5,16.75};//{21,27};//{23.5,12.5};//{27.5,12.5};//{28.5,16.75};//{26.5,12.5};//{30,20};//{22,7.75};//{30,18};//{9,17};//{22,8}; // virtual animal position tracker. starting position: {x,y}
-	double bpos[2] = {5,6};//{27.5,12.5};//{21,27};//{28.5,16.75};//{27.5,12.5};//{21,27};//{21,23};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{28.5,16.75};//{21,27};//{23.5,12.5};//{27.5,12.5};//{28.5,16.75};//{26.5,12.5};//{30,20};//{22,7.75};//{9,17}; // bump position tracker
+	double pos[2] = {22.3,12.1};//{21,27};//{28.5,16.75};//{27.5,12.5};//{21,27};//{21,23};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{28.5,16.75};//{21,27};//{23.5,12.5};//{27.5,12.5};//{28.5,16.75};//{26.5,12.5};//{30,20};//{22,7.75};//{30,18};//{9,17};//{22,8}; // virtual animal position tracker. starting position: {x,y}
+	double bpos[2] = {22.3,12.1};//{21,27};//{28.5,16.75};//{27.5,12.5};//{21,27};//{21,23};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{28.5,16.75};//{21,27};//{23.5,12.5};//{27.5,12.5};//{28.5,16.75};//{26.5,12.5};//{30,20};//{22,7.75};//{9,17}; // bump position tracker
 	double dirs[4] = {0, 90, 180, 270};
 	double mi = 0; // move list index
 	vector<vector<int>> nrn_spk; // for total firing recording
@@ -101,14 +101,14 @@ struct P {
 	bool pc_to_gc = 1; // place cells to grid cells signaling
 
 	// values for synapse activites
-	double base_ext = 300;//300;//200;//300;//550;//350;//550;//450;//750;//400;//500;//800;//530;//500;//450;//500;//500;//500;//450;//500;//450;//450;//375;//350;//350;//250;//250;//350;//250;//500;//2000;//160;//350;//650;//800;//550;//150;//150;//550;//1500;//550;//750;//950;//550;//200;//250; // baseline ext input speed level	
-	double speed_signaling = .45;//0.275;//0.25;//2.0;//1.4;//0.25;//0.02;//10.0;//2.0;//0.5;//0.5;//5;//0.35;//1.0;//0.5;//.5; // setting for use of a constant virtual animal speed
+	double base_ext = 750; // baseline ext input speed level	
+	double speed_signaling = .45; // setting for use of a constant virtual animal speed
 	double fast_to_slow_ratio = 0.38/0.62;
-	double dir_to_grc_g_fast = 33.082*1.1*0.3195;//.33;//.36;//.43;//.5;//.25;//33.082*1.1*.58;//.62;//.65;//.3;//.65;//0.58;//.35;//.13;//.25;//.2;//.22;//.22;//.25;//.29;//.29;//.275;//.29;//.3;//.24;//.36;//.3;//.2;//.31;//*.25;//.47;//.6;//.8;//.6;//.35;//.22;//.6;//.35;//.13;//.15;//.35;//.4;//.35;//.47;
+	double dir_to_grc_g_fast = 33.082*1.1*.13;
 	double dir_to_grc_g_slow = dir_to_grc_g_fast*fast_to_slow_ratio;
-	double grc_to_in_g_fast = 0.8244568522+((1.952544646-0.8244568522)*0.2);//*0.5);//*1);//*0.4703810748);//*0.5);//*0.4703810748);//(1/0.8645));//3;//2;//1;//.8;//.36505;//.6;//.8;//.8;//1.0;//.9;//0.85;//0.8;//0.6;//0.8;//0.5;//0.8;//.36505;//0.45;//0.65;//0.55;//0.5;//0.6;//0.45;//.36505;//0.4;//.36505;//0.5;//.36505;//0.65;//0.8;//.36505;//0.5;//0.8;//0.5;//0.9;//0.8;//.36505; // range is perhaps *.36505 to *0.8645 (0.8244568522 to 1.952544646)
+	double grc_to_in_g_fast = 0.8244568522+((1.952544646-0.8244568522)*0.8707896258);
 	double grc_to_in_g_slow = grc_to_in_g_fast*fast_to_slow_ratio;	
-	double in_to_grc_g_fast = 0.6259622633+((1.786298271-0.6259622633)*0);//0.16);//1; // range is perhaps 0.6259622633 to 1.786298271
+	double in_to_grc_g_fast = 0.6259622633+((1.786298271-0.6259622633)*0); // range is perhaps 0.6259622633 to 1.786298271
 	double in_to_grc_g_slow = in_to_grc_g_fast*fast_to_slow_ratio;
 	double dir_init_multi = 10;//1000;//100000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
@@ -123,7 +123,7 @@ struct P {
 	float grc_to_in_wt = 1.0; // grc to interneurons weight
 	int use_nowp = 0; // select to use some non-wrapping centroids
 	int use_loww = 0; // select to use some low-weight centroids
-	bool print_conn_stats = 0; // print connectivity statistics
+	bool print_conn_stats = 1; // print connectivity statistics
 	vector<double> in_conns; // count of grid cell to interneuron connections
 	vector<double> gc_conns; // count of interneuron to grid cell connections
 	#define use_saved_g_to_i_conns 1 // use prior saved grc to in connection list instead of computing new one
@@ -159,10 +159,10 @@ struct P {
 	// place cell parameters
 	double theta_freq = 125.0; // theta frequency in Hz
 	double dist_thresh = 5;//7;//5; // distance threshold for only local connections	
-	float pc_to_grc_g_fast = 71.14*0.13;//0.15;//0.25;//0.1;//71.14*.280;//.2;//.3;//.65;//.55;//0.40;//0.360;//0.280;//0.205;//0.120;//0.13;//0.12;//0.10;//0.11;//0.1;//0.12;//0.18;//0.14;//0.25;//0.14;//0.25;//0.14;//0.50;//0.25;//0.120;//0.180;//0.220;//0.180;//0.4;//0.180;//0.155;//0.180;
+	float pc_to_grc_g_fast = 71.14*0.120;
 	float pc_to_grc_g_slow = pc_to_grc_g_fast*fast_to_slow_ratio;
-	double pc_sig = 3.0;//2.5;//1.5;//2.2;//7;//2.5;//1.5;//2.0;//1.5;//2.5;//2;//1.5;//2;//1.5;//2;//1.5;//2;//1.2;//1.8;//1.6;//2;//4;//2;//1.2;//2;//2;//4;//2;//3;//3;//4;//2;//2;//1;//1.4;//1;//0.75; // sigma symbol; width of the place feild
-	double pc_level = 130;//150;//250;//100;//280;//1000;//560;//280;//1000;//300;//2000;//650;//550;//400;//360;//280;//205;//120;//130;//120;//100;//110;//100;//120;//180;//140;//250;//140;//250;//140;//500;//250;//120;//180;//220;//180;//400;//180; // place cell firing level
+	double pc_sig = 1.5; // sigma symbol; width of the place feild
+	double pc_level = 120; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters
@@ -199,7 +199,7 @@ struct P {
 	// neuron vs location parameters
 	int selected_neuron = 465;//378;//372;//465;//372;//11;//465;//232;//465;//10;
 	int selected_in_neuron = 100; // interneuron
-	double grid_pattern_rot = -52;//-45.0;//-20.0;//-33.75;//0;//-40;//0;//-40;//0;//15;//0;//15;//-33.75;//0;//15.0;//-33.75;//0;//5;//0;//-33.75;//0;//-33.75;//-45;//-33.75;//-45;//0;//-45;//-22.5;//-45;//0;//15;//15;//-15; // angle value for rotation of grid pattern in plot
+	double grid_pattern_rot = 0;//-33.75;//0;//-40;//0;//-40;//0;//15;//0;//15;//-33.75;//0;//15.0;//-33.75;//0;//5;//0;//-33.75;//0;//-33.75;//-45;//-33.75;//-45;//0;//-45;//-22.5;//-45;//0;//15;//15;//-15; // angle value for rotation of grid pattern in plot
 	double grid_pattern_scale = 1;//0.95;//1;//0.5;//1;//18/22.5; // rescale grid pattern for plot. smaller value makes larger rescale, e.g., 0.8 = 1.25x rescale. animal speed to bump speed conversion. <goal_top_bump_speed>/<goal_top_animal_speed>
 	vector<int> locations_visited; // locations an animal visited
 	double animal_location[x_size*y_size]; // location of animal
@@ -207,10 +207,10 @@ struct P {
 
 	// center-surround centroid positions
     // centroid (center of pixels) positions for each center-surround distribution (ring) via interneuron connections
-	// vector<int> cent_x{0, -2,   2, -14, 14, 10, -10,   6, -6}; 
-	// vector<int> cent_y{0, -10, 10,  -4,  4, -8,   8, -18, 18};
-	vector<int> cent_x{0, -8,  8,    6, -6, -14, 14};
-	vector<int> cent_y{0, -12, 12, -12, 12,   0,  0};
+	vector<int> cent_x{0, -2,   2, -14, 14, 10, -10,   6, -6}; 
+	vector<int> cent_y{0, -10, 10,  -4,  4, -8,   8, -18, 18};
+	// vector<int> cent_x{0, -8,  8,    6, -6, -14, 14};
+	// vector<int> cent_y{0, -12, 12, -12, 12,   0,  0};
 	// vector<int> cent_x{0, -20,  20}; 
     // vector<int> cent_y{0, -10, -10};
 	// vector<int> cent_x{0, -20,  20}; 

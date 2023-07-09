@@ -33,6 +33,8 @@ elseif plot_spikes && smaller_spk_ticks==3
     scatter(spk_x, spk_y, 2, [1,0,0], 'filled'), hold off
 elseif plot_spikes && smaller_spk_ticks==4
     scatter(spk_x, spk_y, 1, [1,0,0], 'filled'), hold off
+elseif plot_spikes && smaller_spk_ticks==5
+    scatter(spk_x, spk_y, 7, [1,0,0], 'filled'), hold off
 elseif plot_spikes
     scatter(spk_x, spk_y, [], [1,0,0], 'filled'), hold off
 end

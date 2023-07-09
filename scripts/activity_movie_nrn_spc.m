@@ -12,9 +12,9 @@
 %clear all;
 %clc;
 initOAT;
-hopper_use=0;
+hopper_use=1;
 local_run=1;
-hopper_run=7;
+hopper_run=4;
 fdr_prefix="gc_can_";%"param_explore_iz_";
 if hopper_use
     hopper_path=strcat('/mnt/hopper_scratch/gc_sim/gc_can_',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat');
@@ -28,8 +28,8 @@ end
 
 delay_frames = false;%true;
 time_start=0;
-time_end=60000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
-bin_size=100;%100;%200;%10; % size of firing bin in ms
+time_end=30000;%1200000;%990; % time steps, use (end frame - 1) = time. unit is 10ms per time step
+bin_size=200;%100;%200;%10; % size of firing bin in ms
 t=[(time_start*(1/bin_size)):(1/bin_size):(time_end*(1/bin_size))];
 x_size = 40;%36;%42;%30; % size of network on x-axis
 y_size = 40;%36;%42;%30; % size of network on y-axis
@@ -54,6 +54,7 @@ set(gcf, 'nextplot', 'replacechildren');
 set(gcf, 'renderer', 'zbuffer');
 caxis manual; % allow subsequent plots to use the same color limits
 custom_colormap = load('neuron_space_colormap.mat');
+%custom_colormap = load('neuron_space_colormap6.mat');
 %disp(numberOfFrames);
 for frameIndex = 1 : numberOfFrames
   imgfile = reshape(spk_window(ceil((frameIndex+(time_start/bin_size))/bin_size),:),[x_size,y_size])';
@@ -65,16 +66,18 @@ for frameIndex = 1 : numberOfFrames
   imagesc(hAxes, imgfile);
   % use colormapeditor to edit colors
   colormap(custom_colormap.CustomColormap2);
+  %colormap(custom_colormap.CustomColormap6);
   axis('tight')
   xlabel('neuron position on x axis') 
   ylabel('neuron position on y axis')
   shading interp;
   %caxis([0 5.5])
   %caxis([0 8.0])
-  caxis([0 5.5])
-  %caxis([0 11])
+  %caxis([0 5.5])
+  caxis([0 10.0])
   cb = colorbar;
-  set(cb, 'ylim', [0 11.0]); % set colorbar range
+  %set(cb, 'ylim', [0 11.0]); % set colorbar range
+  set(cb, 'ylim', [0 10.0]); % set colorbar range
   set(gca,'YDir','normal') % set y-axis 0 - end bottom to top
   caption = sprintf('Neuron space grid cell firing amounts, t = %.0f ms', ((frameIndex+(time_start/bin_size))*bin_size));
   if delay_frames == true
