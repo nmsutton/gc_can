@@ -13,7 +13,8 @@
 %% https://hydroecology.net/resizing-matlab-figures-the-easy-way/
 %% https://www.mathworks.com/matlabcentral/answers/43326-create-figure-without-displaying-it
 
-function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data_data,fdr_prefix,hopper_run,local_run)
+function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data, ...
+    fdr_prefix,hopper_run,local_run,x,y,run_real_recordings,plot_subsect,grid_size,plot_size)
 	import CMBHOME.Utils.*
 
 	%[root c_ts] = load_spike_times();
@@ -21,6 +22,10 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	use_carlsim_spikes = 1;
 	alt_heatmap = 0;
 	use_smoothing = 1;
+	occupancy_norm = 1; % perform occupancy normalization. this adjusts rates by number of visits to locations.
+	omit_islands = 1; % see later comments
+	omit_noocc = 1; % set no occupancy to zero
+	fs_video = 50; % sampling rate from video (samples/sec)
 	display_plot = 0;
 	save_plot = 0;
 	if run_on_hopper==1 save_plot = 1; end
@@ -28,18 +33,17 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	limit_time = 0;
 	rot90deg = 0; % rotate matrix 90 degrees clockwise
 	flip_vert = 0; % flip matrix vertically
+    real_env_size=360; % units of real animal enviornment from recordings
+    conversion_factor=660; % factor for converting from real recordings
 
 	if use_carlsim_spikes
-		grid_size = 42;%30; % sqrt of grid size
-		plot_size = 30; % sqrt of plot size
 		binside = 3;
 		std_smooth_kernel = 3.333;
 		% use highres_spikes.csv from high_res_traj.m not hopper created text file
 	    %hopper_use=0                                                                      ; % enable hopper folder or use local folder
 	    %hopper_run=5;
 	    %hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/spikes_recorded.csv']);
-	else
-		grid_size = 32;
+    else
 		spike_x = root.cel_x{1,1};
 		resize_factor = 660;
 		spike_y = root.cel_y{1,1}-resize_factor;
@@ -60,11 +64,13 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	        %if use_laptop == 0
 	        if false
 		        %carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/output/spikes/spikes_recorded.csv');
-	        else
+            else
 	            curr_dir = pwd;
-                curr_dir = replace(curr_dir,"gc_can_1",strcat(fdr_prefix,int2str(local_run)));
-                curr_dir = replace(curr_dir,strcat("code/1",strcat("code/gc_can_",int2str(hopper_run)));
+                %if use_hopper_data==0 run_number=local_run; else run_number=hopper_run; end
+                %curr_dir = replace(curr_dir,"gc_can_1",strcat(fdr_prefix,int2str(run_number)));
+                %curr_dir = replace(curr_dir,"code/1","code/gc_can_1");
                 cd(curr_dir);
+                disp(curr_dir+"/high_res_traj/highres_spikes.csv");
 	            carlsim_spikes = readmatrix(curr_dir+"/high_res_traj/highres_spikes.csv");
 	        end
 	    end
@@ -75,6 +81,12 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 			if use_carlsim_spikes
 				spike_x = carlsim_spikes(1:end,3);
 				spike_y = carlsim_spikes(1:end,2);
+                if run_real_recordings==1
+                    spike_x=(spike_x-conversion_factor)*(grid_size/real_env_size);
+                    spike_y=spike_y*(grid_size/real_env_size);
+                    x=x*(grid_size/real_env_size);
+                    y=(y-conversion_factor)*(grid_size/real_env_size);
+                end
 			else
 				spike_x = carlsim_spikes(1:end,3)*(360/30);
 				spike_y = carlsim_spikes(1:end,2)*(360/30);
@@ -154,13 +166,42 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 		if use_carlsim_spikes
 			xdim = linspace(0,grid_size-1,grid_size);%xdim * 30/360;
 			ydim2 = linspace(0,grid_size-1,grid_size);%ydim2 * 30/360;
-			heat_map = hist3([spike_x, spike_y], 'Edges', {xdim, ydim2});
-			s = (grid_size-plot_size)/2;
-			e = plot_size+s;
-			heat_map = heat_map(s:e, s:e); % crop to intended plot size
+			if occupancy_norm 
+				occupancy = hist3([x,y],'Edges',{xdim, ydim2})/fs_video; 
+				no_occupancy = occupancy==0; % mark indeces where there was no occupancy so we can correct after smoothing
+            end
+			heat_map = hist3([spike_x,spike_y],'Edges',{xdim, ydim2});
+            heat_map = 
+            if plot_subsect
+			    s = ((grid_size-plot_size)/2);
+			    e = plot_size+s;
+                if occupancy_norm
+			        occupancy = occupancy(s:e, s:e); % crop to intended plot size
+			        no_occupancy = no_occupancy(s:e, s:e); % crop to intended plot size
+                end
+			    heat_map = heat_map(s:e, s:e); % crop to intended plot size
+            end
+            if omit_islands
+            	% Takes matrix of occupancy values, calculates center of mass of pixels>0,
+				% and then finds all disconnected pixels and sets them = 0
+            	s = regionprops(occupancy>0, {'FilledArea', 'PixelIdxList'});
+				l = numel(s);
+				areas = vertcat(s.FilledArea);
+				[~, inds] = sort(areas);
+				for i = 1:length(inds)-1				    
+				    occupancy(s(inds(i)).PixelIdxList) = 0;				    
+				end
+            end
 			if use_smoothing
-				heat_map = SmoothMat(heat_map, [5*std_smooth_kernel/binside, 5*std_smooth_kernel/binside], std_smooth_kernel/binside); % smooth the spikes and occupancy with a 5x5 bin gaussian with std=1
+				if occupancy_norm
+					heat_map = SmoothMat(heat_map, [5*std_smooth_kernel/binside, 5*std_smooth_kernel/binside], std_smooth_kernel/binside)./SmoothMat(occupancy, [5*std_smooth_kernel/binside, 5*std_smooth_kernel/binside], std_smooth_kernel/binside);
+				else
+					heat_map = SmoothMat(heat_map, [5*std_smooth_kernel/binside, 5*std_smooth_kernel/binside], std_smooth_kernel/binside); % smooth the spikes and occupancy with a 5x5 bin gaussian with std=1
+				end
 			end
+			if omit_noocc
+		        heat_map(no_occupancy) = 0; % set no occupancy to zero
+		    end
 		else
 			[occupancy, xdim, ydim] = root.Occupancy(xdim, ydim, continuize_epochs, binside);
 			ydim2 = ydim - resize_factor;
@@ -197,6 +238,7 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	    %caxis([0 80])
 	    %caxis([0 30])
 		caption = sprintf('Physical space grid cell firing, total t = %.0f ms', carlsim_spikes(end,1));
+        %caption = sprintf('Physical space grid cell firing, cell=41');
 	else
 		caxis([0 25])
 		caption = sprintf('Physical space grid cell firing, total t = %.0f ms', c_ts(end)*1000);
