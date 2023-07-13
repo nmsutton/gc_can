@@ -37,6 +37,8 @@ scripts/high_res_traj/191108_S1_lightVSdarkness_cells11and12_scaleddown_Ys_40min
 scripts/high_res_traj/anim_trajx.csv
 scripts/high_res_traj/anim_trajy.csv
 scripts/high_res_traj/highres_spikes.csv
+scripts/high_res_traj/highres_spikes*
+scripts/high_res_traj/highres_spikes*.csv
 scripts/high_res_traj/*.jpg
 scripts/high_res_traj/*.png
 scripts/high_res_traj/*.csv
