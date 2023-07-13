@@ -159,7 +159,7 @@ struct P {
 	// place cell parameters
 	double theta_freq = 125.0; // theta frequency in Hz
 	double dist_thresh = 7;//5; // distance threshold for only local connections	
-	float pc_to_grc_g_fast = 71.14*0.13;//0.11;
+	float pc_to_grc_g_fast = 71.14*0.15;//0.11;
 	float pc_to_grc_g_slow = pc_to_grc_g_fast*fast_to_slow_ratio;
 	double pc_sig = 7; // sigma symbol; width of the place feild
 	double pc_level = 150;//110; // place cell firing level
