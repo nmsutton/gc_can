@@ -95,18 +95,20 @@ void control_speed(double speed, P* p) {
 		//printf("angle:%f\n",p->prior_angles[0]);
 		//p->base_ext=100;
 
-		if (speed <= 7.333) {
-			p->speed_signaling=(-7.3065947278972993e-004)+((3.0118933532641023e-001)*speed)+((-3.1790942641293513e-001)*pow(speed,2))+
-			    ((1.7276848122028107e-001)*pow(speed,3))+((-4.3547767326046420e-002)*pow(speed,4))+((5.1077669910488416e-003)*pow(speed,5))+
-			    ((-2.1685738208254850e-004)*pow(speed,6));
+		if (speed <= 13) {
+			p->speed_signaling=(-2.0762630567832942e-004)+((1.4040248922216825e-001)*speed)+((5.9473680345637869e-001)*pow(speed,2))+
+			((-8.2608539997707742e-001)*pow(speed,3))+((4.5677552980803315e-001)*pow(speed,4))+((-1.3489634015281490e-001)*pow(speed,5))+
+			((2.3568989599189516e-002)*pow(speed,6))+((-2.5177926503892594e-003)*pow(speed,7))+((1.6171678850230388e-004)*pow(speed,8))+
+			((-5.7407644343037669e-006)*pow(speed,9))+((8.6604743670777601e-008)*pow(speed,10));
 		}
-		else if (speed <= 21.333) {
-			p->speed_signaling=(-3.5671585674016102e+000)+((1.5685405266114900e+000)*speed)+((-1.5823066189252893e-001)*pow(speed,2))+
-			    ((7.1945878106456970e-003)*pow(speed,3))+((-1.2087001190736629e-004)*pow(speed,4));
+		else if (speed <= 18) {
+			p->speed_signaling=(6.1913417809969491e+004)+((-2.4890303155494945e+004)*speed)+((4.1566455835936858e+003)*pow(speed,2))+
+			((-3.6907551591606580e+002)*pow(speed,3))+((1.8376421548316941e+001)*pow(speed,4))+((-4.8646132720205937e-001)*pow(speed,5))+
+			((5.3489241762867193e-003)*pow(speed,6));
 		}
-		else {p->speed_signaling = 2.7;}
+		else {p->speed_signaling = 3.0;}
 
-		p->base_ext = 150 + 200/(1 + pow((speed/10.66503),4.742249));
+		p->base_ext=250 + 50/(1 + pow((speed/2.449933),111.8921));
 
 		// momentum adjustment
 		/*bool change = false;
@@ -224,7 +226,7 @@ void move_straight(CARLsim* sim, P* p) {
 	double angle = 90;//90;//120;//105;//22.5;//90;//75;//56.25;//67;//22.5;//75;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(15,p);
+		control_speed(18,p);
 		EISignal(angle, sim, p);
 	}
 }
