@@ -3,6 +3,7 @@ close all;
 
 if run_on_hopper==1
     curr_dir=pwd;
+    %curr_dir=replace(curr_dir,"gc_can_1",strcat(fdr_prefix,int2str(local_run)));
     cd /home/nsutton2/git/OAT_CS4/
     initOAT
     cd(curr_dir)
@@ -40,7 +41,7 @@ use_unwrapped_data = 0;
 output_spikes_file = 1; % output file that can be used in rate map plot
 plot_smooth_rm = 1; % plot smoothed rate map
 if ~exist('save_traj_plot','var') save_traj_plot = 0; end % save traj plot to file
-if run_on_hopper==1 save_traj_plot = 1; end
+%if run_on_hopper==1 save_traj_plot = 1; end
 if plot_in_spikes==1 plot_spikes=1; end
 if plot_spikes==0 output_spikes_file = 0; end
 if preloaded_spk_reader==0 spikes=[]; end
