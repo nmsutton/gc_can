@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 2160220;//2160220;//3813340;//3813340;//1260120;//8485920;//8485920;//1440140;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 8553860;//2160220;//3813340;//3813340;//1260120;//8485920;//8485920;//1440140;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 40;//36;//42;//30;//26;
@@ -23,8 +23,8 @@ struct P {
 	int EC_LI_II_Multipolar_Pyramidal_Group, MEC_LII_Stellate_Group, EC_LII_Axo_Axonic_Group,
 	MEC_LII_Basket_Group, EC_LII_Basket_Multipolar_Group, CA1_Pyramidal_Group, 
 	MEC_LII_Basket_Speed_Group,	MEC_LII_Stellate_Speed_Group;	
-	double pos[2] = {24.5,-11.15};//{-5.45,-6.9};//{15.9,22.1};//{-6.6,26.8};//{27.5,12.5};//{21,27};//{28.5,16.75};//{27.5,12.5};//{21,27};//{21,23};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{28.5,16.75};//{21,27};//{23.5,12.5};//{27.5,12.5};//{28.5,16.75};//{26.5,12.5};//{30,20};//{22,7.75};//{30,18};//{9,17};//{22,8}; // virtual animal position tracker. starting position: {x,y}
-	double bpos[2] = {24.5,-11.15};//{-5.45,-6.9};//{15.9,22.1};//{-6.6,26.8};//{27.5,12.5};//{21,27};//{28.5,16.75};//{27.5,12.5};//{21,27};//{21,23};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{21,27};//{27.5,12.5};//{28.5,16.75};//{21,27};//{23.5,12.5};//{27.5,12.5};//{28.5,16.75};//{26.5,12.5};//{30,20};//{22,7.75};//{9,17}; // bump position tracker
+	double pos[2] = {28.5,16.75};
+	double bpos[2] = {28.5,16.75};
 	double dirs[4] = {0, 90, 180, 270};
 	double mi = 0; // move list index
 	vector<vector<int>> nrn_spk; // for total firing recording
@@ -159,10 +159,10 @@ struct P {
 	// place cell parameters
 	double theta_freq = 125.0; // theta frequency in Hz
 	double dist_thresh = 7;//5; // distance threshold for only local connections	
-	float pc_to_grc_g_fast = 71.14*0.15;//0.11;
+	float pc_to_grc_g_fast = 71.14*0.145;//0.11;
 	float pc_to_grc_g_slow = pc_to_grc_g_fast*fast_to_slow_ratio;
 	double pc_sig = 7; // sigma symbol; width of the place feild
-	double pc_level = 150;//110; // place cell firing level
+	double pc_level = 145;//110; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters
