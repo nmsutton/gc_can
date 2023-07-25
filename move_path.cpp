@@ -95,22 +95,17 @@ void control_speed(double speed, P* p) {
 		//printf("angle:%f\n",p->prior_angles[0]);
 		//p->base_ext=100;
 
-		if (speed <= 8.333) {
-			p->speed_signaling=(7.7072705401933991e-004)+((5.4278015094708844e-002)*speed)+((7.8927478004706172e-003)*pow(speed,2))+
-			    ((-3.1547174920342311e-003)*pow(speed,3))+((5.6715358075459278e-004)*pow(speed,4))+((5.7240470344137475e-006)*pow(speed,5));
+		if (speed <= 9.5) {
+			p->speed_signaling=(1.7042120010157596e-004)+((2.7200088188420107e-002)*speed)+((-4.1840777408411467e-002)*pow(speed,2))+
+			    ((2.4923874412029690e-002)*pow(speed,3))+((-5.5991075861456597e-003)*pow(speed,4))+((5.7660919952454896e-004)*pow(speed,5))+
+			    ((-2.2124792552109651e-005)*pow(speed,6));
 		}
-		else if (speed <= 20.667) {
-			p->speed_signaling=(-7.1533683264759480e+000)+((2.4973315341134996e+000)*speed)+((-2.3864546171089068e-001)*pow(speed,2))+
-			    ((9.9227157586940368e-003)*pow(speed,3))+((-1.5029723674671533e-004)*pow(speed,4));
+		else if (speed <= 18.0) {
+			p->speed_signaling=(-6.4643431042873851e+002)+((2.9274993311260846e+002)*speed)+((-5.4614477527633746e+001)*pow(speed,2))+
+			((5.3752773972599357e+000)*pow(speed,3))+((-2.9431893063109282e-001)*pow(speed,4))+((8.5030934692069595e-003)*pow(speed,5))+
+			((-1.0130884364757560e-004)*pow(speed,6));
 		}
-		else {p->speed_signaling = 2.7;}
-
-		if (speed <= 7.667) {p->base_ext=350;}
-		else if (speed <= 20.667) {
-			p->base_ext=(3.4931672436367148e+003)+((-8.7362599779000539e+002)*speed)+((8.5304306342430976e+001)*pow(speed,2))+
-			    ((-3.6204465671916086e+000)*pow(speed,3))+((5.6108480909948855e-002)*pow(speed,4));
-		}
-		else {p->base_ext = 150;}
+		else {p->speed_signaling = 1.6;}
 
 		// momentum adjustment
 		/*bool change = false;
@@ -228,7 +223,7 @@ void move_straight(CARLsim* sim, P* p) {
 	double angle = 90;//90;//120;//105;//22.5;//90;//75;//56.25;//67;//22.5;//75;
 	general_input(angle, sim, p);
 	if (p->t % p->move_delay == 0) {
-		control_speed(18,p);
+		control_speed(15,p);
 		EISignal(angle, sim, p);
 	}
 }
