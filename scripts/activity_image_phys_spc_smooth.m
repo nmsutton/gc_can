@@ -14,7 +14,7 @@
 %% https://www.mathworks.com/matlabcentral/answers/43326-create-figure-without-displaying-it
 
 function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data, ...
-    fdr_prefix,hopper_run,local_run,x,y,run_real_recordings,plot_subsect,grid_size,plot_size,save_plot)
+    fdr_prefix,hopper_run,local_run,x,y,run_real_recordings,plot_subsect,grid_size,plot_size,save_plot,alt_data)
 	import CMBHOME.Utils.*
 
 	%[root c_ts] = load_spike_times();
@@ -34,6 +34,10 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	flip_vert = 0; % flip matrix vertically
     real_env_size=360; % units of real animal enviornment from recordings
     conversion_factor=660; % factor for converting from real recordings
+    if alt_data==1
+       real_env_size=236;
+       conversion_factor=773;
+    end
     timestep=20; % recordings timestep of samples in ms
 
 	if use_carlsim_spikes
@@ -174,8 +178,8 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 			heat_map = hist3([spike_x,spike_y],'Edges',{xdim, ydim2});
             if run_real_recordings==0 heat_map = heat_map*timestep; end
             if plot_subsect
-			    s = ((grid_size-plot_size)/2);
-			    e = plot_size+s;
+			    s = ceil(((grid_size-plot_size)/2));
+			    e = ceil(plot_size+s);
                 %s = s +2;
                 %e = e +2;
                 if occupancy_norm
@@ -243,7 +247,8 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 		%caxis([0 160])
 	    %caxis([0 80])
 	    %caxis([0 30])
-		caption = sprintf('Physical space grid cell firing, total t = %.0f ms', carlsim_spikes(end,1));
+		%caption = sprintf('Physical space grid cell firing, total t = %.0f ms', carlsim_spikes(end,1));
+        caption = sprintf('Physical space grid cell firing, total t = %.0f ms', length(x)*20);
         %caption = sprintf('Physical space grid cell firing, cell=41');
 	else
 		caxis([0 25])
