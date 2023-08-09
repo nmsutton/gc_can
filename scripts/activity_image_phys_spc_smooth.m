@@ -180,6 +180,8 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
             if plot_subsect
 			    s = ceil(((grid_size-plot_size)/2));
 			    e = ceil(plot_size+s);
+				%s = ((grid_size-plot_size)/2);
+			    %e = plot_size+s;
                 %s = s +2;
                 %e = e +2;
                 if occupancy_norm
