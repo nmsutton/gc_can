@@ -5,7 +5,7 @@
 #define PI 3.14159265
 
 struct P {
-	double sim_time = 7000;//1323200;//7000;//1200080;//8553860;//30000;//8460580;//8460580;//250000;//8460580;//8460580;//8485920;//250000;//1260120;//8485920;//8485920;//1440140;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 1200080;//1323200;//7000;//1200080;//8553860;//30000;//8460580;//8460580;//250000;//8460580;//8460580;//8485920;//250000;//1260120;//8485920;//8485920;//1440140;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 36;//40;//36;//42;//30;//26;
@@ -23,8 +23,8 @@ struct P {
 	int EC_LI_II_Multipolar_Pyramidal_Group, MEC_LII_Stellate_Group, EC_LII_Axo_Axonic_Group,
 	MEC_LII_Basket_Group, EC_LII_Basket_Multipolar_Group, CA1_Pyramidal_Group, 
 	MEC_LII_Basket_Speed_Group,	MEC_LII_Stellate_Speed_Group;	
-	double pos[2] = {-2.9,-2.2};//{-5.4,-4.7};//{28.5,16.75}; // virtual animal position tracker. starting position: {x,y}
-	double bpos[2] = {-2.9,-2.2};//{-5.4,-4.7};//{28.5,16.75}; // bump position tracker
+	double pos[2] = {6,-9};//{-2.9,-2.2};//{-5.4,-4.7};//{28.5,16.75}; // virtual animal position tracker. starting position: {x,y}
+	double bpos[2] = {6,-9};//{-2.9,-2.2};//{-5.4,-4.7};//{28.5,16.75}; // bump position tracker
 	double dirs[4] = {0, 90, 180, 270};
 	double mi = 0; // move list index
 	vector<vector<int>> nrn_spk; // for total firing recording
@@ -72,12 +72,12 @@ struct P {
 	// select movement trajectory
 	bool run_path = 0; // use run_path function. This is auto enabled by functions that use it.
 	bool run_path_onlypos = 0; // only generate movement positions not signaling with run_path function
-	bool move_animal = 0; // use real animal movement positions with neural signaling
+	bool move_animal = 1; // use real animal movement positions with neural signaling
 	bool move_animal_aug = 0; // augment animal movement
 	bool move_animal_onlypos=0; // generate animal movement position but not signaling
 	bool move_speed_change=0; // test series of speed changes
 	bool move_fullspace = 0; // move through whole environment
-	bool move_straight = 1;
+	bool move_straight = 0;
 	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;
@@ -104,7 +104,7 @@ struct P {
 	double base_ext = 132.5;//200;//150;//300; // baseline ext input speed level	
 	double speed_signaling = 0.95;//.35;//.6;//.3;//2.0;//.3; // setting for use of a constant virtual animal speed
 	double fast_to_slow_ratio = 0.38/0.62;
-	double dir_to_grc_g_fast = 33.082*1.1*1.15;//1.19;//.81;//.7;//.36;//.6;//.7;//.7;//.55;//.43;//.2;
+	double dir_to_grc_g_fast = 33.082*1.1*1.15;//1.19;//1.15;//1.19;//.81;//.7;//.36;//.6;//.7;//.7;//.55;//.43;//.2;
 	double dir_to_grc_g_slow = dir_to_grc_g_fast*fast_to_slow_ratio;
 	double grc_to_in_g_fast = 0.8244568522+((1.952544646-0.8244568522)*.35);//.15);//.25);//.5);//1.9;//5;//3;//4;//0.8244568522+((1.952544646-0.8244568522)*1);//.7);//.7);//1);//*.15);//0.15);
 	double grc_to_in_g_slow = grc_to_in_g_fast*fast_to_slow_ratio;	
@@ -159,10 +159,10 @@ struct P {
 	// place cell parameters
 	double theta_freq = 125.0; // theta frequency in Hz
 	double dist_thresh = 7;//5; // distance threshold for only local connections	
-	float pc_to_grc_g_fast = 71.14*.2667;//.23;//0.145;//.19;
+	float pc_to_grc_g_fast = 71.14*.24;//.3;//.23;//0.145;//.19;
 	float pc_to_grc_g_slow = pc_to_grc_g_fast*fast_to_slow_ratio;
 	double pc_sig = 3;//4;//3;//7.0; // sigma symbol; width of the place feild
-	double pc_level = 267;//230;//145;//400; // place cell firing level
+	double pc_level = 240;//300;//230;//145;//400; // place cell firing level
 	vector<float> pc_activity;
 
 	// boundary cell parameters
@@ -199,7 +199,7 @@ struct P {
 	// neuron vs location parameters
 	int selected_neuron = 465;//378;//372;//465;//372;//11;//465;//232;//465;//10;
 	int selected_in_neuron = 100; // interneuron
-	double grid_pattern_rot = 0;//-15;//-33.75; // angle value for rotation of grid pattern in plot
+	double grid_pattern_rot = -50;//0;//-15;//-33.75; // angle value for rotation of grid pattern in plot
 	double grid_pattern_scale = 1;//0.95;//1;//0.5;//1;//18/22.5; // rescale grid pattern for plot. smaller value makes larger rescale, e.g., 0.8 = 1.25x rescale. animal speed to bump speed conversion. <goal_top_bump_speed>/<goal_top_animal_speed>
 	vector<int> locations_visited; // locations an animal visited
 	double animal_location[x_size*y_size]; // location of animal
