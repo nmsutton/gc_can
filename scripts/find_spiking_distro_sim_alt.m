@@ -15,14 +15,14 @@ function find_spiking_distro_sim()
     create_plot=0; % show plot on screen
     spikes=[];
     spk_data=[];
-    total_nrns=1600; % total neurons to record firing rates from
+    total_nrns=1296; % total neurons to record firing rates from
     
     for i=1:total_nrns
         try
             cd gridscore
             sel_nrn=i;
             fprintf("processing neuron %d\n",i);
-            [heat_map,spikes,spk_data] = gridscore_sim_function(p1,p2,local_run, ...
+            [heat_map,spikes,spk_data] = gridscore_sim_function_alt(p1,p2,local_run, ...
             run_on_hopper, use_hopper_data,fdr_prefix,hopper_run, ...
             save_gridscore_file, preloaded_spk_reader,sel_nrn,save_plot, ...
             save_traj_plot, save_firingrate_file,create_plot,spikes,spk_data);

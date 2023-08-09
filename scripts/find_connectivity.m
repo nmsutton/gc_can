@@ -3,7 +3,8 @@
 thresh=.001;%.002;
 
 %weights=readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_1/scripts/generate_params/synapse_weights.csv');
-weights=readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_1/data/synapse_weights.csv');
+%weights=readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_1/data/synapse_weights.csv');
+weights=readmatrix('/mnt/StorageDrive/General/comp_neuro/gmu/research/simulation/backup/weight_gen/lrg_fields_med_fr_1_and_2/synapse_weights.csv');
 %tot_conn=find(weights>=.thresh);
 
 grc_layer=size(weights,2);

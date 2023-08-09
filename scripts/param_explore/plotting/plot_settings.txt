@@ -11,16 +11,17 @@ iz_b_d
 plot_rotation_factor_1=10000;
 plot_rotation_factor_2=300000;
 plot_rotation_factor_3=0;
+for sml fields: plot_rotation_factor_2=3000000000;
 ______________________________
 tm_taux_tauu
 
-plot_rotation_factor_1=394;
+plot_rotation_factor_1=394.8;
 plot_rotation_factor_2=2000;
 plot_rotation_factor_3=0;
 ______________________________
 tm_g_taud
 
-plot_rotation_factor_1=1000;
+plot_rotation_factor_1=10000;
 plot_rotation_factor_2=1000000;
 plot_rotation_factor_3=0;
 hco_default_point=[1.34093683911765,4.46436029019608]; % yellow; location of default hco value [p1,p2]

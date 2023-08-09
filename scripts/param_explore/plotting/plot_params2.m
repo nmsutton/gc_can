@@ -13,9 +13,9 @@ plot_rotation_factor_2=300000;
 plot_rotation_factor_3=0;
 hco_default_point=[11.69,3]; % yellow; location of default hco value [p1,p2]
 sim_used_point=[11.69,0]; % red; location of value used in sim [p1,p2]
-hco_2std_range1=[0.6773862189,3.084456527]; % purple; location of edge of hco 2std range
-hco_2std_range2=[1.952544646,5.844264053];
-show_selected_points=1; % plot the additional points
+hco_2std_range1=[0.0,0.0]; % purple; location of edge of hco 2std range
+hco_2std_range2=[0.0,0.0];
+show_selected_points=0; % plot the additional points
 show_only_sel_points=0; % only show additional points
 rev_axes_y=0; % reverse axes plotting direction
 rev_axes_x=0;
@@ -99,8 +99,10 @@ colorbar EastOutside;
 campos([plot_rotation_factor_1,plot_rotation_factor_3,plot_rotation_factor_2]);
 end
 
-load CustomBlueGreenColormap;
-colormap(CustomBlueGreenColormap);
+% load CustomBlueGreenColormap;
+% colormap(CustomBlueGreenColormap);
+load CustomPinkPurpleColormap7;
+colormap(CustomPinkPurpleColormap7);
 
 if downsample_colormap
 	cm = colormap;

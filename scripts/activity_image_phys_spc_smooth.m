@@ -248,7 +248,8 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	    %caxis([0 80])
 	    %caxis([0 30])
 		%caption = sprintf('Physical space grid cell firing, total t = %.0f ms', carlsim_spikes(end,1));
-        caption = sprintf('Physical space grid cell firing, total t = %.0f ms', length(x)*20);
+        %caption = sprintf('Physical space grid cell firing, total t = %.0f ms', length(x)*20);
+        caption = sprintf('Physical space grid cell firing, total t = %.0f ms', length(x));
         %caption = sprintf('Physical space grid cell firing, cell=41');
 	else
 		caxis([0 25])

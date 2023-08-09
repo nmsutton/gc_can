@@ -3,7 +3,7 @@
 % ext_dir_init2 as new data.
 
 % set params
-new_size=40;
+new_size=36;%40;
 orig_size=sqrt(size(ext_dir_init,2));
 matrix_orig=reshape(ext_dir_init,orig_size,orig_size);
 matrix_new=zeros(new_size,new_size);

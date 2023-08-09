@@ -8,7 +8,7 @@
 sample_matrix = 0;
 write_to_csv = 1; % needed for running on supercomputer
 write_to_cpp = 0; % alternative file for running locally (not supercomputer)
-show_2d_plot = 0;
+show_2d_plot = 1;
 show_3d_plot = 0;
 alt_weights = 0; % use alt synapse_weights matrix
 
