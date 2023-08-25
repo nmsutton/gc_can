@@ -50,18 +50,32 @@ for i in {0..8}
 do
 for j in {0..8} 
 do
-	# param change
+	# param changes
 	echo "processing p1: $i; p2: $j";
 	export p1=$i &&
 	export param_file=$param_file1 &&
 	export param_pattern=$param_pattern1 &&
 	export value_change=" \"${param1_vals[$i]}\"" &&
 	chg_prm &&
-	# param change
 	export p2=$j &&
 	export param_file=$param_file1 &&
 	export param_pattern=$param_pattern2 &&
 	export value_change=" \"${param2_vals[$j]}\"" &&
+	chg_prm &&
+	export p3=$j &&
+	export param_file=$param_file1 &&
+	export param_pattern=$param_pattern3 &&
+	export value_change=" \"${param3_vals[$j]}\"" &&
+	chg_prm &&
+	export p4=$j &&
+	export param_file=$param_file1 &&
+	export param_pattern=$param_pattern4 &&
+	export value_change=" \"${param4_vals[$j]}\"" &&
+	chg_prm &&
+	export p5=$j &&
+	export param_file=$param_file1 &&
+	export param_pattern=$param_pattern5 &&
+	export value_change=" \"${param5_vals[$j]}\"" &&
 	chg_prm &&
 	# save params
 	curr_time=$($date_format) &&

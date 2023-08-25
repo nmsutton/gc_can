@@ -70,6 +70,12 @@ scripts/param_explore/plotting/*.jpeg
 scripts/param_explore/plotting/archive/*.jpg
 scripts/param_explore/plotting/archive/*.png
 scripts/param_explore/plotting/archive/*.jpeg
+scripts/param_explore/plotting/archive/1/*.jpg
+scripts/param_explore/plotting/archive/1/*.png
+scripts/param_explore/plotting/archive/1/*.jpeg
+scripts/param_explore/plotting/archive/2/*.jpg
+scripts/param_explore/plotting/archive/2/*.png
+scripts/param_explore/plotting/archive/2/*.jpeg
 scripts/param_explore/config_files/archive/*.jpg
 scripts/param_explore/config_files/archive/*.png
 scripts/param_explore/config_files/archive/*.jpeg
@@ -81,3 +87,5 @@ scripts/param_explore/output/archive/*.jpeg
 */archive/*.jpeg
 scripts/firing_rate_records.txt
 scripts/param_explore/output/gridness_score.txt
+scripts/spk_sel.csv
+scripts/sel_spks.csv

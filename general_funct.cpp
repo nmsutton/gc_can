@@ -666,8 +666,6 @@ void GetINConns(int grc_i, int x_size, int layer_size, int conn_dist, int conn_o
 				if (cent_x->at(i) == new_x && cent_y->at(i) == new_y) {/*skip original centroid location*/}
 				else if (new_x>=0 && new_x<x_size_in 
 				     &&  new_y>=0 && new_y<x_size_in) {
-				// else if (new_x>=8 && new_x<(44) 
-				//      &&  new_y>=8 && new_y<(44)) {
 					cent_x->push_back(new_x);
 					cent_y->push_back(new_y);
 				}

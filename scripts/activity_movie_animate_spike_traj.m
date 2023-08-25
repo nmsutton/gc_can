@@ -4,20 +4,22 @@ close all;
 
 % run options
 use_hopper_data = 0;
-local_run=1;
+local_run=6;
 hopper_run = 7;
 plot_spikes = 1; 
 min_x = 0;%3.5;%4.5;
 max_x = 40;%min_x+32;%31;
 min_y = 0;%3.5;%4.5;
 max_y = 40;%min_y+32;%31;
+crop=4; % amount of space to crop
 tick_size = 20; % spike marker size
 spk_bin_size = 10; % spike reader bin size. Note: small bin sizes may take long processing with large spike sets. 40min sim with bin size 1 can take 10min to create plot.
 % select neuron to plot
-sel_nrn=7;%100;%348;%110;%210;%262;%454;%454;%453;%455;%591;%629;%547;%629;%494;%290;%393;%243;%358;%338;%210;%290;%497;%860;%810;%300;%1250;%410;%820;%516;%1228;%690;
+sel_nrn=1;%100;%348;%110;%210;%262;%454;%454;%453;%455;%591;%629;%547;%629;%494;%290;%393;%243;%358;%338;%210;%290;%497;%860;%810;%300;%1250;%410;%820;%516;%1228;%690;
 spikes=[];
 fdr_prefix="gc_can_"; % folder name prefix for hopper run. "gc_can_" for main dir; "param_explore_iz_" for iz pe.
-restrict_time = 367000;%300000; % 0 for no restriction or input time value for restriction
+start_time = 3600500;%1695000;%8180000;%30000;%1;
+restrict_time = 300000;%367000;%300000; % 0 for no restriction or input time value for restriction
 timestep=20;
 hFigure = figure;
 
@@ -63,19 +65,21 @@ caxis manual;          % allow subsequent plots to use the same color limits
 for t = 1:timestep:time
     clf(hFigure)
 	hold on
-    if plot_spikes spikes = find(spk_t < t); end
+    plot(Xs(1:start_time),Ys(1:start_time),'LineWidth',1,'Color','black');
+    if plot_spikes spikes = find(spk_t < (start_time+t)); end
     %scatter(Xs(1:t),Ys(1:t),10, [.1,.1,.1], 'filled'); % old positions
-    line(Xs(1:t),Ys(1:t), 'Color', 'k', 'LineWidth', 1.5)
+    line(Xs((start_time+1):(start_time+t)),Ys((start_time+1):(start_time+t)), 'Color', 'k', 'LineWidth', 1.5)
     if plot_spikes scatter(Xs(spk_t(spikes)), Ys(spk_t(spikes)), tick_size, [1,0,0], 'filled'); end % spikes
-    scatter(Xs(t),Ys(t),100, [0,.5,1], 'filled'); % current position
-    caption = sprintf('Virtual Animal Positions and Spikes; t = %.0f ms', t);
+    scatter(Xs(start_time+t),Ys(start_time+t),100, [0,.5,1], 'filled'); % current position
+    caption = sprintf('Virtual Animal Positions and Spikes; t = %.0f ms', start_time+t);
     title(caption, 'FontSize', 13);
-    xlim([min_x max_x])    
-    ylim([min_y max_y])
+    xlim([min_x+crop max_x-crop])    
+    ylim([min_y+crop max_y-crop])
     hold off
     thisFrame = getframe(gcf);
     myMovie(ceil(t/20)) = thisFrame;	
 end
+%hold off
 
 close(hFigure);
 myMovie(1) = []; % remove first frame causing issues due to wrong size

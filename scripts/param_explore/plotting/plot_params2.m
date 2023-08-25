@@ -3,18 +3,18 @@
 % possible alt. plots: https://www.mathworks.com/help/matlab/ref/gradient.html#bvhqkfr
 
 downsample_colormap = 1; % activate colormap downsampling
-downsample_amount = 1;%4;%10; % amount of downsampling; higher is more
+downsample_amount = 10;%4;%10; % amount of downsampling; higher is more
 
 % extract data
 x=[];y=[];z=[];xyz=[];
 results_data=readmatrix('gridness_score.txt');
-plot_rotation_factor_1=10000;
-plot_rotation_factor_2=300000;
+plot_rotation_factor_1=1000000;
+plot_rotation_factor_2=1000000000;
 plot_rotation_factor_3=0;
-hco_default_point=[11.69,3]; % yellow; location of default hco value [p1,p2]
-sim_used_point=[11.69,0]; % red; location of value used in sim [p1,p2]
-hco_2std_range1=[0.0,0.0]; % purple; location of edge of hco 2std range
-hco_2std_range2=[0.0,0.0];
+hco_default_point=[34.8316789509804,0.234934568627451]; % yellow; location of default hco value [p1,p2]
+sim_used_point=[49.9201,0.1672]; % red; location of value used in sim [p1,p2]
+hco_2std_range1=[18.7690,0.1672]; % purple; location of edge of hco 2std range
+hco_2std_range2=[49.9201,0.3066839824];
 show_selected_points=0; % plot the additional points
 show_only_sel_points=0; % only show additional points
 rev_axes_y=0; % reverse axes plotting direction
@@ -132,5 +132,6 @@ title("Gridness Scores of Izhikevich b and d Parameters for Grid Cells", 'FontSi
 xlabel('Izhikevich d') 
 ylabel('Izhikevich b')
 axis('tight');
+%fontsize(24, "points")
 if rev_axes_y set(gca,'YDir','reverse'); end
 if rev_axes_x set(gca,'XDir','reverse'); end

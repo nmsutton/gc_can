@@ -13,6 +13,29 @@ plot_rotation_factor_2=300000;
 plot_rotation_factor_3=0;
 for sml fields: plot_rotation_factor_2=3000000000;
 ______________________________
+iz_C_vmin
+
+plot_rotation_factor_1=500000;
+plot_rotation_factor_2=1000000;
+plot_rotation_factor_3=0;
+rev_axes_y=1;
+hco_default_point=[118,-49.52]; % yellow; location of default hco value [p1,p2]
+sim_used_point=[118,-49.52]; % red; location of value used in sim [p1,p2]
+______________________________
+iz_vt_vpeak
+
+plot_rotation_factor_1=100000;
+plot_rotation_factor_2=1000000;
+plot_rotation_factor_3=0;
+hco_default_point=[-43.52,11.48]; % yellow; location of default hco value [p1,p2]
+sim_used_point=[-43.52,11.48]; % red; location of value used in sim [p1,p2]
+______________________________
+iz_d_vr
+plot_rotation_factor_1=10000000;
+plot_rotation_factor_2=100000000;
+plot_rotation_factor_3=0;
+rev_axes_y=0;
+______________________________
 tm_taux_tauu
 
 plot_rotation_factor_1=394.8;
@@ -29,9 +52,50 @@ sim_used_point=[1.050074411,3.0845]; % red; location of value used in sim [p1,p2
 hco_2std_range1=[0.6773862189,3.084456527]; % purple; location of edge of hco 2std range
 hco_2std_range2=[1.952544646,5.844264053];
 ______________________________
+tm_u_tauu
+plot_rotation_factor_1=1000000;
+plot_rotation_factor_2=1000000000;
+plot_rotation_factor_3=0;
+hco_default_point=[34.8316789509804,0.234934568627451]; % yellow; location of default hco value [p1,p2]
+sim_used_point=[49.9201,0.1672]; % red; location of value used in sim [p1,p2]
+hco_2std_range1=[18.7690,0.1672]; % purple; location of edge of hco 2std range
+hco_2std_range2=[49.9201,0.3066839824];
+______________________________
 fp_iz: b_d
 
 plot_rotation_factor_1=1000;
 plot_rotation_factor_2=10000000;
 plot_rotation_factor_3=0;
 ______________________________
+fp_iz: C_vmin
+
+plot_rotation_factor_1=100000;
+plot_rotation_factor_2=100000000;
+plot_rotation_factor_3=0;
+______________________________
+fp_iz: vt_vpeak
+
+plot_rotation_factor_1=100000;
+plot_rotation_factor_2=100000000;
+plot_rotation_factor_3=0;
+______________________________
+fp_iz: d_vr
+
+plot_rotation_factor_1=30000000;
+plot_rotation_factor_2=8000000000;
+plot_rotation_factor_3=0;
+rev_axes_y=0;
+
+extra:
+______________________________
+iz_C_vr (no longer used)
+
+hco_default_point=[118,-58.53]; % yellow; location of default hco value [p1,p2]
+sim_used_point=[118,-58.53]; % red; location of value used in sim [p1,p2]
+______________________________
+fp_iz: C_vr
+
+plot_rotation_factor_1=3000000;
+plot_rotation_factor_2=100000000;
+plot_rotation_factor_3=0;
+rev_axes_y=1;
