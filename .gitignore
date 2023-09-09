@@ -89,3 +89,5 @@ scripts/firing_rate_records.txt
 scripts/param_explore/output/gridness_score.txt
 scripts/spk_sel.csv
 scripts/sel_spks.csv
+scripts/moves_converter/output/*
+scripts/moves_converter/output/*.*
