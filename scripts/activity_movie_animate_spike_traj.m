@@ -18,8 +18,8 @@ spk_bin_size = 10; % spike reader bin size. Note: small bin sizes may take long 
 sel_nrn=1;%100;%348;%110;%210;%262;%454;%454;%453;%455;%591;%629;%547;%629;%494;%290;%393;%243;%358;%338;%210;%290;%497;%860;%810;%300;%1250;%410;%820;%516;%1228;%690;
 spikes=[];
 fdr_prefix="gc_can_"; % folder name prefix for hopper run. "gc_can_" for main dir; "param_explore_iz_" for iz pe.
-start_time = 3600500;%1695000;%8180000;%30000;%1;
-restrict_time = 300000;%367000;%300000; % 0 for no restriction or input time value for restriction
+start_time = 3604500;%1695000;%8180000;%30000;%1;
+restrict_time = 302000;%367000;%300000; % 0 for no restriction or input time value for restriction
 timestep=20;
 hFigure = figure;
 

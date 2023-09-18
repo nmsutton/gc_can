@@ -626,7 +626,10 @@ public:
 		if (p->weights_in[i_adj][j] == 1.0) {
 			connected = 1; // only connect where matrix value is 1.0 
 			weight = mex_hat[i_adj][j];
-			if (p->print_conn_stats == 1) {p->gc_conns.at(i_adj)=p->gc_conns.at(i_adj)+1.0;}
+			if (p->print_conn_stats == 1) {
+				p->gc_conns.at(i_adj)=p->gc_conns.at(i_adj)+1.0;
+				p->gc_conns2.at(j)=p->gc_conns2.at(j)+1.0;
+			}
 		}
     }
 };
@@ -729,7 +732,10 @@ public:
 			for (int i2 = 0; i2 < cent_x.size(); i2++) {
 				if (j_sft == cent_j[i2]) {
 					connected = 1;
-					if (p->print_conn_stats == 1) {p->in_conns.at(i)=p->in_conns.at(i)+1.0;}
+					if (p->print_conn_stats == 1) {
+						p->in_conns.at(i)=p->in_conns.at(i)+1.0;
+						p->in_conns2.at(j_sft)=p->in_conns2.at(j_sft)+1.0;
+					}
 					if (p->save_grc_to_in_conns == 1) {p->in_conns_binary[i][j_sft]=1.0;}
 					if (i == 0) {printf("i:%d j_sft:%d c_x:%d c_y:%d pd:%f cent_count:%d\n",i,j_sft,cent_x[i2],cent_y[i2],get_pd(i,p->x_size),cent_x.size());}
 				}

@@ -1,5 +1,4 @@
 # izhikevich model firing pattern parameter exploration parameters
-# This is for K and A params
 
 # select params
 export run_on_hopper=0 # run from hopper's system 

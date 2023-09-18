@@ -1,6 +1,6 @@
 % run from local pc and create gridscore, trajectory plot, and rate map plot
 
-function [heat_map,spikes,spk_data] = gridscore_sim_function(p1,p2,local_run,run_on_hopper,use_hopper_data,fdr_prefix,hopper_run,save_gridscore_file,preloaded_spk_reader,sel_nrn,save_plot,save_traj_plot,save_firingrate_file,create_plot,spikes,spk_data)
+function [heat_map,spikes,spk_data] = gridscore_sim_function(p1,p2,local_run,run_on_hopper,use_hopper_data,fdr_prefix,hopper_run,save_gridscore_file,preloaded_spk_reader,sel_nrn,save_plot,save_traj_plot,save_firingrate_file,save_firingpeak_file,create_plot,spikes,spk_data,alt_data)
 	% general run options
 	% run_on_hopper: run from hopper's system 
 	% use_hopper_data: access hopper data locally
@@ -15,9 +15,11 @@ function [heat_map,spikes,spk_data] = gridscore_sim_function(p1,p2,local_run,run
 	save_gridscore_file=str2num([string(save_gridscore_file)]); % save gridscore to file
 	preloaded_spk_reader=str2num([string(preloaded_spk_reader)]); % save time of loading spike reader by using prior loaded one
  	sel_nrn=str2num([string(sel_nrn)]); % select neuron to plot
- 	save_plot==str2num([string(save_plot)]);
- 	save_traj_plot==str2num([string(save_traj_plot)]);
- 	save_firingrate_file==str2num([string(save_firingrate_file)]);
+ 	save_plot=str2num([string(save_plot)]);
+ 	save_traj_plot=str2num([string(save_traj_plot)]);
+ 	save_firingrate_file=str2num([string(save_firingrate_file)]);
+ 	save_firingpeak_file=str2num([string(save_firingpeak_file)]);
+    alt_data=str2num([string(alt_data)]);
 
 	restrict_time=0; % limit time plotted. 0 for no restriction; in 20ms bins
 	smaller_spk_ticks=1; % choose trajectory plot tick size. 2 for extra small.

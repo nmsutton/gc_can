@@ -3,12 +3,12 @@
 % select data to use
 load filenames;load tetrodes;load cells;
 % file_number 15 = small, 23 = medium, 17 = large
-file_number=15;%17;%15;%23;
+file_number=11;%35;%11;%39;%2;%17;%15;%23;
 
 run_real_recordings=1; 
 plot_subsect=1;
-grid_size=33;%20;%33;
-plot_size=31;%18;%31;
+grid_size=33;%33;%20;%33;
+plot_size=31;%31;%18;%31;
 restrict_time=0;
 keep_vars=1; % avoid clearing variables set here
 alt_data=0;

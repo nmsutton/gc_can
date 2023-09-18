@@ -20,8 +20,8 @@ if include_in bask_nS = bask_sR.readSpikes(1); end
 stel_spk_sels = []; bask_spk_sels = [];
 if include_in==0 bask_nR=[0]; bask_nV=[0]; bask_sR=[0]; bask_nS=[0]; end
 % set run params
-t_start = 3600500;%8180000;%10000;%7200000;%1;%17500;%11400;%7000%12400;%8000;%10000;%5000; % start time
-t_end = t_start+300000;%10000;%1500;%600;%3000;%12800;%13000;%11000;%13000; % end time
+t_start = 3600000;%8180000;%10000;%7200000;%1;%17500;%11400;%7000%12400;%8000;%10000;%5000; % start time
+t_end = t_start+302000;%10000;%1500;%600;%3000;%12800;%13000;%11000;%13000; % end time
 t_window = 5000;%1500;
 nrns_tot = 1;%3; % number of neurons to plot
 nrn_select = 1;%100; % starting neuron index

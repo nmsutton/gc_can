@@ -32,7 +32,7 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	limit_time = 0;
 	rot90deg = 0; % rotate matrix 90 degrees clockwise
 	flip_vert = 0; % flip matrix vertically
-    real_env_size=360; % units of real animal enviornment from recordings
+    real_env_size=360; % units of real animal environment from recordings
     conversion_factor=660; % factor for converting from real recordings
     if alt_data==1
        real_env_size=236;
@@ -182,11 +182,17 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 			    e = ceil(plot_size+s);
 				%s = ((grid_size-plot_size)/2);
 			    %e = plot_size+s;
-                %s = s +2;
-                %e = e +2;
+                %s = s + 1;%2;
+                %e = e + 1;%2;
                 if occupancy_norm
 			        occupancy = occupancy(s:e, s:e); % crop to intended plot size
 			        no_occupancy = no_occupancy(s:e, s:e); % crop to intended plot size
+                    %occupancy = occupancy((s-1):(e-1), (s+2):(e+2)); % crop to intended plot size
+			        %no_occupancy = no_occupancy((s-1):(e-1), (s+2):(e+2)); % crop to intended plot size
+                    %occupancy = occupancy((s-0):(e-0), (s+1):(e+1)); % crop to intended plot size
+			        %no_occupancy = no_occupancy((s-0):(e-0), (s+1):(e+1)); % crop to intended plot size
+                    %occupancy = occupancy((s-0):(e-0), (s+2):(e+2)); % crop to intended plot size
+			        %no_occupancy = no_occupancy((s-0):(e-0), (s+2):(e+2)); % crop to intended plot size
                 end
 			    heat_map = heat_map(s:e, s:e); % crop to intended plot size
             end

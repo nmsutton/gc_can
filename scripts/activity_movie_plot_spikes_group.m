@@ -19,7 +19,7 @@ hFigure = figure;
 hFigure.Position = [1 0 1920 204];
 time_bin = 40;
 t_start = 1;%8180000;%10000; % start time
-t_end = t_start+300000;
+t_end = t_start+301000;
 alter_plot_start_time = 0;
 if use_selected_time==1
     alter_plot_start_time = 3600000; % add time to the time reported in the plot
