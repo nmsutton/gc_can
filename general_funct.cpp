@@ -620,20 +620,15 @@ public:
     	maxWt = 10000.0f; delay = 1; connected = 0; weight = 0;
 
 		// adjust i for multiple neuron types combine into a group
-		//printf("i: %d; j: %d\n",i,j);
 		int i_adj = 0;
 		if (p->limit_aa_neurons && i >= (p->MEC_LII_Basket_Count/2)) {i=i-(p->MEC_LII_Basket_Count/2);i_adj=i_adj+2;}
 		i_adj = (i * this->conn_dist) + this->conn_offset;
-		//if (i > (p->MEC_LII_Basket_Count/2)) {i_adj=i_adj-(p->MEC_LII_Basket_Count/2);i_adj+2;}
-		//printf("i: %d; j: %d\n",i,j);
 
 		// assign connections
 		if (p->weights_in[i_adj][j] == 1.0) {
 			connected = 1; // only connect where matrix value is 1.0 
 			weight = mex_hat[i_adj][j];
 			if (p->print_conn_stats == 1) {
-				//p->gc_conns.at(i_adj)=p->gc_conns.at(i_adj)+1.0;
-				//p->gc_conns2.at(j)=p->gc_conns2.at(j)+1.0;
 				p->i2g_grcs_per_in_t.at(i_adj)++;
 				p->i2g_ins_per_grc_t.at(j)++;
 				if (this->conn_offset==0) {p->i2g_grcs_per_in_1.at(i_adj)++;}//p->i2g_ins_per_grc_1.at(i_adj)+1.0;}
@@ -720,7 +715,6 @@ public:
     		j_sft = 0;
     		if (p->limit_aa_neurons && j >= (p->MEC_LII_Basket_Count/2)) {j=j-(p->MEC_LII_Basket_Count/2);j_sft=j_sft+2;}
     		j_sft = (j * this->conn_dist) + this->conn_offset;
-    		//if (j > (p->MEC_LII_Basket_Count/2)) {j_sft=j_sft-(p->MEC_LII_Basket_Count/2);j_sft+2;}
     		if (in_conns_list[i][j_sft] == 1) {connected = 1;}
     	#else
 	    	// calculate grc to in connections instead of using a saved list of them
@@ -744,12 +738,9 @@ public:
 		    }
 			
 			// select connections
-			//printf("j: %d\n",j);
 			j_sft = 0;
 			if (p->limit_aa_neurons && j >= (p->MEC_LII_Basket_Count/2)) {j=j-(p->MEC_LII_Basket_Count/2);j_sft=j_sft+2;}
 			j_sft = (j * this->conn_dist) + this->conn_offset;
-			//if (j > (p->MEC_LII_Basket_Count/2)) {j_sft=j_sft-(p->MEC_LII_Basket_Count/2);j_sft+2;}
-			//printf("j: %d\n",j);
 			for (int i2 = 0; i2 < cent_x.size(); i2++) {
 				if (j_sft == cent_j[i2]) {
 					connected = 1;
@@ -763,8 +754,6 @@ public:
 					p->g2i_conn_i_grp.push_back(destGrp);
 					p->g2i_conn_g.push_back(i);
 					p->g2i_conn_i.push_back(j);
-					//p->in_conns.at(i)=p->in_conns.at(i)+1.0;
-					//p->in_conns2.at(j_sft)=p->in_conns2.at(j_sft)+1.0;
 					p->g2i_ins_per_grc_t.at(i)++;
 					p->g2i_grcs_per_in_t.at(j_sft)++;
 					if (this->conn_offset==0) {p->g2i_ins_per_grc_1.at(i)++;}
@@ -1001,7 +990,6 @@ void get_stats(vector<double> values, vector<double> * stats, int layer_size) {
 	stats->push_back(mean);stats->push_back(std);stats->push_back(min);
 	stats->push_back(max);stats->push_back((double) layer_size);
 	stats->push_back(min_i);stats->push_back(max_i);
-	//printf("values.size():%d layer_size:%d\n",values.size(),layer_size);
 }
 
 void write_grc_to_in_file(P *p) {
@@ -1085,7 +1073,8 @@ void print_conn_stats(P * p) {
 		g2i_sum=g2i_sum+p->g2i_ins_per_grc_2.at(i);
 		g2i_sum=g2i_sum+p->g2i_ins_per_grc_3.at(i);
 	}
-	printf("\nTotal grid cell to interneuron connections: %d\n",(int)g2i_sum);
+	printf("\n");
+	if (g2i_sum!=0.0) {printf("Total grid cell to interneuron connections: %d\n",(int)g2i_sum);}
 	for (int i = 0; i < p->layer_size_in; i++) {
 		i2g_sum=i2g_sum+p->i2g_grcs_per_in_1.at(i);
 		i2g_sum=i2g_sum+p->i2g_grcs_per_in_2.at(i);
@@ -1095,10 +1084,12 @@ void print_conn_stats(P * p) {
 
 	get_stats(p->g2i_ins_per_grc_t, &g2i_ipg_stats_t, p->layer_size);
 	get_stats(p->g2i_grcs_per_in_t, &g2i_gpi_stats_t, p->layer_size_in);
+	if (g2i_ipg_stats_t[0]!=0.0) {
+	printf("GrC->IN Connections (IN conns per GrC): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",g2i_ipg_stats_t[0],g2i_ipg_stats_t[1],g2i_ipg_stats_t[2],g2i_ipg_stats_t[3],g2i_ipg_stats_t[4],g2i_ipg_stats_t[5],g2i_ipg_stats_t[6]);
+	printf("GrC->IN Connections (GrC conns per IN): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",g2i_gpi_stats_t[0],g2i_gpi_stats_t[1],g2i_gpi_stats_t[2],g2i_gpi_stats_t[3],g2i_gpi_stats_t[4],g2i_gpi_stats_t[5],g2i_gpi_stats_t[6]);
+	}
 	get_stats(p->i2g_ins_per_grc_t, &i2g_ipg_stats_t, p->layer_size);
 	get_stats(p->i2g_grcs_per_in_t, &i2g_gpi_stats_t, p->layer_size_in);
-	printf("All interneurons and grid cell connections:\nGrC->IN Connections (IN conns per GrC): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",g2i_ipg_stats_t[0],g2i_ipg_stats_t[1],g2i_ipg_stats_t[2],g2i_ipg_stats_t[3],g2i_ipg_stats_t[4],g2i_ipg_stats_t[5],g2i_ipg_stats_t[6]);
-	printf("GrC->IN Connections (GrC conns per IN): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",g2i_gpi_stats_t[0],g2i_gpi_stats_t[1],g2i_gpi_stats_t[2],g2i_gpi_stats_t[3],g2i_gpi_stats_t[4],g2i_gpi_stats_t[5],g2i_gpi_stats_t[6]);
 	printf("IN->GrC Connections (GrC conns per IN): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",i2g_gpi_stats_t[0],i2g_gpi_stats_t[1],i2g_gpi_stats_t[2],i2g_gpi_stats_t[3],i2g_gpi_stats_t[4],i2g_gpi_stats_t[5],i2g_gpi_stats_t[6]);
 	printf("IN->GrC Connections (IN conns per GrC): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n\n",i2g_ipg_stats_t[0],i2g_ipg_stats_t[1],i2g_ipg_stats_t[2],i2g_ipg_stats_t[3],i2g_ipg_stats_t[4],i2g_ipg_stats_t[5],i2g_ipg_stats_t[6]);
 }
