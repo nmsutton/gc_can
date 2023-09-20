@@ -13,7 +13,7 @@
 %clc;
 initOAT;
 hopper_use=0;
-local_run=2;
+local_run=1;
 hopper_run=1;
 fdr_prefix="gc_can_";%"param_explore_iz_";
 if hopper_use
