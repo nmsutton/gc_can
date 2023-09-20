@@ -112,6 +112,9 @@ SomeToSomeConn = new SomeToSomeConnection(&p);
 sim.connect(MEC_LII_Stellate, EC_LII_Basket_Multipolar, SomeToSomeConn, p.grc_to_in_g_fast, p.grc_to_in_g_slow, SYN_FIXED);
 MexHatConn = new MexHatConnection(&p);
 sim.connect(EC_LII_Basket_Multipolar, MEC_LII_Stellate, MexHatConn, p.in_to_grc_g_fast, p.in_to_grc_g_slow, SYN_FIXED); // 2 IN->GC one-to-many
+// added connections for less total AA connections //
+
+/////////////////////////////////////////////////////
 sim.connect(CA1_Pyramidal, MEC_LII_Stellate, "one-to-one", 1.0f, 1.0f, 
            RangeDelay(1), RadiusRF(-1), SYN_FIXED, p.pc_to_grc_g_fast, p.pc_to_grc_g_slow); // 3 PCs
 

@@ -17,11 +17,11 @@ thresh=.000001;%.001;%.002;
 % lrg_fields_low_fr
 % weights=readmatrix('/mnt/StorageDrive/General/comp_neuro/gmu/research/simulation/backup/firing_rates_analyses/lrg_fields_low_fr/proj_dir/gc_can_2/data/synapse_weights.csv');
 % lrg_fields_med_fr
-weights=readmatrix('/mnt/StorageDrive/General/comp_neuro/gmu/research/simulation/backup/firing_rates_analyses/lrg_fields_med_fr_1/proj_dir/gc_can_7/data/synapse_weights.csv');
+% weights=readmatrix('/mnt/StorageDrive/General/comp_neuro/gmu/research/simulation/backup/firing_rates_analyses/lrg_fields_med_fr_1/proj_dir/gc_can_7/data/synapse_weights.csv');
 % lrg_fields_high_fr
 % weights=readmatrix('/mnt/StorageDrive/General/comp_neuro/gmu/research/simulation/backup/firing_rates_analyses/lrg_fields_high_fr_1/proj_dir/data/synapse_weights.csv');
 % local file
-% weights=readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_1/data/synapse_weights.csv');
+weights=readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can_1/data/synapse_weights.csv');
 
 grc_layer=size(weights,2);
 

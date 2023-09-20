@@ -14,9 +14,9 @@ struct P {
 	static const int layer_size = x_size * y_size;
 	static const int EC_LI_II_Multipolar_Pyramidal_Count = layer_size;//1764;//900;
 	static const int MEC_LII_Stellate_Count = layer_size;//1764;//900;
-	static const int EC_LII_Axo_Axonic_Count = 1200;//834;//834;//1200;//646;//534;//588;//300;
-	static const int MEC_LII_Basket_Count = 1200;//833;//833;//1200;//645;//533;//588;//300;
-	static const int EC_LII_Basket_Multipolar_Count = 1200;//833;//833;//1200;//645;//533;//588;//300;
+	static const int EC_LII_Axo_Axonic_Count = 1200;//720;//1200;//834;//834;//1200;//646;//534;//588;//300;
+	static const int MEC_LII_Basket_Count = 1200;//1440;//1200;//833;//833;//1200;//645;//533;//588;//300;
+	static const int EC_LII_Basket_Multipolar_Count = 1200;//1440;//1200;//833;//833;//1200;//645;//533;//588;//300;
 	static const int layer_size_in = EC_LII_Axo_Axonic_Count+MEC_LII_Basket_Count+EC_LII_Basket_Multipolar_Count;
 	static const int CA1_Pyramidal_Count = layer_size;//1764;//900;
 	static const int MEC_LII_Basket_Speed_Count = layer_size;//1764;//900;
@@ -105,11 +105,11 @@ struct P {
 	double base_ext = 700;//705; // baseline ext input speed level	
 	double speed_signaling = 0.5; // setting for use of a constant virtual animal speed
 	double fast_to_slow_ratio = 0.38/0.62;
-	double dir_to_grc_g_fast = 33.082*1.1*.3;//3;//.22;//.25;
+	double dir_to_grc_g_fast = 33.082*1.1*.4;//.3;//3;//.22;//.25;
 	double dir_to_grc_g_slow = dir_to_grc_g_fast*fast_to_slow_ratio;
 	double grc_to_in_g_fast = 0.8244568522+((1.952544646-0.8244568522)*1);//0.4703810748); // range is perhaps *.36505 to *0.8645 (0.8244568522 to 1.952544646)
 	double grc_to_in_g_slow = grc_to_in_g_fast*fast_to_slow_ratio;	
-	double in_to_grc_g_fast = 0.6259622633+((1.786298271-0.6259622633)*1); // range is perhaps 0.6259622633 to 1.786298271
+	double in_to_grc_g_fast = 0.6259622633+((1.786298271-0.6259622633)*.5);//1); // range is perhaps 0.6259622633 to 1.786298271
 	double in_to_grc_g_slow = in_to_grc_g_fast*fast_to_slow_ratio;
 	double dir_init_multi = 10;//1000;//100000;
 	int move_delay = 20;//25;//50; // delay in speed that moves are commanded to occur
@@ -118,18 +118,21 @@ struct P {
 
 	// interneuron connections
 	int conn_offset = 0; // offset in neuron positions for connections
-	int conn_dist = 3; // distance between neurons in connections
+	int conn_dist = 3;//5;//3; // distance between neurons in connections
 	int x_srt = (sqrt(layer_size_in)-x_size)/2;//10;//5; // offset for starting position of center-surround centroid in target layer size compared to full layer size
 	int y_srt = x_srt;//10;//5; //layer_size_in
 	float grc_to_in_wt = 1.0; // grc to interneurons weight
 	int use_nowp = 0; // select to use some non-wrapping centroids
 	int use_loww = 0; // select to use some low-weight centroids
 	bool print_conn_stats = 1; // print connectivity statistics
-	vector<double> in_conns; // count (IN conns per GrC) of grid cell to interneuron connections
-	vector<double> in_conns2; // additional count (GrC conns per IN) of grid cell to interneuron connections
-	vector<double> gc_conns; // count (GrC conns per IN) of interneuron to grid cell connections
-	vector<double> gc_conns2; // additional count (IN conns per GrC) of interneuron to grid cell connections
-	#define use_saved_g_to_i_conns 1 // use prior saved grc to in connection list instead of computing new one
+	vector<double> g2i_ins_per_grc_1, g2i_ins_per_grc_2, g2i_ins_per_grc_3;//in_conns; // count (IN conns per GrC) of grid cell to interneuron connections
+	vector<double> g2i_grcs_per_in_1, g2i_grcs_per_in_2, g2i_grcs_per_in_3;//in_conns2; // additional count (GrC conns per IN) of grid cell to interneuron connections
+	vector<double> i2g_grcs_per_in_1, i2g_grcs_per_in_2, i2g_grcs_per_in_3;//gc_conns; // count (GrC conns per IN) of interneuron to grid cell connections
+	vector<double> i2g_ins_per_grc_1, i2g_ins_per_grc_2, i2g_ins_per_grc_3;//gc_conns2; // additional count (IN conns per GrC) of interneuron to grid cell connections
+	vector<double> g2i_ins_per_grc_t, g2i_grcs_per_in_t, i2g_ins_per_grc_t, i2g_grcs_per_in_t; // connection stats of all interneurons and grid cell connections
+	vector<int> g2i_conn_g_grp, g2i_conn_i_grp, g2i_conn_g, g2i_conn_i;
+	bool limit_aa_neurons = 0; // use settings that limit the count of AA neurons compared to others
+	#define use_saved_g_to_i_conns 0 // use prior saved grc to in connection list instead of computing new one
 	#if use_saved_g_to_i_conns
 		bool save_grc_to_in_conns = 0;
 	#else
