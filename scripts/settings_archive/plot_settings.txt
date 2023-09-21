@@ -1,0 +1,53 @@
+40x40 layer size matching animal data parameters
+
+Small fields (med avg fr):
+Neuron for plotting: 1288
+HDgridScore: 0.268507
+PC: 0.211 & 211
+tj: smaller_spk_ticks=1;
+rm: caxis([0 11.8])
+ac: colormap default; caxis([-0.6 1.12])
+fr: sim: 1.1 Hz real: 1.1 Hz
+Note: uses speed_params_range127.txt and uses generate_weights_alt6.m with filter_highval = 0.
+
+Medium fields (med avg fr):
+Neuron for plotting: 506
+HDgridScore: 0.351941
+PC: 0.13 & 130
+tj: smaller_spk_ticks=1;
+rm: caxis([0 14.23285])
+ac: colormap default; caxis([-0.51 1.01])
+fr: sim: 2.3 Hz real: 2.3 Hz
+Note: uses speed_params_range110.txt and uses generate_weights_alt6.m with filter_highval = 0.
+
+Large fields (med avg fr 1):
+Neuron for plotting: 1187
+HDgridScore: 0.444438
+PC: 0.145 & 145
+tj: smaller_spk_ticks=1;
+rm: caxis([0 10.5487])
+ac: colormap default; caxis([-0.74 1.1])
+fr: sim: 2.1 Hz real: 2.1 Hz
+Note: uses speed_params_range124.txt and generate_weights_alt6.m with filter_highval = 0.
+github commit "large fields first med avg fr reference version. 2.1Hz in real and sim results using neuron 1187 in sim. confirmed results with animal data."
+
+Medium fields alt (for diff. gridscore in bottom panel of Fig. 3):
+High gridscore:
+Neuron for plotting: 1135
+HDgridScore: 0.348306
+PC: 0.13 & 130
+tj: smaller_spk_ticks=1;
+rm: caxis([0.2374 9.3696])
+ac: none used
+fr: sim: 2.0 Hz real: 2.2 Hz
+Note: uses speed_params_range110.txt and uses generate_weights_alt6.m with filter_highval = 0.
+
+Low gridscore:
+Neuron for plotting: 1135
+HDgridScore: 0.023350
+PC: 0.13 & 130
+tj: smaller_spk_ticks=5;
+rm: caxis([0.5258 27.2220])
+ac: none used
+fr: sim: 9.3 Hz real: 2.2 Hz
+Note: uses speed_params_range110.txt and uses generate_weights_alt6.m with filter_highval = 0.
