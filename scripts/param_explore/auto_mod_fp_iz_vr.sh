@@ -8,7 +8,7 @@
 source ./config_files/params_config_fp_iz.sh
 # general settings
 curr_dir=$PWD
-if [ "$run_on_hopper" == "1" ]; then
+if [ "$run_on_supcomp" == "1" ]; then
 	base_folder="/home/nsutton2/git/Time/";
 else
 	base_folder="/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/Time/";

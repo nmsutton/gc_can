@@ -1,10 +1,10 @@
 function find_spiking_distro_sim()
     fdr_prefix="gc_can_"; % folder name prefix
-    use_hopper_data=0; % access hopper data locally
-    local_run=3; % local run number
-    hopper_run=4; % hopper run number
+    use_supcomp_data=0; % access supercomputer data on a local computer
+    local_run=6; % local run number
+    supcomp_run=1; % supercomputer run number
     save_gridscore_file=1; % save gridscore to file
-    run_on_hopper=0; % run from hopper's system 
+    run_on_supcomp=0; % run from supercomputer's system 
     p1=0;
     p2=0;
     preloaded_spk_reader=0;
@@ -25,7 +25,7 @@ function find_spiking_distro_sim()
             sel_nrn=i;
             fprintf("processing neuron %d\n",i);
             [heat_map,spikes,spk_data] = gridscore_sim_function_alt(p1,p2,local_run, ...
-            run_on_hopper, use_hopper_data,fdr_prefix,hopper_run, ...
+            run_on_supcomp, use_supcomp_data,fdr_prefix,supcomp_run, ...
             save_gridscore_file, preloaded_spk_reader,sel_nrn,save_plot, ...
             save_traj_plot, save_firingrate_file, save_firingpeak_file, create_plot, ...
             spikes, spk_data, alt_data);

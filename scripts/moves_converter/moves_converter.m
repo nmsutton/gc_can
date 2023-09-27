@@ -18,7 +18,7 @@ max_time = length(anim_speeds)*timestep;%2400000; % max time of moves to save to
 max_moves = max_time/timestep;
 mi = 0; % move index
 write_cpp_output = 1; % write files
-write_csv_output = 1; % for hopper runs that import data with csv not cpp
+write_csv_output = 1; % for supercomputer runs that import data with csv not cpp
 output_matrices = 0;
 anim_angles_limit = []; anim_speeds_limit = []; 
 if write_cpp_output

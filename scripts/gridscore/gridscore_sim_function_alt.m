@@ -1,17 +1,17 @@
 % run from local pc and create gridscore, trajectory plot, and rate map plot
 
-function [heat_map,spikes,spk_data] = gridscore_sim_function(p1,p2,local_run,run_on_hopper,use_hopper_data,fdr_prefix,hopper_run,save_gridscore_file,preloaded_spk_reader,sel_nrn,save_plot,save_traj_plot,save_firingrate_file,save_firingpeak_file,create_plot,spikes,spk_data,alt_data)
+function [heat_map,spikes,spk_data] = gridscore_sim_function(p1,p2,local_run,run_on_supcomp,use_supcomp_data,fdr_prefix,supcomp_run,save_gridscore_file,preloaded_spk_reader,sel_nrn,save_plot,save_traj_plot,save_firingrate_file,save_firingpeak_file,create_plot,spikes,spk_data,alt_data)
 	% general run options
-	% run_on_hopper: run from hopper's system 
-	% use_hopper_data: access hopper data locally
+	% run_on_supcomp: run from supercomputer's system 
+	% use_supcomp_data: access supercomputer data on a local computer
 	% fdr_prefix: folder name prefix. "gc_can_" for main dir; "param_explore_iz_" for iz pe.
-	% hopper_run: hopper run number
+	% supcomp_run: supercomputer run number
 	p1=str2double([string(p1)]); % param explore parameter for file naming
 	p2=str2double([string(p2)]); % param explore parameter for file naming
 	local_run=str2num([string(local_run)]); % local run number
-	run_on_hopper=str2num([string(run_on_hopper)]); % supercomputer run options: run from hopper's system
-	use_hopper_data=str2num([string(use_hopper_data)]); % access hopper data locally
-	hopper_run=str2num([string(hopper_run)]); % hopper run number
+	run_on_supcomp=str2num([string(run_on_supcomp)]); % supercomputer run options: run from supercomputer's system
+	use_supcomp_data=str2num([string(use_supcomp_data)]); % access supercomputer data locally
+	supcomp_run=str2num([string(supcomp_run)]); % supercomputer run number
 	save_gridscore_file=str2num([string(save_gridscore_file)]); % save gridscore to file
 	preloaded_spk_reader=str2num([string(preloaded_spk_reader)]); % save time of loading spike reader by using prior loaded one
  	sel_nrn=str2num([string(sel_nrn)]); % select neuron to plot

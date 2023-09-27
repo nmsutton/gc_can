@@ -4,7 +4,7 @@
 % Todo: This could be looked into to see if the indices are offset by 1.
 
 initOAT;
-plot_voltage=0; % choose to plot current or voltage
+plot_voltage=1; % choose to plot current or voltage
 include_in=0; % choose to include interneurons
 % read in voltages
 stel_nR = NeuronReader('../results/n_MEC_LII_Stellate.dat');

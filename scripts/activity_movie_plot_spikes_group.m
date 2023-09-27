@@ -1,5 +1,5 @@
 initOAT;
-use_selected_time=1; % use file with selected time of spikes
+use_selected_time=0; % use file with selected time of spikes
 if use_selected_time==0
     SR = SpikeReader('../results/spk_MEC_LII_Stellate.dat');
     spikes = SR.readSpikes(1); X=[]; Y=[];
@@ -8,7 +8,7 @@ elseif use_selected_time==1
 end
 T=size(spikes,1); % time to plot
 %fn = 75; % first neuron to plot
-N=50; % number of spikes to plot
+N=50; % number of neurons to plot
 n_order=randperm(N);
 t_window = 5000;%1500;
 min_y = 1;%fn;

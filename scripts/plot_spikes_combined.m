@@ -6,7 +6,7 @@
 Ts=500;%3000;%500; % start time to plot
 Te=Ts+2000;%2500;%size(SPKste,1); % end time to plot
 Ns=1; % starting index of spikes to plot
-Ne=1600;%1764; % ending index of principle cell spikes to plot
+Ne=1600;%1764; % ending index of principal cell spikes to plot
 Nei=833;%588; % ending index of interneuron spikes to plot
 Nei_extra=1; % add additional inhibitory neuron count. E.g., when AxoAxon neuron have 1 more count then Bask and BaskMP
 num_nrns=(Ne*3)+(Nei*3)+Nei_extra; % total neuron number

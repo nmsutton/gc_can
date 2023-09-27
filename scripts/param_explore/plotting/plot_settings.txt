@@ -85,17 +85,3 @@ plot_rotation_factor_1=30000000;
 plot_rotation_factor_2=8000000000;
 plot_rotation_factor_3=0;
 rev_axes_y=0;
-
-extra:
-______________________________
-iz_C_vr (no longer used)
-
-hco_default_point=[118,-58.53]; % yellow; location of default hco value [p1,p2]
-sim_used_point=[118,-58.53]; % red; location of value used in sim [p1,p2]
-______________________________
-fp_iz: C_vr
-
-plot_rotation_factor_1=3000000;
-plot_rotation_factor_2=100000000;
-plot_rotation_factor_3=0;
-rev_axes_y=1;

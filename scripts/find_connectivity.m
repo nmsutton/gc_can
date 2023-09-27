@@ -40,7 +40,7 @@ std_conn=std(ind_conn);
 fprintf("GrC connections per IN\n");
 fprintf("avg:%.2f%% min:%.2f%% max:%.2f%% std:%.2f%% \navg_cnt:%.0f min_cnt:%.0f max_cnt:%.0f std_cnt:%.0f\n",avg_conn/grc_layer*100,min_conn/grc_layer*100,max_conn/grc_layer*100,std_conn/grc_layer*100,avg_conn,min_conn,max_conn,std_conn);
 
-%%%% GrC connections per IN %%%%
+%%%% IN connections per GrC %%%%
 
 ind_conn=[];
 for i=1:length(weights(1,:))

@@ -12,14 +12,14 @@
 %clear all;
 %clc;
 initOAT;
-hopper_use=0;
+supcomp_use=0;
 local_run=1;
-hopper_run=1;
+supcomp_run=1;
 fdr_prefix="gc_can_";%"param_explore_iz_";
-if hopper_use
-    hopper_path=strcat('/mnt/hopper_scratch/gc_sim/gc_can_',int2str(hopper_run),'/results/spk_MEC_LII_Stellate.dat');
-    SpikeReader(hopper_path, false, 'silent');
-    spk_data = SpikeReader(hopper_path, false, 'silent');
+if supcomp_use
+    supcomp_path=strcat('/mnt/hopper_scratch/gc_sim/gc_can_',int2str(supcomp_run),'/results/spk_MEC_LII_Stellate.dat');
+    SpikeReader(supcomp_path, false, 'silent');
+    spk_data = SpikeReader(supcomp_path, false, 'silent');
 else
     local_path=strcat('/comp_neuro/PhD/gmu/research/simulation/code/',fdr_prefix,int2str(local_run),'/results/spk_MEC_LII_Stellate.dat');
     SpikeReader(local_path, false, 'silent');

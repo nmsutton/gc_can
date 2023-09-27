@@ -69,7 +69,7 @@ using namespace std;
 #include "../data/ext_dir.cpp"
 #include "../data/init_firings.cpp"
 #include "../general_params.cpp"
-#if hopper_run
+#if supcomp_compat
 	vector<vector<double>> mex_hat;
 #else
 	#if import_animal_data
@@ -95,7 +95,7 @@ int main() {
 	CARLsim sim("gc can", GPU_MODE, USER, numGPUs, randSeed);
 	//CARLsim sim("gc can", CPU_MODE, USER);
 	int n_num;
-	#if hopper_run
+	#if supcomp_compat
 		ParseCSV("./data/synapse_weights.csv", &mex_hat);
 	#endif
 	#if use_saved_g_to_i_conns
@@ -133,7 +133,7 @@ int main() {
 		for (int i = 0; i < p.layer_size_in; i++) {p.g2i_grcs_per_in_1.push_back(0);p.g2i_grcs_per_in_2.push_back(0);p.g2i_grcs_per_in_3.push_back(0);p.g2i_grcs_per_in_t.push_back(0);p.i2g_grcs_per_in_1.push_back(0);p.i2g_grcs_per_in_2.push_back(0);p.i2g_grcs_per_in_3.push_back(0);p.i2g_grcs_per_in_t.push_back(0);}
 		for (int i = 0; i < p.layer_size; i++) {p.g2i_ins_per_grc_1.push_back(0);p.g2i_ins_per_grc_2.push_back(0);p.g2i_ins_per_grc_3.push_back(0);p.g2i_ins_per_grc_t.push_back(0);p.i2g_ins_per_grc_1.push_back(0);p.i2g_ins_per_grc_2.push_back(0);p.i2g_ins_per_grc_3.push_back(0);p.i2g_ins_per_grc_t.push_back(0);}
 	}
-	#if hopper_run
+	#if supcomp_compat
 		#if import_animal_data
 			vector<double> anim_angles = ParseCSV(p.anim_angles_csv);
 			vector<double> anim_speeds = ParseCSV(p.anim_speeds_csv);

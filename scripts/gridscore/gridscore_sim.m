@@ -1,16 +1,16 @@
 % generate gridscore from rate map plot
-% note: set use_hopper and hopper_run in high_res_traj.m if wanting to use hopper data
+% note: set use_supcomp and supcomp_run in high_res_traj.m if wanting to use supercomputer data
 % while running locally.
 % reference: https://www.mathworks.com/matlabcentral/answers/456241-how-to-apply-command-line-arguments-in-matlab
 
-% run_on_hopper: run from hopper's system 
-% use_hopper_data: access hopper data locally
+% run_on_supcomp: run from supercomputer's system 
+% use_supcomp_data: access supercomputer data on a local computer
 % fdr_prefix: folder name prefix
-% hopper_run: hopper run number
+% supcomp_run: supercomputer run number
 
 if preloaded_spk_reader==0 spikes=[]; end
 
-if run_on_hopper==1
+if run_on_supcomp==1
 	addpath /home/nsutton2/git/CMBHOME_github/ 
 else
 	addpath /comp_neuro/Software/Github/CMBHOME_github/

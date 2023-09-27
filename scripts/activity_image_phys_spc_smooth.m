@@ -6,15 +6,15 @@
 %% so original heatmap should be used for now
 %%
 %% Note: this is set to only use highres_spikes.csv from high_res_traj.m
-%% use_hopper and use_laptop options are commented out. high_res_traj.m
+%% use_supcomp and use_laptop options are commented out. high_res_traj.m
 %% needs to be run first to create data for this script.
 %%
 %% References: https://lost-contact.mit.edu/afs/inf.ed.ac.uk/group/teaching/matlab-help/R2016b/matlab/creating_plots/save-figure-at-specific-size-and-resolution.html
 %% https://hydroecology.net/resizing-matlab-figures-the-easy-way/
 %% https://www.mathworks.com/matlabcentral/answers/43326-create-figure-without-displaying-it
 
-function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data, ...
-    fdr_prefix,hopper_run,local_run,x,y,run_real_recordings,plot_subsect,grid_size,plot_size,save_plot,alt_data)
+function heat_map = activity_image_phys_spc_smooth(run_on_supcomp,use_supcomp_data, ...
+    fdr_prefix,supcomp_run,local_run,x,y,run_real_recordings,plot_subsect,grid_size,plot_size,save_plot,alt_data)
 	import CMBHOME.Utils.*
 
 	%[root c_ts] = load_spike_times();
@@ -27,7 +27,7 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	omit_noocc = 1; % set no occupancy to zero
 	fs_video = 50; % sampling rate from video (samples/sec)
 	display_plot = 0;
-	if run_on_hopper==1 save_plot = 1; end
+	if run_on_supcomp==1 save_plot = 1; end
 	%use_laptop = 0;
 	limit_time = 0;
 	rot90deg = 0; % rotate matrix 90 degrees clockwise
@@ -43,10 +43,10 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	if use_carlsim_spikes
 		binside = 3;
 		std_smooth_kernel = 3.333;
-		% use highres_spikes.csv from high_res_traj.m not hopper created text file
-	    %hopper_use=0                                                                      ; % enable hopper folder or use local folder
-	    %hopper_run=5;
-	    %hopper_path=(['/mnt/hopper_scratch/gc_sim/',int2str(hopper_run),'/spikes/spikes_recorded.csv']);
+		% use highres_spikes.csv from high_res_traj.m not supercomputer created text file
+	    %supcomp_use=0                                                                      ; % enable supercomputer folder or use local folder
+	    %supcomp_run=5;
+	    %supcomp_path=(['/mnt/hopper_scratch/gc_sim/',int2str(supcomp_run),'/spikes/spikes_recorded.csv']);
     else
 		spike_x = root.cel_x{1,1};
 		resize_factor = 660;
@@ -61,16 +61,16 @@ function heat_map = activity_image_phys_spc_smooth(run_on_hopper,use_hopper_data
 	end
 
 	if use_carlsim_spikes
-	    %if hopper_use
+	    %if supcomp_use
 	    if false
-	        %carlsim_spikes = readmatrix(hopper_path);
+	        %carlsim_spikes = readmatrix(supcomp_path);
 	    else
 	        %if use_laptop == 0
 	        if false
 		        %carlsim_spikes = readmatrix('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_project/code/gc_can/output/spikes/spikes_recorded.csv');
             else
 	            curr_dir = pwd;
-                %if use_hopper_data==0 run_number=local_run; else run_number=hopper_run; end
+                %if use_supcomp_data==0 run_number=local_run; else run_number=supcomp_run; end
                 %curr_dir = replace(curr_dir,"gc_can_1",strcat(fdr_prefix,int2str(run_number)));
                 %curr_dir = replace(curr_dir,"code/1","code/gc_can_1");
                 cd(curr_dir);

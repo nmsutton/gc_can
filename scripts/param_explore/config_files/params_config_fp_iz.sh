@@ -1,8 +1,8 @@
 # izhikevich model firing pattern parameter exploration parameters
 
 # select params
-export run_on_hopper=0 # run from hopper's system 
-export hopper_run=1 # hopper run number
+export run_on_supcomp=0 # run from supercomputer's system 
+export supcomp_run=1 # supercomputer run number
 # Note: set number of vals in for statement {1..<count>} below
 p1_v=(-60.0000 -42.5000 -25.0000 -7.5000 10.0000 27.5000 45.0000 62.5000 80.0000)
 p2_v=(-66.5300 -64.0300 -61.5300 -59.0300 -56.5300 -54.0300 -51.5300 -49.0300 -46.5300)

@@ -1,8 +1,8 @@
 # parameter exploration settings
 
 # select params
-export run_on_hopper=0 # run from hopper's system 
-export hopper_run=1 # hopper run number
+export run_on_supcomp=0 # run from supercomputer's system 
+export supcomp_run=1 # supercomputer run number
 # Note: set number of vals in for statement {1..<count>} below
 p1_v=(0.01 37.5000 75.0000 118.0000 150.0000 187.5000 225.0000 262.5000 300.0000)
 p2_v=(-66.5300 -64.5300 -62.5300 -60.5300 -58.5300 -56.5300 -54.5300 -52.5300 -50.5300)

@@ -29,10 +29,10 @@ chg_prm(){
 run_sim(){
 	# run CARLsim
 	export curr_dir=$PWD;
-	if [ $run_on_hopper == 0 ]; then
+	if [ $run_on_supcomp == 0 ]; then
 		command="cd ../../../../.build/projects/$fdr_prefix$local_run/"
 	else
-		command="cd ../../../../.build/projects/$fdr_prefix$hopper_run/"
+		command="cd ../../../../.build/projects/$fdr_prefix$supcomp_run/"
 	fi
 	eval $command &&
 	./rebuild.sh &&
@@ -41,7 +41,7 @@ run_sim(){
 
 	# generate results reports
 	cd ../gridscore/ &&
-	matlab -nodisplay -r "gridscore_sim_function $p1 $p2 $local_run $run_on_hopper $use_hopper_data $fdr_prefix $hopper_run $save_gridscore_file; exit" &&
+	matlab -nodisplay -r "gridscore_sim_function $p1 $p2 $local_run $run_on_supcomp $use_supcomp_data $fdr_prefix $supcomp_run $save_gridscore_file; exit" &&
 	cd ../param_explore/
 }
 

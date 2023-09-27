@@ -25,12 +25,12 @@ start_x_shift = (grid_size/2) - 29;%24;%29;%24;%29;%24;%5;%24;%19;%26;%6;%26;%19
 start_y_shift = (grid_size/2) - 29;%24;%29;%24;%29;%24;%5;%24;%19;%26;%6;%26;%19;%20;%19;%17;%44;%20;%50;%44;%- 44;%1;%-4;%28; +2 = 2 left
 if only_show_plot_preview start_x_shift = (grid_size/2) - 4; end
 if only_show_plot_preview start_y_shift = (grid_size/2) - 4; end
-rescale_weights = 1; % rescale weights to match highval
-shift_down = 1; % apply subtraction to all weight values to shift them down
-filter_lowval = 1; % avoid creating weights below this value
+rescale_weights = 1; % rescale highest weight values to match highval
 highval = 0.00681312463724531;
+filter_lowval = 1; % avoid creating weights below this value
+lowval_thres = 0.0;
+shift_down = 1; % apply subtraction to all weight values to shift them down
 syn_wgt_shift = 0.001275510204;
-lowval_thres = 0.0;%0.0;%0.004;%0.0;%0.001;
 conversion_mult = 114.7*1.574395603;
 r_s=10/42;%0.8*.9*.9;%*1.18;%1.12;%10/42;%0.8*1.1;%.9;%.9;%.9;%1;%0.8*1.1;%.9;%1;%1.1;%1;%.9;%.8;%.8;%1.01;%1.05;%1.1;%0.9;%1.1;%1;%10/42;%20/42;%1; % ring scale
 p1=10;%.54;%150;%14;%16;%16;%10;%.68;%.54;%.52;%.54;%.7;%.76;%.68;%.54;%.6;%.68;%.54;%.5;%.54;%.68;%.54;%.58;%.62;%.68;%10;%20;%.68;%20;%20;%.68;

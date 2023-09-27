@@ -3,9 +3,9 @@
 close all;
 
 % run options
-use_hopper_data = 0;
+use_supcomp_data = 0;
 local_run=6;
-hopper_run = 7;
+supcomp_run = 7;
 plot_spikes = 1; 
 min_x = 0;%3.5;%4.5;
 max_x = 40;%min_x+32;%31;
@@ -17,9 +17,9 @@ spk_bin_size = 10; % spike reader bin size. Note: small bin sizes may take long 
 % select neuron to plot
 sel_nrn=1;%100;%348;%110;%210;%262;%454;%454;%453;%455;%591;%629;%547;%629;%494;%290;%393;%243;%358;%338;%210;%290;%497;%860;%810;%300;%1250;%410;%820;%516;%1228;%690;
 spikes=[];
-fdr_prefix="gc_can_"; % folder name prefix for hopper run. "gc_can_" for main dir; "param_explore_iz_" for iz pe.
-start_time = 3604500;%1695000;%8180000;%30000;%1;
-restrict_time = 302000;%367000;%300000; % 0 for no restriction or input time value for restriction
+fdr_prefix="gc_can_"; % folder name prefix for supercomputer run. "gc_can_" for main dir; "param_explore_iz_" for iz pe.
+start_time = 1;%3604500;%1695000;%8180000;%30000;%1;
+restrict_time = 10000;%302000;%367000;%300000; % 0 for no restriction or input time value for restriction
 timestep=20;
 hFigure = figure;
 
@@ -39,7 +39,7 @@ Ys = readmatrix(strcat('/home/nmsutton/Dropbox/CompNeuro/gmu/research/sim_projec
 % load spike times
 if plot_spikes
     spk_x = []; spk_y = [];
-    [spk_t,spikes]=load_spk_times(use_hopper_data, hopper_run, ...
+    [spk_t,spikes]=load_spk_times(use_supcomp_data, supcomp_run, ...
     spk_bin_size, sel_nrn, spikes, ...
     fdr_prefix, local_run, curr_dir);
 end
@@ -88,12 +88,12 @@ open(v)
 writeVideo(v,myMovie) % Write the movie object to a new video file.
 close(v)
 
-function [spk_t,spikes]=load_spk_times(use_hopper_data, hopper_run, ...
+function [spk_t,spikes]=load_spk_times(use_supcomp_data, supcomp_run, ...
     spk_bin_size, sel_nrn, spikes, ...
     fdr_prefix, local_run, curr_dir)
 
-    if use_hopper_data==1
-        file_path="/mnt/hopper_scratch/gc_sim/"+fdr_prefix+hopper_run+"/results/spk_MEC_LII_Stellate.dat";                
+    if use_supcomp_data==1
+        file_path="/mnt/hopper_scratch/gc_sim/"+fdr_prefix+supcomp_run+"/results/spk_MEC_LII_Stellate.dat";                
     else
         file_path = strcat(curr_dir,"/../results/spk_MEC_LII_Stellate.dat");
         %disp(file_path);

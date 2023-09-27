@@ -4,9 +4,9 @@
 export paramexp_type=" \"iz\""; # choose iz (izhikevich) or tm (tsodyks-markram) parameters exploration
 export fdr_prefix="param_explore_iz_" # folder name prefix
 export local_run=3 # local run number
-export run_on_hopper=1 # run from hopper's system 
-export use_hopper_data=0 # access hopper data locally
-export hopper_run=3 # hopper run number
+export run_on_supcomp=1 # run from supercomputer's system 
+export use_supcomp_data=0 # access supercomputer data on a local computer
+export supcomp_run=3 # supercomputer run number
 export save_gridscore_file=1; # save gridscore to file
 # Note: set number of vals in for statement {1..<count>} below
 export param1_vals=(-60.0000 -42.5000 -25.0000 -7.5000 10.0000 27.5000 45.0000 62.5000 80.0000)

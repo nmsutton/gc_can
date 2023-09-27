@@ -6,7 +6,7 @@
 
 struct P {
 	// general section
-	double sim_time = 7000;//3813340;//3631180;//1260120;//350000;//7000;//250000;//8485920;//8485920;//1440140;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
+	double sim_time = 250000;//7000;//3813340;//3631180;//1260120;//350000;//7000;//250000;//8485920;//8485920;//1440140;//1440140;//8553860;//131400;//8485920;//120000//29416*20;//60000*firing_bin;// sim run time in ms
 	int timestep = 20; // timestep between movements. e.g., 20ms between each movement command
 	int t = 0; // time
 	static const int x_size = 40;//36;//42;//30;//26;
@@ -46,7 +46,7 @@ struct P {
 	ofstream highres_pos_y_file;
 
 	// animal data parameters
-	#define hopper_run 1 // import data differently if on hopper
+	#define supcomp_compat 1 // import data in a compatible way with a supercomputer
 	string anim_angles_csv = "./data/anim_angles.csv";
 	string anim_speeds_csv = "./data/anim_speeds.csv";
 	#define import_animal_data 1 // 1 for import and 0 for no import
@@ -77,8 +77,8 @@ struct P {
 	bool move_animal_aug = 0; // augment animal movement
 	bool move_animal_onlypos=0; // generate animal movement position but not signaling
 	bool move_speed_change=0; // test series of speed changes
-	bool move_fullspace = 0; // move through whole environment
-	bool move_straight = 1;
+	bool move_fullspace = 1; // move through whole environment
+	bool move_straight = 0;
 	bool move_circles = 0;
 	bool move_random = 0;
 	bool move_ramp = 0;
@@ -96,6 +96,7 @@ struct P {
 	bool record_highrestraj = 1; // write files for high resolution trajectory locations
 	#define spk_mon_additional 0 // additional spike monitors
 	#define monitor_voltage 0 // turn voltage monitoring on or off 
+	#define monitor_voltage2 0 // turn additional voltage monitoring on or off
 	int rotation_mod = 0; // modify direction signaling to accomidate a rotated grid pattern
 	double angle_rot = 0.0;//11;//10;//20;//20;//20;//15;//30;//20;//20;//0;//20;//32;//10;//-30;//-10;//-18;//0;//-16;//-15;//18;//20;//18;//18;//19;//20;//11;//+4.5;//+7; // angle in degrees of rotation offset to use in rotation_mod
 	bool pc_active = 1; // pc signaling active. bc->pc->gc can still work even if this is disabled.
@@ -132,7 +133,7 @@ struct P {
 	vector<double> g2i_ins_per_grc_t, g2i_grcs_per_in_t, i2g_ins_per_grc_t, i2g_grcs_per_in_t; // connection stats of all interneurons and grid cell connections
 	vector<int> g2i_conn_g_grp, g2i_conn_i_grp, g2i_conn_g, g2i_conn_i;
 	bool limit_aa_neurons = 0; // use settings that limit the count of AA neurons compared to others
-	#define use_saved_g_to_i_conns 0 // use prior saved grc to in connection list instead of computing new one
+	#define use_saved_g_to_i_conns 1 // use prior saved grc to in connection list instead of computing new one
 	#if use_saved_g_to_i_conns
 		bool save_grc_to_in_conns = 0;
 	#else
@@ -143,7 +144,7 @@ struct P {
 	ofstream grc_to_in_file;
 
 	// speed
-	bool auto_speed_control = 0;//0; // automatically adjust parameters to match speed selected
+	bool auto_speed_control = 1;//0; // automatically adjust parameters to match speed selected
 	bool speed_limit = 0; // speed limit on or off
 	double max_speed = 17.5; // max movement speed
 	double speed_conversion = 1;//0.2; // scale animal movement speed data
