@@ -45,7 +45,7 @@ struct P {
 	ofstream highres_pos_y_file;
 
 	// animal data parameters
-	#define supcomp_compat 1 // import data in a compatible way with a supercomputer
+	#define hopper_run 1 // import data differently if on hopper
 	string anim_angles_csv = "./data/anim_angles.csv";
 	string anim_speeds_csv = "./data/anim_speeds.csv";
 	#define import_animal_data 1 // 1 for import and 0 for no import
