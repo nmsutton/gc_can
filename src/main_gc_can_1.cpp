@@ -69,7 +69,7 @@ using namespace std;
 #include "../data/ext_dir.cpp"
 #include "../data/init_firings.cpp"
 #include "../general_params.cpp"
-#if supcomp_compat
+#if hopper_run
 	vector<vector<double>> mex_hat;
 #else
 	#if import_animal_data
@@ -95,7 +95,7 @@ int main() {
 	CARLsim sim("gc can", GPU_MODE, USER, numGPUs, randSeed);
 	//CARLsim sim("gc can", CPU_MODE, USER);
 	int n_num;
-	#if supcomp_compat
+	#if hopper_run
 		ParseCSV("./data/synapse_weights.csv", &mex_hat);
 	#endif
 	#if use_saved_g_to_i_conns
@@ -128,12 +128,10 @@ int main() {
 		p.locations_visited.push_back(0);
 		p.locations_sortind.push_back(0);
 		p.locations_amounts.push_back(0);
+		if (p.print_conn_stats) {p.in_conns.push_back(0);}
 	}
-	if (p.print_conn_stats) {
-		for (int i = 0; i < p.layer_size_in; i++) {p.g2i_grcs_per_in_1.push_back(0);p.g2i_grcs_per_in_2.push_back(0);p.g2i_grcs_per_in_3.push_back(0);p.g2i_grcs_per_in_t.push_back(0);p.i2g_grcs_per_in_1.push_back(0);p.i2g_grcs_per_in_2.push_back(0);p.i2g_grcs_per_in_3.push_back(0);p.i2g_grcs_per_in_t.push_back(0);}
-		for (int i = 0; i < p.layer_size; i++) {p.g2i_ins_per_grc_1.push_back(0);p.g2i_ins_per_grc_2.push_back(0);p.g2i_ins_per_grc_3.push_back(0);p.g2i_ins_per_grc_t.push_back(0);p.i2g_ins_per_grc_1.push_back(0);p.i2g_ins_per_grc_2.push_back(0);p.i2g_ins_per_grc_3.push_back(0);p.i2g_ins_per_grc_t.push_back(0);}
-	}
-	#if supcomp_compat
+	if (p.print_conn_stats) {for (int i = 0; i < p.layer_size_in; i++) {p.gc_conns.push_back(0);}}
+	#if hopper_run
 		#if import_animal_data
 			vector<double> anim_angles = ParseCSV(p.anim_angles_csv);
 			vector<double> anim_speeds = ParseCSV(p.anim_speeds_csv);
@@ -162,8 +160,11 @@ int main() {
 	if (p.record_highrestraj) {p.highres_pos_y_file.open(p.highres_pos_y_filepath);}
 
 	if (p.print_conn_stats) {
-		print_conn_stats(&p);
-		//print_g2i_conns(&p);
+		vector<double> in_stats, gc_stats;
+		get_stats(p.in_conns, &in_stats);
+		get_stats(p.gc_conns, &gc_stats);
+	    printf("GrC->IN Connections: avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n\n",in_stats[0],in_stats[1],in_stats[2],in_stats[3],in_stats[4],in_stats[5],in_stats[6]);
+	    printf("IN->GrC Connections: avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n\n",gc_stats[0],gc_stats[1],gc_stats[2],gc_stats[3],gc_stats[4],gc_stats[5],gc_stats[6]);
 	}
 	if (p.save_grc_to_in_conns) {write_grc_to_in_file(&p);}
 
