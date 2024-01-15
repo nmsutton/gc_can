@@ -620,13 +620,24 @@ public:
     	maxWt = 10000.0f; delay = 1; connected = 0; weight = 0;
 
 		// adjust i for multiple neuron types combine into a group
-		int i_adj = (i * this->conn_dist) + this->conn_offset;
+		int i_adj = 0;
+		if (p->limit_aa_neurons && i >= (p->MEC_LII_Basket_Count/2)) {i=i-(p->MEC_LII_Basket_Count/2);i_adj=i_adj+2;}
+		i_adj = (i * this->conn_dist) + this->conn_offset;
 
 		// assign connections
 		if (p->weights_in[i_adj][j] == 1.0) {
 			connected = 1; // only connect where matrix value is 1.0 
 			weight = mex_hat[i_adj][j];
-			if (p->print_conn_stats == 1) {p->gc_conns.at(i_adj)=p->gc_conns.at(i_adj)+1.0;}
+			if (p->print_conn_stats == 1) {
+				p->i2g_grcs_per_in_t.at(i_adj)++;
+				p->i2g_ins_per_grc_t.at(j)++;
+				if (this->conn_offset==0) {p->i2g_grcs_per_in_1.at(i_adj)++;}//p->i2g_ins_per_grc_1.at(i_adj)+1.0;}
+				if (this->conn_offset==1) {p->i2g_grcs_per_in_2.at(i_adj)++;}
+				if (this->conn_offset==2) {p->i2g_grcs_per_in_3.at(i_adj)++;}
+				if (this->conn_offset==0) {p->i2g_ins_per_grc_1.at(j)++;}//p->i2g_grcs_per_in_1.at(j)+1.0;}
+				if (this->conn_offset==1) {p->i2g_ins_per_grc_2.at(j)++;}
+				if (this->conn_offset==2) {p->i2g_ins_per_grc_3.at(j)++;}
+			}
 		}
     }
 };
@@ -701,6 +712,8 @@ public:
     	vector<int> cent_x, cent_y, cent_j;
 
     	#if use_saved_g_to_i_conns
+    		j_sft = 0;
+    		if (p->limit_aa_neurons && j >= (p->MEC_LII_Basket_Count/2)) {j=j-(p->MEC_LII_Basket_Count/2);j_sft=j_sft+2;}
     		j_sft = (j * this->conn_dist) + this->conn_offset;
     		if (in_conns_list[i][j_sft] == 1) {connected = 1;}
     	#else
@@ -725,13 +738,30 @@ public:
 		    }
 			
 			// select connections
+			j_sft = 0;
+			if (p->limit_aa_neurons && j >= (p->MEC_LII_Basket_Count/2)) {j=j-(p->MEC_LII_Basket_Count/2);j_sft=j_sft+2;}
 			j_sft = (j * this->conn_dist) + this->conn_offset;
 			for (int i2 = 0; i2 < cent_x.size(); i2++) {
 				if (j_sft == cent_j[i2]) {
 					connected = 1;
-					if (p->print_conn_stats == 1) {p->in_conns.at(i)=p->in_conns.at(i)+1.0;}
 					if (p->save_grc_to_in_conns == 1) {p->in_conns_binary[i][j_sft]=1.0;}
 					if (i == 0) {printf("i:%d j_sft:%d c_x:%d c_y:%d pd:%f cent_count:%d\n",i,j_sft,cent_x[i2],cent_y[i2],get_pd(i,p->x_size),cent_x.size());}
+				}
+			}
+			if (p->print_conn_stats == 1 && connected == 1) {
+				if (p->print_conn_stats == 1) {
+					p->g2i_conn_g_grp.push_back(srcGrp);
+					p->g2i_conn_i_grp.push_back(destGrp);
+					p->g2i_conn_g.push_back(i);
+					p->g2i_conn_i.push_back(j);
+					p->g2i_ins_per_grc_t.at(i)++;
+					p->g2i_grcs_per_in_t.at(j_sft)++;
+					if (this->conn_offset==0) {p->g2i_ins_per_grc_1.at(i)++;}
+					if (this->conn_offset==1) {p->g2i_ins_per_grc_2.at(i)++;}
+					if (this->conn_offset==2) {p->g2i_ins_per_grc_3.at(i)++;}
+					if (this->conn_offset==0) {p->g2i_grcs_per_in_1.at(j_sft)++;}
+					if (this->conn_offset==1) {p->g2i_grcs_per_in_2.at(j_sft)++;}
+					if (this->conn_offset==2) {p->g2i_grcs_per_in_3.at(j_sft)++;}
 				}
 			}
 
@@ -946,19 +976,19 @@ void ParseCSVInts(string filepath, vector<vector<int>> *matrix)
 	}
 }
 
-void get_stats(vector<double> values, vector<double> * stats) {
-	double sum = 0.0, std_temp = 0.0, mean, std, min = values[0], max = min, min_i, max_i;
+void get_stats(vector<double> values, vector<double> * stats, int layer_size) {
+	double sum = 0.0, std_temp = 0.0, mean, std, min = values[0], max = 0, min_i, max_i;
 
 	for (int i = 0; i < values.size(); i++) {sum += values[i];}
-	mean = sum / (double) values.size();
+	mean = sum / (double) layer_size;
 	for (int i = 0; i < values.size(); i++) {
 		std_temp += pow(values[i] - mean, 2);
 		if (values[i] < min) {min = values[i];min_i=i;}
 		if (values[i] > max) {max = values[i];max_i=i;}
 	}
-	std = sqrt(std_temp/(double)values.size());
+	std = sqrt(std_temp / (double) layer_size);
 	stats->push_back(mean);stats->push_back(std);stats->push_back(min);
-	stats->push_back(max);stats->push_back((double) values.size());
+	stats->push_back(max);stats->push_back((double) layer_size);
 	stats->push_back(min_i);stats->push_back(max_i);
 }
 
@@ -973,4 +1003,112 @@ void write_grc_to_in_file(P *p) {
 		if (i != (p->layer_size-1)) {p->grc_to_in_file << "\n";}
 	}
 	p->grc_to_in_file.close();
+}
+
+void print_conn_stats(P * p) {
+	// Print to console connectivity stats.
+	// Note: the interneuron specific reporting is commented out because work was 
+	// not completed with it. The results from it are not currently reliable.
+
+	vector<double> g2i_ipg_stats_1, g2i_ipg_stats_2, g2i_ipg_stats_3, g2i_gpi_stats_1, g2i_gpi_stats_2, g2i_gpi_stats_3, i2g_ipg_stats_1, i2g_ipg_stats_2, i2g_ipg_stats_3, i2g_gpi_stats_1, i2g_gpi_stats_2, i2g_gpi_stats_3;
+	vector<double> g2i_ipg_stats_t, g2i_gpi_stats_t, i2g_ipg_stats_t, i2g_gpi_stats_t;
+	vector<double> g2i_ins_per_grc_t, g2i_grcs_per_in_t, i2g_ins_per_grc_t, i2g_grcs_per_in_t;
+	double g2i_sum = 0; double i2g_sum = 0;
+
+	/*
+	get_stats(p->g2i_ins_per_grc_1, &g2i_ipg_stats_1, (int)((double)p->layer_size*((double)p->EC_LII_Axo_Axonic_Count/(double)p->layer_size_in)));
+	get_stats(p->g2i_grcs_per_in_1, &g2i_gpi_stats_1, p->EC_LII_Axo_Axonic_Count);
+	get_stats(p->g2i_ins_per_grc_2, &g2i_ipg_stats_2, (int)((double)p->layer_size*((double)p->MEC_LII_Basket_Count/(double)p->layer_size_in)));
+	get_stats(p->g2i_grcs_per_in_2, &g2i_gpi_stats_2, p->MEC_LII_Basket_Count);
+	get_stats(p->g2i_ins_per_grc_3, &g2i_ipg_stats_3, (int)((double)p->layer_size*((double)p->EC_LII_Basket_Multipolar_Count/(double)p->layer_size_in)));
+	get_stats(p->g2i_grcs_per_in_3, &g2i_gpi_stats_3, p->EC_LII_Basket_Multipolar_Count);
+	get_stats(p->i2g_ins_per_grc_1, &i2g_ipg_stats_1, (int)((double)p->layer_size*((double)p->EC_LII_Axo_Axonic_Count/(double)p->layer_size_in)));
+	get_stats(p->i2g_grcs_per_in_1, &i2g_gpi_stats_1, p->EC_LII_Axo_Axonic_Count);
+	get_stats(p->i2g_ins_per_grc_2, &i2g_ipg_stats_2, (int)((double)p->layer_size*((double)p->MEC_LII_Basket_Count/(double)p->layer_size_in)));
+	get_stats(p->i2g_grcs_per_in_2, &i2g_gpi_stats_2, p->MEC_LII_Basket_Count);
+	get_stats(p->i2g_ins_per_grc_3, &i2g_ipg_stats_3, (int)((double)p->layer_size*((double)p->EC_LII_Basket_Multipolar_Count/(double)p->layer_size_in)));
+	get_stats(p->i2g_grcs_per_in_3, &i2g_gpi_stats_3, p->EC_LII_Basket_Multipolar_Count);
+	printf("\nAxo-axonic and grid cell connections:\nGrC->IN Connections (IN conns per GrC): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",g2i_ipg_stats_1[0],g2i_ipg_stats_1[1],g2i_ipg_stats_1[2],g2i_ipg_stats_1[3],g2i_ipg_stats_1[4],g2i_ipg_stats_1[5],g2i_ipg_stats_1[6]);
+	printf("GrC->IN Connections (GrC conns per IN): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",g2i_gpi_stats_1[0],g2i_gpi_stats_1[1],g2i_gpi_stats_1[2],g2i_gpi_stats_1[3],g2i_gpi_stats_1[4],g2i_gpi_stats_1[5],g2i_gpi_stats_1[6]);
+	printf("IN->GrC Connections (GrC conns per IN): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",i2g_gpi_stats_1[0],i2g_gpi_stats_1[1],i2g_gpi_stats_1[2],i2g_gpi_stats_1[3],i2g_gpi_stats_1[4],i2g_gpi_stats_1[5],i2g_gpi_stats_1[6]);
+	printf("IN->GrC Connections (IN conns per GrC): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",i2g_ipg_stats_1[0],i2g_ipg_stats_1[1],i2g_ipg_stats_1[2],i2g_ipg_stats_1[3],i2g_ipg_stats_1[4],i2g_ipg_stats_1[5],i2g_ipg_stats_1[6]);
+	printf("Basket and grid cell connections:\nGrC->IN Connections (IN conns per GrC): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",g2i_ipg_stats_2[0],g2i_ipg_stats_2[1],g2i_ipg_stats_2[2],g2i_ipg_stats_2[3],g2i_ipg_stats_2[4],g2i_ipg_stats_2[5],g2i_ipg_stats_2[6]);
+	printf("GrC->IN Connections (GrC conns per IN): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",g2i_gpi_stats_2[0],g2i_gpi_stats_2[1],g2i_gpi_stats_2[2],g2i_gpi_stats_2[3],g2i_gpi_stats_2[4],g2i_gpi_stats_2[5],g2i_gpi_stats_2[6]);
+	printf("IN->GrC Connections (GrC conns per IN): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",i2g_gpi_stats_2[0],i2g_gpi_stats_2[1],i2g_gpi_stats_2[2],i2g_gpi_stats_2[3],i2g_gpi_stats_2[4],i2g_gpi_stats_2[5],i2g_gpi_stats_2[6]);
+	printf("IN->GrC Connections (IN conns per GrC): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",i2g_ipg_stats_2[0],i2g_ipg_stats_2[1],i2g_ipg_stats_2[2],i2g_ipg_stats_2[3],i2g_ipg_stats_2[4],i2g_ipg_stats_2[5],i2g_ipg_stats_2[6]);
+	printf("Basket Multipolar and grid cell connections:\nGrC->IN Connections (IN conns per GrC): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",g2i_ipg_stats_3[0],g2i_ipg_stats_3[1],g2i_ipg_stats_3[2],g2i_ipg_stats_3[3],g2i_ipg_stats_3[4],g2i_ipg_stats_3[5],g2i_ipg_stats_3[6]);
+	printf("GrC->IN Connections (GrC conns per IN): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",g2i_gpi_stats_3[0],g2i_gpi_stats_3[1],g2i_gpi_stats_3[2],g2i_gpi_stats_3[3],g2i_gpi_stats_3[4],g2i_gpi_stats_3[5],g2i_gpi_stats_3[6]);
+	printf("IN->GrC Connections (GrC conns per IN): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",i2g_gpi_stats_3[0],i2g_gpi_stats_3[1],i2g_gpi_stats_3[2],i2g_gpi_stats_3[3],i2g_gpi_stats_3[4],i2g_gpi_stats_3[5],i2g_gpi_stats_3[6]);
+	printf("IN->GrC Connections (IN conns per GrC): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",i2g_ipg_stats_3[0],i2g_ipg_stats_3[1],i2g_ipg_stats_3[2],i2g_ipg_stats_3[3],i2g_ipg_stats_3[4],i2g_ipg_stats_3[5],i2g_ipg_stats_3[6]);
+	*/
+
+	// combine stats
+	/*for (int i = 0; i < p->layer_size; i++) {
+		g2i_ins_per_grc_t.push_back(0);
+		i2g_ins_per_grc_t.push_back(0);
+	}
+	for (int i = 0; i < p->layer_size_in; i++) {
+		g2i_grcs_per_in_t.push_back(0);
+		i2g_grcs_per_in_t.push_back(0);
+	}
+	for (int i = 0; i < p->layer_size; i++) {
+		g2i_ins_per_grc_t[i]=g2i_ins_per_grc_t[i]+p->g2i_ins_per_grc_1.at(i);
+		g2i_ins_per_grc_t[i]=g2i_ins_per_grc_t[i]+p->g2i_ins_per_grc_2.at(i);
+		g2i_ins_per_grc_t[i]=g2i_ins_per_grc_t[i]+p->g2i_ins_per_grc_3.at(i);
+		i2g_ins_per_grc_t[i]=i2g_ins_per_grc_t[i]+p->i2g_ins_per_grc_1.at(i);
+		i2g_ins_per_grc_t[i]=i2g_ins_per_grc_t[i]+p->i2g_ins_per_grc_2.at(i);
+		i2g_ins_per_grc_t[i]=i2g_ins_per_grc_t[i]+p->i2g_ins_per_grc_3.at(i);
+	}
+	for (int i = 0; i < p->layer_size_in; i++) {
+		g2i_grcs_per_in_t[i]=g2i_grcs_per_in_t[i]+p->g2i_grcs_per_in_1.at(i);
+		g2i_grcs_per_in_t[i]=g2i_grcs_per_in_t[i]+p->g2i_grcs_per_in_2.at(i);
+		g2i_grcs_per_in_t[i]=g2i_grcs_per_in_t[i]+p->g2i_grcs_per_in_3.at(i);
+		i2g_grcs_per_in_t[i]=i2g_grcs_per_in_t[i]+p->i2g_grcs_per_in_1.at(i);
+		i2g_grcs_per_in_t[i]=i2g_grcs_per_in_t[i]+p->i2g_grcs_per_in_2.at(i);
+		i2g_grcs_per_in_t[i]=i2g_grcs_per_in_t[i]+p->i2g_grcs_per_in_3.at(i);
+	}*/
+	
+	for (int i = 0; i < p->layer_size; i++) {
+		g2i_sum=g2i_sum+p->g2i_ins_per_grc_1.at(i);
+		g2i_sum=g2i_sum+p->g2i_ins_per_grc_2.at(i);
+		g2i_sum=g2i_sum+p->g2i_ins_per_grc_3.at(i);
+	}
+	printf("\n");
+	if (g2i_sum!=0.0) {printf("Total grid cell to interneuron connections: %d\n",(int)g2i_sum);}
+	for (int i = 0; i < p->layer_size_in; i++) {
+		i2g_sum=i2g_sum+p->i2g_grcs_per_in_1.at(i);
+		i2g_sum=i2g_sum+p->i2g_grcs_per_in_2.at(i);
+		i2g_sum=i2g_sum+p->i2g_grcs_per_in_3.at(i);
+	}
+	printf("Total interneuron to grid cell connections: %d\n\n",(int)i2g_sum);
+
+	get_stats(p->g2i_ins_per_grc_t, &g2i_ipg_stats_t, p->layer_size);
+	get_stats(p->g2i_grcs_per_in_t, &g2i_gpi_stats_t, p->layer_size_in);
+	if (g2i_ipg_stats_t[0]!=0.0) {
+	printf("GrC->IN Connections (IN conns per GrC): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",g2i_ipg_stats_t[0],g2i_ipg_stats_t[1],g2i_ipg_stats_t[2],g2i_ipg_stats_t[3],g2i_ipg_stats_t[4],g2i_ipg_stats_t[5],g2i_ipg_stats_t[6]);
+	printf("GrC->IN Connections (GrC conns per IN): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",g2i_gpi_stats_t[0],g2i_gpi_stats_t[1],g2i_gpi_stats_t[2],g2i_gpi_stats_t[3],g2i_gpi_stats_t[4],g2i_gpi_stats_t[5],g2i_gpi_stats_t[6]);
+	}
+	get_stats(p->i2g_ins_per_grc_t, &i2g_ipg_stats_t, p->layer_size);
+	get_stats(p->i2g_grcs_per_in_t, &i2g_gpi_stats_t, p->layer_size_in);
+	printf("IN->GrC Connections (GrC conns per IN): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n",i2g_gpi_stats_t[0],i2g_gpi_stats_t[1],i2g_gpi_stats_t[2],i2g_gpi_stats_t[3],i2g_gpi_stats_t[4],i2g_gpi_stats_t[5],i2g_gpi_stats_t[6]);
+	printf("IN->GrC Connections (IN conns per GrC): avg=%.02f std=%.02f min=%.02f max=%.02f layer_size=%.02f min_i=%.02f max_i=%.02f\n\n",i2g_ipg_stats_t[0],i2g_ipg_stats_t[1],i2g_ipg_stats_t[2],i2g_ipg_stats_t[3],i2g_ipg_stats_t[4],i2g_ipg_stats_t[5],i2g_ipg_stats_t[6]);
+}
+
+void print_g2i_conns(P * p) {
+	// write to a file the indices of grid cell to interneuron connections that were
+	// created for futher analysis
+
+	ofstream g2i_file;
+	string g2i_filepath = "g2i_conns.csv";
+	g2i_file.open(g2i_filepath);
+
+	printf("writing grid cell to interneuron connections to a file.\n\n");
+	for (int i = 0; i < p->g2i_conn_g.size(); i++) {
+		g2i_file << p->g2i_conn_g_grp.at(i);// << "\t";
+		g2i_file << p->g2i_conn_g.at(i);// << "\t";
+		g2i_file << p->g2i_conn_i_grp.at(i);// << "\t";
+		g2i_file << p->g2i_conn_i.at(i) << "\n";
+	}
+
+	g2i_file.close();
 }
