@@ -4,21 +4,22 @@
 % Todo: This could be looked into to see if the indices are offset by 1.
 
 initOAT;
+local_run=3;
 plot_voltage=1; % choose to plot current or voltage
-include_in=0; % choose to include interneurons
+include_in=1; % choose to include interneurons
 % read in voltages
-stel_nR = NeuronReader('../results/n_MEC_LII_Stellate.dat');
-if include_in bask_nR = NeuronReader('../results/n_MEC_LII_Basket.dat'); end
+stel_nR = NeuronReader(strcat('../../gc_can_',string(local_run),'/results/n_MEC_LII_Stellate.dat'));
+if include_in==1 bask_nR = NeuronReader(strcat('../../gc_can_',string(local_run),'/results/n_MEC_LII_Basket.dat')); end
 stel_nV = stel_nR.readValues();
-if include_in bask_nV = bask_nR.readValues(); end
+if include_in==1 bask_nV = bask_nR.readValues(); end
 stel_sels = []; bask_sels = [];
 % read in spikes
-stel_sR = SpikeReader('../results/spk_MEC_LII_Stellate.dat');
-if include_in bask_sR = SpikeReader('../results/spk_MEC_LII_Basket.dat'); end
+stel_sR = SpikeReader(strcat('../../gc_can_',string(local_run),'/results/spk_MEC_LII_Stellate.dat'));
+if include_in==1 bask_sR = SpikeReader(strcat('../../gc_can_',string(local_run),'/results/spk_MEC_LII_Basket.dat')); end
 stel_nS = stel_sR.readSpikes(1); % import spikes with bin of recording size of 1ms
-if include_in bask_nS = bask_sR.readSpikes(1); end
+if include_in==1 bask_nS = bask_sR.readSpikes(1); end
 stel_spk_sels = []; bask_spk_sels = [];
-if include_in bask_nR=[]; bask_nV=[]; bask_sR=[]; bask_nS=[]; end
+%if include_in==1 bask_nR=[]; bask_nV=[]; bask_sR=[]; bask_nS=[]; end
 % set run params
 t_start = 18000;%11400;%7000%12400;%8000;%10000;%5000; % start time
 t_end = t_start+400;%600;%600;%3000;%12800;%13000;%11000;%13000; % end time
@@ -27,7 +28,7 @@ i_start = 1;%51;%100; % starting neuron index
 plot_spikes = 0;
 t_range = linspace(t_start,t_end,(t_end-t_start+1));
 % resize peak params
-rsz_peaks_active = 0;%1; % toggle resizing of peaks
+rsz_peaks_active = 1;%1; % toggle resizing of peaks
 window_size = 50; % size of rolling window
 min_spk_v = 0;%-20; % minimum voltage to be detected as a spike
 min_isi = 5; % minimum inter-spike interval
@@ -38,7 +39,7 @@ min_spk_v2 = -30;%-20; % minimum voltage to be detected as a spike
 min_isi2 = 20; % minimum inter-spike interval
 new_peak2 = 40;%10; % new peak voltage
 resize_params2=[window_size2,min_spk_v2,min_isi2,new_peak2];
-plot_n1=0; plot_n2=1; % choose neurons to plot
+plot_n1=1; plot_n2=1; % choose neurons to plot
 line_width_1=2; line_width_2=2; % plotted line widths
 plot_legend=0; % choose if to plot legend
 

@@ -4,7 +4,7 @@
 % reference: https://www.mathworks.com/matlabcentral/answers/456241-how-to-apply-command-line-arguments-in-matlab
 
 % run_on_supcomp: run from supercomputer's system 
-% use_supcomp_data: access supercomputer data on a local computer
+% use1_supcomp_data: access supercomputer data on a local computer
 % fdr_prefix: folder name prefix
 % supcomp_run: supercomputer run number
 
@@ -24,6 +24,23 @@ m = []; % empty matrix
 [HDgridScore,gridness3Score]=get_HDGridScore(m,m,m,heat_map);
 avg_firing_rate=mean(mean(heat_map));
 peak_firing_rate=max(max(heat_map));
+if exist('create_ac','var')
+    if str2num([string(create_ac)])==1 
+        PWD=pwd;
+        cd ..
+        activity_image_autocorr;
+        cd(PWD);
+    end
+end
+if exist('save_field_size','var') && exist('save_field_spacing','var') && exist('save_field_rotation','var')
+    if str2num([string(save_field_size)])==1 || str2num([string(save_field_spacing)])==1 ...
+	    || str2num([string(save_field_rotation)])==1
+	    PWD=pwd;
+	    cd ../../../gridcell_metrics/src
+	    gridcell_metrics;
+        cd(PWD);
+    end	
+end
 fprintf("HDgridScore: %f; Gridness3Score: %f\n",HDgridScore,gridness3Score);
 fprintf("Mean firing rate: %f; Peak firing rate: %f\n",avg_firing_rate,max(max(heat_map)));
 if str2num([string(save_gridscore_file)])==1

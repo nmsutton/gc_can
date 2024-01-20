@@ -1,0 +1,3 @@
+neuron 103
+t_start = 29500;
+t_end = t_start+400;

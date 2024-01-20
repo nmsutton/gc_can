@@ -2,6 +2,16 @@
 
 fr_data;
 
+%%%% %%%% %%%% %%%% %%%% %%%% %%%% %%%%
+% { New Methods } %
+fprintf("\nNew Methods\n");
+fprintf("Firing rate: median real: %f, median sim: %f, ranksum: %f, sim nrns: %.0f\n", ...
+    median(real_fr_new_methods),median(sim_fr_new_methods),ranksum(sim_fr_new_methods,real_fr_new_methods),length(sim_fr_new_methods));
+fprintf("real nrns: %.0f, iqr real: %f, iqr sim: %f\n", ...
+    length(real_fr_new_methods),iqr(real_fr_new_methods),iqr(sim_fr_new_methods));
+fprintf("\n\n");
+%%%% %%%% %%%% %%%% %%%% %%%% %%%% %%%%
+
 % choose stat reports
 report_mean_fr=1; % average (mean) firing rates
 report_peak_fr=0; % peak firing rates

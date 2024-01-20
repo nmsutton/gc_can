@@ -1,6 +1,6 @@
 % run from local pc and create gridscore, trajectory plot, and rate map plot
 
-function [heat_map,spikes,spk_data] = gridscore_sim_function(p1,p2,local_run,run_on_supcomp,use_supcomp_data,fdr_prefix,supcomp_run,save_gridscore_file,preloaded_spk_reader,sel_nrn,save_plot,save_traj_plot,save_firingrate_file,save_firingpeak_file,create_plot,spikes,spk_data,alt_data)
+function [heat_map,spikes,spk_data] = gridscore_sim_function(p1,p2,local_run,run_on_supcomp,use_supcomp_data,fdr_prefix,supcomp_run,save_gridscore_file,preloaded_spk_reader,sel_nrn,save_plot,save_traj_plot,save_firingrate_file,save_firingpeak_file,create_plot,spikes,spk_data,alt_data,create_ac,save_field_size,save_field_spacing,save_field_rotation,use_newly_generated_rm,use_newly_generated_ac,saved_nonfld_filt_perc)
 	% general run options
 	% run_on_supcomp: run from supercomputer's system 
 	% use_supcomp_data: access supercomputer data on a local computer
@@ -20,6 +20,13 @@ function [heat_map,spikes,spk_data] = gridscore_sim_function(p1,p2,local_run,run
  	save_firingrate_file=str2num([string(save_firingrate_file)]);
  	save_firingpeak_file=str2num([string(save_firingpeak_file)]);
     alt_data=str2num([string(alt_data)]);
+    create_ac=str2num([string(create_ac)]);
+    save_field_size=str2num([string(save_field_size)]);
+    save_field_spacing=str2num([string(save_field_spacing)]);
+    save_field_rotation=str2num([string(save_field_rotation)]);
+    use_newly_generated_rm=str2num([string(use_newly_generated_rm)]);
+    use_newly_generated_ac=str2num([string(use_newly_generated_ac)]);
+    saved_nonfld_filt_perc=str2num([string(saved_nonfld_filt_perc)]);
 
 	restrict_time=0; % limit time plotted. 0 for no restriction; in 20ms bins
 	smaller_spk_ticks=1; % choose trajectory plot tick size. 2 for extra small.
