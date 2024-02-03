@@ -1,9 +1,11 @@
 initOAT;
+bin_size=-1;
+%{
 local_run=4;
 fdr_prefix="gc_can_";
 neuron_types=["MEC_LII_Stellate","EC_LI_II_Multipolar_Pyramidal","EC_LII_Axo_Axonic","MEC_LII_Basket","EC_LII_Basket_Multipolar","CA1_Pyramidal"];
 neuron_type=neuron_types(1);
-bin_size=-1;
+%}
 %{
 time_start=500;
 time_end=time_start+2000;
@@ -75,4 +77,4 @@ else
     rayleighPVals = NaN;
 end
 
-fprintf("\nMVRL: %.2f\n",MRVL);
+fprintf("\nMVRL: %.2f p-val: %.15f\n",MRVL,pval);

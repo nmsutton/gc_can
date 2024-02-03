@@ -9,10 +9,15 @@ else
         % these next two lines take up most of the time in this function
         idx=find(activitytimes(a)>=peaks(1:end-1) & activitytimes(a)<peaks(2:end),1,'first');  
         try
-        modactivitytimes(a)=(activitytimes(a)-peaks(idx))/(peaks(idx+1)-peaks(idx))*netPer;
+            if isempty(idx)
+                % modactivitytimes(a) remains at 0
+            else
+                modactivitytimes(a)=(activitytimes(a)-peaks(idx))/(peaks(idx+1)-peaks(idx))*netPer;
+            end
         catch me
             %me
             fprintf("error in getspikephase.m ");
+            %disp(a);
         end
     end
 end
