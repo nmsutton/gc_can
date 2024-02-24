@@ -4,7 +4,7 @@ This software simulates neural activites in rodents that occur during spatial na
 
 ## Prerequisites
 
-[CARLsim 6.0 or newer version](https://github.com/UCI-CARL/CARLsim6)
+[The Hippocampome (feat/ca3net) branch of CARLsim 6.0](https://github.com/UCI-CARL/CARLsim6/tree/feat/ca3net)
 <br>Matlab (originally created with r2022a version)
 <br>- This is if users want to use the plotting scripts included.
 <br>- Possibly the plotting scripts could be ported to Octave but this has not yet been tried.
